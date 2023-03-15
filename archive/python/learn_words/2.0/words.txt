@@ -1,0 +1,2 @@
+szo:örökül hagy ; pont:0 | szo:hinterlassen ; pont:0 ; präteritum:hinterließ ; pp_időbeli_segédige:hat ; pp:hinterlassen
+szo:fa ; pont:0 | szo:Baum ; pont:0 ; névelő:der ; tbsz:Bäume ; gyenge:nem

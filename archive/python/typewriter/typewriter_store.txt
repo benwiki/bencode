@@ -1,0 +1,1 @@
+{(0, 3): {'content': 'Nem nagy dolog', 'name': 'Guccom'}, (5, 4): {'content': 'Ma reggel nagyon jó napom volt.', 'name': 'Ez meg a gomb neve.'}, (3, 6): {'content': 'Csak ide beírom.', 'name': 'Elnevezem a gombot.'}, (4, 2): {'name': 'hdjshakjfhjkdfdsajkl'}, (6, 5): {'content': 'Ez itt Singi táblázata. Ezt a szöveget még késõbb kasználni akarom.', 'name': 'Singiszöveg'}}
