@@ -1,0 +1,38 @@
+/*--------CHANGES----------*\
+~2021.01.21.
+Glass is done for now. New tab for Glass.
+Started fixing the randomVector generator for the dragon.
+
+~2020.12.27.
+Added glass
+
+~2020.12.26.
+Added pictures
+
+~2020.12.25.
+Fixed the összetorlódás. The dragon moves according to iterations (thanks to iteration-based Timer).
+Nice colors. Some angle functions, checked randomVector. 
+
+~2020.12.24-25.
+Imported getEqPt and pointAtLength, created calculateLength in "Curve".
+Almost completely meaningless, because it looks great without the "equalidistant" movement. I'm sad.
+Changed getPt -> getEqPt in "Dragon"
+
+~2020.12.23-24.
+Created everything.
+\*---------------------------*/
+
+
+/*--------DEBUG----------*\
+
+\*-----------------------*/
+
+
+/*----POSSIBLE IMPROVEMENTS----*\
+
+1.random sorsolás legyen kiszámítható 
+  - ne a "nem jó" módszert használd!
+
+\*-----------------------------*/
+
+

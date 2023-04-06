@@ -1,0 +1,43 @@
+IMPROVEMENTS MADE
+~2020. 08. 27.:
+  1. Gombok létrehozása
+  2. Iteráció az idő helyett
+  3. Handler kidolgozása
+  4. startingPoint koordinátáiból indulnak a kocsik
+  
+~2020. 08. 15.:
+  1. kódrendezgetés, example írása
+  2. a Slide objektum ha nincs megadva destination és futtatni akarod, kitörli magát.
+  3. Itt is jöhet a handler, mert nehogy már a főfájlban legyen minden
+  
+~2020. 08. 14.:
+  1. tegnap csak egy destination-nel próbáltam ki, úgy ment jól. Ma rengeteget dolgoztam hogy összejöjjön több destiantion-nel - és sikerült.
+  2. a Slide.run() elejére tettem a setupot, így bármit módosíthatsz rajta mielőtt elindítod, nem fuckolódik up.
+  
+~2020. 08. 13.:
+  1. kipróbáltam, jól csináltam mindent, csak a setTime-ot vagy setMode-ot az addDestination előtt kellene meghívni, különben hibát okoz.  hibajavítás! 
+  
+~2020. 08. 12-13.:
+  1. Slide, Movements, Rotation, SizeChange class létrehozása
+  2. sz*rakodás a Slide-dal, hogy működjön
+  
+~2020. 08. 11.:
+  1. Signs class hozzáadása a Sign filehoz - sokkal kezelhetőbbek a jelek
+  2. Jeleknek típusuk ÉS nevük van, könnyebb azonosítás
+  3. Button classban "builder-function"-ök
+  4. startingPoint gomb
+  5. whitespace a kódban, rendezgetés
+
+
+POSSIBLE IMPROVEMENTS
+-----------------------------------
+1. gombbal való indítás, leállítás, szüneteltetés  ✓ ✓ ✓
+  - egyáltalán vmi kezelőfelület, menü: onnan indítható a program vagy a trackdesigner
+2. manuális kezdőpozíció  ✓ ✓ ✓
+3. trackdesigner: trackpontok gombbal húzkodása
+4. ne időt nézzünk, hanem iterációt!!!  ✓ ✓ ✓ kész :)
+5. kocsi brain megtekintés (föléhúzott egér) 
+6. kódrendezés - sokkal rövidebben meg lehet oldani a függvények működését
+7. Slide-ot valahogy rendezd mán el!!! 
+  - külön 2 függvény a separated és united style-nak
+------------------------------------
