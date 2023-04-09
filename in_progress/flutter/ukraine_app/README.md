@@ -1,16 +1,7 @@
 # ukraine_app
 
-A new Flutter project.
+An app to give an overview on websites related to getting / giving local help for ukrainian refugees.
 
-## Getting Started
+Project has started in 2022 and stayed under strong construction since.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+It will probably not be continued, unless I find another purpose for the project.
