@@ -12,15 +12,16 @@ def startsWithAny(text: str, startsWith: str | list[str]):
     return False
 
 
-def explorePath(path: str, folder: str = '.') -> dict:
+def explorePath(path: str, folder: str = '.', filter: bool = True) -> dict:
     res: dict[str, dict] = {}
     for folder in getSubFolders(path):
-        if startsWithAny(folder, ['.', '_']) or folder in ['code']:
+        if filter and (startsWithAny(folder, ['.', '_']) or
+                       folder in ['code']):
             continue
-        elif startsWithAny(folder, ['android', 'build', 'source', 'admob',
-                                    'ios', 'linux', 'windows', 'macos',
-                                    'EmilyDragon1', 'EmilyDragon2',
-                                    'EmilyDragon3', 'Offline']):
+        elif filter and startsWithAny(folder, [
+                'android', 'build', 'source', 'admob', 'ios', 'linux',
+                'windows', 'macos', 'EmilyDragon1', 'EmilyDragon2',
+                'EmilyDragon3', 'Offline']):
             res[folder] = {}
             continue
         res[folder] = explorePath(f'{path}/{folder}', folder)
