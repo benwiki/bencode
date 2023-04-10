@@ -19,23 +19,28 @@ def explorePath(path: str, folder: str = '.') -> dict:
             continue
         elif startsWithAny(folder, ['android', 'build', 'source', 'admob',
                                     'ios', 'linux', 'windows', 'macos',
-                                    'EmilyDragon1', 'EmilyDragon2', 'EmilyDragon3', 'Offline']):
+                                    'EmilyDragon1', 'EmilyDragon2',
+                                    'EmilyDragon3', 'Offline']):
             res[folder] = {}
             continue
         res[folder] = explorePath(f'{path}/{folder}', folder)
     return res
 
 
-def treeify(graph: dict[str, dict], last: list[bool] | None = None) -> str:
+def treeify(graph: dict[str, dict],
+            last: list[bool] | None = None,
+            path: str = 'https://github.com/benwiki/bencode/tree/main/'
+            ) -> str:
     if last is None:
         last = []
     dirLen = len(graph)
     res = ''
     for i, dir in enumerate(graph):
-        res += ''.join('    ' if L else '|   ' for L in last)
-        res += '└───' if i == dirLen - 1 else '├───'
-        res += f'{dir}\n'
-        res += treeify(graph[dir], last + [i == dirLen - 1])
+        subPath = f'{path}/{dir}'
+        res += '`' + ''.join('    ' if L else '|   ' for L in last)
+        res += ('└───' if i == dirLen - 1 else '├───') + '`'
+        res += f'[{dir}]({subPath})\n\n'
+        res += treeify(graph[dir], last + [i == dirLen - 1], subPath)
     return res
 
 
