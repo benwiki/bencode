@@ -39,7 +39,7 @@ def treeify(graph: dict[str, dict],
         subPath = f'{path}/{dir}'
         res += '`' + ''.join('    ' if L else '|   ' for L in last)
         res += ('└───' if i == dirLen - 1 else '├───') + '`'
-        res += f'[{dir}]({subPath})\n\n'
+        res += f'[{dir}]({subPath})  \n'
         res += treeify(graph[dir], last + [i == dirLen - 1], subPath)
     return res
 
