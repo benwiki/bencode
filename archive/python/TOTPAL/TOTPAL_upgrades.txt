@@ -1,9 +1,0 @@
--mention people instead of typing name DONE
--szavak törlése egyesével (-delete) DONE
--set_! DONE
--guess: check ob guess richtig ist! DONE
--szavak megjelenítése (-show) DONE
--pontok resetelése DONE
--reset DONE
-
--gyors kör

@@ -1,0 +1,13 @@
+✅ mention people instead of typing name
+✅ szavak törlése egyesével (-delete)
+✅ set_!
+✅ guess: check whether guess is right
+✅ szavak megjelenítése (-show)
+✅ pontok resetelése
+✅ reset
+
+TO IMPLEMENT:
+-----------------------------------------
+gyors kör
+nem kell mindenkinek startolnia
+reset settings mentése fileba

@@ -26,8 +26,8 @@ class GameLogic(commands.Cog):
         self.round: int = 1
         self.confirmation_message: Optional[discord.Message] = None
 
-        self.resetmessage = "Full reset or reset points? React on this message with :regional_indicator_f:(full) / :regional_indicator_p:(points)"
-        self.conf_message = "Are you sure? React on this message with :white_check_mark:(yes) / :x: (no) / :a:(always)!"
+        self.resetmessage = "Full reset or reset points? React on this message with :regional_indicator_f: (full) / :regional_indicator_p: (points)"
+        self.conf_message = "Are you sure? React on this message with :white_check_mark: (yes) / :x: (no) / :a: (always)!"
 
         self.number = {
             1: "one",
@@ -85,7 +85,7 @@ class GameLogic(commands.Cog):
                     if mentioned is not None:
                         await func(mentioned)
                     else:
-                        await self.gamechannel.send("I don't know this person... Did they [-participate]?")
+                        await self.gamechannel.send("I don't know this person... Do they [-play]?")
                 else:
                     await self.gamechannel.send(error_msg)
             return wrapper
@@ -103,9 +103,9 @@ class GameLogic(commands.Cog):
                 match str(reaction.emoji):
                     case "🇫":
                         if self.confirmation["full_reset"] == "A":
-                            self.reset(full=True)
                             await self.gamechannel.send("Full reset done!")
                             self.confirmation_message = None
+                            self.reset(full=True)
                         else:
                             self.confirmation["full_reset"] = "!"
                             self.confirmation_message = await self.gamechannel.send(self.conf_message)
@@ -119,10 +119,11 @@ class GameLogic(commands.Cog):
                             self.confirmation["point_reset"] = "!"
                             self.confirmation_message = await self.gamechannel.send(self.conf_message)
                     case "✅":
+                        print("dsldkssdas")
                         if self.confirmation["full_reset"] == "!":
                             self.confirmation["full_reset"] = "-"
-                            self.reset(full=True)
                             await self.gamechannel.send("Full reset done!")
+                            self.reset(full=True)
                         elif self.confirmation["point_reset"] == "!":
                             self.confirmation["point_reset"] = "-"
                             self.points = {}
@@ -131,8 +132,8 @@ class GameLogic(commands.Cog):
                     case "🅰️":
                         if self.confirmation["full_reset"] == "!":
                             self.confirmation["full_reset"] = "A"
-                            self.reset(full=True)
                             await self.gamechannel.send("Full reset done! No confirmation from now on!")
+                            self.reset(full=True)
                         elif self.confirmation["point_reset"] == "!":
                             self.confirmation["point_reset"] = "A"
                             self.points = {}
@@ -154,7 +155,7 @@ class GameLogic(commands.Cog):
 
         # ----- COMMANDS -----
         # help
-        # participate, set, delete, show, setchannel, setguesser, rollguesser
+        # play, set, delete, show, setchannel, setguesser, rollguesser
         # start, get, cancel, guess, stop
         # reset
 
@@ -182,18 +183,21 @@ class GameLogic(commands.Cog):
                     await msg.channel.send("You must guess before asking for a new one!")
                     return True
             # --- BEFORE GAME ---
-            if id in ('set', 'delete', 'show', 'rollguesser', 'setguesser', 'participate', 'setchannel', 'start'):
+            if id in ('set', 'delete', 'show', 'rollguesser', 'setguesser', 'play', 'setchannel', 'start'):
                 if self.game_started:
                     await msg.channel.send("The game has already started!")
                     return True
-                if id != 'participate' and msg.author not in self.people:
-                    await msg.channel.send(f"{author_name}, you need to [-participate]!")
+                if id != 'play' and msg.author not in self.people:
+                    await msg.channel.send(f"{author_name}, you need to [-play]!")
                     return True
-                if id == 'participate' and msg.author in self.people:
+                if id == 'play' and msg.author in self.people:
                     await msg.channel.send(f"{author_name}, you're already in!")
                     return True
                 if id == "start" and self.guesser is None:
                     await msg.channel.send("There's no guesser yet!\nType [-rollguesser] to select guesser randomly,\nor [-setguesser @name] to set guesser manually!")
+                    return True
+                if id == "start" and not self.speakers:
+                    await msg.channel.send("How do you plan to play the game alone? `:P`")
                     return True
             # --- CHANNEL SPECIFICATION ---
             if id in ('get', 'cancel', 'guess', 'stop', 'start', 'setguesser', 'rollguesser', 'reset'):
@@ -211,10 +215,23 @@ class GameLogic(commands.Cog):
         if msg.content == "-help":
             await msg.channel.send(
     """Available commands:
-    - help
-    - [BEFORE GAME] participate, set, delete, show, setchannel, setguesser, rollguesser
-    - [DURING GAME] start, get, cancel, guess, stop
-    - reset""")
+[GENERAL]
+-help (display this help message)
+-reset (
+[BEFORE GAME]
+-play (join game)
+-set
+-delete
+-show
+-setchannel
+-setguesser
+-rollguesser
+[DURING GAME]
+-start
+-get
+-cancel
+-guess
+-stop""")
         # -------------------------------------------------------------------------------------------------------
         elif msg.content == "-get":
             if await issue('get'):
@@ -267,11 +284,14 @@ class GameLogic(commands.Cog):
             self.gamechannel = msg.channel
             await msg.channel.send(f'Channel "{self.gamechannel}" set as game channel!')
         # -------------------------------------------------------------------------------------------------------
-        elif msg.content == "-participate":
-            if await issue('participate'):
+        elif msg.content == "-play":
+            if await issue('play'):
                 return
             self.people[msg.author] = []
             await msg.channel.send(f"You're in, {author_name}!")
+            if self.gamechannel is None:
+                self.gamechannel = msg.channel
+                await msg.channel.send(f'Channel "{self.gamechannel}" automatically set as game channel!')
         # -------------------------------------------------------------------------------------------------------
         elif msg.content == "-rollguesser":
             if await issue('rollguesser'):
@@ -354,15 +374,16 @@ class GameLogic(commands.Cog):
             await msg.channel.send("ʇǝǝʎ")
         # -------------------------------------------------------------------------------------------------------
         elif msg.content == "-debug":
+            if msg.author.id != 348976146689294336: return
             await msg.channel.send('\n'.join(map(str, (
                 self.people, self.points, self.starting_people, self.speakers,
                 self.gamechannel, self.game_started,
                 self.guesser, self.round, self.person_to_guess
             ))))
         # -------------------------------------------------------------------------------------------------------
-        elif msg.content.startswith("-") and msg.author.id != 713044656103096392:
+        elif msg.content.startswith("-"):
             await msg.channel.send("Wrong command!")
 
 
-def setup(client):
-    client.add_cog(GameLogic(client))
+async def setup(bot):
+    await bot.add_cog(GameLogic(bot))
