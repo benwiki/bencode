@@ -13,9 +13,9 @@ import re
 # ###--------Parameters--------### #
 # ################################ #
 
-projectName = "sitemap"
+projectName = "Buddhismus"
 
-platform = "mobile"  # "mobile" / "desktop"
+platform = "desktop"  # "mobile" / "desktop"
 conn_len = 1.5
 rad_scale = 0.2
 txtScale = 15
@@ -346,5 +346,5 @@ class MindMap:
 
 
 if __name__ == "__main__":
-    mindmap_txt = extract_mindmap(projectName + ".md")
+    mindmap_txt = extract_mindmap(r'C:\Users\Admin\prog\bencode\in_progress\python\mindmap\pres_tool\\'+projectName + ".md")
     run_map(mindmap_txt, projectName)
