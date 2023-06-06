@@ -19,3 +19,9 @@ double sized(BuildContext context, {var wRate, var hRate}) {
   if (hRate != null) return MediaQuery.of(context).size.height * hRate;
   return MediaQuery.of(context).size.width * wRate;
 }
+
+bool isBetween(int val, int start, int stop) {
+  return val >= start && val <= stop;
+}
+
+bool isNotBetween(int val, int start, int stop) => !isBetween(val, start, stop);

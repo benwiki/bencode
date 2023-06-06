@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:verneigung/utility.dart';
+import 'package:niederwerfung/utility.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,17 +11,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Verneigung',
+      title: 'Niederwerfungen',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.amber,
-          primary: Colors.black,
-          surface: Colors.amber,
+          seedColor: const Color.fromARGB(255, 253, 207, 71),
+          primary: const Color.fromARGB(255, 1, 25, 62),
+          surface: const Color.fromARGB(255, 253, 207, 71),
           background: const Color.fromARGB(255, 1, 25, 62),
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Verneigung'),
+      home: const MyHomePage(title: 'Niederwerfungen'),
     );
   }
 }
@@ -36,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _gongInterval = 10;
+  int _gongInterval = 10, _numOfProstrations = 108;
   // bool _gongPlaying = false;
 
   @override
@@ -58,30 +58,52 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget buildBody(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
       const SizedBox(height: 20),
-      AmountChangerMatrix(
+      AmountChanger(
           title: "Gong-Intervall:",
+          unit: "Sek.",
           amountChangerValues: const [
             [1, -1],
             [10, -10]
           ],
-          changeAmountBy: (changeValue) =>
-              setState(() => _changeGongIntervalBy(changeValue)),
-          getAmount: () => _gongInterval)
+          changeAmountBy: (changeVal) => _changeGongIntervalBy(changeVal),
+          getAmount: () => _gongInterval),
+      const SizedBox(height: 35),
+      AmountChanger(
+          title: "Anzahl Niederwerfungen:",
+          amountChangerValues: const [
+            [1, -1],
+            [10, -10],
+            [108, -108]
+          ],
+          changeAmountBy: (changeVal) => _changeNumOfProstrationsBy(changeVal),
+          getAmount: () => _numOfProstrations,
+          breakAmountChangers: true),
     ]);
   }
 
   Widget buildFAB() {
-    return ElevatedButton(
-        onPressed: _startGong,
-        style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        child: const Text("Start Gong", style: TextStyle(fontSize: 25)));
+    return SizedBox(
+        width: sized(context, wRate: 0.4),
+        height: sized(context, hRate: 0.07),
+        child: ElevatedButton(
+            onPressed: _startGong,
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[900],
+                foregroundColor: Colors.white,
+                side: const BorderSide(width: 3, color: Colors.white),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10))),
+            child: const Text("Start Gong", style: TextStyle(fontSize: 25))));
   }
 
   _changeGongIntervalBy(int amount) {
-    if (_gongInterval + amount > 99 || _gongInterval + amount < 1) return;
+    if (isNotBetween(_gongInterval + amount, 1, 99)) return;
     setState(() => _gongInterval += amount);
+  }
+
+  _changeNumOfProstrationsBy(int amount) {
+    if (isNotBetween(_numOfProstrations + amount, 1, 9999)) return;
+    setState(() => _numOfProstrations += amount);
   }
 
   _startGong() {
@@ -89,47 +111,49 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class AmountChangerMatrix extends StatelessWidget {
-  final Function changeAmountBy, getAmount;
+class AmountChanger extends StatelessWidget {
+  final Function(int) changeAmountBy;
+  final Function getAmount;
   final String title;
+  final String? unit;
   final List<List>? amountChangerValues;
+  final bool breakAmountChangers;
 
-  const AmountChangerMatrix(
+  final normalTextStyle =
+      const TextStyle(fontSize: 20, color: Color.fromARGB(255, 253, 207, 71));
+  final amountTextStyle = const TextStyle(fontSize: 40, color: Colors.white);
+
+  const AmountChanger(
       {super.key,
       required this.changeAmountBy,
       required this.getAmount,
       this.title = "Title",
-      this.amountChangerValues});
+      this.unit,
+      this.amountChangerValues,
+      this.breakAmountChangers = true});
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      buildTitleWidget(),
-      const SizedBox(width: 20),
-      buildAmountWidget(context),
-      const SizedBox(width: 20),
+    return Column(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(title, style: normalTextStyle),
+        const SizedBox(width: 20),
+        Text(getAmount().toString(), style: amountTextStyle),
+        if (unit != null) ...[
+          const SizedBox(width: 20),
+          Text(unit ?? '', style: normalTextStyle)
+        ]
+      ]),
+      const SizedBox(height: 10),
       buildButtonMatrix()
     ]);
-  }
-
-  Widget buildTitleWidget() {
-    return Text(title,
-        style: const TextStyle(fontSize: 20, color: Colors.amber));
-  }
-
-  Widget buildAmountWidget(BuildContext context) {
-    return Container(
-        alignment: Alignment.center,
-        width: sized(context, wRate: 0.1),
-        child: Text(getAmount().toString(),
-            style: const TextStyle(fontSize: 40, color: Colors.white)));
   }
 
   Widget buildButtonMatrix() {
     return Column(children: [
       for (int i = 0; i < (amountChangerValues?.length ?? 0); ++i) ...[
         if (i > 0) const SizedBox(height: 10),
-        Row(children: [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           for (int j = 0; j < (amountChangerValues?[i].length ?? 0); ++j) ...[
             if (j > 0) const SizedBox(width: 10),
             buildAmountChangeButton(amountChangerValues?[i][j] ?? 0)
@@ -149,6 +173,7 @@ class AmountChangerMatrix extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15))),
             child: Text('${changeValue > 0 ? '+' : ''}$changeValue',
-                style: const TextStyle(fontSize: 20))));
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.bold))));
   }
 }
