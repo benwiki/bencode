@@ -1,4 +1,4 @@
-package com.example.verneigung
+package com.example.niederwerfung
 
 import io.flutter.embedding.android.FlutterActivity
 

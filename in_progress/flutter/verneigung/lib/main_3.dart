@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:verneigung/utility.dart';
+import 'package:niederwerfung/utility.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Verneigung',
+      title: 'Niederwerfung',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.amber,
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Verneigung'),
+      home: const MyHomePage(title: 'Niederwerfung'),
     );
   }
 }
