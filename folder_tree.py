@@ -21,7 +21,8 @@ def explorePath(path: str, folder: str = '.', filter: bool = True) -> dict:
         elif filter and startsWithAny(folder, [
                 'android', 'build', 'source', 'admob', 'ios', 'linux',
                 'windows', 'macos', 'EmilyDragon1', 'EmilyDragon2',
-                'EmilyDragon3', 'Offline']):
+                'EmilyDragon3', 'Offline', 'Repello', 'TestProject',
+                'rc_cloud-2', 'login_test', 'ukraine_app', 'TOTPAL']):
             res[folder] = {}
             continue
         res[folder] = explorePath(f'{path}/{folder}', folder)
