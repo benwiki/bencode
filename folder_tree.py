@@ -22,7 +22,8 @@ def explorePath(path: str, folder: str = '.', filter: bool = True) -> dict:
                 'android', 'build', 'source', 'admob', 'ios', 'linux',
                 'windows', 'macos', 'EmilyDragon1', 'EmilyDragon2',
                 'EmilyDragon3', 'Offline', 'Repello', 'TestProject',
-                'rc_cloud-2', 'login_test', 'ukraine_app', 'TOTPAL']):
+                'rc_cloud-2', 'login_test', 'ukraine_app', 'TOTPAL',
+                'niederwerfung']):
             res[folder] = {}
             continue
         res[folder] = explorePath(f'{path}/{folder}', folder)

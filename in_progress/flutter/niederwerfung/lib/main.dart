@@ -77,8 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
             [108, -108]
           ],
           changeAmountBy: (value) => _changeNumOfProstrationsBy(value),
-          getAmount: () => _numOfProstrations,
-          breakAmountChangers: true),
+          getAmount: () => _numOfProstrations),
     ]);
   }
 

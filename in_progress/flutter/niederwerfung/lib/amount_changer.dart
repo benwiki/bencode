@@ -6,7 +6,6 @@ class AmountChanger extends StatelessWidget {
   final String title;
   final String? unit;
   final List<List>? amountChangerValues;
-  final bool breakAmountChangers;
 
   final normalTextStyle =
       const TextStyle(fontSize: 20, color: Color.fromARGB(255, 253, 207, 71));
@@ -18,8 +17,7 @@ class AmountChanger extends StatelessWidget {
       required this.getAmount,
       this.title = "Title",
       this.unit,
-      this.amountChangerValues,
-      this.breakAmountChangers = true});
+      this.amountChangerValues});
 
   @override
   Widget build(BuildContext context) {
