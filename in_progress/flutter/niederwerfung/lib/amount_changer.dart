@@ -7,10 +7,6 @@ class AmountChanger extends StatelessWidget {
   final String? unit;
   final List<List>? amountChangerValues;
 
-  final normalTextStyle =
-      const TextStyle(fontSize: 20, color: Color.fromARGB(255, 253, 207, 71));
-  final amountTextStyle = const TextStyle(fontSize: 40, color: Colors.white);
-
   const AmountChanger(
       {super.key,
       required this.changeAmountBy,
@@ -21,6 +17,10 @@ class AmountChanger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final normalTextStyle =
+        TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.surface);
+    const amountTextStyle = TextStyle(fontSize: 40, color: Colors.white);
+
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(title, style: normalTextStyle),
