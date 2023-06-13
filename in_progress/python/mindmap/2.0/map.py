@@ -3,6 +3,7 @@
 
 from bisect import insort_right
 import tkinter as tk
+from tkinter import font
 from mdMapTools import extract_mindmap
 from dataclasses import dataclass
 from math import cos, pi, sin
@@ -13,9 +14,10 @@ import re
 # ---------------------------------Parameters------------------------------- #
 ##############################################################################
 
-PROJECT_NAME = "Buddhismus"
+MAP_PATH = r"C:\Users\b.hargitai\Documents\Programme\MindMap\onedrive_folder_tree.md"
 
 PLATFORM = "desktop"  # "mobile" / "desktop"
+FONT_STYLE = 'Segoe UI'
 CONN_LEN = 1.5
 RAD_SCALE = 0.2
 TXT_SCALE = 15
@@ -27,14 +29,12 @@ SHOW_PERCENTAGE = False
 
 def run_map(mindmap_text=None):
     if mindmap_text is None:
-        mindmap_text = extract_mindmap(
-            'C:\\Users\\Admin\\prog\\bencode\\in_progress\\'
-            + 'python\\mindmap\\2.0\\' + PROJECT_NAME + ".md")
+        mindmap_text = extract_mindmap(MAP_PATH)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~
-    block = convert_to_map(mindmap_text, PROJECT_NAME)
+    block = convert_to_map(mindmap_text)
     # ~~~~~~~~~~~~~~~~~~~~~~~~
-    theme = LIGHT_THEME  # DARK_THEME / LIGHT_THEME
+    theme = DARK_THEME  # DARK_THEME / LIGHT_THEME
     progressStyle = ProgressStyle(theme, "sector")  # "sector" / "arc"
     # ~~~~~~~~~~~~~~~~~~~~~~~~
     MindMap(block, theme, progressStyle).start()
@@ -104,8 +104,53 @@ class Block:
     children: list["Block"]
 
 
-def zero_int(text):
-    return 0 if text == "" else int(text)
+def convert_to_map(string: str) -> Block:
+    blocks = string.strip().split('\n')
+    prev_intend = -1
+    start = None
+    cur_block = None
+    for i, block in enumerate(blocks):
+        block_match = match_text(block)
+        if block_match is None:
+            raise RuntimeError(
+                f"\n\nThe following line doesn't match:"
+                + '\n' + '-' * len(block)
+                + f'\n{block}'
+                + '\n' + '-' * len(block)
+                + '\nStructure is: [intendation][content];[percentage]'
+                '\nExamples:\n    nice shorts;65\nor'
+                '\n            right?\nor'
+                '\n        Hey there! ;   89')
+        intendation, new_block = block_match
+        if intendation == 0 and i != 0:
+            raise RuntimeError(
+                f'\n\n"{block}" has intendation 0, but there can only be one '
+                'top-level node: the title!')
+        elif intendation > prev_intend + 1:
+            raise RuntimeError(
+                f'\n\nToo high intendation ({intendation}) on text "{block}"!')
+        elif intendation == prev_intend + 1:
+            new_block.parent = cur_block
+            if intendation == 0 and i == 0:
+                start = new_block  # HERE DOES THE MAGIC HAPPEN. I know I know
+        elif intendation == prev_intend:
+            new_block.parent = cur_block.parent
+        else:
+            back = prev_intend - intendation
+            while back > 0:
+                if cur_block.parent is None:
+                    raise RuntimeError(
+                        "You mustn't use negative intendations!")
+                cur_block = cur_block.parent
+                back -= 1
+            new_block.parent = cur_block.parent
+        if new_block.parent is None and i != 0:
+            raise RuntimeError("You mustn't use negative intendations!")
+        cur_block = new_block
+        if i != 0:
+            new_block.parent.children.append(cur_block)
+        prev_intend = intendation
+    return start
 
 
 def match_text(text: str) -> Optional[tuple[int, Block]]:
@@ -117,38 +162,8 @@ def match_text(text: str) -> Optional[tuple[int, Block]]:
             Block(name, zero_int(percent), None, []))
 
 
-def convert_to_map(string: str, name: str) -> Block:
-    start: Block = Block(name, 0, None, [])
-    cur_block = Block("", 0, start, [])
-    blocks = string.strip().split('\n')
-    prev_intend = 0
-    for i, block in enumerate(blocks):
-        block_match = match_text(block)
-        if block_match is None:
-            raise RuntimeError(f'"{block}" doesn\'t match (line ~{i})!')
-        intendation, new_block = block_match
-        if intendation > prev_intend + 1 or cur_block is None:  # bc of mypy
-            raise RuntimeError(f"Too high intendation "
-                               f"({intendation}) on text \"{block}\"!")
-        elif intendation == prev_intend + 1:
-            new_block.parent = cur_block
-        elif intendation == prev_intend:
-            new_block.parent = cur_block.parent
-        else:
-            back = prev_intend - intendation
-            while back > 0:
-                if cur_block.parent is None:
-                    raise RuntimeError("You can't use "
-                                       "negative intendations!")
-                cur_block = cur_block.parent
-                back -= 1
-            new_block.parent = cur_block.parent
-        if new_block.parent is None:
-            raise RuntimeError("You can't use negative intendations!")
-        cur_block = new_block
-        new_block.parent.children.append(cur_block)
-        prev_intend = intendation
-    return start
+def zero_int(text):
+    return 0 if text == "" else int(text)
 
 
 ##############################################################################
@@ -161,13 +176,23 @@ class Coord:
 
     def __iter__(self):
         return iter((self.x, self.y))
+        
+    def __sub__(self, other):
+        return Coord(self.x - other.x, self.y - other.y)
+        
+    def __add__(self, other):
+        return Coord(self.x + other.x, self.y + other.y)
 
 
 class MindMap:
-    def __init__(self, block: Block, theme: Theme, prStyle: ProgressStyle):
+    def __init__(
+            self, block: Block,
+            theme: Theme, prStyle: ProgressStyle,
+            font_style: str=FONT_STYLE):
         self.map = block
         self.theme = theme
         self.prStyle = prStyle
+        self.font_style = font_style
         self.initWindow()
         self.init_attributes()
         self.init_draw()
@@ -183,6 +208,7 @@ class MindMap:
         self.draw_w, self.draw_h = self.w, self.h
         if PLATFORM == "mobile":
             self.draw_h *= 0.85
+        
 
     def reset_zoom_scale(self, event):
         if PLATFORM == "mobile":
@@ -199,6 +225,10 @@ class MindMap:
         self.focused = self.map
         self.selected = [0 for _ in range(self.get_depth())]
         self.depth = 0
+        self.fullscreen = False
+        self.font_index = -1
+        self.font_label_size = 15
+        self.font_label_pos = Coord(10, 10)
 
     def get_depth(self, map=None):
         if map is None:
@@ -221,7 +251,20 @@ class MindMap:
         self.draw.bind("<B1-Motion>", self.motion)
         for key in ["<Left>", "<Right>", "<Up>", "<Down>"]:
             self.win.bind(key, self.get_key_handler(key))
+        for f_key in ["<f>", "<F>"]:
+            self.win.bind(f_key, self.toggle_fullscreen)
+        self.win.bind("<t>", lambda _: self.change_font('forwards'))
+        self.win.bind("<T>", lambda _: self.change_font('backwards'))
         self.draw.bind("<MouseWheel>", self.scrollzoom)
+        
+    def create_font_label(self):
+        self.font_label = self.draw.create_text(
+            *self.font_label_pos,
+            text=self.font_style,
+            anchor=tk.NW,
+            fill=self.theme.fg,
+            font=(self.font_style, self.font_label_size)
+        )
 
     def press(self, event):
         self.scan_mark_pos = Coord(event.x, event.y)
@@ -230,9 +273,13 @@ class MindMap:
     def release(self, event):
         self.draw_pos.x += event.x - self.scan_mark_pos.x
         self.draw_pos.y += event.y - self.scan_mark_pos.y
+        new_label_pos = self.font_label_pos - self.draw_pos
+        self.draw.moveto(self.font_label, *new_label_pos)
+        self.draw.itemconfig(self.font_label, fill=self.theme.fg)
 
     def motion(self, event):
         self.draw.scan_dragto(event.x, event.y, gain=1)
+        self.draw.itemconfig(self.font_label, fill="")
 
     def get_key_handler(self, key) -> Callable:
         return lambda event, key=key: self.handle_key(key)
@@ -247,10 +294,10 @@ class MindMap:
                 self.focused = self.focused.parent
                 self.selected[self.depth] = 0
                 self.depth -= 1
-            case "<Left>":
+            case "<Left>" if len_children != 0:
                 self.selected[self.depth] -= 1
                 self.selected[self.depth] %= len_children
-            case "<Right>":
+            case "<Right>" if len_children != 0:
                 self.selected[self.depth] += 1
                 self.selected[self.depth] %= len_children
             case _: return
@@ -258,11 +305,13 @@ class MindMap:
         self.reset_position()
         self.draw.delete('all')
         self.draw_map(self.focused, rotation=self.get_ideal_rotation())
+        self.create_font_label()
 
     def reset_position(self):
         self.draw.scan_mark(*self.draw_pos)
         self.draw.scan_dragto(0, 0, gain=1)
         self.draw_pos = Coord(0, 0)
+        self.resolution = 1
 
     def get_ideal_rotation(self) -> float:
         rotation = (-1/4 if len(self.focused.children) == 2 else
@@ -272,20 +321,43 @@ class MindMap:
 
     def is_power_of_2(self, n) -> bool:
         return n & (n-1) == 0
+        
+    def toggle_fullscreen(self, _):
+        self.fullscreen = not self.fullscreen
+        self.win.attributes("-fullscreen", self.fullscreen)
+        
+    def change_font(self, direction: str):
+        
+        match direction:
+            case 'forwards' if self.font_index < len(font.families()) - 1:
+                self.font_index += 1
+            case 'backwards' if self.font_index > 0:
+                self.font_index -= 1
+            case _:
+                return
+        self.font_style = font.families()[self.font_index]
+        self.draw.itemconfig(
+            self.font_label, text=self.font_style,
+            font=(self.font_style, self.font_label_size))
+        self.configure_text()
 
     def scrollzoom(self, event):
         factor = 1.001 ** event.delta
-        self.do_zoom(factor, Coord(event.x, event.y))
+        event_pos = Coord(event.x, event.y)
+        self.do_zoom(factor, event_pos)
 
     def do_zoom(self, factor, pos: Coord):
         self.resolution *= factor
-        self.draw.scale(
-            "all", pos.x - self.draw_pos.x, pos.y - self.draw_pos.y,
-            factor, factor)
+        self.draw.scale("all", *(pos - self.draw_pos), factor, factor)
+        self.configure_text()
+        new_label_pos = self.font_label_pos - self.draw_pos
+        self.draw.moveto(self.font_label, *new_label_pos)
+            
+    def configure_text(self):
         for text in self.texts:
             textSize = self.resolution * text['r'] * TXT_SCALE
             textSize = int(textSize ** TXT_SHRINK)
-            self.draw.itemconfig(text['obj'], font=('Consolas', textSize))
+            self.draw.itemconfig(text['obj'], font=(self.font_style, textSize))
             if text['r'] * self.resolution < self.txtshowres:
                 self.draw.itemconfig(text['obj'], fill="")
             else:
@@ -317,15 +389,16 @@ class MindMap:
         self.do_zoom(factor, Coord(int(self.draw_w/2), int(self.draw_h/2)))
 
     def start(self):
-        self.draw_map(self.map)
+        self.draw_map(self.map, recalc_progress=True)
+        self.create_font_label()
         tk.mainloop()
 
-    def draw_map(self, block: Block,
-                 x=None, y=None, radius=None, rotation=0.75):
-        if x is None:
-            x = self.draw_w/2
-        if y is None:
-            y = self.draw_h/2
+    def draw_map(
+            self, block: Block, pos=None, radius=None,
+            rotation: float=0.75, recalc_progress: bool=False
+            ) -> float:
+        if pos is None:
+            pos = Coord(self.draw_w/2, self.draw_h/2)
         if radius is None:
             radius = self.start_radius
 
@@ -336,71 +409,73 @@ class MindMap:
             new_rotation = (i / child_num + rotation
                             + (0.5/child_num if plus_rot else 0))
             self.draw.create_line(
-                self.line_rotate(x, y, radius, radius*CONN_LEN, new_rotation),
+                self.line_rotate(pos, radius, radius*CONN_LEN, new_rotation),
                 fill=self.theme.bd
             )
-            linerot = self.rotate_coord(
-                x, y, radius*CONN_LEN + radius*RAD_SCALE, new_rotation
+            rotated_new_pos = self.circle_coord(
+                pos, radius*CONN_LEN + radius*RAD_SCALE, new_rotation
             )
-            if block.progress > 0:
+            if recalc_progress and block.progress > 0:
                 block.children[i].progress = block.progress
 
             progress += self.draw_map(  # RECURSION HERE
                 block.children[i],
-                linerot[0], linerot[1],
-                radius*RAD_SCALE, new_rotation
+                pos=rotated_new_pos,
+                radius=radius*RAD_SCALE,
+                rotation=new_rotation,
+                recalc_progress=recalc_progress
             )
 
-        if child_num != 0:
+        if recalc_progress and child_num != 0:
             avg_progress = progress / child_num
             block.progress = avg_progress
 
         if block.progress < 1:
             block.progress = 0
 
-        self.draw_block(block, x, y, radius)
-        self.draw_text(block, x, y, radius)
+        self.draw_block(block, pos, radius)
+        self.draw_text(block, pos, radius)
         return block.progress
 
-    def line_rotate(self, x, y, start, end, rotation):
+    def line_rotate(self, pos: Coord, start, end, rotation):
         return (
-            *self.rotate_coord(x, y, start, rotation),
-            *self.rotate_coord(x, y, end, rotation))
+            *self.circle_coord(pos, start, rotation),
+            *self.circle_coord(pos, end, rotation))
 
-    def rotate_coord(self, x, y, radius, rotation):
+    def circle_coord(self, pos: Coord, radius, rotation) -> Coord:
         rotation *= 2*pi
-        return (x + cos(rotation)*radius, y + sin(rotation)*radius)
+        return Coord(pos.x + cos(rotation)*radius, pos.y + sin(rotation)*radius)
 
-    def draw_block(self, block: Block, x: float, y: float, r: float):
+    def draw_block(self, block: Block, pos: Coord, r: float):
         self.draw.create_oval(
-            self.oval_coords(x, y, r),
+            self.oval_coords(pos, r),
             outline=self.theme.bd,
             fill=self.circle_fill(block.progress))
         self.draw.create_arc(
-            self.oval_coords(x, y, r),
+            self.oval_coords(pos, r),
             extent=block.progress/100*359.999,
             style=self.prStyle.style,
             outline=self.arc_outline(block.progress),
             fill=self.arc_fill(block.progress),
             width=self.prStyle.arcWidth)
 
-    def oval_coords(self, x, y, r):  # r ~ radius
-        return (x-r, y-r, x+r, y+r)
+    def oval_coords(self, pos: Coord, r):  # r ~ radius
+        return (pos.x-r, pos.y-r, pos.x+r, pos.y+r)
 
-    def draw_text(self, block: Block, x, y, r):
+    def draw_text(self, block: Block, pos: Coord, r):
         block_txt = block.text + (f"\n{round(block.progress)} %"
                                   if SHOW_PERCENTAGE else "")
         textSize = self.resolution * r * TXT_SCALE
         textSize = int(textSize ** TXT_SHRINK)
         self.texts += [{'r': r, 'obj': self.draw.create_text(
-            x, y, text=block_txt,
+            pos.x, pos.y, text=block_txt,
             fill=(
                 self.theme.focus if block is self.focused or
                 block in self.focused.children and
                 block.parent is not None and
                 block.parent.children.index(block) == self.selected[self.depth]
                 else self.theme.fg if r >= self.txtshowres else ""),
-            font=('Consolas', textSize),
+            font=(self.font_style, textSize),
             justify="center"
         )}]
 
