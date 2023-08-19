@@ -18,8 +18,8 @@ MAP_PATH = r"C:\Users\b.hargitai\Documents\Programme\MindMap\onedrive_folder_tre
 
 PLATFORM = "desktop"  # "mobile" / "desktop"
 FONT_STYLE = 'Segoe UI'
-CONN_LEN = 1.5
-RAD_SCALE = 0.2
+CONN_LEN = 1.25  # 1.5
+RAD_SCALE = 0.25  # 0.2
 TXT_SCALE = 15
 TXT_SHRINK = 0.4
 ZOOMSCALE = 2
@@ -34,7 +34,7 @@ def run_map(mindmap_text=None):
     # ~~~~~~~~~~~~~~~~~~~~~~~~
     block = convert_to_map(mindmap_text)
     # ~~~~~~~~~~~~~~~~~~~~~~~~
-    theme = DARK_THEME  # DARK_THEME / LIGHT_THEME
+    theme = LIGHT_THEME  # DARK_THEME / LIGHT_THEME
     progressStyle = ProgressStyle(theme, "sector")  # "sector" / "arc"
     # ~~~~~~~~~~~~~~~~~~~~~~~~
     MindMap(block, theme, progressStyle).start()
@@ -460,7 +460,7 @@ class MindMap:
             width=self.prStyle.arcWidth)
 
     def oval_coords(self, pos: Coord, r):  # r ~ radius
-        return (pos.x-r, pos.y-r, pos.x+r, pos.y+r)
+        return (pos.x - r, pos.y - r, pos.x + r, pos.y + r)
 
     def draw_text(self, block: Block, pos: Coord, r):
         block_txt = block.text + (f"\n{round(block.progress)} %"

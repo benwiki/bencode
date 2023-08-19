@@ -16,7 +16,12 @@ class MyApp extends StatelessWidget {
     const Color backgroundColor = Color.fromARGB(255, 1, 25, 62);
 
     return MaterialApp(
-      title: AppLocalizations.of(context)!.appName,
+      // title: AppLocalizations.of(context)!.appName,
+      onGenerateTitle: (context) {
+        final l10n = AppLocalizations.of(context);
+
+        return l10n!.appName;
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: mainColor,
@@ -33,7 +38,9 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: MyHomePage(title: AppLocalizations.of(context)!.appName),
+      home: Builder(
+          builder: (context) =>
+              MyHomePage(title: AppLocalizations.of(context)!.homeScreenName)),
     );
   }
 }

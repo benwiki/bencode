@@ -8,7 +8,7 @@ class ChantController extends StatefulWidget {
 }
 
 class _ChantControllerState extends State<ChantController> {
-  ChantFile? chantFile;
+  SoundFile? chantFile;
   bool _mantraOn = false;
 
   @override
@@ -24,7 +24,7 @@ class _ChantControllerState extends State<ChantController> {
         child: Column(children: [
           const SizedBox(height: 15),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("Mantra im Hintergrund:", style: textStyle),
+            Text("Mantra:", style: textStyle),
             const SizedBox(width: 15),
             _buildMantraSwitch(context)
           ]),
@@ -40,17 +40,28 @@ class _ChantControllerState extends State<ChantController> {
     return ElevatedButton(
         onPressed: () => setState(() => _mantraOn = !_mantraOn),
         style: ElevatedButton.styleFrom(
-            backgroundColor: _mantraOn ? Colors.green : Colors.red[900],
-            foregroundColor: _mantraOn
-                ? Theme.of(context).colorScheme.primary
-                : Colors.white),
+            backgroundColor: _mantraOn
+                ? Colors.green
+                : const Color.fromARGB(255, 244, 120, 111),
+            foregroundColor:
+                // _mantraOn
+                Theme.of(context).colorScheme.primary
+            // : Colors.white
+            ),
         child: Text(
-          _mantraOn ? "AN" : "AUS",
+          _mantraOn ? "anschalten" : "ausschalten",
           style: const TextStyle(fontSize: 20),
         ));
   }
 }
 
-class ChantFile {
-  ChantFile();
+class SoundFile {
+  SoundFile();
+  String name = "";
+}
+
+class SoundFileManager {
+  List<SoundFile>? soundFiles;
+
+  void load() {}
 }

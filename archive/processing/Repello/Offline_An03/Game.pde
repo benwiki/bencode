@@ -359,9 +359,9 @@ class Game{
   
   void executeReward (Button button) {
     ArrayList<Disk> disks; Disk disk;
-    if (button.type.substring(6, button.type.length()).equals("_gold"))
+    if ( color_of(button.type, "gold") )
       disks = scoreboard.get_score(game.pushout.pmaster).golden_disks;
-    else if (button.type.substring(6, button.type.length()).equals("_silver"))
+    else if ( color_of(button.type, "silver") )
       disks = scoreboard.get_score(game.pushout.pmaster).silver_disks;
     else
       disks = scoreboard.get_score(game.pushout.pmaster).gray_disks;
@@ -378,6 +378,11 @@ class Game{
     
     scoreboard.deactivateRewards();
     game.get_reward = false;
+  }
+  //----------------------------------------------------------------
+
+  boolean color_of(String thing, String col) {
+    return thing.substring(7, thing.length()).equals(col);
   }
   //----------------------------------------------------------------
   

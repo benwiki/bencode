@@ -2,7 +2,7 @@
 String gamemode = "desktop";
 int bx, by, board_w, board_h;
 int sheight, swidth;
-final int startingDiskNum = 1;
+final int startingDiskNum = 3;
 int counter=0;
 
 final int GRAY = 1, SILVER = 2, GOLD = 3;
