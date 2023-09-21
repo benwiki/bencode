@@ -73,9 +73,17 @@ for i, page in enumerate(pages):
         collection[lemmatized] = collection.get(lemmatized, 0) + 1
 
 print(3)
-collection = sorted(list(collection.items()), key=lambda x: x[1], reverse=True)
 
-open('collection.txt', 'w', encoding='utf-8').write(str(collection))
+# with open('collection.txt', 'r', encoding='utf-8') as f:
+    # collection = eval(f.read())
+
+collection = sorted(list(collection.items()), key=lambda x: x[1], reverse=True)
+collection_text = '\n'.join(' '.join(pair) for pair in collection)
+
+with open('words.txt', 'w', encoding='utf-8') as f:
+    f.write(collection_text)
+
+# open('collection.txt', 'w', encoding='utf-8').write(str(collection))
 
 # print(type(obj))
 # pprint.pprint(obj[200:203])
