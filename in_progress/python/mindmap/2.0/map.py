@@ -34,7 +34,7 @@ def run_map(mindmap_text=None):
     # ~~~~~~~~~~~~~~~~~~~~~~~~
     block = convert_to_map(mindmap_text)
     # ~~~~~~~~~~~~~~~~~~~~~~~~
-    theme = LIGHT_THEME  # DARK_THEME / LIGHT_THEME
+    theme = DARK_THEME  # DARK_THEME / LIGHT_THEME
     progressStyle = ProgressStyle(theme, "sector")  # "sector" / "arc"
     # ~~~~~~~~~~~~~~~~~~~~~~~~
     MindMap(block, theme, progressStyle).start()
@@ -304,7 +304,7 @@ class MindMap:
 
         self.reset_position()
         self.draw.delete('all')
-        self.draw_map(self.focused, rotation=self.get_ideal_rotation())
+        self.draw_map(self.focused, rotation=-1/4)
         self.create_font_label()
 
     def reset_position(self):
