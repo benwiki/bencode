@@ -2,3 +2,4 @@
 /.mypy_cache
 /.mypy
 definitions.json
+__pycache__

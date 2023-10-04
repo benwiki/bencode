@@ -13,7 +13,8 @@ gen_times = lambda start, end: [
 ]
 
 # ========== Getting data ===========
-original = """=REGEXREPLACE(REGEXREPLACE(textjoin(" ♦ "; 0; QUERY($B$2:$G; "select B where (D matches '.*<activity>.*' and <daycol> matches '.*<time>.*') label B ''";0) );" ♦ \$";" = \$");" ♦ ";CHAR(10))"""
+# original = r"""=REGEXREPLACE(REGEXREPLACE(textjoin(" ♦ "; 0; QUERY(Answers!$B$2:$G; "select B where (D matches '.*<activity>.*' and <daycol> matches '.*<time>.*') label B ''";0) );" ♦ \$";" = \$");" ♦ ";CHAR(10))"""
+original = r"""=VALUE(REGEXREPLACE(REGEXREPLACE(textjoin(" ♦ "; 0; QUERY(Answers!$B$2:$G; "select count(B) where (D matches '.*<activity>.*' and <daycol> matches '.*<time>.*') label count(B) ''";0) );" ♦ \$";" = \$");" ♦ ";CHAR(10)))"""
 
 activities = ['Programming', 'Singing', 'Dancing', 'Maths', 'Philosophy', 'Language']
 daycols = ('E'*7,'F'*4, 'G'*10)
@@ -21,7 +22,7 @@ daytimes = ((16.5, 20), (17, 19), (15, 20))
 
 add = lambda a, b: a + b
 
-time_data = reduce(add, map(list, [
+time_data: list[tuple[str, str]] = reduce(add, map(list, [
     zip(daycol, gen_times(start, end))
     for daycol, (start, end) in zip(daycols, daytimes)
 ]))
@@ -39,4 +40,4 @@ result = '\n'.join(
     for daycol, time in time_data )
 
 # ========== Storing data ===========
-# open("result.txt", 'w', encoding='utf-8').write(result)
+open("result.txt", 'w', encoding='utf-8').write(result)
