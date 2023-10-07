@@ -1,0 +1,387 @@
+1
+zhõng.guó 2
+kína 11
+1
+rén 2
+ember 10
+1
+mā 2
+anya 10
+1
+má 2
+kender 11
+1
+mă 2
+ló 10
+1
+mà 2
+szidni 10
+1
+cóng 2
+követni 8
+1
+zhòng 2
+tömeg/sok 11
+1
+kôu 2
+száj 11
+1
+tián 0
+mező 7
+1
+yáng 2
+bárány 9
+1
+gôu/quăn 0
+kutya 11
+1
+chóngzi 2
+féreg 12
+2
+dà 2
+nagy 10
+2
+tài 2
+túl 9
+2
+xiăo 2
+kicsi 12
+2
+xiàn 0
+töltelék 9
+2
+qiāo.kè.lì -2
+csoki 11
+2
+niú.ròu -2
+marhahús 12
+2
+dàn.huáng 0
+tojássárgája 10
+3
+xiè.xiè 2
+köszönöm 10
+3
+bù.kè.qî 2
+szívesen 10
+3
+duì.bù.qî -2
+bocsánat 11
+3
+méi.guān.xì 0
+semmi.baj 11
+3
+zài.jiàn 0
+viszlát 11
+3
+shén.me 2
+mi? 11
+3
+hên -2
+nagyon 13
+3
+jiào 0
+hívni 10
+3
+shì 2
+létige 9
+3
+hăo 2
+jó 10
+3
+guó 2
+ország 10
+3
+měi.guó 2
+amerika 11
+3
+dé.guó 2
+németország 11
+3
+xiõng.yá.lì 0
+magyarország 10
+3
+xià 2
+le 9
+3
+shàng 2
+fel 11
+4
+yě 2
+is 11
+4
+máng 2
+elfoglalt 10
+4
+bàba 2
+apa 10
+4
+dõu 2
+mind 11
+4
+bù 2
+nem 12
+4
+nán 0
+hím 10
+4
+péng.you 0
+barát 11
+4
+liàn.xí 0
+gyakorlás 8
+4
+gēge 2
+bátyj 11
+4
+dìdi 2
+öcs 10
+4
+yào 2
+kívánni 10
+4
+kāfēi 2
+kávé 12
+4
+hē 2
+inni 10
+4
+mù 2
+fa 9
+4
+lín 0
+fák 9
+4
+sěn.lín 0
+erdő 11
+4
+huô 2
+tűz 9
+4
+shān 2
+hegy 10
+4
+lì 2
+erő 11
+4
+mén 2
+ajtó 11
+20
+bīng20 9
+beteg 11
+20
+xiàgè 6
+következő 10
+20
+zài 6
+újra 10
+20
+shāngchăng 7
+bevásárlóközpont 11
+20
+chuáng 9
+ágy 10
+20
+shāfā 10
+kanapé 10
+20
+shíjiān 9
+idő 11
+20
+qîng 8
+kérlek 11
+20
+chõutì 10
+szekrény 9
+21
+diăn 2
+óra 11
+21
+fēn 2
+perc 11
+21
+bàn 2
+félóra 10
+21
+xiànzài 0
+most 10
+21
+zăoshàng 2
+hajnal 10
+21
+shàngwû 0
+reggel 10
+21
+zhõngwû 2
+dél 11
+21
+xiàwû 2
+délután 10
+21
+wănshàng 0
+este 9
+21
+è 2
+éhes 9
+21
+kě 2
+szomjas 11
+21
+zhù 2
+lakik 10
+21
+shéi 2
+ki? 11
+21
+ăi 2
+alacsony 11
+21
+qián 2
+...előtt 11
+22
+qîchuáng 2
+felkel 10
+22
+zăofàn 2
+reggeli 10
+22
+wănfàn 2
+vacsora 10
+22
+wûfàn 2
+ebéd 10
+22
+xiūxi 0
+pihen 10
+22
+yùndòng 0
+sportol 9
+22
+păobù 2
+fut 12
+22
+huíjiā -2
+hazamegy 10
+22
+xîzăo 0
+fürdik 9
+22
+shuìjiào -2
+alszik 11
+22
+zuótiān 0
+tegnap 10
+22
+qiántiān 2
+tegnapelőtt 10
+22
+hòutiān 2
+holnapután 11
+22
+jīntiān 2
+ma 11
+22
+míngtiān 2
+holnap 11
+22
+zěnmeyang 2
+hogyan 11
+22
+tiānqì 0
+időjárás 11
+22
+bùcuò 2
+nem.rossz 10
+22
+shēntî -2
+test/egészség 10
+22
+rè 2
+forróság 13
+22
+lěng 2
+hideg 11
+22
+xiàyû 2
+esik 10
+22
+xiàxuě 2
+havazik 11
+22
+yû 0
+eső 10
+22
+xuě 2
+hó 10
+22
+guāfēng -2
+fúj.a.szél 9
+22
+fēng 2
+szél 10
+22
+qíng.tiān -2
+napos.idő 10
+22
+yīn.tiān 2
+felhős.idő 12
+22
+zài.lù.shàng 0
+úton.lenni 10
+23
+zhèshào -2
+legalább 10
+23
+yóuyông -2
+úszik 10
+23
+túshùguán 0
+könyvtár 11
+23
+lûxíng -2
+utazás 10
+23
+zhèxiē 0
+ezek 11
+23
+nàxiē 2
+azok 10
+23
+bīng23 2
+jég 10
+23
+xiāng 2
+doboz 9
+23
+hòu 2
+után 12
+12
+gānbēi 0
+egészségünkre 0
+12
+xīngqī 0
+hét 0
+12
+yínháng 0
+bank 0
+12
+xuéxí 0
+tanul 0
+12
+píjiû 0
+sör 0
+12
+kělè 0
+kóla 0
+12
+dàjiā 0
+mindenki 0
+12
+fă.guó 0
+franciaország 0
+12
+yīng.guó 0
+anglia 0
+12
+hán.guó 0
+dél.korea 0

@@ -1,0 +1,50 @@
+szo:megvéd, védelmez ; pont:0 | szo:verteidigen ; pont:0 ; präteritum:verteidigte ; pp_időbeli_segédige:hat ; pp:verteidigt
+szo:kortárs, korabeli ; pont:0 | szo:zeitgenössisch ; pont:-2
+szo:részben, helyenként ; pont:0 | szo:teilweise ; pont:0
+szo:részben, helyenként (rövidítés) ; pont:0 | szo:tlw. ; pont:-1
+szo:feltételez ; pont:0 | szo:voraussetzen ; pont:-3 ; präteritum:setzte voraus ; pp_időbeli_segédige:hat ; pp:vorausgesetzt
+szo:feltéve, hogy... ; pont:0 | szo:voraussetzen, dass ; pont:0
+szo:fokozatosan, lassacskán ; pont:0 | szo:allmählich ; pont:0
+szo:adott, mindenkori ; pont:0 | szo:jeweilig ; pont:-2
+szo:alkalmas, beleillik ; pont:0 | szo:eignen sich ; pont:-2 ; präteritum:eignete sich ; pp_időbeli_segédige:hat ; pp:sich geeignet
+szo:számos, nagyszámú ; pont:0 | szo:zahlreich ; pont:-1
+szo:vonatkozás, hivatkozás ; pont:0 | szo:Bezug ; pont:3 ; névelő:der ; tbsz:die Bezüge ; gyenge:
+szo:megszerez, hozzájut ; pont:0 | szo:erlangen ; pont:1 ; präteritum:erlangte ; pp_időbeli_segédige:hat ; pp:erlangt
+szo:korlátoz, akadályoz ; pont:0 | szo:beeinträchtigen ; pont:-4 ; präteritum:beeinträchtigte ; pp_időbeli_segédige:hat ; pp:beeinträchtigt
+szo:különleges szabály ; pont:0 | szo:Sonderregel ; pont:4 ; névelő:die ; tbsz:die Sonderregeln ; gyenge:
+szo:teljesítés, megvaósítás, végrehajtás ; pont:0 | szo:Durchführung ; pont:-2 ; névelő:die ; tbsz:die Durchführungen ; gyenge:
+szo:beosztás ; pont:0 | szo:Abstufung ; pont:-1 ; névelő:die ; tbsz:die Abstufungen ; gyenge:
+szo:jegyzet, leirat ; pont:0 | szo:Mitschrift ; pont:4 ; névelő:die ; tbsz:die Mitschriften ; gyenge:
+szo:eredmény ; pont:0 | szo:Ausgang ; pont:-1 ; névelő:der ; tbsz:die Ausgänge ; gyenge:
+szo:háló, rács ; pont:0 | szo:Raster ; pont:-1 ; névelő:das/der ; tbsz:die Rastern ; gyenge:
+szo:jártas, ismerős ; pont:0 | szo:vertraut ; pont:-2
+szo:összesen ; pont:0 | szo:insgesamt ; pont:0
+szo:egészen ; pont:0 | szo:durchaus ; pont:0
+szo:meghatározás, előírás ; pont:0 | szo:Bestimmung ; pont:-2 ; névelő:die ; tbsz:die Bestimmungen ; gyenge:
+szo:közben, ezalatt ; pont:0 | szo:zwischendurch ; pont:-2
+szo:nyitólap, kezdőlap ; pont:0 | szo:Auftaktseite ; pont:-1 ; névelő:die ; tbsz:die Auftaktseiten ; gyenge:
+szo:szakasz, fejezet ; pont:0 | szo:Abschnitt ; pont:-1 ; névelő:der ; tbsz:die Abschnitte ; gyenge:
+szo:összes, teljes, egész ; pont:0 | szo:gesamt ; pont:0
+szo:vicc nélkül ; pont:0 | szo:spaß beiseite ; pont:4
+szo:megvalósít, elvégez ; pont:0 | szo:ausführen ; pont:-1 ; präteritum:führte aus ; pp_időbeli_segédige:hat ; pp:
+szo:magába foglal ; pont:0 | szo:umfassen ; pont:6 ; präteritum:umfasste ; pp_időbeli_segédige:hat ; pp:umfasst
+szo:árnyalt ; pont:0 | szo:differenziert ; pont:0
+szo:fejezet ; pont:0 | szo:Kapitel ; pont:0 ; névelő:das ; tbsz:die Kapitel ; gyenge:
+szo:alap, bázis ; pont:0 | szo:Grundlage ; pont:-1 ; névelő:die ; tbsz:die Grundlagen ; gyenge:
+szo:egymáshoz fűz, egymásután felsorol ; pont:0 | szo:aneinanderreihen ; pont:0 ; präteritum:reihte aneinander ; pp_időbeli_segédige:hat ; pp:aneinandergereiht
+szo:befejez, lezár ; pont:0 | szo:abschließen ; pont:-2 ; präteritum:schloss ab ; pp_időbeli_segédige:hat ; pp:abgeschlossen
+szo:cikk, tanulmány ; pont:0 | szo:Aufsatz ; pont:5 ; névelő:der ; tbsz:die Aufsätze ; gyenge:
+szo:egyben ; pont:0 | szo:am Stück ; pont:-1
+szo:következőképpen ; pont:0 | szo:wie folgt ; pont:0
+szo:következőképpen ; pont:0 | szo:folgendermaßen ; pont:1
+szo:megvalósít ; pont:0 | szo:umsetzen ; pont:0 ; präteritum:setzte um ; pp_időbeli_segédige:hat ; pp:umgesetzt
+szo:intés, utalás ; pont:0 | szo:Verweis ; pont:3 ; névelő:der ; tbsz:die Verweise ; gyenge:
+szo:cél, rendeltetés ; pont:0 | szo:Zweck ; pont:4 ; névelő:der ; tbsz:die Zwecke ; gyenge:
+szo:először is ; pont:0 | szo:zunächst einmal ; pont:2
+szo:utoljára ; pont:0 | szo:letztens ; pont:2
+szo:elgyengül, csökken (figyelem pl.) ; pont:0 | szo:nachlassen ; pont:2 ; präteritum:lasste nach ; pp_időbeli_segédige:hat ; pp:nachgelassen
+szo:képzett, iskolázott ; pont:0 | szo:geschult ; pont:1
+szo:alkalmas vmire! ; pont:0 | szo:in der Lage sein etwas zu machen ; pont:-1
+szo:könnyed(én) ; pont:0 | szo:mühelos ; pont:-1
+szo:feldolgozás, szerkesztés ; pont:0 | szo:Bearbeitung ; pont:-2 ; névelő:die ; tbsz:die Bearbeitungen ; gyenge:
+szo:markáns, lényeges ; pont:0 | szo:markant ; pont:1

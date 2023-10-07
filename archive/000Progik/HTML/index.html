@@ -1,0 +1,61 @@
+<html>
+<head>
+
+<link rel="stylesheet" href="mukodteto.css">
+<link href='https://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet'>
+
+<title>A Benke</title>
+</head>
+
+<body>
+<div id="div1">
+
+<h1>Hello. Mi is az a Benke? Erre térünk ki itt.</h1>
+
+</div>
+<div id = "menuu">
+<ul>
+<p class="fej">Fejezetek:</p>
+<a href = "jeee.html"><li>Természetes élõhelye és környezete</li></a>
+<a href = "jeee.html"><li>Viselkedése</li></a>
+<a href = "jeee.html"><li>Mittomén</li></a>
+</ul>
+</div>
+<script>
+/*var cucc = "0%";
+var i=0;
+document.getElementById("div1").addEventListener("click", Start);
+
+function Start(){
+	document.getElementById("div1").addEventListener("mouseover", Mover);
+}
+function Mover() {
+	if(i < 49){
+		var BDiv = document.getElementById("div1");
+		BDiv.style.paddingTop = cucc;
+		i+=0.5;
+		cucc = ""+i+"%";
+	}
+}*/
+var i = 0;
+var mozg = 10;
+
+var Knebsor = document.getElementById("div1");
+function abc() {
+    if (i > 9){
+		if(i < 15){
+		cucc = ""+mozg+"%";
+        Knebsor.style.paddingTop = cucc;
+		mozg = mozg + 9;
+		}
+		i = i+1;
+    }
+	else{
+		i = i + 1;
+	}
+}
+document.getElementById("div1").addEventListener("click", abc);
+</script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+szo:tartós ; pont:0 | szo:anhaltend ; pont:0
+szo:emelkedés ; pont:0 | szo:Anstieg ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:északi sarkvidék ; pont:0 | szo:Arktis ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:kiterjedés ; pont:0 | szo:Ausbreitung ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:kivált ; pont:0 | szo:auslösen ; pont:0 ; präteritum:löste aus ; pp_időbeli_segédige:hat ; pp:ausgelöst
+szo:kihal ; pont:0 | szo:aussterben ; pont:0 ; präteritum:starb aus ; pp_időbeli_segédige:ist ; pp:ausgestorben
+szo:népi bölcsesség ; pont:0 | szo:Bauernweisheit ; pont:0 ; névelő:die ; tbsz:die Bauernweisheiten ; gyenge:
+szo:Ha a január fehérlik, a nyár biztosan forró lesz ; pont:0 | szo:Ist der Januar hell und weiß, wird der Sommer sicher heiß ; pont:0
+szo:Egy lusta, nyirkos Március minden parasztnak fájcius ; pont:0 | szo:Ein fauler, feuchter März ist jedes Bauern Schmerz ; pont:0
+szo:Ha az április nedves és hideg, annyi rozs nő mint egy erdő ; pont:0 | szo:April nass und kalt, gibt Roggen wie ein Wald ; pont:0
+szo:Májusi eső a földeken, mintha dukátok esnének ; pont:0 | szo:Mairegen auf die Saaten, dann regnet es Dukaten ; pont:0
+szo:Augusztusi szél ha északi, a fecskék még soká jönneki ; pont:0 | szo:Weht im August der Wind aus Nord, ziehen die Schwalben noch lange nicht fort ; pont:0
+szo:Októberi ég ha csillagos, minden tűzhely meleg, szagos ; pont:0 | szo:Oktoberhimmel voll Sterne hat warme Öfen gerne ; pont:0
+szo:Viharos havas decemberben a paraszt juhézik örömében ; pont:0 | szo:Sturm im Dezember und Schnee, da schreit der Bauer jucheh ; pont:0
+szo:fenyeget ; pont:0 | szo:bedrohen ; pont:0 ; präteritum:bedrohte ; pp_időbeli_segédige:hat ; pp:bedroht
+szo:foglalkoztat ; pont:0 | szo:beschäfigten ; pont:0 ; präteritum:beschäftigte ; pp_időbeli_segédige:hat ; pp:beschäftigt
+szo:aszály, szárazság ; pont:0 | szo:Dürre ; pont:0 ; névelő:die ; tbsz:die Dürren ; gyenge:
+szo:rendkívül nagy ; pont:0 | szo:enorm Groß ; pont:0
+szo:földrengés ; pont:0 | szo:Erdbeben ; pont:0 ; névelő:das ; tbsz:die Erdbeben ; gyenge:
+szo:földcsuszamlás ; pont:0 | szo:Erdrutsch ; pont:0 ; névelő:der ; tbsz:die Erdrutsche ; gyenge:
+szo:emelkedik ; pont:0 | szo:erhöhen sich ; pont:0 ; präteritum:erhöhte sich ; pp_időbeli_segédige:hat ; pp:sich erhöht
+szo:áradás, árvíz ; pont:0 | szo:Flut ; pont:0 ; névelő:die ; tbsz:die Fluten ; gyenge:
+szo:követel (életet) ; pont:0 | szo:fordern ; pont:0 ; präteritum:forderte ; pp_időbeli_segédige:hat ; pp:gefordert
+szo:terület ; pont:0 | szo:Gebiet ; pont:0 ; névelő:das ; tbsz:die Gebiete ; gyenge:
+szo:veszély ; pont:0 | szo:Gefahr ; pont:0 ; névelő:die ; tbsz:die Gefahren ; gyenge:
+szo:környék ; pont:0 | szo:Gegend ; pont:0 ; névelő:die ; tbsz:die Gegenden ; gyenge:
+szo:gyakoriság ; pont:0 | szo:Häufigkeit ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:hőség általi halott ; pont:0 | szo:Hitzetote ; pont:0 ; névelő:der ; tbsz:die Hitzetoten ; gyenge:
+szo:árvíz, magas vízállás ; pont:0 | szo:Hochwasser ; pont:0 ; névelő:das ; tbsz:die Hochwasser ; gyenge:
+szo:következtében! ; pont:0 | szo:infole +G ; pont:0
+szo:klimatikus jellemző ; pont:0 | szo:Klimaeigenschaft ; pont:0 ; névelő:die ; tbsz:die Klimaeigenschaften ; gyenge:
+szo:kutató ; pont:0 | szo:Forscher ; pont:0 ; névelő:der ; tbsz:die Forscher ; gyenge:
+szo:klímaváltozás ; pont:0 | szo:Klimawandel ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:tengerpartközeli ; pont:0 | szo:küstennah ; pont:0
+szo:láva ; pont:0 | szo:Lava ; pont:0 ; névelő:die ; tbsz:die Laven ; gyenge:
+szo:teljesítőképesség ; pont:0 | szo:Leistungsfähigkeit ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:tengerszint ; pont:0 | szo:Meerespiegel ; pont:0 ; névelő:der ; tbsz:die Meerespiegel ; gyenge:
+szo:csapadék ; pont:0 | szo:Niederschlag ; pont:0 ; névelő:der ; tbsz:die Niederschläge ; gyenge:
+szo:szúnyog ; pont:0 | szo:Mücke ; pont:0 ; névelő:die ; tbsz:die Mücken ; gyenge:
+szo:növényfaj ; pont:0 | szo:Pflanzenart ; pont:0 ; névelő:die ; tbsz:die Pflanzenarten ; gyenge:
+szo:esőzés ; pont:0 | szo:Regenfall ; pont:0 ; névelő:der ; tbsz:die Regenfälle ; gyenge:
+szo:olvad ; pont:0 | szo:schmelzen ; pont:0 ; präteritum:schmolz ; pp_időbeli_segédige:ist ; pp:geschmolzen
+szo:tengerrengés ; pont:0 | szo:Seebeben ; pont:0 ; névelő:das ; tbsz:die Seebeben ; gyenge:
+szo:település ; pont:0 | szo:Siedlung ; pont:0 ; névelő:die ; tbsz:die Siedlungen ; gyenge:
+szo:hány, köp (vulkán lávát pl.) ; pont:0 | szo:spucken ; pont:0 ; präteritum:spuckte ; pp_időbeli_segédige:hat ; pp:gespuckt
+szo:erősség ; pont:0 | szo:Stärke ; pont:0 ; névelő:die ; tbsz:die Stärken ; gyenge:
+szo:halálos áldozat ; pont:0 | szo:Todesopfer ; pont:0 ; névelő:das ; tbsz:die Todesopfer ; gyenge:
+szo:lép ; pont:0 | szo:treten ; pont:0 ; präteritum:trat ; pp_időbeli_segédige:ist ; pp:getreten
+szo:eláraszt ; pont:0 | szo:überschwemmen ; pont:0 ; präteritum:schwemmte über ; pp_időbeli_segédige:hat ; pp:übergeschwemmt
+szo:beláthatatlan ; pont:0 | szo:unübersehbar ; pont:0
+szo:elterjed ; pont:0 | szo:verbreiten sich ; pont:0 ; präteritum:verbreitete sich ; pp_időbeli_segédige:hat ; pp:sich verbreitet
+szo:megduplázódik ; pont:0 | szo:verdoppeln sich ; pont:0 ; präteritum:verdoppelte sich ; pp_időbeli_segédige:hat ; pp:sich verdoppelt
+szo:eltűnik ; pont:0 | szo:verschwinden ; pont:0 ; präteritum:verschwand ; pp_időbeli_segédige:ist ; pp:verschwunden
+szo:erdőtűz ; pont:0 | szo:Waldbrand ; pont:0 ; névelő:der ; tbsz:die Waldbrände ; gyenge:
+szo:vízszint ; pont:0 | szo:Wasserhöhe ; pont:0 ; névelő:die ; tbsz:die Wasserhöhen ; gyenge:
+szo:sivatag ; pont:0 | szo:Wüste ; pont:0 ; névelő:die ; tbsz:die Wüsten ; gyenge:
+szo:kullancs ; pont:0 | szo:Zecke ; pont:0 ; névelő:die ; tbsz:die Zecken ; gyenge:
+szo:növekszik ; pont:0 | szo:zunehmen ; pont:0 ; präteritum:nahm zu ; pp_időbeli_segédige:hat ; pp:zugenommen

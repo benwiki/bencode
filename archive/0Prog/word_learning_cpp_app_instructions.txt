@@ -1,0 +1,30 @@
+﻿The first section, the numbers is basically a menupoint where you can say out loud the numbers in chinese. 
+You can give the minimum and maximum values to the number (the program generates a random number each time) but be careful, if you type something not numeric, the program will crash.
+The second one is the same as the first, but with date, so you must include nián, yuè and hào (year, month, date's end)
+The third one is the main menupoint. Here you can practice words by translating them. 
+You must upload words manually, you can do this in the first (topics) section, or when you already have created the "words.txt" file, you can edit it with another app for example WPS Office, Polaris Office or Total Commander. 
+And if you want to use different topics, you must upload some as well. You can do this in topics -> upload topics. You can edit this file too ("topics.txt").
+Be aware, that if you want to edit the files, you have to create them first. You can do this by uploading words or topics in the app.
+EDITING WORDS FILE
+If you want to edit words.txt, you must do some things, that the program needs for working. If you write there a word, you must first give the NUMBER of the TOPIC to the first line and press ENTER. Then the CHINESE word and press enter, then the TRANSLATION AND PRESS ENTER! The third enter is very important, because probably you wouldn't do this by yourself at the end of the file.
+An example for the words file:
+0
+Píngguô
+Apple
+1
+Péngyou
+Friend <- ENTER
+(<- an empty line at the end because of the ENTER after Friend)
+EDITING TOPICS FILE
+As in the words file, it's important to have an empty line at the end. You can write the topics you want under each other.
+Example:
+Fruits
+Kitchen
+Nouns
+Verbs
+(<-empty line)
+
+At the words menupoint you find a submenu (the 3.) Reset chinese words file. This is for deleting all the content in your words file. 
+Basically that's all.
+
+

@@ -1,0 +1,47 @@
+szo:szükségeltetik, szüksége van vmire ; pont:0 | szo:benötigen ; pont:0 ; präteritum:benötigte ; pp_időbeli_segédige:hat ; pp:benötigt
+szo:képessé tesz, képesít ; pont:0 | szo:befähigen ; pont:0 ; präteritum:befähigte ; pp_időbeli_segédige:hat ; pp:befähigt
+szo:jegyzetel ; pont:0 | szo:mitschreiben ; pont:0 ; präteritum:schrieb mit ; pp_időbeli_segédige:hat ; pp:mitgeschrieben
+szo:szövegrész ; pont:0 | szo:Textstelle ; pont:0 ; névelő:die ; tbsz:die Textstellen ; gyenge:
+szo:megfelelő(en), alkalmas(an) ; pont:0 | szo:angemessen ; pont:0
+szo:hosszan tartó, hosszútávú ; pont:0 | szo:langfristig ; pont:-1
+szo:megszerez, szert tesz ; pont:0 | szo:erwerben ; pont:-1 ; präteritum:erwarb ; pp_időbeli_segédige:hat ; pp:erworben
+szo:cím, felirat ; pont:0 | szo:Überschrift ; pont:0 ; névelő:die ; tbsz:die Überschriften ; gyenge:
+szo:értesít, tudósít ; pont:0 | szo:verständigen ; pont:-1 ; präteritum:vertändigte ; pp_időbeli_segédige:hat ; pp:verständigt
+szo:megérteti magát ; pont:0 | szo:verständigen sich ; pont:0 ; präteritum:verständigte sich ; pp_időbeli_segédige:hat ; pp:sich verständigt
+szo:fordított(-tva) ; pont:0 | szo:umgekehrt ; pont:0
+szo:fontos, jelentős ; pont:0 | szo:gravierend ; pont:0
+szo:világos, érthető, tiszta ; pont:0 | szo:deutlich ; pont:-1
+szo:mindezek mellett ; pont:0 | szo:aus alledem ; pont:0
+szo:táblázat ; pont:0 | szo:Tabelle ; pont:0 ; névelő:die ; tbsz:die Tabellen ; gyenge:
+szo:társalgás vezetése, irányítása ; pont:0 | szo:Gesprächssteuerung ; pont:-1 ; névelő:die ; tbsz:die Gesprächssteuerungen ; gyenge:
+szo:változatos ; pont:0 | szo:variable ; pont:0
+szo:eltérő ; pont:0 | szo:abweichend ; pont:0
+szo:átalakítás ; pont:0 | szo:Umformung ; pont:0 ; névelő:die ; tbsz:die Umformungen ; gyenge:
+szo:vmire vonatkozóan ; pont:0 | szo:bezogen ; pont:0
+szo:kihangsúlyoz, kiemel ; pont:0 | szo:hervorheben ; pont:0 ; präteritum:hob hervor ; pp_időbeli_segédige:hat ; pp:hervorgehoben
+szo:besorol, szakaszokra oszt ; pont:0 | szo:stufen ; pont:0 ; präteritum:stufte ; pp_időbeli_segédige:hat ; pp:gestuft
+szo:messzemenő(en) ; pont:0 | szo:weitgehend ; pont:0
+szo:előadás ; pont:0 | szo:Vortrag ; pont:-1 ; névelő:der ; tbsz:die Vorträge ; gyenge:
+szo:utánanéz, fellapoz ; pont:0 | szo:nachschlagen ; pont:0 ; präteritum:schlug nach ; pp_időbeli_segédige:hat ; pp:nachgeschlagen
+szo:tanúsít, igazol, bebizonyít ; pont:0 | szo:nachweisen ; pont:0 ; präteritum:wies nach ; pp_időbeli_segédige:hat ; pp:nachgewiesen
+szo:képvisel ; pont:0 | szo:vertreten ; pont:0 ; präteritum:vertrat ; pp_időbeli_segédige:hat ; pp:vertreten
+szo:kialakítás ; pont:0 | szo:Ausgestaltung ; pont:0 ; névelő:die ; tbsz:die Ausgestaltungen ; gyenge:
+szo:mivel (KATI szórend) ; pont:0 | szo:da ; pont:0
+szo:ugyan, mégpedig; habár, jóllehet ; pont:0 | szo:zwar ; pont:0
+szo:társalgás ; pont:0 | szo:Gespräch ; pont:0 ; névelő:das ; tbsz:die Gespräche ; gyenge:
+szo:címszó, kulcsszó ; pont:0 | szo:Stichwort ; pont:-1 ; névelő:das ; tbsz:die Stichworten ; gyenge:
+szo:kommentár, magyarázat, megjegyzés ; pont:0 | szo:Erläuterung ; pont:0 ; névelő:die ; tbsz:die Erläuterungen ; gyenge:
+szo:rászorul, igényel ; pont:0 | szo:bedürfen ; pont:-1 ; präteritum:bedurfte ; pp_időbeli_segédige:hat ; pp:bedurft
+szo:utalás, támpont, útmutató ; pont:0 | szo:Hinweis ; pont:-1 ; névelő:der ; tbsz:die Hinweise ; gyenge:
+szo:nyújt (teljesítményt), teljesít ; pont:0 | szo:erbringen ; pont:0 ; präteritum:erbrachte ; pp_időbeli_segédige:hat ; pp:erbracht
+szo:értékel, minősít ; pont:0 | szo:bewerten ; pont:0 ; präteritum:bewertete ; pp_időbeli_segédige:hat ; pp:bewertet
+szo:némiképp, valamelyest ; pont:0 | szo:einigermaßen ; pont:-1
+szo:kiegyenlít, kiegyensúlyoz, kompenzál ; pont:0 | szo:ausgleichen ; pont:0 ; präteritum:glich aus ; pp_időbeli_segédige:hat ; pp:ausgeglichen
+szo:lényeges, érdemleges, jelentős, veleje vminek ; pont:0 | szo:wesentlich ; pont:1
+szo:tagolódás, felosztás, szerkezet ; pont:0 | szo:Gliederung ; pont:0 ; névelő:die ; tbsz:die Gliederungen ; gyenge:
+szo:szabálysértés ; pont:0 | szo:Verstoß ; pont:0 ; névelő:der ; tbsz:die Verstöße ; gyenge:
+szo:található, előfordul ; pont:0 | szo:vorfinden ; pont:0 ; präteritum:fand vor ; pp_időbeli_segédige:hat ; pp:vorgefunden
+szo:útmutatás ; pont:0 | szo:Anweisung ; pont:-1 ; névelő:die ; tbsz:die Anweisungen ; gyenge:
+szo:követel, kér ; pont:0 | szo:verlangen ; pont:0 ; präteritum:verlangte ; pp_időbeli_segédige:hat ; pp:verlangt
+szo:pontosan az(ok) ; pont:0 | szo:diejenige ; pont:1
+szo:továbbá, ezen túl ; pont:0 | szo:darüber hinaus ; pont:0

@@ -1,0 +1,1240 @@
+C:\Users\sitke\Documents\flutter\flutter\bin\flutter.bat --no-color test --machine test\provider
+Testing started at 21:09 ...
+
+
+
+package:matcher                               fail
+package:mocktail/src/mocktail.dart 459:7      verifyZeroInteractions
+test\provider\list\list_model_test.dart 43:5  main.<fn>
+type 'Null' is not a subtype of type 'Future<Response<dynamic>>'
+test\provider\list\list_model_test.dart 13:7                     MockDio.get
+package:flutter_homework/ui/provider/list/list_model.dart 33:34  ListModel.loadUsers
+test\provider\list\list_model_test.dart 42:11                    main.<fn>
+===== asynchronous gap ===========================
+dart:async                                                       Future._asyncCompleteError
+test\provider\list\list_model_test.dart 42:11                    main.<fn>
+
+No interaction expected, but following found: MockSharedPreferences.getString(loginAccessToken)
+
+
+package:matcher                                fail
+package:mocktail/src/mocktail.dart 459:7       verifyZeroInteractions
+test\provider\list\list_model_test.dart 109:9  main.<fn>.<fn>
+
+No interaction expected, but following found: MockSharedPreferences.getString(loginAccessToken)
+
+package:matcher                                fail
+package:mocktail/src/mocktail.dart 459:7       verifyZeroInteractions
+test\provider\list\list_model_test.dart 109:9  main.<fn>.<fn>
+
+No interaction expected, but following found: MockSharedPreferences.getString(loginAccessToken)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:18:18)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  loadUsers is called on start [1]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following assertion was thrown running a test (but after the test had completed):
+pumpAndSettle timed out
+
+When the exception was thrown, this was the stack:
+#0      WidgetTester.pumpAndSettle.<anonymous closure> (package:flutter_test/src/widget_tester.dart:707:11)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: loadUsers is called on start [1]
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:35:18)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  ProgressIndicator shown in loading state [1]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: ProgressIndicator shown in loading state [1]
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:61:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error state, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:70:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error state, Snackbar is shown with error message
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:61:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error state, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:70:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error state, Snackbar is shown with error message
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:61:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error state, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:70:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error state, Snackbar is shown with error message
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type Dio is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      ListModel.loadUsers (package:flutter_homework/ui/provider/list/list_model.dart:24:28)
+#5      _ListPageProviderState._initializePage (package:flutter_homework/ui/provider/list/list_page.dart:26:21)
+#6      _ListPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:22:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:93:22)
+#25     HttpOverrides.runZoned (dart:_http/overrides.dart:57:26)
+#26     mockNetworkImages (package:mocktail_image_network/src/mocktail_image_network.dart:43:24)
+#27     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:83:23)
+#28     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 9 frames from dart:async and package:stack_trace)
+
+The test description was:
+  List items are shown in loaded state [2]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetSubtypeFinder<Scrollable>:<zero widgets with is "Scrollable" (ignoring offstage
+widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/list/list_page_provider_test.dart:102:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: List items are shown in loaded state [2]
+
+test\provider\login\login_model_test.dart 11:7                     MockDio.post
+package:flutter_homework/ui/provider/login/login_model.dart 31:37  LoginModel.login
+test\provider\login\login_model_test.dart 56:17                    main.<fn>
+
+type 'Null' is not a subtype of type 'Future<Response<dynamic>>'
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:18:18)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  tryAutoLogin is called on page load [1]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:26:11)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: tryAutoLogin is called on page load [1]
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: alpaca@gmail.com, password: password1, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: alpaca@gmail.com, password: password1, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: alpaca@gmail.com, password: password1, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: alpaca@gmail.com, password: password1, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: alpaca@gmail.com, password: password2, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: alpaca@gmail.com, password: password2, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: alpaca@gmail.com, password: password2, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: alpaca@gmail.com, password: password2, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: llama@gmail.com, password: password1, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: llama@gmail.com, password: password1, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: llama@gmail.com, password: password1, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: llama@gmail.com, password: password1, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: llama@gmail.com, password: password2, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: llama@gmail.com, password: password2, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: llama@gmail.com, password: password2, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: llama@gmail.com, password: password2, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: myemail@freemail.hu, password: password1, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: myemail@freemail.hu, password: password1, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: myemail@freemail.hu, password: password1, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: myemail@freemail.hu, password: password1, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: myemail@freemail.hu, password: password2, rememberMe:false)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: myemail@freemail.hu, password: password2, rememberMe:false)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:41:26)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  LoginPage correct field test (email: myemail@freemail.hu, password: password2, rememberMe:true)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls (actually, no calls at all).
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:57:19)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: LoginPage correct field test (email: myemail@freemail.hu, password: password2, rememberMe:true)
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:68:18)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  Fields are disabled in loading state [1]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: <true>
+  Actual: <false>
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:78:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: Fields are disabled in loading state [1]
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:92:18)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On success, page is replaced [1]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+No matching calls. All calls: MockNavigatorObserver.navigator,
+MockNavigatorObserver.didPush(MaterialPageRoute<dynamic>(RouteSettings("/", null), animation:
+AnimationController#9aeb6(⏭ 1.000; paused; for MaterialPageRoute<dynamic>(/))), null)
+(If you called `verify(...).called(0);`, please instead use `verifyNever(...);`.)
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _VerifyCall._checkWith (package:mocktail/src/mocktail.dart:722:7)
+#2      _makeVerify.<anonymous closure> (package:mocktail/src/mocktail.dart:515:18)
+#3      main.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:109:11)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On success, page is replaced [1]
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:127:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:140:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error, Snackbar is shown with error message
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:127:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:140:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error, Snackbar is shown with error message
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: GetIt: Object/factory with type SharedPreferences is not registered inside GetIt.
+(Did you accidentally do GetIt sl=GetIt.instance(); instead of GetIt sl=GetIt.instance;
+Did you forget to register it?)
+
+When the exception was thrown, this was the stack:
+#0      throwIfNot (package:get_it/get_it_impl.dart:12:19)
+#1      _GetItImplementation._findFactoryByNameAndType (package:get_it/get_it_impl.dart:395:5)
+#2      _GetItImplementation.get (package:get_it/get_it_impl.dart:423:29)
+#3      _GetItImplementation.call (package:get_it/get_it_impl.dart:461:12)
+#4      LoginModel.tryAutoLogin (package:flutter_homework/ui/provider/login/login_model.dart:44:56)
+#5      _LoginPageProviderState._initializePage (package:flutter_homework/ui/provider/login/login_page.dart:32:38)
+#6      _LoginPageProviderState.initState.<anonymous closure> (package:flutter_homework/ui/provider/login/login_page.dart:27:59)
+#7      SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1284:15)
+#8      SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1223:9)
+#9      AutomatedTestWidgetsFlutterBinding.pump.<anonymous closure> (package:flutter_test/src/binding.dart:1236:9)
+#12     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#13     AutomatedTestWidgetsFlutterBinding.pump (package:flutter_test/src/binding.dart:1222:27)
+#14     WidgetTester._pumpWidget (package:flutter_test/src/widget_tester.dart:592:20)
+#15     WidgetTester.pumpWidget.<anonymous closure> (package:flutter_test/src/widget_tester.dart:577:14)
+#18     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#19     WidgetTester.pumpWidget (package:flutter_test/src/widget_tester.dart:576:27)
+#20     main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:127:22)
+#21     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:170:29)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+The test description was:
+  On error, Snackbar is shown with error message
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test (but after the test had completed):
+Expected: exactly one matching node in the widget tree
+  Actual: _WidgetTypeFinder:<zero widgets with type "SnackBar" (ignoring offstage widgets)>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expect (package:flutter_test/src/widget_tester.dart:459:16)
+#4      main.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/provider/login/login_page_provider_test.dart:140:9)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: On error, Snackbar is shown with error message
+

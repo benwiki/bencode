@@ -1,0 +1,46 @@
+<html>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.6/p5.js"></script>
+<script>
+let ellipses = [], g=255,cnv,d=0;
+let rad = 50, sx=100, sy=100;
+
+function circle(x, y, r){
+  ellipse(x, y, r, r);
+}
+
+function setup() {
+  cnv = createCanvas(windowWidth*0.5, windowHeight*0.5);
+  cnv.touchStarted(changeGray); // attach listener for
+  // canvas click only
+  for(let i=0; i!=5; i++){
+    ellipses.push([0,0]);
+  }
+}
+
+function draw() {
+  background(g);
+  let elLen = ellipses.length;
+  for(let i=0; i!=elLen; i++){
+    text(touches, 10, 10);
+    let rate = i/elLen;// + touches[0].x / windowWidth*2;
+    if (touches.length != 0) rate = rate + touches[0].x / (windowWidth/2);
+    ellipses[i][0] = sx+Math.cos(rate*2*3.141592)*rad;
+    ellipses[i][1] = sy+Math.sin(rate*2*3.141592)*rad;
+  }
+  for(el of ellipses){
+    ellipse(el[0], el[1], 10, 10);
+  }
+}
+
+// this function fires with any touch anywhere
+function touchStarted() {
+  d = d + 10;
+  //let fs = true;
+  fullscreen(true);
+}
+
+// this function fires only when cnv is clicked
+function changeGray() {
+  g = random(0, 255);
+}
+</script>

@@ -1,0 +1,124 @@
+.left {
+  text-align: right;
+}
+.left .itemActions {
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  bottom: -6px;
+}
+.left ul .item,
+.left ul .item .underline {
+  border-color: red !important;
+}
+.left ul ul .item,
+.left ul ul .item .underline {
+  border-color: green !important;
+}
+.left ul ul ul .item,
+.left ul ul ul .item .underline {
+  border-color: gray !important;
+}
+.left .item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  border-right: solid 2px #00bbff;
+}
+.left .item > ul {
+  order: -1;
+}
+.left .item .underline {
+  position: relative;
+  padding-left: 40px;
+  padding-right: 10px;
+  min-width: 70px;
+  line-height: 2em;
+  border-bottom: solid 2px #00bbff;
+}
+.left .item:first-child > .underline {
+  border-right: solid 2px white !important;
+  right: -2px;
+}
+.left .item:nth-last-child(2) {
+  border-right: 0;
+}
+.left .item:nth-last-child(2) > .underline {
+  border-right: solid 2px #00bbff;
+}
+.right {
+  text-align: left;
+}
+.right .itemActions {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  bottom: -6px;
+}
+.right ul .item,
+.right ul .item .underline {
+  border-color: red !important;
+}
+.right ul ul .item,
+.right ul ul .item .underline {
+  border-color: green !important;
+}
+.right ul ul ul .item,
+.right ul ul ul .item .underline {
+  border-color: gray !important;
+}
+.right .item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border-left: solid 2px #00bbff;
+}
+.right .item .underline {
+  position: relative;
+  padding-left: 10px;
+  padding-right: 40px;
+  min-width: 70px;
+  line-height: 2em;
+  border-bottom: solid 2px #00bbff;
+}
+.right .item:first-child > .underline {
+  border-left: solid 2px white !important;
+  left: -2px;
+  border-radius: 0 !important;
+}
+.right .item:nth-last-child(2) {
+  border-left: 0;
+}
+.right .item:nth-last-child(2) > .underline {
+  border-left: solid 2px #00bbff;
+}
+ul.branch {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.block {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.block:first-child {
+  text-align: right;
+}
+.block:last-child {
+  text-align: left;
+}
+.flex {
+  display: flex;
+  align-items: flex-start;
+}
+.start {
+  text-align: center;
+  line-height: 2em;
+  border-bottom: solid 2px #00bbff;
+}
+.prototype {
+  display: none !important;
+}
+body {
+  padding: 50px;
+}

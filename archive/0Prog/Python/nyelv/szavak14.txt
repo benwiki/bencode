@@ -1,0 +1,35 @@
+szo:létesítmény ; pont:0 | szo:Anlage ; pont:0 ; névelő:die ; tbsz:die Anlagen ; gyenge:
+szo:kifogás ; pont:0 | szo:Ausrede ; pont:0 ; névelő:die ; tbsz:die Ausreden ; gyenge:
+szo:felélénkít ; pont:0 | szo:beleben ; pont:0 ; präteritum:belebte ; pp_időbeli_segédige:hat ; pp:belebt
+szo:deszka ; pont:0 | szo:Brett ; pont:0 ; névelő:das ; tbsz:die Bretter ; gyenge:
+szo:sürgős ; pont:0 | szo:dringend ; pont:0
+szo:eredményez ; pont:0 | szo:ergeben ; pont:-1 ; präteritum:ergab ; pp_időbeli_segédige:hat ; pp:ergegeben
+szo:átél ; pont:0 | szo:erleben ; pont:0 ; präteritum:erlebte ; pp_időbeli_segédige:hat ; pp:erlebt
+szo:megtanul ; pont:0 | szo:erlernen ; pont:0 ; präteritum:erlernte ; pp_időbeli_segédige:hat ; pp:erlernt
+szo:megfullad vízben ; pont:0 | szo:ertrinken ; pont:0 ; präteritum:ertrank ; pp_időbeli_segédige:ist ; pp:ertrunken
+szo:rosszul vagyok ; pont:0 | szo:es ist mir schlecht ; pont:0
+szo:rosszul vagyok ; pont:0 | szo:es schwindelt mir ; pont:0
+szo:ejtőernyő ; pont:0 | szo:Fallschirm ; pont:0 ; névelő:der ; tbsz:die Fallschirme ; gyenge:
+szo:vív ; pont:0 | szo:fechten ; pont:4 ; präteritum:focht ; pp_időbeli_segédige:hat ; pp:gefochten
+szo:támogatás ; pont:0 | szo:Förderung ; pont:0 ; névelő:die ; tbsz:die Förderungen ; gyenge:
+szo:gazdi ; pont:0 | szo:Frauchen ; pont:0 ; névelő:das ; tbsz:die Frauchen ; gyenge:
+szo:gazdi ; pont:0 | szo:Herrchen ; pont:0 ; névelő:der ; tbsz:die Herrchen ; gyenge:
+szo:falmászás ; pont:0 | szo:Freiklettern ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:lenéz (a mélybe) ; pont:0 | szo:hinuntergucken ; pont:0 ; präteritum:guckte hinunter ; pp_időbeli_segédige:hat ; pp:hinuntergeguckt
+szo:TV csatorna ; pont:0 | szo:Sender ; pont:0 ; névelő:der ; tbsz:die Sender ; gyenge:
+szo:egyesület ; pont:0 | szo:Verein ; pont:0 ; névelő:der ; tbsz:die Vereine ; gyenge:
+szo:csatár ; pont:0 | szo:Stürmer ; pont:0 ; névelő:der ; tbsz:die Stürmer ; gyenge:
+szo:gólt lő ; pont:0 | szo:ein Tor schießen ; pont:0 ; präteritum:schoss ; pp_időbeli_segédige:hat ; pp:geschossen
+szo:lépcsőmászás ; pont:0 | szo:Treppensteigen ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:tornacsarnok ; pont:0 | szo:Turnhalle ; pont:4 ; névelő:die ; tbsz:die Turnhallen ; gyenge:
+szo:döntetlen ; pont:0 | szo:unentschieden ; pont:0
+szo:elmegy vmi mellett! ; pont:0 | szo:vorbeigehen an+D ; pont:0 ; präteritum:ging vorbei ; pp_időbeli_segédige:ist ; pp:vorbeigegangen
+szo:helikopter ; pont:0 | szo:Hubschrauber ; pont:-1 ; névelő:der ; tbsz:die Hubschrauber ; gyenge:
+szo:tőke ; pont:0 | szo:Kapital ; pont:0 ; névelő:das ; tbsz:die Kapitale ; gyenge:
+szo:nevetséges ; pont:0 | szo:lächerlich ; pont:0
+szo:bajnokság ; pont:0 | szo:Meisterschaft ; pont:0 ; névelő:die ; tbsz:die Meisterschaften ; gyenge:
+szo:izomláz ; pont:0 | szo:Muskelkater ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:vadvízi evezés ; pont:0 | szo:Rafting ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:mozgólépcső ; pont:0 | szo:Rolltreppe ; pont:0 ; névelő:die ; tbsz:die Rolltreppen ; gyenge:
+szo:evez ; pont:0 | szo:rudern ; pont:-1 ; präteritum:ruderte ; pp_időbeli_segédige:hat/ist ; pp:gerudert
+szo:úszómellény ; pont:0 | szo:Schwimmweste ; pont:0 ; névelő:die ; tbsz:die Schwimmwesten ; gyenge:

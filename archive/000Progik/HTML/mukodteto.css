@@ -1,0 +1,40 @@
+h1 {
+text-align: center;
+font-family: 'Aldrich';
+}
+
+#div1 {
+background-color: lightgreen;
+padding-top: 0px;
+border-radius:20px;
+}
+
+p.fej{
+	padding-left: 5%;
+	font-size: 200%;
+	display: inline;
+	font-family: 'Aldrich';
+}
+
+ul{
+	display: inline;
+	
+}
+
+li {
+	font-family: 'Aldrich';
+	font-size: 1.2em;
+	color: white;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	
+	background-color: lightgreen;
+	
+	display: inline-block;
+	padding: 10px 5px;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+#menuu {
+
+}

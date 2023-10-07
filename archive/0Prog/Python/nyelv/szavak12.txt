@@ -1,0 +1,41 @@
+szo:mód ; pont:0 | szo:Art ; pont:4 ; névelő:die ; tbsz:die Arten ; gyenge:
+szo:faág ; pont:0 | szo:Ast ; pont:2 ; névelő:der ; tbsz:die Äste ; gyenge:
+szo:biztosítás ; pont:0 | szo:Versicherung ; pont:4 ; névelő:die ; tbsz:die Versicherungen ; gyenge:
+szo:igény ; pont:0 | szo:Bedürfnis ; pont:-2 ; névelő:das ; tbsz:die Bedürfnisse ; gyenge:
+szo:kielégít ; pont:0 | szo:befriedigen ; pont:0 ; präteritum:befriedigte ; pp_időbeli_segédige:hat ; pp:befriedigt
+szo:járólap ; pont:0 | szo:Bodelfliese ; pont:0 ; névelő:die ; tbsz:die Bodenfliesen ; gyenge:
+szo:betörés ; pont:0 | szo:Einbruch ; pont:2 ; névelő:der ; tbsz:die Einbrüche ; gyenge:
+szo:begépel ; pont:0 | szo:eintippen ; pont:0 ; präteritum:tippte ein ; pp_időbeli_segédige:hat ; pp:eingetippt
+szo:keletkezik ; pont:0 | szo:entstehen ; pont:-2 ; präteritum:entstand ; pp_időbeli_segédige:ist ; pp:entstanden
+szo:tervez ; pont:0 | szo:entwerfen ; pont:0 ; präteritum:entwarf ; pp_időbeli_segédige:hat ; pp:entworfen
+szo:pénzt vesz le számláról ; pont:0 | szo:Geld vom Konto abheben ; pont:0 ; präteritum:hob ab ; pp_időbeli_segédige:hat ; pp:abgehoben
+szo:bankszámla ; pont:0 | szo:Girokonto ; pont:0 ; névelő:das ; tbsz:die Girokonten ; gyenge:
+szo:főleg ; pont:0 | szo:hauptsächlich ; pont:-1
+szo:sisak ; pont:0 | szo:Helm ; pont:2 ; névelő:der ; tbsz:die Helme ; gyenge:
+szo:ingatlaniroda ; pont:0 | szo:Immobilienbüro ; pont:0 ; névelő:das ; tbsz:die Immobilienbüros ; gyenge:
+szo:igénybe vesz ; pont:0 | szo:in Anspruch nehmen ; pont:0
+szo:feledésbe merül ; pont:0 | szo:in Vergessenheit geraten ; pont:0 ; präteritum:geriet ; pp_időbeli_segédige:hat ; pp:geraten
+szo:bankszámlát nyit ; pont:0 | szo:ein Konto eröffnen ; pont:-1 ; präteritum:eröffnete ; pp_időbeli_segédige:hat ; pp:eröffnet
+szo:számlavezetési díj ; pont:0 | szo:Kontogebühr ; pont:-1 ; névelő:die ; tbsz:die Kontogebühren ; gyenge:
+szo:ügyfélszolgálat ; pont:0 | szo:Kundenservice ; pont:-1 ; névelő:der ; tbsz:die Kundenservices ; gyenge:
+szo:kölcsönzési díj ; pont:0 | szo:Leihgebühr ; pont:2 ; névelő:die ; tbsz:die Leihgebühren ; gyenge:
+szo:fal ; pont:0 | szo:Mauer ; pont:4 ; névelő:die ; tbsz:die Mauern ; gyenge:
+szo:bérlet időtartama ; pont:0 | szo:Mietdauer ; pont:-2 ; névelő:die ; tbsz: ; gyenge:
+szo:percekig ; pont:0 | szo:minutenlang ; pont:2
+szo:köröm ; pont:0 | szo:Nagel ; pont:-1 ; névelő:der ; tbsz:die Nägel ; gyenge:
+szo:újjászületett ; pont:0 | szo:neugeboren ; pont:1
+szo:nylonharisnya ; pont:0 | szo:Nylonstrumpf ; pont:0 ; névelő:der ; tbsz:die Nylonstrümpfe ; gyenge:
+szo:ápolószer ; pont:0 | szo:Pflegemittel ; pont:2 ; névelő:das ; tbsz:die Pflegemittel ; gyenge:
+szo:zippzár ; pont:0 | szo:Reißverschluss ; pont:0 ; névelő:der ; tbsz:die Reißverschlüsse ; gyenge:
+szo:javítás ; pont:0 | szo:Reparatur ; pont:0 ; névelő:die ; tbsz:die Reparaturen ; gyenge:
+szo:kár ; pont:0 | szo:Schaden ; pont:4 ; névelő:der ; tbsz:die Schäden ; gyenge:
+szo:szolgáltató iroda ; pont:0 | szo:Servicebüro ; pont:0 ; névelő:das ; tbsz:die Servicebüros ; gyenge:
+szo:villanyvezeték ; pont:0 | szo:Stromleistung ; pont:-2 ; névelő:die ; tbsz:die Stromleistungen ; gyenge:
+szo:átutal ; pont:0 | szo:überweisen ; pont:0 ; präteritum:wies über ; pp_időbeli_segédige:hat ; pp:überwiesen
+szo:kikölcsönöz ; pont:0 | szo:verleihen ; pont:-1 ; präteritum:verlieh ; pp_időbeli_segédige:hat ; pp:verliehen
+szo:biztosít ; pont:0 | szo:versichern ; pont:0 ; präteritum:versicherte ; pp_időbeli_segédige:hat ; pp:versichert
+szo:kamatot fizetni rá ; pont:0 | szo:verzinsen ; pont:0 ; präteritum:verzinste ; pp_időbeli_segédige:hat ; pp:verzinst
+szo:fordul vkihez ; pont:0 | szo:wenden sich an+A ; pont:-1 ; präteritum:wendete ; pp_időbeli_segédige:hat ; pp:gewendet
+szo:szélvédő ; pont:0 | szo:Windschutzscheibe ; pont:7 ; névelő:die ; tbsz:die Windschutzscheiben ; gyenge:
+szo:összetörik ; pont:0 | szo:zerbrechen ; pont:0 ; präteritum:zerbrach ; pp_időbeli_segédige:hat ; pp:zerbrochen
+szo:végül ; pont:0 | szo:zum Schluss ; pont:-1

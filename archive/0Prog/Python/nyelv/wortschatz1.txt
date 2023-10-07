@@ -1,0 +1,28 @@
+szo:weiter studieren ; pont:0 | szo:das Studium fortsetzen ; pont:2
+szo:zu teuer ; pont:0 | szo:zu kostspielig ; pont:1
+szo:zu teuer ; pont:0 | szo:unerschwinglich ; pont:0
+szo:reiche Studenten ; pont:0 | szo:wohlhabende Studenten ; pont:2
+szo:arme Familien ; pont:0 | szo:bedürftige Familien ; pont:1
+szo:komplizierte Sprachprüfung ; pont:0 | szo:anspruchsvolle Sprachprüfung ; pont:1
+szo:das funktioniert ohne Probleme ; pont:0 | szo:das funktioniert einwandfrei ; pont:0
+szo:es gibt keine moderne Ausstattung ; pont:0 | szo:es mangelt an moderner Ausstattung ; pont:2
+szo:ich brauche das unbedingt ; pont:0 | szo:ich bin darauf angewiesen ; pont:1
+szo:ich habe solide Deutschkenntnisse ; pont:0 | szo:ich verfüge über solide Deutschkenntnisse ; pont:1
+szo:hier gibt es Internet ; pont:0 | szo:hier steht Internet zur Verfügung ; pont:1
+szo:neue Leute kennenlernen ; pont:0 | szo:neue Kontakte knüpfen ; pont:0
+szo:Theorie lernen ; pont:0 | szo:theoretische Kenntnisse erwerben ; pont:-2
+szo:lernen ; pont:0 | szo:sich Kenntnisse aneignen ; pont:-1
+szo:mein Wissen nutzen ; pont:0 | szo:meine Kenntnisse anwenden ; pont:-1
+szo:weiter lernen ; pont:0 | szo:Kenntnisse erweitern und vertiefen ; pont:-1
+szo:es mangelt am Pflegepersonal ; pont:0 | szo:es herrscht Mangen am Pflegepersonal ; pont:-1
+szo:das nötige Geld ; pont:0 | szo:die nötigen finanziellen Mittel ; pont:-3
+szo:Investition ; pont:0 | szo:Geldanlage ; pont:0
+szo:investieren ; pont:0 | szo:Geld anlegen ; pont:3 ; präteritum:legte Geld an ; pp_időbeli_segédige:hat ; pp:Geld angelegt
+szo:teurer werden ; pont:0 | szo:an Wert gewinnen ; pont:3 ; präteritum:gewann an Wert ; pp_időbeli_segédige:hat ; pp:an Wert gewonnen
+szo:Haus ; pont:0 | szo:Immobilie ; pont:4 ; névelő:die ; tbsz:die Immobilien ; gyenge:
+szo:gesamter besitz der finanziellen Wertdarstellt ; pont:0 | szo:Vermögen ; pont:-1 ; névelő:das ; tbsz:die Vermögen ; gyenge:
+szo:sämtlicher finanzieller Besitz vergrößern ; pont:0 | szo:Vermögen aufbauen ; pont:0 ; präteritum:baute Vermögen auf ; pp_időbeli_segédige:hat ; pp:Vermögen aufgebaut
+szo:reich ; pont:0 | szo:vermögend ; pont:0
+szo:magas életszínvonal ; pont:0 | szo:hoher Lebensstandard ; pont:0
+szo:finanzielle Aufwand für lebensnotwendige Dinge ; pont:0 | szo:Lebensunterhalt ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:möglich machen ; pont:0 | szo:ermöglichen ; pont:1

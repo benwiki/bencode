@@ -1,0 +1,32 @@
+szo:lejár ; pont:0 | szo:ablaufen ; pont:0 ; präteritum:lief ab ; pp_időbeli_segédige:ist ; pp:abgelaufen
+szo:éhgyomorra ; pont:0 | szo:auf nüchternen Magen ; pont:-1
+szo:paraszt ; pont:0 | szo:Bauer ; pont:0 ; névelő:der ; tbsz:die Bauern ; gyenge:igen
+szo:megterhel (pl. gyomrot), sújt vmivel! ; pont:0 | szo:belasten mit+D ; pont:0 ; präteritum:belastete ; pp_időbeli_segédige:hat ; pp:belastet
+szo:megszór ; pont:0 | szo:bestreuen ; pont:0 ; präteritum:bestreute ; pp_időbeli_segédige:hat ; pp:bestreut
+szo:vegyszerek ; pont:0 | szo:Chemikalien ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:párol ; pont:0 | szo:dünsten ; pont:0 ; präteritum:dünstete ; pp_időbeli_segédige:hat ; pp:gedünstet
+szo:átsüt ; pont:0 | szo:durchbraten ; pont:0 ; präteritum:briet durch ; pp_időbeli_segédige:hat ; pp:durchgebraten
+szo:fehérje ; pont:0 | szo:Eiweiß ; pont:0 ; névelő:das ; tbsz:die Eiweiße ; gyenge:
+szo:tartalmaz ; pont:0 | szo:enthalten ; pont:0 ; präteritum:enthielt ; pp_időbeli_segédige:hat ; pp:enthalten
+szo:megmarad, megőrződik ; pont:0 | szo:erhalten bleiben ; pont:0 ; präteritum:blieb erhalten ; pp_időbeli_segédige:ist ; pp:erhalten geblieben
+szo:ínyenc ; pont:0 | szo:Feinschmecker ; pont:0 ; névelő:der ; tbsz:die Feinschmecker ; gyenge:
+szo:szárnyas ; pont:0 | szo:Geflügel ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:alapanyag ; pont:0 | szo:Grundstoff ; pont:0 ; névelő:der ; tbsz:die Grundstoffe ; gyenge:
+szo:csirke ; pont:0 | szo:Hähnchen ; pont:0 ; névelő:das ; tbsz:die Hähnchen ; gyenge:
+szo:eltarthatósági idő ; pont:0 | szo:Haltbarkeitsdauer ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:sietős ; pont:0 | szo:hastig ; pont:0
+szo:házikoszt ; pont:0 | szo:Hausmannskost ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:káposzta ; pont:0 | szo:Kraut ; pont:0 ; névelő:das ; tbsz:die Kräuter ; gyenge:
+szo:gyomorpanasz ; pont:0 | szo:Magenbeschwerde ; pont:4 ; névelő:die ; tbsz:die Magenbeschwerden ; gyenge:
+szo:étkezés ; pont:0 | szo:Mahlzeit ; pont:0 ; névelő:die ; tbsz:die Mahlzeiten ; gyenge:
+szo:táplálék ; pont:0 | szo:Nahrung ; pont:0 ; névelő:die ; tbsz:die Nahrungen ; gyenge:
+szo:dió ; pont:0 | szo:Nuss ; pont:4 ; névelő:die ; tbsz:die Nüsse ; gyenge:
+szo:szervezet ; pont:0 | szo:Organismus ; pont:0 ; névelő:der ; tbsz:die Organismen ; gyenge:
+szo:árt vminek! ; pont:0 | szo:schaden D ; pont:0 ; präteritum:schadete ; pp_időbeli_segédige:hat ; pp:geschadet
+szo:zsír ; pont:0 | szo:Schmalz ; pont:0 ; névelő:das ; tbsz:die Schmalze ; gyenge:
+szo:zsír ; pont:0 | szo:Fett ; pont:2 ; névelő:das ; tbsz:die Fette ; gyenge:
+szo:rozs ; pont:0 | szo:Roggen ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:emésztés ; pont:0 | szo:Verdauung ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:búza ; pont:0 | szo:Weizen ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:időt szán vmire!! ; pont:0 | szo:Zeit nehmen sichD für+A ; pont:0 ; präteritum:nahm ; pp_időbeli_segédige:hat ; pp:genommen
+szo:elkészítés ; pont:0 | szo:Zubereitung ; pont:-1 ; névelő:die ; tbsz: ; gyenge:

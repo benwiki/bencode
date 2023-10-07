@@ -1,0 +1,156 @@
+baker’s					pékség (üzlet)
+bargain					alkalmi vétel
+basket					kosár
+bookshop				könyvesbolt
+butcher’s				hentes (üzlet)
+buy on credit				hitelre vásárol
+buy online				online (interneten keresztül) vásárol
+chemist’s				illatszerbolt
+complain				reklamál
+customer				vásárló
+department store			áruház
+discount				árleszállítás
+I’m just looking			Csak körülnézek.
+mall					bevásárló központ
+manager				üzletvezetõ
+newsagent’s				hírlapárus
+pay VAT				ÁFÁ-t fizet
+pharmacy				gyógyszertár, patika
+queue (n)				sor
+receipt					blokk, nyugta
+refund					visszatérítés, az ár visszafizetése
+sales (pl n)				kiárusítás, leárazás
+sell					elad, árusít
+shoe shop				cipõbolt
+shop assistant				bolti eladó
+shop window				kirakat
+shopping centre			bevásárlóközpont
+stationer’s				papír-írószer bolt
+street market				piac
+supermarket				szupermarket
+till (n)					kassza
+travel agent’s				utazási iroda
+trolley					bevásárló kocsi
+try sth on				felpróbál vmit
+branch					ág
+compensation				kártérítés, kárpótlás
+complaint				panasz, reklamáció
+deliver					szállít
+goods (pl n)				áruk
+guarantee				garancia
+in stock				készleten
+laptop (computer)			hordozható számítógép, laptop
+out of date				elavult, lejárt
+staff					személyzet
+argument				érv
+bill					számla
+compensate (for sth)			kárpótol vmiért
+delivery				házhozszállítás
+diagnose (v)				diagnosztizál, meghatároz, megállapít
+luckily					szerencsére, szerencsésen
+order (v)				rendel, megrendel
+outstanding				kiváló, kiemelkedõ
+receptionist				recepciós
+reserve	 (v)				lefoglal
+retailer					kiskereskedõ
+royalty					a királyi család tagja
+satisfactory				kielégítõ, megfelelõ
+service					szolgáltatás
+software				szoftver
+action film				akciófilm
+audience				közönség
+based on				vmi alapján
+cast					szereposztás
+comedy				vígjáték
+direct (v)				rendez
+director				rendezõ
+dub					szinkronizál
+extra					extra
+horror film				horrorfilm
+musical				musical
+on location				külsõ helyszínen (nem stúdióban)
+play the part				eljátszani a szerepet
+plot					cselekmény
+scene					jelenet
+science fiction				sci-fi, tudományos-fantasztikus
+script					forgatókönyv
+sequel					folytatás
+set					díszlet
+shoot a film				filmet forgat
+soundtrack				filmzene
+special effects				speciális effektek
+star					sztár
+subtitles				felirat (filmen)
+thriller					thriller, izgalmas olvasmány
+western				western
+breathtaking				lélegzetelállító
+destroy					elpusztít, lerombol, tönkretesz
+film crew				filmstáb
+film set				forgatási helyszín
+guided tour				vezetett túra, kirándulás
+interpreter				tolmács
+magnificent				nagyszerû, gyönyörû, csodálatos
+nightmare				rémálom
+filmed on location			eredeti helyszínen forgatott
+unforgettable				felejthetetlen
+battlefield				harctér
+courage				bátorság
+destination				úticél
+disaster				katasztrófa
+for instance				például
+guided	(adj)				vezetett, irányított
+impressed (adj)			lenyûgözött
+instruction				utasítás, instrukció
+interpret				tolmácsol
+keep doing sth				folytat vmit
+masterpiece				remekmû, mestermunka
+objective				cél
+pack (v)				csomagol
+rebuild					újjáépít
+replace					kicserél, helyettesít
+scenery				látvány
+sign (v)				aláír
+speech					beszéd
+suitable				alkalmas, megfelelõ
+translate				fordít, lefordít
+trilogy					trilógia
+uninhabited				lakatlan
+choice					választás, választási lehetõség
+hunger					éhség
+insult (n)				sértés
+justice					igazság
+poverty				szegénység
+racist					rasszista, fajgyûlölõ
+raise money				pénzt szerez, gyûjt
+refugee					menekült
+status					státusz
+unbearable				elviselhetetlen
+admire sb				csodál vkit
+alive 					életben lévõ, élõ
+asthma					asztma
+award (n)				díj, jutalom, kitüntetés
+belong					tartozik vhova, vkihez
+dead 					halott, holt
+democratic				demokratikus
+elegant					elegáns
+foundation				alapítvány
+hero					hõs
+honour	(n)				tisztelet
+icon					bálvány
+illness					betegség
+inspire					megihlet, ösztönöz, inspirál
+insult (v)				megsért, sérteget
+law					törvény
+matter (n)				ügy
+medicine				gyógyszer
+nickname				becenév
+otherwise				egyébként
+penny					penny (1/100 font)
+poster					poszter, plakát
+prize					díj, jutalom
+racism					rasszizmus, fajgyûlölet
+sack (v)				kirúg vkit
+star					sztár
+tirelessly				fáradhatatlanul
+vaccinate				beolt
+wonder	 (v)				tûnõdik

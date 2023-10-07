@@ -1,0 +1,34 @@
+szo:kaland ; pont:0 | szo:Abenteuer ; pont:0 ; névelő:das ; tbsz:die Abenteuer ; gyenge:
+szo:átvállal vkitől! vmit! ; pont:0 | szo:abnehmen D A ; pont:0 ; präteritum:nahm ab ; pp_időbeli_segédige:hat ; pp:abgenommen
+szo:tevékenység ; pont:0 | szo:Aktivität ; pont:0 ; névelő:die ; tbsz:die Aktivitäten ; gyenge:
+szo:fedélzeten ; pont:0 | szo:an Bord ; pont:0
+szo:kiköt (hajó) ; pont:0 | szo:anlegen ; pont:0 ; präteritum:legte an ; pp_időbeli_segédige:hat ; pp:angelegt
+szo:próbára tesz ; pont:0 | szo:auf die Probe stellen ; pont:0 ; präteritum:stellte auf die Probe ; pp_időbeli_segédige:hat ; pp:auf die Probe gestellt
+szo:megkérdez valakit! ; pont:0 | szo:befragen A ; pont:0 ; präteritum:befragte ; pp_időbeli_segédige:hat ; pp:befragt
+szo:hegyet mászik ; pont:0 | szo:bergsteigen ; pont:0 ; präteritum:steigte berg ; pp_időbeli_segédige:hat ; pp:berggesteigt
+szo:fedélzet ; pont:0 | szo:Deck ; pont:0 ; névelő:das ; tbsz:die Decks ; gyenge:
+szo:behűt ; pont:0 | szo:einkühlen ; pont:0 ; präteritum:kühlte ein ; pp_időbeli_segédige:hat ; pp:eingekühlt
+szo:vmi! mentén, hosszában ; pont:0 | szo:entlang A ; pont:0
+szo:pihenés ; pont:0 | szo:Entspannung ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:elcsíp ; pont:0 | szo:erwischen ; pont:0 ; präteritum:erwischte ; pp_időbeli_segédige:hat ; pp:erwischt
+szo:szikla ; pont:0 | szo:Fels ; pont:0 ; névelő:der ; tbsz:die Felsen ; gyenge:igen
+szo:ideális esetben ; pont:0 | szo:im Idealfall ; pont:0
+szo:benne foglaltatik ; pont:0 | szo:inbegriffen sein ; pont:0
+szo:belföld ; pont:0 | szo:Inland ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:(fel)mászik ; pont:0 | szo:klettern ; pont:0 ; präteritum:kletterte ; pp_időbeli_segédige:ist ; pp:geklettert
+szo:erő ; pont:0 | szo:Kraft ; pont:0 ; névelő:die ; tbsz:die Kräfte ; gyenge:
+szo:hosszú hajóút ; pont:0 | szo:Kreuzfahrt ; pont:0 ; névelő:die ; tbsz:die Kreuzfahrten ; gyenge:
+szo:táj ; pont:0 | szo:Landschaft ; pont:0 ; névelő:die ; tbsz:die Landschaften ; gyenge:
+szo:csoportos utazás ; pont:0 | szo:Pauschalreise ; pont:0 ; névelő:die ; tbsz:die Pauschalreisen ; gyenge:
+szo:esőerdő ; pont:0 | szo:Regenwald ; pont:0 ; névelő:der ; tbsz:die Regelwälder ; gyenge:
+szo:körös-körül ; pont:0 | szo:ringsherum ; pont:0
+szo:éjjel-nappal ; pont:0 | szo:rund um die Uhr ; pont:0
+szo:síelő ; pont:0 | szo:Skifahrer ; pont:0 ; névelő:der ; tbsz:die Skifahrer ; gyenge:
+szo:sípála ; pont:0 | szo:Skipiste ; pont:0 ; névelő:die ; tbsz:die Skipisten ; gyenge:
+szo:búvárkodik, lemerül ; pont:0 | szo:tauchen ; pont:0 ; präteritum:tauchte ; pp_időbeli_segédige:ist ; pp:getaucht
+szo:pénzt vált ; pont:0 | szo:umtauschen ; pont:0 ; präteritum:tauschte um ; pp_időbeli_segédige:hat ; pp:umgetauscht
+szo:ellátás ; pont:0 | szo:Verpflegung ; pont:0 ; névelő:die ; tbsz:die Verpflegungen ; gyenge:
+szo:teletömött ; pont:0 | szo:vollgestopft ; pont:0
+szo:teljes ellátás ; pont:0 | szo:Vollpension ; pont:0 ; névelő:die ; tbsz:die Vollpensionen ; gyenge:
+szo:előkészületeket tesz ; pont:0 | szo:Vorbereitungen treffen ; pont:0 ; präteritum:traf Vorbereitungen ; pp_időbeli_segédige:hat ; pp:Vorbereitungen getroffen
+szo:oázis ; pont:0 | szo:Oase ; pont:0 ; névelő:die ; tbsz:die Oasen ; gyenge:

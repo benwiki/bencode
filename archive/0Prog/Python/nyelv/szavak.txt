@@ -1,0 +1,166 @@
+szo:örökül hagy ; pont:0 | szo:hinterlassen ; pont:16 ; präteritum:ließ hinter ; pp_időbeli_segédige:hat ; pp:hinterlassen
+szo:mielőtt ; pont:0 | szo:bevor ; pont:15
+szo:illetve ; pont:0 | szo:beziehungsweise ; pont:15
+szo:vagy... vagy... ; pont:0 | szo:entweder... oder... ; pont:15
+szo:hát, persze, bizony ; pont:0 | szo:halt ; pont:13
+szo:azáltal, hogy ; pont:0 | szo:indem ; pont:10
+szo:habár ; pont:0 | szo:obwohl ; pont:15
+szo:mihelyt ; pont:0 | szo:sobald ; pont:13
+szo:úgyhogy ; pont:0 | szo:so dass ; pont:13
+szo:hogyha, amennyiben ; pont:0 | szo:sofern ; pont:6
+szo:ameddig ; pont:0 | szo:solange ; pont:9
+szo:valamint ; pont:0 | szo:sowie ; pont:5
+szo:főleg, mert... ; pont:0 | szo:zumal ; pont:11
+szo:mielőtt ; pont:0 | szo:ehe ; pont:15
+szo:erre vonatkozóan ; pont:0 | szo:hierfür ; pont:10
+szo:minden(féle) ; pont:0 | szo:jeglicher ; pont:17 ; nőnem:jegliche ; semleges nem:jegliches
+szo:semmiféle ; pont:0 | szo:keinerlei ; pont:11
+szo:ugyanaz ; pont:0 | szo:selber ; pont:15 ; nőnem:selbe ; semleges nem:selbes
+szo:mitől, amitől ; pont:0 | szo:wodurch ; pont:7
+szo:miért, amiért ; pont:0 | szo:wofür ; pont:11
+szo:mivel, amivel ; pont:0 | szo:womit ; pont:8
+szo:miután ; pont:0 | szo:wonach ; pont:15
+szo:lefogy ; pont:0 | szo:abnehmen ; pont:15 ; präteritum:nahm ab ; pp_időbeli_segédige:hat ; pp:abgenommen
+szo:újságot járat ; pont:0 | szo:abonnieren ; pont:11
+szo:elment(számítógépen) ; pont:0 | szo:abspeichern ; pont:15 ; präteritum:speicherte ab ; pp_időbeli_segédige:hat ; pp:abgespeichert
+szo:lezár ; pont:0 | szo:absperren ; pont:16 ; präteritum:sperrte ab ; pp_időbeli_segédige:hat ; pp:abgesperrt
+szo:leporol ; pont:0 | szo:abstauben ; pont:16 ; präteritum:staubte ab ; pp_időbeli_segédige:hat ; pp:abgestaubt
+szo:lezuhan ; pont:0 | szo:abstürzen ; pont:17 ; präteritum:stürzte ab ; pp_időbeli_segédige:ist ; pp:abgestürzt
+szo:osztály ; pont:0 | szo:Abteilung ; pont:16 ; névelő:die ; tbsz:die Abteilungen ; gyenge:
+szo:lemos ; pont:0 | szo:abwischen ; pont:17 ; präteritum:wischte ab ; pp_időbeli_segédige:hat ; pp:abgewischt
+szo:rt. ; pont:0 | szo:die AG ; pont:11
+szo:részvénytársaság ; pont:0 | szo:die Aktiengesellschaft ; pont:10
+szo:fasor ; pont:0 | szo:Allee ; pont:16 ; névelő:die ; tbsz:die Alleen ; gyenge:
+szo:öregotthon ; pont:0 | szo:Altersheim ; pont:14 ; névelő:das ; tbsz:die Altersheime ; gyenge:
+szo:a helyedben ; pont:0 | szo:an deiner Stelle ; pont:12
+szo:soron van ; pont:0 | szo:an der Reihe sein ; pont:12
+szo:termeszt ; pont:0 | szo:anbauen ; pont:12 ; präteritum:baute an ; pp_időbeli_segédige:hat ; pp:angebaut
+szo:másrészt ; pont:0 | szo:andererseits ; pont:13
+szo:másfél ; pont:0 | szo:anderthalb ; pont:15
+szo:másfél ; pont:0 | szo:eineinhalb ; pont:15
+szo:elismert ; pont:0 | szo:anerkannt ; pont:9
+szo:lefest ; pont:0 | szo:anstreichen ; pont:16 ; präteritum:strich an ; pp_időbeli_segédige:hat ; pp:angestrichen
+szo:almás rétes ; pont:0 | szo:Apfelstrudel ; pont:15 ; névelő:der ; tbsz:die Apfelstrudel ; gyenge:
+szo:készülék ; pont:0 | szo:Apparat ; pont:16 ; névelő:der ; tbsz:die Apparate ; gyenge:
+szo:apartman ; pont:0 | szo:Appartement ; pont:14 ; névelő:das ; tbsz:die Appartements ; gyenge:
+szo:cikk ; pont:0 | szo:Artikel ; pont:15 ; névelő:der ; tbsz:die Artikel ; gyenge:
+szo:vidéken ; pont:0 | szo:auf dem Land ; pont:11
+szo:előadás ; pont:0 | szo:Aufführung ; pont:16 ; névelő:die ; tbsz:die Aufführungen ; gyenge:
+szo:vmi alapján ; pont:0 | szo:aufgrund +G ; pont:6
+szo:szám ; pont:0 | szo:Anzahl ; pont:16 ; névelő:die ; tbsz:die Anzahlen ; gyenge:
+szo:kihatás ; pont:0 | szo:Auswirkung ; pont:15 ; névelő:die ; tbsz:die Auswirkungen ; gyenge:
+szo:szerint ; pont:0 | szo:laut ; pont:11
+szo:várható élettartam ; pont:0 | szo:die Lebenserwartung ; pont:15
+szo:ellátás ; pont:0 | szo:Versorgung ; pont:7
+szo:építőanyag ; pont:0 | szo:Baumaterial ; pont:16 ; névelő:das ; tbsz:die Baumaterialien ; gyenge:
+szo:figyelembe vesz ; pont:0 | szo:berücksichtigen ; pont:8
+szo:panaszkodik vmire! ; pont:0 | szo:beschweren sich über+A ; pont:11 ; präteritum:beschwerte ; pp_időbeli_segédige:hat ; pp:beschwert
+szo:irodaház ; pont:0 | szo:Bürohaus ; pont:16 ; névelő:das ; tbsz:die Bürohäuser ; gyenge:
+szo:emlékmű ; pont:0 | szo:Denkmal ; pont:16 ; névelő:das ; tbsz:die Denkmäler ; gyenge:
+szo:műemlék ; pont:0 | szo:Baudenkmal ; pont:11 ; névelő:das ; tbsz:die Baudenkmäler ; gyenge:
+szo:megtesz(távot) ; pont:0 | szo:zurücklegen ; pont:15 ; präteritum:zurücklegte ; pp_időbeli_segédige:hat ; pp:zurückgelegt
+szo:kiderül ; pont:0 | szo:sich herausstellen ; pont:6 ; präteritum:stellte sich heraus ; pp_időbeli_segédige:hat ; pp:sich herausgestellt
+szo:telek ; pont:0 | szo:Grundstück ; pont:16 ; névelő:das ; tbsz:die Grundstücke ; gyenge:
+szo:szokás ; pont:0 | szo:Gewohnheit ; pont:18 ; névelő:die ; tbsz:die Gewohnheiten ; gyenge:
+szo:közeli ; pont:0 | szo:nahegelegen ; pont:10
+szo:épület ; pont:0 | szo:Gebäude ; pont:16 ; névelő:das ; tbsz:die Gebäude ; gyenge:
+szo:közös, köz- ; pont:0 | szo:öffentlich ; pont:8
+szo:-ként ; pont:0 | szo:pro ; pont:9
+szo:bűncselekmény ; pont:0 | szo:Straftat ; pont:11 ; névelő:die ; tbsz:die Straftaten ; gyenge:
+szo:part (tó, folyó) ; pont:0 | szo:Ufer ; pont:10 ; névelő:das ; tbsz:die Ufer ; gyenge:
+szo:szennyezni ; pont:0 | szo:belasten ; pont:16 ; präteritum:belastete ; pp_időbeli_segédige:hat ; pp:belastet
+szo:nemrég ; pont:0 | szo:unlängst ; pont:10
+szo:lakótelep ; pont:0 | szo:Wohnsiedlung ; pont:15 ; névelő:die ; tbsz:die Wohnsiedlungen ; gyenge:
+szo:felhőkarcoló ; pont:0 | szo:Wolkenkratzer ; pont:17 ; névelő:der ; tbsz:die Wolkenkratzer ; gyenge:
+szo:rendelkezik vmi felett ; pont:0 | szo:verfügen über+A ; pont:18 ; präteritum:verfügte ; pp_időbeli_segédige:hat ; pp:verfügt
+szo:társalgó, előcsarnok ; pont:0 | szo:Aufenthaltsraum ; pont:15 ; névelő:der ; tbsz:die Aufenthaltsräume ; gyenge:
+szo:felelős lenni vmiért ; pont:0 | szo:zuständig sein für+A ; pont:5
+szo:apróhirdetés ; pont:0 | szo:Anzeige ; pont:14 ; névelő:die ; tbsz:die Anzeigen ; gyenge:
+szo:lift ; pont:0 | szo:Aufzug ; pont:15 ; névelő:der ; tbsz:die Aufzüge ; gyenge:
+szo:állít (átvitt értelemben) ; pont:0 | szo:behaupten ; pont:10 ; präteritum:behauptete ; pp_időbeli_segédige:hat ; pp:behauptet
+szo:tető ; pont:0 | szo:Dach ; pont:10 ; névelő:das ; tbsz:die Dächer ; gyenge:
+szo:tetőtér ; pont:0 | szo:Dachgeschoss ; pont:18 ; névelő:das ; tbsz:die Dachgeschosse ; gyenge:
+szo:átlag ; pont:0 | szo:Durchschnitt ; pont:15 ; névelő:der ; tbsz:die Durchschnitte ; gyenge:
+szo:tulajdonos ; pont:0 | szo:Eigentümer ; pont:15 ; névelő:der ; tbsz:die Eigentümer ; gyenge:
+szo:döntést hoz ; pont:0 | szo:eine Entscheidung treffen ; pont:5
+szo:beköltözik ; pont:0 | szo:einziehen ; pont:16 ; präteritum:zog ein ; pp_időbeli_segédige:ist ; pp:eingezogen
+szo:költözik ; pont:0 | szo:umziehen ; pont:14 ; präteritum:zog um ; pp_időbeli_segédige:ist ; pp:umgezogen
+szo:északi fekvésű ; pont:0 | szo:es hat Nordlage ; pont:7
+szo:eset ; pont:0 | szo:Fall ; pont:16 ; névelő:der ; tbsz:die Fälle ; gyenge:
+szo:folyosó ; pont:0 | szo:Flur ; pont:18 ; névelő:der ; tbsz:die Flure ; gyenge:
+szo:függöny ; pont:0 | szo:Gardine ; pont:14 ; névelő:die ; tbsz:die Gardinen ; gyenge:
+szo:öntöz, önt ; pont:0 | szo:gießen ; pont:12 ; präteritum:goss ; pp_időbeli_segédige:hat ; pp:gegossen
+szo:bérlő ; pont:0 | szo:Mieter ; pont:16 ; névelő:der ; tbsz:die Mieter ; gyenge:
+szo:házavató parti ; pont:0 | szo:Hauseinweihungsparty ; pont:14 ; névelő:die ; tbsz:die Hauseinweihungspartys ; gyenge:
+szo:tűzhely ; pont:0 | szo:Herd ; pont:16 ; névelő:der ; tbsz:die Herde ; gyenge:
+szo:kandalló ; pont:0 | szo:Kamin ; pont:13 ; névelő:der ; tbsz:die Kamine ; gyenge:
+szo:egyet-mást ; pont:0 | szo:manches ; pont:8
+szo:kémény ; pont:0 | szo:Schornstein ; pont:13 ; névelő:der ; tbsz:die Schornsteine ; gyenge:
+szo:szőnyegpadló ; pont:0 | szo:Spannteppich ; pont:16 ; névelő:der ; tbsz:die Spannteppiche ; gyenge:
+szo:emelet ; pont:0 | szo:Stockwerk ; pont:11 ; névelő:das ; tbsz:die Stockwerke ; gyenge:
+szo:osztozik vmin ; pont:0 | szo:teilen sichD +A ; pont:10 ; präteritum:teilte ; pp_időbeli_segédige:hat ; pp:geteilt
+szo:bevakol ; pont:0 | szo:verputzen ; pont:16 ; präteritum:verputzte ; pp_időbeli_segédige:hat ; pp:verputzt
+szo:terület ; pont:0 | szo:Fläche ; pont:16 ; névelő:die ; tbsz:die Flächen ; gyenge:
+szo:kerítés ; pont:0 | szo:Zaun ; pont:12 ; névelő:der ; tbsz:die Zäune ; gyenge:
+szo:lemér ; pont:0 | szo:abwiegen ; pont:15 ; präteritum:wog ab ; pp_időbeli_segédige:hat ; pp:abgewogen
+szo:felvarr ; pont:0 | szo:annähen ; pont:13 ; präteritum:nähte an ; pp_időbeli_segédige:hat ; pp:angenäht
+szo:alkalmaz ; pont:0 | szo:anstellen ; pont:13 ; präteritum:stellte an ; pp_időbeli_segédige:hat ; pp:angestellt
+szo:kitöröl, kimos ; pont:0 | szo:auswischen ; pont:15 ; präteritum:wischte aus ; pp_időbeli_segédige:hat ; pp:ausgewischt
+szo:seprű ; pont:0 | szo:Besen ; pont:12 ; névelő:der ; tbsz:die Besen ; gyenge:
+szo:söpör ; pont:0 | szo:kehren ; pont:16 ; präteritum:kehrte ; pp_időbeli_segédige:hat ; pp:gekehrt
+szo:ellát, gondoz ; pont:0 | szo:betreuen ; pont:7 ; präteritum:betreute ; pp_időbeli_segédige:hat ; pp:betreut
+szo:kivételével ; pont:0 | szo:bis auf+A ; pont:3
+szo:jó magaviseletű ; pont:0 | szo:brav ; pont:9
+szo:konyhamérleg ; pont:0 | szo:Küchenwaage ; pont:14 ; névelő:die ; tbsz:die Küchenwaagen ; gyenge:
+szo:nyomtatvány ; pont:0 | szo:Formular ; pont:16 ; névelő:das ; tbsz:die Formulare ; gyenge:
+szo:szemtelen, pimasz ; pont:0 | szo:frech ; pont:7
+szo:szabadnapja van ; pont:0 | szo:frei haben ; pont:8
+szo:elsősorban ; pont:0 | szo:in erster Linie ; pont:6
+szo:gomb ; pont:0 | szo:Knopf ; pont:8 ; névelő:der ; tbsz:die Knöpfe ; gyenge:
+szo:összehangol vmit vmivel ; pont:0 | szo:vereinbaren A mit+D ; pont:15 ; präteritum:vereinbarte ; pp_időbeli_segédige:hat ; pp:vereinbart
+szo:megállapodik, megegyezik ; pont:0 | szo:vereinbaren ; pont:14 ; präteritum:vereinbarte ; pp_időbeli_segédige:hat ; pp:vereinbart
+szo:szellőztet ; pont:0 | szo:lüften ; pont:18 ; präteritum:lüftete ; pp_időbeli_segédige:hat ; pp:gelüftet
+szo:tű ; pont:0 | szo:Nadel ; pont:12 ; névelő:die ; tbsz:die Nadeln ; gyenge:
+szo:szükség ; pont:0 | szo:Not ; pont:16 ; névelő:die ; tbsz:die Nöte ; gyenge:
+szo:fűnyíró ; pont:0 | szo:Rasenmäher ; pont:12 ; névelő:der ; tbsz:die Rasenmäher ; gyenge:
+szo:elkényeztetett ; pont:0 | szo:verwöhnt ; pont:10
+szo:ellentmond ; pont:0 | szo:widersprechen ; pont:11 ; präteritum:widersprach ; pp_időbeli_segédige:hat ; pp:widersprochen
+szo:hajtogat (pl. papírt) ; pont:0 | szo:falten ; pont:15 ; präteritum:faltete ; pp_időbeli_segédige:hat ; pp:gefaltet
+szo:derűsebbé tesz ; pont:0 | szo:aufhellen ; pont:11 ; präteritum:hellte auf ; pp_időbeli_segédige:hat ; pp:aufgehellt
+szo:őszinte ; pont:0 | szo:aufrichtig ; pont:2
+szo:szerény ; pont:0 | szo:bescheiden ; pont:3
+szo:egykori ; pont:0 | szo:damalig ; pont:4
+szo:kapcsolat ; pont:0 | szo:Beziehung ; pont:10 ; névelő:die ; tbsz:die Beziehungen ; gyenge:
+szo:tulajdonság ; pont:0 | szo:Eigenschaft ; pont:14 ; névelő:die ; tbsz:die Eigenschaften ; gyenge:
+szo:alapít ; pont:0 | szo:gründen ; pont:16 ; präteritum:gründete ; pp_időbeli_segédige:hat ; pp:gegründet
+szo:alak ; pont:0 | szo:Figur ; pont:15 ; névelő:die ; tbsz:die Figuren ; gyenge:
+szo:apróság ; pont:0 | szo:Kleinigkeit ; pont:16 ; névelő:die ; tbsz:die Kleinigkeiten ; gyenge:
+szo:kötelesség ; pont:0 | szo:Pflicht ; pont:9 ; névelő:die ; tbsz:die Pflichten ; gyenge:
+szo:hangulat ; pont:0 | szo:Stimmung ; pont:15 ; névelő:die ; tbsz:die Stimmungen ; gyenge:
+szo:féltékeny ; pont:0 | szo:eifersüchtig ; pont:4
+szo:megfelel valaminek ; pont:0 | szo:entsprechen D ; pont:13 ; präteritum:entsprach ; pp_időbeli_segédige:hat ; pp:entsprochen
+szo:felismer ; pont:0 | szo:erkennen ; pont:12 ; präteritum:erkannte ; pp_időbeli_segédige:hat ; pp:erkannt
+szo:tag ; pont:0 | szo:Mitglied ; pont:9 ; névelő:das ; tbsz:die Mitglieder ; gyenge:
+szo:barátságot köt ; pont:0 | szo:Freundschaft schließen ; pont:1
+szo:képzett, művelt ; pont:0 | szo:gebildet ; pont:3
+szo:lelkiismeretes ; pont:0 | szo:gewissenhaft ; pont:6
+szo:jókedvű ; pont:0 | szo:gutgelaunt ; pont:7
+szo:nyitott, barátkozó ; pont:0 | szo:kontaktfähig ; pont:4
+szo:levelez ; pont:0 | szo:korrespondieren ; pont:11 ; präteritum:korrespondierte ; pp_időbeli_segédige:hat ; pp:korrespondiert
+szo:göndör ; pont:0 | szo:lockig ; pont:8
+szo:molett ; pont:0 | szo:mollig ; pont:2
+szo:hanyag, gondatlan ; pont:0 | szo:nachlässig ; pont:5
+szo:irigy ; pont:0 | szo:neidisch ; pont:7
+szo:mostohaapa ; pont:0 | szo:Stiefvater ; pont:13 ; névelő:der ; tbsz:die Stiefväter ; gyenge:
+szo:számít valakire ; pont:0 | szo:rechnet auf+A ; pont:11 ; präteritum:rechnete ; pp_időbeli_segédige:hat ; pp:gerechnet
+szo:menyasszonyi ruha ; pont:0 | szo:Brautkleid ; pont:12 ; névelő:das ; tbsz:die Brautkleider ; gyenge:
+szo:elválik ; pont:0 | szo:sich scheiden lassen ; pont:2
+szo:karcsú ; pont:0 | szo:schlank ; pont:4
+szo:selymes ; pont:0 | szo:seidig ; pont:7
+szo:magabiztos ; pont:0 | szo:selbstsicher ; pont:5
+szo:veszekszik valakivel ; pont:0 | szo:streiten sich ; pont:5 ; präteritum:stritt sich ; pp_időbeli_segédige:hat ; pp:sich gestritten
+szo:meggyőz ; pont:0 | szo:überzeugen ; pont:14 ; präteritum:überzeugte ; pp_időbeli_segédige:hat ; pp:überzeugt
+szo:hiányol ; pont:0 | szo:vermissen ; pont:4 ; präteritum:vermisste ; pp_időbeli_segédige:hat ; pp:vermisst
+szo:bízik vkiben ; pont:0 | szo:vertrauen +D ; pont:10 ; präteritum:vertraute ; pp_időbeli_segédige:hat ; pp:vertraut
+szo:teltkarcsú ; pont:0 | szo:vollschlank ; pont:6
+szo:lerombol ; pont:0 | szo:zerstören ; pont:12 ; präteritum:zerstörte ; pp_időbeli_segédige:hat ; pp:zerstört

@@ -1,0 +1,118 @@
+C:\Users\sitke\Documents\flutter\flutter\bin\flutter.bat --no-color test --machine test\common
+Testing started at 21:08 ...
+
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: satisfies function
+  Actual: [
+            Instance of 'RequestOptions',
+            Instance of 'RequestOptions',
+            Instance of 'RequestOptions'
+          ]
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/token_test.dart:105:13)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/token_test.dart line 105
+The test description was:
+  Login registers token correctly
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: Login registers token correctly
+
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: satisfies function
+  Actual: [
+            Instance of 'RequestOptions',
+            Instance of 'RequestOptions',
+            Instance of 'RequestOptions'
+          ]
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/token_test.dart:105:13)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/token_test.dart line 105
+The test description was:
+  Login registers token correctly
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: Login registers token correctly
+
+══╡ EXCEPTION CAUGHT BY GESTURE ╞═══════════════════════════════════════════════════════════════════
+The following _TypeError was thrown while handling a gesture:
+type 'Null' is not a subtype of type 'Future<bool>'
+
+When the exception was thrown, this was the stack:
+#0      MockSharedPreferences.remove (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/main_test.dart:13:7)
+#1      ListModel.removeToken (package:flutter_homework/ui/provider/list/list_model.dart:51:23)
+#2      _ListPageProviderState._logout (package:flutter_homework/ui/provider/list/list_page.dart:30:15)
+#3      _ListPageProviderState.build.<anonymous closure> (package:flutter_homework/ui/provider/list/list_page.dart:42:30)
+#4      _InkResponseState.handleTap (package:flutter/src/material/ink_well.dart:1154:21)
+#5      GestureRecognizer.invokeCallback (package:flutter/src/gestures/recognizer.dart:275:24)
+#6      TapGestureRecognizer.handleTapUp (package:flutter/src/gestures/tap.dart:654:11)
+#7      BaseTapGestureRecognizer._checkUp (package:flutter/src/gestures/tap.dart:311:5)
+#8      BaseTapGestureRecognizer.handlePrimaryPointer (package:flutter/src/gestures/tap.dart:244:7)
+#9      PrimaryPointerGestureRecognizer.handleEvent (package:flutter/src/gestures/recognizer.dart:630:9)
+#10     PointerRouter._dispatch (package:flutter/src/gestures/pointer_router.dart:98:12)
+#11     PointerRouter._dispatchEventToRoutes.<anonymous closure> (package:flutter/src/gestures/pointer_router.dart:143:9)
+#12     _LinkedHashMapMixin.forEach (dart:collection-patch/compact_hash.dart:625:13)
+#13     PointerRouter._dispatchEventToRoutes (package:flutter/src/gestures/pointer_router.dart:141:18)
+#14     PointerRouter.route (package:flutter/src/gestures/pointer_router.dart:127:7)
+#15     GestureBinding.handleEvent (package:flutter/src/gestures/binding.dart:465:19)
+#16     GestureBinding.dispatchEvent (package:flutter/src/gestures/binding.dart:445:22)
+#17     RendererBinding.dispatchEvent (package:flutter/src/rendering/binding.dart:331:11)
+#18     GestureBinding._handlePointerEventImmediately (package:flutter/src/gestures/binding.dart:400:7)
+#19     GestureBinding.handlePointerEvent (package:flutter/src/gestures/binding.dart:363:5)
+#20     TestWidgetsFlutterBinding.handlePointerEventForSource.<anonymous closure> (package:flutter_test/src/binding.dart:625:42)
+#21     TestWidgetsFlutterBinding.withPointerEventSource (package:flutter_test/src/binding.dart:635:11)
+#22     TestWidgetsFlutterBinding.handlePointerEventForSource (package:flutter_test/src/binding.dart:625:5)
+#23     WidgetTester.sendEventToBinding.<anonymous closure> (package:flutter_test/src/widget_tester.dart:849:15)
+#26     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#27     WidgetTester.sendEventToBinding (package:flutter_test/src/widget_tester.dart:848:27)
+#28     TestGesture.up.<anonymous closure> (package:flutter_test/src/test_pointer.dart:550:26)
+#31     TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:68:41)
+#32     TestGesture.up (package:flutter_test/src/test_pointer.dart:543:27)
+#33     WidgetController.tapAt.<anonymous closure> (package:flutter_test/src/controller.dart:561:21)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided 5 frames from dart:async and package:stack_trace)
+
+Handler: "onTap"
+Recognizer:
+  TapGestureRecognizer#93a54
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following StateError was thrown running a test:
+Bad state: No element
+
+When the exception was thrown, this was the stack:
+#0      ListIterable.first (dart:_internal/iterable.dart:49:22)
+#1      main.<anonymous closure>.<anonymous closure>.<anonymous closure>.<anonymous closure>.<anonymous closure> (file:///C:/Users/sitke/Documents/flutter/h%C3%A1zi/test/common/main_test.dart:212:34)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+The test description was:
+  Sign out works on ListPage [2]
+════════════════════════════════════════════════════════════════════════════════════════════════════
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following message was thrown:
+Multiple exceptions (2) were detected during the running of the current test, and at least one was
+unexpected.
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Test failed. See exception logs above.
+The test description was: Sign out works on ListPage [2]
+

@@ -1,0 +1,23 @@
+szo:figyelembe vesz ; pont:0 | szo:beachten ; pont:16 ; präteritum:beachtete ; pp_időbeli_segédige:hat ; pp:beachtet
+szo:ismerkedik ; pont:0 | szo:Bekanntschaften machen ; pont:15
+szo:részeg ; pont:0 | szo:Betrunkene ; pont:15 ; névelő:der ; tbsz:die Betrunkenen ; gyenge:
+szo:polgári család ; pont:0 | szo:Bürgerfamilie ; pont:15 ; névelő:die ; tbsz:die Bürgerfamilien ; gyenge:
+szo:ábrázol ; pont:0 | szo:darstellen ; pont:15 ; präteritum:stellte dar ; pp_időbeli_segédige:hat ; pp:dargestellt
+szo:semmi közöm hozzá ; pont:0 | szo:das geht mich nichts an ; pont:15
+szo:regény ; pont:0 | szo:Roman ; pont:18 ; névelő:der ; tbsz:die Romane ; gyenge:
+szo:rendez (filmet) ; pont:0 | szo:inszenieren ; pont:15 ; präteritum:inszenierte ; pp_időbeli_segédige:hat ; pp:inszeniert
+szo:tekepálya ; pont:0 | szo:Kegelbahn ; pont:15 ; névelő:die ; tbsz:die Kegelbahnen ; gyenge:
+szo:mise ; pont:0 | szo:Messe ; pont:15 ; névelő:die ; tbsz:die Messen ; gyenge:
+szo:új erőt merít ; pont:0 | szo:neue Kraft schöpfen ; pont:18 ; präteritum:schöpfte ; pp_időbeli_segédige:hat ; pp:geschöpft
+szo:tisztítószer ; pont:0 | szo:Putzmittel ; pont:15 ; névelő:das ; tbsz:die Putzmittel ; gyenge:
+szo:hülyeség ; pont:0 | szo:Quatsch! ; pont:15
+szo:helyesírás ; pont:0 | szo:Rechtschreibung ; pont:16 ; névelő:die ; tbsz: ; gyenge:
+szo:ponyva ; pont:0 | szo:Schmöker ; pont:15 ; névelő:der ; tbsz:die Schmöker ; gyenge:
+szo:író ; pont:0 | szo:Schriftsteller ; pont:16 ; névelő:der ; tbsz:die Schriftsteller ; gyenge:
+szo:nagyothalló ; pont:0 | szo:schwerhörig ; pont:15
+szo:magába foglal, tartalmaz ; pont:0 | szo:umfassen ; pont:17 ; präteritum:fasste um ; pp_időbeli_segédige:hat ; pp:umgefasst
+szo:előnyben részesít ; pont:0 | szo:vorziehen ; pont:17 ; präteritum:zog vor ; pp_időbeli_segédige:hat ; pp:vorgezogen
+szo:reklámoz vmit ; pont:0 | szo:werben für+A ; pont:15 ; präteritum:warb ; pp_időbeli_segédige:hat ; pp:geworben
+szo:reklám ; pont:0 | szo:Werbung ; pont:16 ; névelő:die ; tbsz:die Werbungen ; gyenge:
+szo:mű ; pont:0 | szo:Werk ; pont:16 ; névelő:das ; tbsz:die Werke ; gyenge:
+szo:TV-t kapcsolgat ; pont:0 | szo:zappen ; pont:16 ; präteritum:zappte ; pp_időbeli_segédige:hat ; pp:gezappt

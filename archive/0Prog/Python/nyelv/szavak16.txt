@@ -1,0 +1,50 @@
+szo:kétütemű motor ; pont:0 | szo:2-Takt-Motor ; pont:0 ; névelő:der ; tbsz:die 2-Takt-Motoren ; gyenge:
+szo:lekanyarodik ; pont:0 | szo:abbiegen ; pont:0 ; präteritum:bog ab ; pp_időbeli_segédige:ist ; pp:abgebogen
+szo:bemond ; pont:0 | szo:ansagen ; pont:0 ; präteritum:sagte an ; pp_időbeli_segédige:hat ; pp:angesagt
+szo:kiszámít, kalkulál ; pont:0 | szo:berechnen ; pont:0 ; präteritum:berechnete ; pp_időbeli_segédige:hat ; pp:berechnet
+szo:gyorsít ; pont:0 | szo:beschleunigen ; pont:0 ; präteritum:beschleunigte ; pp_időbeli_segédige:hat ; pp:beschleunigt
+szo:bádog, pléh ; pont:0 | szo:Blech ; pont:0 ; névelő:das ; tbsz:die Bleche ; gyenge:
+szo:fékez ; pont:0 | szo:bremsen ; pont:0 ; präteritum:bremste ; pp_időbeli_segédige:hat ; pp:gebremst
+szo:Német Szöv. Vasút ; pont:0 | szo:Deutsche Bundesbahn ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:BEkanyarodik ; pont:0 | szo:einbiegen ; pont:0 ; präteritum:bog ein ; pp_időbeli_segédige:ist ; pp:eingebogen
+szo:betartás ; pont:0 | szo:Einhaltung ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:elszenved ; pont:0 | szo:erleiden ; pont:0 ; präteritum:erlitt ; pp_időbeli_segédige:hat ; pp:erlitten
+szo:lehetővé tesz ; pont:0 | szo:ermöglichen ; pont:0 ; präteritum:ermöglichte ; pp_időbeli_segédige:hat ; pp:ermöglicht
+szo:nekihajt valaminek! ; pont:0 | szo:fahren gegen+A ; pont:0 ; präteritum:fuhr ; pp_időbeli_segédige:ist ; pp:gefahren
+szo:utazási kedvezmény ; pont:0 | szo:Fahrpreisermäßigung ; pont:0 ; névelő:die ; tbsz:die Fahrpreisermäßigungen ; gyenge:
+szo:repülés ; pont:0 | szo:Flug ; pont:0 ; névelő:der ; tbsz:die Flüge ; gyenge:
+szo:légiforgalmi menetrend ; pont:0 | szo:Flugplan ; pont:0 ; névelő:der ; tbsz:die Flugpläne ; gyenge:
+szo:gyalogos ; pont:0 | szo:Fußgänger ; pont:0 ; névelő:der ; tbsz:die Fußgänger ; gyenge:
+szo:használt ; pont:0 | szo:gebraucht ; pont:0
+szo:oka valaminek! ; pont:0 | szo:Grund für+A ; pont:0 ; névelő:der ; tbsz:die Gründe ; gyenge:
+szo:kötelező övhasználat ; pont:0 | szo:Gurtpflicht ; pont:0 ; névelő:die ; tbsz:die Gurtpflichten ; gyenge:
+szo:kézipoggyász ; pont:0 | szo:Handgepäck ; pont:0 ; névelő:das ; tbsz:die Handgepäcke ; gyenge:
+szo:segítséget nyújt ; pont:0 | szo:Hilfe leisten ; pont:0 ; präteritum:leistete Hilfe ; pp_időbeli_segédige:hat ; pp:Hilfe geleistet
+szo:ellenőrzés ; pont:0 | szo:Kontrolle ; pont:0 ; névelő:die ; tbsz:die Kontrollen ; gyenge:
+szo:időben ; pont:0 | szo:rechtzeitig ; pont:0
+szo:útirány ; pont:0 | szo:Route ; pont:0 ; névelő:die ; tbsz:die Routen ; gyenge:
+szo:visszatérés ; pont:0 | szo:Rückkehr ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:sínhálózat ; pont:0 | szo:Schienennetz ; pont:0 ; névelő:das ; tbsz:die Schienennetze ; gyenge:
+szo:sérülés ; pont:0 | szo:Verletzung ; pont:0 ; névelő:die ; tbsz:die Verletzungen ; gyenge:
+szo:hang ; pont:0 | szo:Stimme ; pont:0 ; névelő:die ; tbsz:die Stimmen ; gyenge:
+szo:kilométer/óra ; pont:0 | szo:Stundenkilometer ; pont:0 ; névelő:der ; tbsz:die Stundenkilometer ; gyenge:
+szo:többször ; pont:0 | szo:mehrmals ; pont:0
+szo:enyhít ; pont:0 | szo:mildern ; pont:0 ; präteritum:milderte ; pp_időbeli_segédige:hat ; pp:gemildert
+szo:középkorosztály ; pont:0 | szo:mittlere Altersgruppe ; pont:0
+szo:eredeti méret ; pont:0 | szo:Originalgröße ; pont:0 ; névelő:die ; tbsz:die Originalgrößen ; gyenge:
+szo:helyi idő ; pont:0 | szo:Ortszeit ; pont:0 ; névelő:die ; tbsz:die Ortszeiten ; gyenge:
+szo:helyi idő (rövidítés) ; pont:0 | szo:die OZ ; pont:0
+szo:utas ; pont:0 | szo:Passagier ; pont:0 ; névelő:der ; tbsz:die Passagiere ; gyenge:
+szo:személygépkocsi ; pont:0 | szo:Personenkraftwagen ; pont:0 ; névelő:der ; tbsz:die Personenkraftwagen ; gyenge:
+szo:személygépkocsi(rövidítés) ; pont:0 | szo:der PKW ; pont:0
+szo:pihenőhely ; pont:0 | szo:Raststätte ; pont:0 ; névelő:die ; tbsz:die Raststätten ; gyenge:
+szo:elüt ; pont:0 | szo:überfahren ; pont:0 ; präteritum:fuhr über ; pp_időbeli_segédige:hat ; pp:übergefahren
+szo:megelőz ; pont:0 | szo:überholen ; pont:0 ; präteritum:holte über ; pp_időbeli_segédige:hat ; pp:übergeholt
+szo:elkerülőút ; pont:0 | szo:Umgehungsstraße ; pont:0 ; névelő:die ; tbsz:die Umgehungsstraßen ; gyenge:
+szo:életét veszti ; pont:0 | szo:ums Leben kommen ; pont:0 ; präteritum:kam ums Leben ; pp_időbeli_segédige:ist ; pp:ums Leben gekommen
+szo:átállít ; pont:0 | szo:umstellen ; pont:0 ; präteritum:stellte um ; pp_időbeli_segédige:hat ; pp:umgestellt
+szo:tönkretehetetlen ; pont:0 | szo:unkaputtbar ; pont:0
+szo:közlekedési baleset ; pont:0 | szo:Verkehrsunfall ; pont:0 ; névelő:der ; tbsz:die Verkehrsunfälle ; gyenge:
+szo:elöl ; pont:0 | szo:vorne ; pont:0
+szo:előírás ; pont:0 | szo:Vorschrift ; pont:0 ; névelő:die ; tbsz:die Vorschriften ; gyenge:
+szo:összeütközik ; pont:0 | szo:zusammenstoßen ; pont:0 ; präteritum:stieß zusammen ; pp_időbeli_segédige:ist ; pp:zusammengestoßen
