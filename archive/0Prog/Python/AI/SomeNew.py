@@ -9,11 +9,13 @@ r=1
 bigr=30
 db=360
 
-pont=[rajz.create_oval(x+cos(i)*bigr-r, y+sin(i)*bigr-r, x+cos(i)*bigr+r, y+sin(i)*bigr+r, width=r) for i in range(db)]
+oval_coords = lambda x, y, r: (x-r, y-r, x+r, y+r)
+
+pont=[rajz.create_oval(oval_coords(x+cos(i)*bigr, y+sin(i)*bigr, r), width=r) for i in range(db)]
 
 def mozg():
 	for i in range(db):
-		pont[i].configure(x, y, 360, 360)
+		rajz.coords(pont[i], (x, y, 360, 360))
 		
 button=Button(text='mozg', command=mozg)
 button.pack()
