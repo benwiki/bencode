@@ -1,0 +1,23 @@
+{
+    // general
+    "python.analysis.autoImportCompletions": true,
+
+    // pylint
+    "pylint.args": [
+        "--enable=W0614",
+        "--disable=C0114,C0115,C0116"
+    ],
+    
+    // black
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    
+    // isort
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+}

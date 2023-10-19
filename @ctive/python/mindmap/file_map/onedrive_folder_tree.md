@@ -1,4 +1,8 @@
 ```mindmap
+Cucc
+    bucc
+    gucc
+        hucc
 Team IT Ordnerstruktur
     2022 Einführung digitales Büro und Datenbanken.pptx
     2023_02_01 Ideenspeicher.docx 
