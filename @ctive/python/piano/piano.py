@@ -1,9 +1,10 @@
 
 import os
 import time
+from threading import Thread
+
 import pygame as pg
 from pynput import keyboard
-from threading import Thread
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sound_path = '/sounds/'

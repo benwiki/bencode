@@ -9,7 +9,7 @@
     ],
     
     // black
-    "editor.formatOnSave": true,
+    // "editor.formatOnSave": true,
     "editor.defaultFormatter": "ms-python.black-formatter",
     
     // isort
@@ -18,6 +18,6 @@
         "black"
     ],
     "editor.codeActionsOnSave": {
-        "source.organizeImports": true
+        "source.organizeImports": "explicit"
     },
 }

@@ -2,7 +2,7 @@ class GongScreen extends Screen {
   int gongSeconds = 10, gongTime = -10000;
   Button gongSecondsLabel, controlGongButton;
   boolean gongPlaying = false;
-  SoundFile gong;
+  //SoundFile gong;
 
   GongScreen() {
     super();
@@ -10,7 +10,7 @@ class GongScreen extends Screen {
   }
   
   void setup() {
-    gong = new SoundFile(app, "gong_short.wav");
+    //gong = new SoundFile(app, "gong_short.wav");
 
     float buttonRadius = width / 16;
   
@@ -49,7 +49,7 @@ class GongScreen extends Screen {
     buttonManager.run();
     
     if (gongPlaying && millis() - gongTime >= int(gongSecondsLabel.text) * 1000) {
-      gong.play();
+      //gong.play();
       gongTime = millis();
     }
   }

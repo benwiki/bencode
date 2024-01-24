@@ -1,8 +1,8 @@
-from lib2to3.pytree import generate_matches
 import random
 import re
 from time import sleep
 from typing import Optional
+
 import discord
 from discord.ext import commands
 
@@ -11,7 +11,7 @@ Fellow = discord.User | discord.Member
 
 class GameLogic(commands.Cog):
 
-    def __init__(self, client):
+    def __init__(self, client) -> None:
         self.client = client
 
         self.people: dict[Fellow, list[str]] = {}
