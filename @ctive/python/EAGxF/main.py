@@ -6,14 +6,16 @@ from discord.ext import commands
 
 TOKEN_PATH = 'C:/Users/b.hargitai/prog/tokens/eagxf.txt'
 
-client = commands.Bot(command_prefix="..", intents=discord.Intents.all())
+client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
 @client.event
 async def on_ready():
     print("I'm ready. My name is", str(client.user))
 
 async def load_extensions():
-    for filename in os.listdir(r"@ctive\python\EAGxF\cogs"):
+    curdir = __file__.replace('\\', '/')
+    curdir = '/'.join(curdir.split('/')[:-1])
+    for filename in os.listdir(f"{curdir}/cogs"):
         if filename.endswith(".py"):
             # cut off the .py from the file name
             await client.load_extension(f"cogs.{filename[:-3]}")
