@@ -1,6 +1,8 @@
+import asyncio
 import datetime
 from dataclasses import dataclass, field
 from enum import Enum
+import json
 from typing import Callable
 
 import discord
@@ -47,16 +49,50 @@ STATUS_EMOJI: dict[Status, str] = {
 
 @dataclass
 class PlatformUser:
-    id: int
-    date_joined: Date
-    name: str  # max 50 chars
+    id: int = 0
+    date_joined: Date = field(default_factory=lambda: Date(1, 1, 2000))
+    name: str = "?"  # max 50 chars
     title: str = "?"  # max 100 chars
     location: str = "?"
     languages: str = "?"  # comma separated
     questions: dict[str, str] = field(default_factory=dict)
     keywords: str = "?"  # comma separated
-    status: Status = Status.AVAILABLE
+    status: Status = Status.INVISIBLE
+    msg_to_delete: discord.Message | None = None
     change: str = ""
+
+
+class UserSaver:
+    @staticmethod
+    def dumps(user: PlatformUser):
+        return json.dumps(
+            {
+                "id": user.id,
+                "date_joined": str(user.date_joined),
+                "name": user.name,
+                "title": user.title,
+                "location": user.location,
+                "languages": user.languages,
+                "questions": user.questions,
+                "keywords": user.keywords,
+                "status": user.status.value,
+            }
+        )
+
+    @staticmethod
+    def load(user_data: dict):
+        user = PlatformUser()
+        user.id = user_data["id"]
+        d, m, y = map(int, user_data["date_joined"].split("."))
+        user.date_joined = Date(day=d, month=m, year=y)
+        user.name = user_data["name"]
+        user.title = user_data["title"]
+        user.location = user_data["location"]
+        user.languages = user_data["languages"]
+        user.questions = user_data["questions"]
+        user.keywords = user_data["keywords"]
+        user.status = Status(user_data["status"])
+        return user
 
 
 @dataclass
@@ -83,32 +119,34 @@ class Logic(commands.Cog):
     profile = (
         "***=== Your profile ===***"
         "\n\n**Metadata**"
-        "\n- User ID: <id>"
-        "\n- Date Joined: <date_joined>"
+        "\n- *User ID:* <id>"
+        "\n- *Date Joined:* <date_joined>"
         "\n**Personal**"
-        "\n- Name: <name>"
-        "\n- Title: <title>"
-        "\n- Location: <location>"
-        "\n- Languages: <languages>"
+        "\n- *Name:* <name>"
+        "\n- *Title:* <title>"
+        "\n- *Location:* <location>"
+        "\n- *Languages:* <languages>"
         "\n**Questions**"
-        "\nWhere do I need help / what do I want to learn?"
+        "\n*Where do I need help / what do I want to learn?*"
         "\n- <need_help>"
-        "\nWhere can I help / what is my expertise?"
+        "\n*Where can I help / what is my expertise?*"
         "\n- <can_help>"
-        "\nWhat do I trust / recommend?"
+        "\n*What do I trust / recommend?*"
         "\n- <trust_recommend>"
-        "\nWhat am I concerned about / what do I not recommend?"
+        "\n*What am I concerned about / what do I not recommend?*"
         "\n- <concern_not_recommend>"
         "\n**Keywords**: <keywords>"
         "\n**Status**: <status>"
     )
 
-    def __init__(self, client) -> None:
+    def __init__(self, client: discord.Client) -> None:
         self.client = client
         self.channel = None
         self.app_name = "EAGxF"
-        self.users: dict[int, PlatformUser] = {}
-        self.msg_to_delete: discord.Message | None = None
+        self.users: dict[int, PlatformUser] = self.load_users()
+        for user_id in self.users:
+            asyncio.create_task(self.send_starting_message_to(user_id))
+        self.start_messages: list[discord.Message] = []
         self.structures = [
             Structure(
                 id=2,
@@ -248,6 +286,31 @@ class Logic(commands.Cog):
             ),
         ]
         self.init_structures()
+    
+    def load_users(self) -> dict[int, PlatformUser]:
+        path = self.get_file_path()
+        try:
+            with open(f"{path}/users.txt", "r", encoding="utf-8") as file:
+                raw_users: list[dict] = json.loads(file.read())
+                users = [UserSaver.load(user) for user in raw_users]
+                return {user.id: user for user in users}
+        except FileNotFoundError:
+            return {}
+
+    async def save_users(self):
+        path = self.get_file_path()
+        with open(f"{path}/users.txt", "w", encoding="utf-8") as file:
+            users = (UserSaver.dumps(user) for user in self.users.values())
+            users_str = ", ".join(users)
+            file.write(f"[{users_str}]")
+
+    def get_file_path(self):
+        curdir = __file__.replace('\\', '/')
+        return '/'.join(curdir.split('/')[:-1])
+
+    async def send_starting_message_to(self, user_id: int):
+        user = await self.client.fetch_user(user_id)
+        await self.send_structure(user, self.get_structure(2))  # type: ignore
 
     def init_structures(self):
         for structure in self.structures:
@@ -261,31 +324,35 @@ class Logic(commands.Cog):
     def get_structure_callback(self, structure: Structure):
         async def callback(interaction: discord.Interaction):
             await interaction.response.defer()
-            self.register_user(interaction.user)
-            await self.delete_last_msg()
-            view = discord.ui.View()
-            for button in structure.buttons:
-                dc_button: discord.ui.Button = discord.ui.Button(
-                    label=button.label, style=button.style
-                )
-                dc_button.callback = button.callback  # type: ignore
-                view.add_item(dc_button)
-
-            self.msg_to_delete = await interaction.user.send(
-                self.replace_placeholders(structure.message, interaction.user.id),
-                view=view,
-            )
-
-            user_id = interaction.user.id
-            user = self.users[user_id]
-            if structure.changes_property:
-                user.change = structure.changes_property
-
-            if structure.reactions:
-                for emoji in structure.reactions:
-                    await self.msg_to_delete.add_reaction(emoji)
+            await self.send_structure(interaction.user, structure)
 
         return callback
+
+    async def send_structure(
+        self, dc_user: discord.User | discord.Member, structure: Structure
+    ):
+        user = self.register_user(dc_user)
+        await self.delete_last_msg_of(user)
+        view = discord.ui.View()
+        for button in structure.buttons:
+            dc_button: discord.ui.Button = discord.ui.Button(
+                label=button.label, style=button.style
+            )
+            dc_button.callback = button.callback  # type: ignore
+            view.add_item(dc_button)
+
+        user.msg_to_delete = await dc_user.send(
+            self.replace_placeholders(structure.message, dc_user.id),
+            view=view,
+        )
+
+        if structure.changes_property:
+            user.change = structure.changes_property
+
+        if structure.reactions:
+            for emoji in structure.reactions:
+                await user.msg_to_delete.add_reaction(emoji)
+        await self.save_users()
 
     def register_user(self, user: discord.User | discord.Member):
         if user.id not in self.users:
@@ -305,6 +372,7 @@ class Logic(commands.Cog):
                     "concern_not_recommend": "?",
                 },
             )
+        return self.users[user.id]
 
     def get_structure(self, structure_id: int):
         for structure in self.structures:
@@ -331,7 +399,7 @@ class Logic(commands.Cog):
         )
 
     @commands.command(name="b")
-    async def gimmebutton(self, ctx: commands.Context):
+    async def enter(self, ctx: commands.Context):
         """Gives you the starting button."""
         view = discord.ui.View()
         button: discord.ui.Button = discord.ui.Button(
@@ -340,16 +408,27 @@ class Logic(commands.Cog):
         view.add_item(button)
         enter = self.get_structure(2)
         button.callback = self.get_structure_callback(enter)  # type: ignore
-        await ctx.send(
-            "Hello! If you click the button, the bot will DM you"
-            " and you enter the platform!",
-            view=view,
+        self.start_messages.append(
+            await ctx.send(
+                "Hello! If you click the button, the bot will DM you"
+                " and you enter the platform!",
+                view=view,
+            )
         )
+
+    @commands.command(name="stop")
+    async def stop(self, _):
+        """Stops the bot."""
+        for user in self.users.values():
+            await self.delete_last_msg_of(user)
+        for msg in self.start_messages:
+            await msg.delete()
+        await self.client.close()
 
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message):
         user = self.users.get(msg.author.id)
-        if user is None:
+        if user is None or user.change in ["status", ""]:
             return
 
         view = discord.ui.View()
@@ -364,75 +443,77 @@ class Logic(commands.Cog):
         home_btn.callback = self.get_structure_callback(self.get_structure(2))  # type: ignore
         view.add_item(home_btn)
 
+        await self.delete_last_msg_of(user)
+        await msg.add_reaction("✅")
+        user = self.users[msg.author.id]
+
+        changed = user.change
         if user.change in [
-            "name",
-            "title",
-            "location",
-            "languages",
             "need_help",
             "can_help",
             "trust_recommend",
             "concern_not_recommend",
-            "keywords",
         ]:
-            await self.delete_last_msg()
-            await msg.add_reaction("✅")
-            user = self.users[msg.author.id]
+            changed = "answer"
+            user.questions[user.change] = msg.content
+        elif user.change in ["keywords", "languages"]:
+            kws = [kw.strip() for kw in msg.content.split(",")]
+            evenly_spaced_kws = ", ".join(kws)
+            setattr(user, user.change, evenly_spaced_kws)
+        else:
             setattr(user, user.change, msg.content)
 
-            changed = user.change
-            if user.change in [
-                "need_help",
-                "can_help",
-                "trust_recommend",
-                "concern_not_recommend",
-            ]:
-                changed = "answer"
-
-            if user.change in ["keywords", "languages"]:
-                keywords = "\n- ".join(kw.strip() for kw in msg.content.split(","))
-                self.msg_to_delete = await msg.channel.send(
-                    f"✅ Your {changed} have been changed to:\n- {keywords}"
-                    f'\n("{msg.content}")',
-                    view=view,
-                )
-            else:
-                self.msg_to_delete = await msg.channel.send(
-                    f'✅ Your {changed} has been changed to "{msg.content}"!', view=view
-                )
-            user.change = ""
+        if user.change in ["keywords", "languages"]:
+            keywords = "\n- ".join(kws)
+            user.msg_to_delete = await msg.channel.send(
+                f"✅ Your {changed} have been changed to:\n- {keywords}"
+                f'\n("{evenly_spaced_kws}")',
+                view=view,
+            )
+        else:
+            user.msg_to_delete = await msg.channel.send(
+                f'✅ Your {changed} has been changed to "{msg.content}"!', view=view
+            )
+        user.change = ""
+        await self.save_users()
 
     @commands.Cog.listener()
     async def on_reaction_add(
         self, reaction: discord.Reaction, dc_user: discord.User | discord.Member
     ):
-        ok_view = discord.ui.View()
+        view = discord.ui.View()
         ok_btn: discord.ui.Button = discord.ui.Button(
             label="OK", style=discord.ButtonStyle.green
         )
-        ok_view.add_item(ok_btn)
+        view.add_item(ok_btn)
         ok_btn.callback = self.get_structure_callback(self.get_structure(4))  # type: ignore
+        home_btn: discord.ui.Button = discord.ui.Button(
+            label="Home", style=discord.ButtonStyle.secondary
+        )
+        home_btn.callback = self.get_structure_callback(self.get_structure(2))  # type: ignore
+        view.add_item(home_btn)
 
         user = self.users[dc_user.id]
         if (
-            self.msg_to_delete is not None
-            and reaction.message.id == self.msg_to_delete.id
+            user.msg_to_delete is not None
+            and reaction.message.id == user.msg_to_delete.id
         ):
             if user.change == "status":
                 for status, emoji in STATUS_EMOJI.items():
                     if reaction.emoji == emoji:
                         user.status = status
-                        await self.delete_last_msg()
-                        self.msg_to_delete = await reaction.message.channel.send(
+                        await self.delete_last_msg_of(user)
+                        user.msg_to_delete = await reaction.message.channel.send(
                             f"✅ Your status has been changed to {emoji} ({status.value})!",
-                            view=ok_view,
+                            view=view,
                         )
                         user.change = ""
+                        await self.save_users()
 
-    async def delete_last_msg(self):
-        if self.msg_to_delete is not None:
-            await self.msg_to_delete.delete()
-            self.msg_to_delete = None
+    async def delete_last_msg_of(self, user: PlatformUser):
+        if user.msg_to_delete is not None:
+            await user.msg_to_delete.delete()
+            user.msg_to_delete = None
 
     def is_valid_date(self, date: str):
         return (
