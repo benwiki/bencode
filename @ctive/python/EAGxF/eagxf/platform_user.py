@@ -21,5 +21,5 @@ class PlatformUser:
     last_structure: Structure | None = None
     back_to_structure: Structure | None = None
     search_filter: "PlatformUser | None" = None
-    found_users: "list[PlatformUser]" = field(default_factory=list)
+    found_users: "list[int]" = field(default_factory=list)
     change: str = ""

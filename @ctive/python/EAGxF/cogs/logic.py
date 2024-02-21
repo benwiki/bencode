@@ -1,6 +1,5 @@
 import os
 import sys
-from re import U
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -43,8 +42,8 @@ class Logic(commands.Cog):
         await self.send_structure(user, STRUCTURES["home"])  # type: ignore
 
     def init_structures(self):
-        for id, structure in STRUCTURES.items():
-            structure.id = id
+        for structure_id, structure in STRUCTURES.items():
+            structure.id = structure_id
             for button in structure.buttons:
                 to_structure = STRUCTURES[button.takes_to]
                 if to_structure is None:
@@ -154,33 +153,37 @@ class Logic(commands.Cog):
             "\n\n*Answers to ❓Questions:*"
             f"\n🫲 *Need Help:* {u.questions['need_help']}"
             f"\n🫱 *Can Help:* {u.questions['can_help']}"
-            for i, u in enumerate(user.found_users)
+            for i, u in enumerate(map(lambda x: self.users[x], user.found_users))
         )
     
-    def search_users_for(self, search_user: PlatformUser) -> list[PlatformUser]:
+    def search_users_for(self, search_user: PlatformUser) -> list[int]:
         if not search_user.search_filter:
             return []
         return [
-            user for user in self.users.values()
+            user.id for user in self.users.values()
             if (search_user.search_filter.name.lower() in user.name.lower()
                 or search_user.search_filter.name == "?")
             and (search_user.search_filter.title.lower() in user.title.lower()
                 or search_user.search_filter.title == "?")
             and (search_user.search_filter.location.lower() in user.location.lower()
                 or search_user.search_filter.location == "?")
-            and self.any_all(user.languages, search_user.search_filter.languages)
-            and self.any_all(user.keywords, search_user.search_filter.keywords)
+            and self.comma_and_search(
+                user.languages,
+                search_user.search_filter.languages)
+            and self.comma_and_search(
+                user.keywords,
+                search_user.search_filter.keywords)
             and (search_user.search_filter.status == user.status
                 or search_user.search_filter.status == Status.ANY)
-            and self.any_all(
+            and self.comma_and_search(
                 user.questions["need_help"],
                 search_user.search_filter.questions["need_help"])
-            and self.any_all(
+            and self.comma_and_search(
                 user.questions["can_help"],
                 search_user.search_filter.questions["can_help"])
         ]
     
-    def any_all(self, a: str, b: str) -> bool:
+    def comma_and_search(self, a: str, b: str) -> bool:
         return any(all(kw.strip().lower() in a.lower()
                        for kw in block.split("&"))
                    for block in b.split(", ")) or b == "?"
@@ -235,7 +238,11 @@ class Logic(commands.Cog):
             changed = "answer"
             change_user.questions[change] = msg.content
         elif change in ["keywords", "languages"]:
-            kws = [kw.strip() for kw in msg.content.split(",")]
+            kws = [
+                kw.strip().capitalize()
+                    if change == "languages" else
+                kw.strip()
+                for kw in msg.content.split(",")]
             kws = [" & ".join(w.strip() for w in kw.split('&')) for kw in kws]
             evenly_spaced_kws = ", ".join(kws)
             setattr(change_user, change, evenly_spaced_kws)
