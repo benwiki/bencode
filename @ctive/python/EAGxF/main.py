@@ -23,6 +23,6 @@ async def load_extensions():
 async def main():
     async with client:
         await load_extensions()
-        await client.start(open(TOKEN_PATH).read())
+        await client.start(open(TOKEN_PATH).read())  # type: ignore
 
 asyncio.run(main())
