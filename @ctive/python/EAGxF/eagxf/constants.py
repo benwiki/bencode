@@ -3,9 +3,19 @@ from discord import ButtonStyle
 from eagxf.status import Status
 from eagxf.structure import Button, Structure
 
+ADMINS = (
+    348976146689294336,
+    329635441433116674,
+    704237105013850152,
+)
+
 APP_NAME = "EAGxF"
 
-SPACER = f"{APP_NAME}" + "\n" * 50
+SPACER = (
+    f"Welcome to {APP_NAME}!\n\nScroll down "
+    + ":arrow_down: " * 3
+    + "if you see this!" + "\n" * 50
+)
 
 STATUS_EMOJI: dict[Status, str] = {
     Status.AVAILABLE: "🟢",
@@ -16,42 +26,42 @@ STATUS_EMOJI: dict[Status, str] = {
 }
 EMOJI_STATUS = {v: k for k, v in STATUS_EMOJI.items()}
 
-def ANSWERS(search=False):
+def ANSWERS(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
-        "\n*Where do I need help / what do I want to learn?*"
-        f"\n🫲 <{prefix}need_help>"
-        "\n*Where can I help / what is my expertise?*"
-        f"\n🫱 <{prefix}can_help>"
+        "\n***Where do I need help / what do I want to learn?***"
+        f"\n🫲  <{prefix}need_help>"
+        "\n***Where can I help / what is my expertise?***"
+        f"\n🫱  <{prefix}can_help>"
     )
 
-def PROFILE(search=False):  # noqa  # type: ignore
+def PROFILE(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
-        ("***====== Your profile ======***"
-         if not search else
-         "***====== Current filters ======***")
+        ("***====== Current filters ======***"
+         if search else
+         "***====== Your profile ======***")
         # "\n\n**Metadata**"
         # "\n- 🆔 *User ID:* <id>"
         # "\n- 📅 *Date Joined:* <date_joined>"
         + "\n**Personal**"
-        f"\n🔤 *Name:* <{prefix}name>"
-        f"\n🏷️ *Title:* <{prefix}title>"
-        f"\n📍 *Location:* <{prefix}location>"
-        f"\n💬 *Languages:* <{prefix}languages>"
+        f"\n- ***Name:***  <{prefix}name>"
+        f"\n- ***Title:***  <{prefix}title>"
+        f"\n- ***Location:***  <{prefix}location>"
+        f"\n- ***Languages:***  <{prefix}languages>"
         "\n***========================***"
         "\n❓**Questions**"
         f"{ANSWERS(search)}"
         "\n***========================***"
-        f"\n**🔑 Keywords**: <{prefix}keywords>"
-        f"\n**ℹ️ Status**: <{prefix}status>"
+        f"\n- **Keywords:**  <{prefix}keywords>"
+        f"\n- **Status:**  <{prefix}status>"
         "\n***========================***"
         + ("\n\nNumber of results: **<number_of_results>**"
          if search else "")
     )
 
 COMMA_AND_SEPARATED = (
-    "\n\n(Comma and '&' separated, e.g.:"
+    "\n\n( Comma and '&' separated, e.g.:"
     "\n- (A) psychology, Python, electric guitar --> will accept if "
         "AT LEAST ONE of the keywords is present in the profile"
     "\n- (B) psychology & Python & electric guitar --> will accept if "
@@ -65,10 +75,10 @@ COMMA_AND_SEPARATED = (
     "\n**Profile 3:**  psychology, Python, electric guitar"
     "\n\n- (A) will accept all 3 profiles"
     "\n- (B) will only accept Profile 3"
-    "\n- (C) will accept Profile 2 and Profile 3"
+    "\n- (C) will accept Profile 2 and Profile 3 )"
 )
 COMMA_AND_SEPARATED_LANGUAGES = (
-    "\n\n(Comma and '&' separated, e.g.:"
+    "\n\n( Comma and '&' separated, e.g.:"
     "\n- (A) English, German, Spanish --> will accept if "
         "AT LEAST ONE of the languages is present in the profile"
     "\n- (B) English & German & Spanish --> will accept if "
@@ -82,7 +92,7 @@ COMMA_AND_SEPARATED_LANGUAGES = (
     "\n**Profile 3:**  English, German, Spanish, French"
     "\n\n- (A) will accept all 3 profiles"
     "\n- (B) will only accept Profile 3"
-    "\n- (C) will accept Profile 2 and Profile 3"
+    "\n- (C) will accept Profile 2 and Profile 3 )"
 )
 
 STRUCTURES = {
@@ -103,26 +113,29 @@ STRUCTURES = {
         ],
     ),
     "edit_profile": Structure(
-        message=PROFILE() + "\n\n✏️ **Editing Profile**" "\nWhat do you want to change?",
+        message=PROFILE() + "\n\n✏️ **Editing Profile**"
+        "\nWhat do you want to change?"
+        "<conditional_status_warning>",
         buttons=[
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="profile"),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
-            Button(label="🔤 Name", takes_to="edit_name", row=1),
-            Button(label="🏷️ Title", takes_to="edit_title", row=1),
-            Button(label="📍 Location", takes_to="edit_location", row=2),
-            Button(label="💬 Languages", takes_to="edit_languages", row=2),
+            Button(label="🔤 Name", takes_to="edit_name"),
+            Button(label="🏷️ Title", takes_to="edit_title"),
+            Button(label="📍 Location", takes_to="edit_location", row=1),
+            Button(label="💬 Languages", takes_to="edit_languages", row=1),
             Button(
                 label="Answers to ❓Questions",
                 takes_to="edit_answers",
-                row=3,
+                row=2,
             ),
-            Button(label="🔑 Keywords", takes_to="edit_keywords", row=4),
+            Button(label="🔑 Keywords", takes_to="edit_keywords", row=3),
             Button(
                 label="Status",
                 takes_to="edit_status",
                 emoji=discord.PartialEmoji(name="ℹ️"),
-                row=4,
+                condition="profile_complete",
+                row=3,
             ),
+            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="profile", row=4),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=4),
         ],
     ),
     "edit_name": Structure(
@@ -152,9 +165,10 @@ STRUCTURES = {
         f"\n{ANSWERS()}"
         "\n\nWhat do you want to change?",
         buttons=[
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="edit_profile"),
             Button(label="🫲 Need Help", takes_to="edit_need_help"),
             Button(label="🫱 Can Help", takes_to="edit_can_help"),
+            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="edit_profile", row=1),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
     "edit_keywords": Structure(
@@ -191,16 +205,21 @@ STRUCTURES = {
         f"{PROFILE(search=True)}"
         "\n\nClick the buttons to change the filters!",
         buttons=[
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="home"),
-            Button(label="SHOW RESULTS", style=ButtonStyle.green, takes_to="show_results"),
-            Button(label="🔤 Name", takes_to="search_name", row=1),
-            Button(label="🏷️ Title", takes_to="search_title", row=1),
-            Button(label="📍 Location", takes_to="search_location", row=2),
-            Button(label="💬 Languages", takes_to="search_languages", row=2),
-            Button(label="🫲 Need Help", takes_to="search_need_help", row=3),
-            Button(label="🫱 Can Help", takes_to="search_can_help", row=3),
-            Button(label="🔑 Keywords", takes_to="search_keywords", row=4),
-            Button(label="Status", takes_to="search_status", row=4, emoji=discord.PartialEmoji(name="ℹ️")),
+            Button(label="🔤 Name", takes_to="search_name"),
+            Button(label="🏷️ Title", takes_to="search_title"),
+            Button(label="📍 Location", takes_to="search_location", row=1),
+            Button(label="💬 Languages", takes_to="search_languages", row=1),
+            Button(label="🫲 Need Help", takes_to="search_need_help", row=2),
+            Button(label="🫱 Can Help", takes_to="search_can_help", row=2),
+            Button(label="🔑 Keywords", takes_to="search_keywords", row=3),
+            Button(
+                label="Status",
+                takes_to="search_status",
+                emoji=discord.PartialEmoji(name="ℹ️"),
+                row=3,
+            ),
+            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="home", row=4),
+            Button(label="SHOW RESULTS", style=ButtonStyle.green, takes_to="show_results", row=4),
         ],
     ),
     "search_name": Structure(
@@ -263,9 +282,9 @@ STRUCTURES = {
         f"{PROFILE(search=True)}"
         "\n\n**Results:**\n\n<search_results>",
         buttons=[
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="search"),
             Button(label="🔍 Search again", style=ButtonStyle.green, takes_to="show_results"),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
+            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="search", row=1),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
 }

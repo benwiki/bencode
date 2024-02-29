@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands
 
-TOKEN_PATH = 'C:/Users/b.hargitai/prog/tokens/eagxf.txt'
+TOKEN_PATH = '/Users/benke/Downloads/eagxf.txt'
 
 client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
