@@ -11,3 +11,4 @@ class Structure:
     reactions: list[str] = field(default_factory=list)
     changes_property: str | None = None
     comma_separated: bool = False
+    condition: str = ""

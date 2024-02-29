@@ -12,7 +12,14 @@ from discord import ButtonStyle
 from discord.ext import commands
 from discord.ui import Button as DCButton
 from discord.ui import View as DCView
-from eagxf.constants import ADMINS, EMOJI_STATUS, SPACER, STATUS_EMOJI, STRUCTURES
+from eagxf.constants import (
+    ADMINS,
+    EMOJI_STATUS,
+    NUM_NAME,
+    SPACER,
+    STATUS_EMOJI,
+    STRUCTURES,
+)
 from eagxf.date import Date
 from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
@@ -26,15 +33,12 @@ class Logic(commands.Cog):
     def __init__(self, client: discord.Client) -> None:
         self.client = client
         self.channel = None
+        self.users_path = self.init_users_path()
         self.users: dict[int, PlatformUser] = self.load_users()
         for user_id in self.users:
             asyncio.create_task(self.send_starting_message_to(user_id))
         self.init_structures()
         self.init_other_stuff()
-
-    def get_file_path(self):
-        curdir = __file__.replace("\\", "/")
-        return "/".join(curdir.split("/")[:-6])
 
     async def send_starting_message_to(self, user_id: int):
         user = await self.client.fetch_user(user_id)
@@ -57,62 +61,61 @@ class Logic(commands.Cog):
         async def callback(interaction: discord.Interaction):
             await interaction.response.defer()
             await self.send_structure(interaction.user, structure)
-
         return callback
 
     async def send_structure(
         self, dc_user: discord.User | discord.Member, structure: Structure
     ):
-        user = self.register_user(dc_user)
+        user = self.users[dc_user.id]
         user.back_to_structure = user.last_structure
-        await self.delete_entry_msg_of(user)
 
         if structure.id in ["search", "show_results"]:
             user.found_users = self.search_users_for(user)
 
-        view = DCView()
-        for button in structure.buttons:
-            if button.condition:
-                if not self.condition_true_for(button.condition, user):
-                    continue
-            view.add_item(button)
-
-        message = self.replace_placeholders(structure.message, dc_user.id)
-        if user.last_message:
-            await user.last_message.edit(content=SPACER + message, view=view)
+        if (structure.condition and
+        not self.condition_true_for(structure.condition, user)):
+            view = self.get_ok_view_for(user)
+            message = self.get_condition_message(structure.condition)
+            reactions = False
         else:
-            user.last_message = await dc_user.send(SPACER + message, view=view)
+            view = DCView()
+            for button in structure.buttons:
+                view.add_item(button)
+            message = self.replace_placeholders(structure.message, dc_user.id)
+            reactions = True
+
+        if user.last_msg:
+            await user.last_msg.edit(content=SPACER + message, view=view)
+        else:
+            user.last_msg = await dc_user.send(SPACER + message, view=view)
         user.last_structure = structure
 
         if structure.changes_property:
             user.change = structure.changes_property
 
-        if structure.reactions:
+        if reactions and structure.reactions:
             for emoji in structure.reactions:
-                await user.last_message.add_reaction(emoji)
-        self.save_users()
+                await user.last_msg.add_reaction(emoji)
 
     def register_user(self, user: discord.User | discord.Member):
-        if user.id not in self.users:
-            current = datetime.datetime.now()
-            self.users[user.id] = PlatformUser(
-                id=user.id,
-                date_joined=Date(
-                    day=current.day,
-                    month=current.month,
-                    year=current.year,
-                ),
-                name=user.name,
-                questions={
-                    "need_help": "?",
-                    "can_help": "?",
-                },
-                search_filter=PlatformUser(
-                    questions={"need_help": "?", "can_help": "?"},
-                    status=Status.ANY,
-                ),
-            )
-        return self.users[user.id]
+        current = datetime.datetime.now()
+        self.users[user.id] = PlatformUser(
+            id=user.id,
+            date_joined=Date(
+                day=current.day,
+                month=current.month,
+                year=current.year,
+            ),
+            name=user.name,
+            questions={
+                "need_help": "?",
+                "can_help": "?",
+            },
+            search_filter=PlatformUser(
+                questions={"need_help": "?", "can_help": "?"},
+                status=Status.ANY,
+            ),
+        )
 
     def search_users_for(self, search_user: PlatformUser) -> list[int]:
         if not search_user.search_filter:
@@ -156,6 +159,25 @@ class Logic(commands.Cog):
             return basic_filled and questions_filled
         return False
 
+    def get_condition_message(self, condition: str) -> str:
+        if condition == "profile_complete":
+            return (
+                "*Your profile must be complete before you can "
+                "change your status ;-)*"
+                "\n*Fill out all details and try again!*"
+            )
+        return ""
+
+    def check_conditions(self, user: PlatformUser) -> str:
+        if (not self.condition_true_for("profile_complete", user) and
+        user.status != Status.INVISIBLE):
+            user.status = Status.INVISIBLE
+            return (
+                "\n\n*( Your profile is incomplete, so your status has been "
+                "changed to invisible! )*"
+            )
+        return ""
+
     def replace_placeholders(self, message: str, user_id: int) -> str:
         user = self.users[user_id]
         message = (
@@ -171,11 +193,6 @@ class Logic(commands.Cog):
             .replace("<status>", f"{STATUS_EMOJI[user.status]} ({user.status.value})")
             .replace("<number_of_results>", str(len(user.found_users)))
             .replace("<search_results>", self.get_results_for(user))
-            .replace("<conditional_status_warning>",
-                ("" if self.condition_true_for("profile_complete", user) else
-                "\n\n*( Can't find the button to change your status?*"
-                "\n*Your profile must be complete before you can do that ;-)*"
-                "\n*Fill out the other details and the button will appear! )*"))
         )
         if user.search_filter:
             message = (
@@ -198,13 +215,14 @@ class Logic(commands.Cog):
     def get_results_for(self, user: PlatformUser) -> str:
         separator = "***========================***\n"
         return separator + f"\n\n{separator}".join(
-            f"{i+1}.:  ***{u.name}***  (Status: {STATUS_EMOJI[u.status]} "
+            f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
+            f"(Status: {STATUS_EMOJI[u.status]} "
             f"({u.status.value}))"
             f"\n- *Title:* {u.title}"
             f"\n- *Location:* {u.location}"
             f"\n- *Languages:* {u.languages}"
             f"\n- *Keywords:* {u.keywords}"
-            "\n\n❓**Questions**"
+            "\n***------❓Questions ------***"
             f"\n- *Need Help:* {u.questions['need_help']}"
             f"\n- *Can Help:* {u.questions['can_help']}"
             for i, u in enumerate(map(
@@ -213,6 +231,9 @@ class Logic(commands.Cog):
             ))
         )
 
+    def to_emojis(self, number: int) -> str:
+        return "".join(f":{NUM_NAME[n]}:" for n in str(number))
+
     def comma_and_search(self, a: str, b: str) -> bool:
         return any(all(kw.strip().lower() in a.lower()
                        for kw in block.split("&"))
@@ -220,20 +241,16 @@ class Logic(commands.Cog):
 
     @commands.command(name="enter")
     async def enter(self, ctx: commands.Context):
-        """Gives you the starting button."""
-        user = self.register_user(ctx.author)
-        if user.enter_message:
-            await user.enter_message.delete()
-
-        view = DCView()
-        button: DCButton = DCButton(label="Enter Platform", style=ButtonStyle.primary)
-        view.add_item(button)
-        button.callback = self.get_structure_callback(STRUCTURES["home"])  # type: ignore
-        user.enter_message = await ctx.send(
-            "Hello! If you click the button, the bot will DM you"
-            " and you enter the platform!",
-            view=view,
-        )
+        """Registers the user."""
+        if ctx.author.id not in self.users:
+            self.register_user(ctx.author)
+            await self.send_structure(ctx.author, STRUCTURES["home"])  # type: ignore
+        else:
+            user = self.users[ctx.author.id]
+            await self.delete_last_msg_of(user)
+            view = self.get_ok_view_for(user)
+            user.last_msg = await ctx.send(
+                SPACER + "You're already in the platform!", view=view )
 
     @commands.command(name="stop")
     async def stop(self, ctx: commands.Context):
@@ -242,29 +259,32 @@ class Logic(commands.Cog):
             print(f"Unauthorized user ({ctx.author}) tried to stop the bot.")
             return
         for user in self.users.values():
-            await self.delete_entry_msg_of(user)
             await self.delete_last_msg_of(user)
         await self.client.close()
 
     @commands.command(name="reset")
     async def reset(self, ctx: commands.Context):
+        """Resets the bot."""
         await self.hi(ctx)
 
     @commands.command(name="hi")
     async def hi(self, ctx: commands.Context):
-        user = await self.bye(ctx)
+        """Sends the user's home structure."""
+        if ctx.author.id not in self.users:
+            return
+        await self.bye(ctx)
+        user = self.users[ctx.author.id]
         await self.send_structure(
             ctx.author,
             user.last_structure or STRUCTURES["home"])  # type: ignore
 
     @commands.command(name="bye")
-    async def bye(self, ctx: commands.Context) -> PlatformUser:
+    async def bye(self, ctx: commands.Context):
+        """Deletes the user's last message."""
         if ctx.author.id not in self.users:
             return
         user = self.users[ctx.author.id]
-        await self.delete_entry_msg_of(user)
         await self.delete_last_msg_of(user)
-        return user
 
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message):
@@ -272,14 +292,9 @@ class Logic(commands.Cog):
         if user is None or user.change in ["status", ""] or not user.search_filter:
             return
 
-        view = DCView()
-        ok_btn: DCButton = DCButton(label="OK", style=ButtonStyle.green)
-        ok_structure = user.back_to_structure or STRUCTURES["edit_profile"]
-        ok_btn.callback = self.get_structure_callback(ok_structure)  # type: ignore
-        view.add_item(ok_btn)
+        view = self.get_ok_view_for(user, default_structure="edit_profile")
         view.add_item(self.home_btn)
 
-        await self.delete_entry_msg_of(user)
         await self.delete_last_msg_of(user)
         await msg.add_reaction("✅")
 
@@ -290,22 +305,17 @@ class Logic(commands.Cog):
 
         change_user = user.search_filter if search else user
         pronome = "Your" if not search else "The filter's"
-        kw_needed = (
-            change in ["keywords", "languages"]
-            or search and change in ["need_help", "can_help"]
-        )
+        plural = change in ["keywords", "languages"]
+        kw_needed = plural or search and change in ["need_help", "can_help"]
+        has_have = "have" if plural else "has"
         changed_to = msg.content
 
         if kw_needed:
-            kws = [
-                kw.strip().capitalize()
-                    if change == "languages" else
-                kw.strip()
-                for kw in msg.content.split(",")]
-            kws = [" & ".join(w.strip() for w in kw.split('&')) for kw in kws]
-            evenly_spaced_kws = ", ".join(kws)
+            evenly_spaced_kws = ", ".join(" & ".join(
+                w.capitalize() if change == "languages" else w
+                for w in map(str.strip, kw.split("&"))
+            ) for kw in map(str.strip, msg.content.split(",")))
             changed_to = evenly_spaced_kws
-            print(changed_to)
 
         if change in ["need_help", "can_help"]:
             changed = "answer"
@@ -313,10 +323,12 @@ class Logic(commands.Cog):
         else:
             setattr(change_user, change, changed_to)
 
-        message = f'✅ {pronome} {changed} have been changed to "{changed_to}"!'
-        user.last_message = await msg.author.send(SPACER + message, view=view)
+        message = f'✅ {pronome} {changed} {has_have} been changed to "{changed_to}"!'
+        message += self.check_conditions(user)
+
+        user.last_msg = await msg.author.send(SPACER + message, view=view)
         user.change = ""
-        self.save_users()
+        self.save_user(user)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
@@ -338,7 +350,7 @@ class Logic(commands.Cog):
         if search:
             change = user.change[7:]
 
-        if user.last_message and payload.message_id == user.last_message.id:
+        if user.last_msg and payload.message_id == user.last_msg.id:
             if change == "status":
                 emoji = str(payload.emoji)
                 if not (status := EMOJI_STATUS.get(emoji)):
@@ -346,25 +358,28 @@ class Logic(commands.Cog):
                         status = Status.ANY
                     else: return
                 change_user.status = status
-                await self.delete_entry_msg_of(user)
                 await self.delete_last_msg_of(user)
                 dc_user = await self.client.fetch_user(user.id)
-                user.last_message = await dc_user.send(
+                user.last_msg = await dc_user.send(
                     SPACER + f"✅ {pronome} status has been changed to {emoji} ({status.value})!",
                     view=view,
                 )
                 user.change = ""
-                self.save_users()
+                self.save_user(user)
 
     async def delete_last_msg_of(self, user: PlatformUser):
-        if user.last_message:
-            await user.last_message.delete()
-            user.last_message = None
+        if user.last_msg:
+            await user.last_msg.delete()
+            user.last_msg = None
 
-    async def delete_entry_msg_of(self, user: PlatformUser):
-        if user.enter_message:
-            await user.enter_message.delete()
-            user.enter_message = None
+    def get_ok_view_for(self, user: PlatformUser, default_structure: str = "home"):
+        view = DCView()
+        button: DCButton = DCButton(label="OK", style=ButtonStyle.green)
+        button.callback = self.get_structure_callback(  # type: ignore
+            user.back_to_structure or STRUCTURES[default_structure]
+        )
+        view.add_item(button)
+        return view
 
     def is_valid_date(self, date: str):
         return (
@@ -374,21 +389,34 @@ class Logic(commands.Cog):
         )
 
     def load_users(self) -> dict[int, PlatformUser]:
-        path = self.get_file_path()
-        try:
-            with open(f"{path}/users.txt", "r", encoding="utf-8") as file:
-                raw_users: list[dict] = json.loads(file.read())
-                users = [UserSaver.load(user) for user in raw_users]
-                return {user.id: user for user in users}
-        except FileNotFoundError:
-            return {}
+        return {
+            int(id_str): self.load_user(id_str)
+            for filename in os.listdir(self.users_path)
+            if (id_str := self.valid_file_name(filename))
+        }
 
-    def save_users(self):
-        path = self.get_file_path()
-        with open(f"{path}/users.txt", "w", encoding="utf-8") as file:
-            users = (UserSaver.dumps(user) for user in self.users.values())
-            users_str = ", ".join(users)
-            file.write(f"[{users_str}]")
+    def valid_file_name(self, name: str) -> str:
+        if name.endswith(".txt") and (id_str := name[:-4]).isnumeric():
+            return id_str
+        return ""
+
+    def load_user(self, id_str: str) -> PlatformUser:
+        filename = f"{self.users_path}/{id_str}.txt"
+        with open(filename, "r", encoding="utf-8") as file:
+            raw_user: dict = json.loads(file.read())
+            return UserSaver.load(raw_user)
+
+    def save_user(self, user: PlatformUser):
+        filename = f"{self.users_path}/{user.id}.txt"
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(UserSaver.dumps(user))
+
+    def init_users_path(self) -> str:
+        curdir = __file__.replace("\\", "/")
+        path = "/".join(curdir.split("/")[:-6]) + "/eagxf_users"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
 
 async def setup(bot: commands.Bot):

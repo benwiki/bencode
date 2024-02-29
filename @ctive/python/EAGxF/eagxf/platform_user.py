@@ -19,8 +19,7 @@ class PlatformUser:
     keywords: str = "?"  # comma separated
     status: Status = Status.INVISIBLE
 
-    last_message: discord.Message | None = None
-    enter_message: discord.Message | None = None
+    last_msg: discord.Message | None = None
     last_structure: Structure | None = None
     back_to_structure: Structure | None = None
     search_filter: "PlatformUser | None" = None

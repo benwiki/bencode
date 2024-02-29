@@ -21,17 +21,17 @@ STATUS_EMOJI: dict[Status, str] = {
     Status.AVAILABLE: "🟢",
     Status.BUSY: "🟡",
     Status.OFFLINE: "⚪",
-    Status.INVISIBLE: "🟣",
     Status.DO_NOT_DISTURB: "🔴",
+    Status.INVISIBLE: "🟣",
 }
 EMOJI_STATUS = {v: k for k, v in STATUS_EMOJI.items()}
 
 def ANSWERS(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
-        "\n***Where do I need help / what do I want to learn?***"
+        "\n___Where do I need help / what do I want to learn?___"
         f"\n🫲  <{prefix}need_help>"
-        "\n***Where can I help / what is my expertise?***"
+        "\n___Where can I help / what is my expertise?___"
         f"\n🫱  <{prefix}can_help>"
     )
 
@@ -44,13 +44,11 @@ def PROFILE(search=False):  # pylint: disable=invalid-name
         # "\n\n**Metadata**"
         # "\n- 🆔 *User ID:* <id>"
         # "\n- 📅 *Date Joined:* <date_joined>"
-        + "\n**Personal**"
-        f"\n- ***Name:***  <{prefix}name>"
+        + f"\n- ***Name:***  <{prefix}name>"
         f"\n- ***Title:***  <{prefix}title>"
         f"\n- ***Location:***  <{prefix}location>"
         f"\n- ***Languages:***  <{prefix}languages>"
-        "\n***========================***"
-        "\n❓**Questions**"
+        "\n***======❓Questions ======***"
         f"{ANSWERS(search)}"
         "\n***========================***"
         f"\n- **Keywords:**  <{prefix}keywords>"
@@ -114,8 +112,7 @@ STRUCTURES = {
     ),
     "edit_profile": Structure(
         message=PROFILE() + "\n\n✏️ **Editing Profile**"
-        "\nWhat do you want to change?"
-        "<conditional_status_warning>",
+        "\nWhat do you want to change?",
         buttons=[
             Button(label="🔤 Name", takes_to="edit_name"),
             Button(label="🏷️ Title", takes_to="edit_title"),
@@ -131,7 +128,6 @@ STRUCTURES = {
                 label="Status",
                 takes_to="edit_status",
                 emoji=discord.PartialEmoji(name="ℹ️"),
-                condition="profile_complete",
                 row=3,
             ),
             Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="profile", row=4),
@@ -139,23 +135,23 @@ STRUCTURES = {
         ],
     ),
     "edit_name": Structure(
-        message="Your current name is: <name>."
-        "\nWhat do you want to change your name to?",
+        message="Your current name is:\n*<name>*"
+        "\n\nWhat do you want to change your name to?",
         changes_property="name",
     ),
     "edit_title": Structure(
-        message="Your current title is: <title>."
-        "\nWhat do you want to change your title to?",
+        message="Your current title is:\n*<title>*"
+        "\n\nWhat do you want to change your title to?",
         changes_property="title",
     ),
     "edit_location": Structure(
-        message="Your current location is: <location>."
-        "\nWhat do you want to change your location to?",
+        message="Your current location is:\n*<location>*"
+        "\n\nWhat do you want to change your location to?",
         changes_property="location",
     ),
     "edit_languages": Structure(
-        message="Your current languages are: <languages>."
-        "\nWhat do you want to change your languages to?"
+        message="Your current languages are:\n*<languages>*"
+        "\n\nWhat do you want to change your languages to?"
         "\n(Comma separated, e.g. English, German, Spanish)",
         changes_property="languages",
         comma_separated=True,
@@ -172,14 +168,14 @@ STRUCTURES = {
         ],
     ),
     "edit_keywords": Structure(
-        message="Your current keywords are: <keywords>."
-        "\nWhat do you want to change your keywords to?"
+        message="Your current keywords are:\n*<keywords>*"
+        "\n\nWhat do you want to change your keywords to?"
         "\n(Comma separated, e.g. psychology, Python, electric guitar)",
         changes_property="keywords",
         comma_separated=True,
     ),
     "edit_status": Structure(
-        message="Your current status is: <status>."
+        message="Your current status is:\n*<status>*"
         "\nWhat do you want to change your status to?"
         "\n(Select the corresponding reaction!)\n"
         + "\n".join(
@@ -187,17 +183,18 @@ STRUCTURES = {
         ),
         reactions=list(STATUS_EMOJI.values()),
         changes_property="status",
+        condition="profile_complete",
     ),
     "edit_need_help": Structure(
-        message="Your current answer to 'Where do I need help /"
-        " what do I want to learn?' is: <need_help>."
-        "\nWhat do you want to change it to?",
+        message="Your current answer to **'Where do I need help /"
+        " what do I want to learn?'** is:\n*<need_help>*"
+        "\n\nWhat do you want to change it to?",
         changes_property="need_help",
     ),
     "edit_can_help": Structure(
-        message="Your current answer to 'Where can I help /"
-        " what is my expertise?' is: <can_help>."
-        "\nWhat do you want to change it to?",
+        message="Your current answer to **'Where can I help /"
+        " what is my expertise?'** is:\n*<can_help>*"
+        "\n\nWhat do you want to change it to?",
         changes_property="can_help",
     ),
     "search": Structure(
@@ -224,22 +221,26 @@ STRUCTURES = {
     ),
     "search_name": Structure(
         message="What name do you want to search for?"
-        "\nType ? to search for any name.",
+        "\n\nCurrent filter:\n*<search_name>*"
+        "\n\nType ? to search for any name.",
         changes_property="search_name",
     ),
     "search_title": Structure(
         message="What title do you want to search for?"
-        "\nType ? to search for any title.",
+        "\n\nCurrent filter:\n*<search_title>*"
+        "\n\nType ? to search for any title.",
         changes_property="search_title",
     ),
     "search_location": Structure(
         message="What location do you want to search for?"
-        "\nType ? to search for any location.",
+        "\n\nCurrent filter:\n*<search_location>*"
+        "\n\nType ? to search for any location.",
         changes_property="search_location",
     ),
     "search_languages": Structure(
         message="What languages do you want to search for?"
         f"{COMMA_AND_SEPARATED_LANGUAGES}"
+        "\n\nCurrent filter:\n*<search_languages>*"
         "\n\nType ? to search for any language.",
         changes_property="search_languages",
         comma_separated=True,
@@ -247,6 +248,7 @@ STRUCTURES = {
     "search_keywords": Structure(
         message="What keywords do you want to search for?"
         f"{COMMA_AND_SEPARATED}"
+        "\n\nCurrent filter:\n*<search_keywords>*"
         "\n\nType ? to search for any keyword.",
         changes_property="search_keywords",
         comma_separated=True,
@@ -265,6 +267,7 @@ STRUCTURES = {
         message="What keywords do you want to search for in the answers to the question:"
         "\n**'Where do I need help / what do I want to learn?'**"
         f"{COMMA_AND_SEPARATED}"
+        "\n\nCurrent filter:\n*<search_need_help>*"
         "\n\nType ? to search for any keyword.",
         changes_property="search_need_help",
         comma_separated=True,
@@ -273,6 +276,7 @@ STRUCTURES = {
         message="What keywords do you want to search for in the answers to the question:"
         "\n**'Where can I help / what is my expertise?'**"
         f"{COMMA_AND_SEPARATED}"
+        "\n\nCurrent filter:\n*<search_can_help>*"
         "\n\nType ? to search for any keyword.",
         changes_property="search_can_help",
         comma_separated=True,
@@ -287,4 +291,17 @@ STRUCTURES = {
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
+}
+
+NUM_NAME = {
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "4": "four",
+    "5": "five",
+    "6": "six",
+    "7": "seven",
+    "8": "eight",
+    "9": "nine",
+    "0": "zero",
 }
