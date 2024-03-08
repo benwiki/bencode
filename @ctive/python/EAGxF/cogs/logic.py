@@ -1,11 +1,7 @@
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
 import asyncio
 import datetime
 import json
+import os
 
 import discord
 from discord import ButtonStyle
@@ -14,17 +10,25 @@ from discord.ui import Button as DCButton
 from discord.ui import View as DCView
 from eagxf.constants import (
     ADMINS,
+    APP_NAME,
     EMOJI_STATUS,
     NUM_NAME,
     SPACER,
     STATUS_EMOJI,
     STRUCTURES,
+    USERS_FOLDER_PATH,
 )
 from eagxf.date import Date
 from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
 from eagxf.structure import Structure
 from eagxf.user_saver import UserSaver
+
+# import sys
+
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+
 
 
 class Logic(commands.Cog):
@@ -97,16 +101,16 @@ class Logic(commands.Cog):
             for emoji in structure.reactions:
                 await user.last_msg.add_reaction(emoji)
 
-    def register_user(self, user: discord.User | discord.Member):
+    def register_user(self, dc_user: discord.User | discord.Member):
         current = datetime.datetime.now()
-        self.users[user.id] = PlatformUser(
-            id=user.id,
+        user = self.users[dc_user.id] = PlatformUser(
+            id=dc_user.id,
             date_joined=Date(
                 day=current.day,
                 month=current.month,
                 year=current.year,
             ),
-            name=user.name,
+            name=dc_user.name,
             questions={
                 "need_help": "?",
                 "can_help": "?",
@@ -116,6 +120,8 @@ class Logic(commands.Cog):
                 status=Status.ANY,
             ),
         )
+        self.save_user(user)
+
 
     def search_users_for(self, search_user: PlatformUser) -> list[int]:
         if not search_user.search_filter:
@@ -412,8 +418,9 @@ class Logic(commands.Cog):
             file.write(UserSaver.dumps(user))
 
     def init_users_path(self) -> str:
-        curdir = __file__.replace("\\", "/")
-        path = "/".join(curdir.split("/")[:-6]) + "/eagxf_users"
+        # curdir = __file__.replace("\\", "/")
+        # path = "/".join(curdir.split("/")[:-6]) + "/eagxf_users"
+        path = f"{USERS_FOLDER_PATH}/{APP_NAME}_users"
         if not os.path.exists(path):
             os.makedirs(path)
         return path

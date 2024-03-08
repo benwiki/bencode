@@ -3,13 +3,19 @@ from discord import ButtonStyle
 from eagxf.status import Status
 from eagxf.structure import Button, Structure
 
+
+APP_NAME = "EAGxF"
+
+# ========== PATHS =====================================
+TOKEN_PATH = 'C:/Users/b.hargitai/prog/tokens/eagxf.txt'
+USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+# ======================================================
+
 ADMINS = (
     348976146689294336,
     329635441433116674,
     704237105013850152,
 )
-
-APP_NAME = "EAGxF"
 
 SPACER = (
     f"Welcome to {APP_NAME}!\n\nScroll down "
