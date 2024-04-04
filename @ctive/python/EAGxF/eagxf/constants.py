@@ -3,7 +3,6 @@ from discord import ButtonStyle
 from eagxf.status import Status
 from eagxf.structure import Button, Structure
 
-
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
@@ -107,6 +106,7 @@ STRUCTURES = {
         buttons=[
             Button(label="👤 Profile", takes_to="profile", style=ButtonStyle.primary),
             Button(label="🔍 Search", takes_to="search", style=ButtonStyle.primary),
+            Button(label="✨ Best Matches", takes_to="best_matches", style=ButtonStyle.primary),
         ],
     ),
     "profile": Structure(
@@ -295,6 +295,19 @@ STRUCTURES = {
             Button(label="🔍 Search again", style=ButtonStyle.green, takes_to="show_results"),
             Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="search", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
+        ],
+    ),
+    "best_matches": Structure(
+        message="✨ **Best matches**\n\n"
+        "Here we have sorted all current users according to how well they match your interests"
+        " and expertise. Feel free to browse and correct us if you find that our algorithm"
+        " doesn't bring you the most suitable people!"
+        "\n\n**Results (<matches_from> - <matches_to>)**\n\n<best_matches>"
+        "\n\n(<matches_from> - <matches_to>)",
+        buttons=[
+            Button(label="⬅️ Previous", takes_to="best_matches", condition="has_previous"),
+            Button(label="Next ➡️", takes_to="best_matches", condition="has_next"),
+            Button(label="🏠 Home", takes_to="home", style=ButtonStyle.primary, row=1),
         ],
     ),
 }

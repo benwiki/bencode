@@ -34,7 +34,7 @@ def colorizer(a, b, choice, ground=1):
 		col=3*part
 	return "#"+col
 
-def loading(x, y, start, extent, color, db=150, r=100, lines=None):
+def loading(x, y, start, extent, color, db=400, r=100, lines=None):
 	if lines is None:
 		lines=[]
 	start=int(db*start/100)
@@ -43,22 +43,22 @@ def loading(x, y, start, extent, color, db=150, r=100, lines=None):
 	for i in range(start, extent):
 		arany=i/(db/2)
 		if i<db/2:
-			if i>db*5/16:
-				rajz.delete(lines[0])
-				lines.remove(lines[0])
+			# if i>db*5/16:
+			# 	rajz.delete(lines[0])
+			# 	lines.remove(lines[0])
 			x1=x + cos(arany*teljesszog)*r
 			y1=y + sin(arany*teljesszog)*r
 			x2=x + cos(arany*teljesszog)*r*(1-arany)
 			y2=y + sin(arany*teljesszog)*r*(1-arany)
 		else:
-			rajz.delete(lines[0])
-			lines.remove(lines[0])
+			# rajz.delete(lines[0])
+			# lines.remove(lines[0])
 			x1, y1=x, y
 			x2=x + cos(arany*teljesszog)*r*(2-arany)
 			y2=y + sin(arany*teljesszog)*r*(2-arany)
-		lines.append(rajz.create_line(x1, y1, x2, y2, width=20, fill=colorizer(i, db, color, 0), capstyle=ROUND))
+		lines.append(rajz.create_line(x1, y1, x2, y2, width=5, fill=colorizer(db-i//2, db, color, 0), capstyle=ROUND))
 		ablak.update()
-		sleep(0.03)
+		# sleep(0.01)
 	return lines
 	
 def loading2(x, y, color='', colground=1, db=30, r=100, wid=22):
@@ -90,4 +90,4 @@ while 1:
 	for L in lines:
 		rajz.delete(L)
 		ablak.update()
-		sleep(0.03)
+		# sleep(0.03)

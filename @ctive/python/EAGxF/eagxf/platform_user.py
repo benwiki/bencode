@@ -24,4 +24,7 @@ class PlatformUser:
     back_to_structure: Structure | None = None
     search_filter: "PlatformUser | None" = None
     found_users: "list[int]" = field(default_factory=list)
+    best_matches: "list[int]" = field(default_factory=list)
+    matches_from: int = 1
+    matches_to: int = 10
     change: str = ""
