@@ -19,6 +19,7 @@ class UserSaver:
                 "questions": user.questions,
                 "keywords": user.keywords,
                 "status": user.status.value,
+                "best_match_prio_order": user.best_match_prio_order,
             }
         )
 
@@ -35,5 +36,8 @@ class UserSaver:
             questions=user_data["questions"],
             keywords=user_data["keywords"],
             status=Status(user_data["status"]),
-            search_filter=PlatformUser(questions={"need_help": "?", "can_help": "?"}, status=Status.ANY),
+            best_match_prio_order=user_data["best_match_prio_order"],
+            search_filter=PlatformUser(
+                questions={"need_help": "?", "can_help": "?"}, status=Status.ANY
+            ),
         )

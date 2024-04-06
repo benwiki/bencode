@@ -1,12 +1,13 @@
 import discord
 from discord import ButtonStyle
+
 from eagxf.status import Status
 from eagxf.structure import Button, Structure
 
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-TOKEN_PATH = 'C:/Users/b.hargitai/prog/tokens/eagxf.txt'
+TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
 USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
@@ -19,7 +20,8 @@ ADMINS = (
 SPACER = (
     f"Welcome to {APP_NAME}!\n\nScroll down "
     + ":arrow_down: " * 3
-    + "if you see this!" + "\n" * 50
+    + "if you see this!"
+    + "\n" * 50
 )
 
 STATUS_EMOJI: dict[Status, str] = {
@@ -31,6 +33,45 @@ STATUS_EMOJI: dict[Status, str] = {
 }
 EMOJI_STATUS = {v: k for k, v in STATUS_EMOJI.items()}
 
+NUM_NAME = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    0: "zero",
+}
+NAME_NUM = {v: k for k, v in NUM_NAME.items()}
+
+NUM_EMOJI = {
+    1: "1️⃣",
+    2: "2️⃣",
+    3: "3️⃣",
+    4: "4️⃣",
+    5: "5️⃣",
+    6: "6️⃣",
+    7: "7️⃣",
+    8: "8️⃣",
+    9: "9️⃣",
+    0: "0️⃣",
+}
+EMOJI_NUM = {v: k for k, v in NUM_EMOJI.items()}
+
+DEFAULT_PRIO_ORDER = [
+    "One matching language",
+    "Number of matching words in questions",
+    "Number of matching keywords",
+    "Location distance",
+    "Status",
+    "Number of matching words in title",
+]
+PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
+
+
 def ANSWERS(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
@@ -40,12 +81,15 @@ def ANSWERS(search=False):  # pylint: disable=invalid-name
         f"\n🫱  <{prefix}can_help>"
     )
 
+
 def PROFILE(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
-        ("***====== Current filters ======***"
-         if search else
-         "***====== Your profile ======***")
+        (
+            "***====== Current filters ======***"
+            if search
+            else "***====== Your profile ======***"
+        )
         # "\n\n**Metadata**"
         # "\n- 🆔 *User ID:* <id>"
         # "\n- 📅 *Date Joined:* <date_joined>"
@@ -59,19 +103,19 @@ def PROFILE(search=False):  # pylint: disable=invalid-name
         f"\n- **Keywords:**  <{prefix}keywords>"
         f"\n- **Status:**  <{prefix}status>"
         "\n***========================***"
-        + ("\n\nNumber of results: **<number_of_results>**"
-         if search else "")
+        + ("\n\nNumber of results: **<number_of_results>**" if search else "")
     )
+
 
 COMMA_AND_SEPARATED = (
     "\n\n( Comma and '&' separated, e.g.:"
     "\n- (A) psychology, Python, electric guitar --> will accept if "
-        "AT LEAST ONE of the keywords is present in the profile"
+    "AT LEAST ONE of the keywords is present in the profile"
     "\n- (B) psychology & Python & electric guitar --> will accept if "
-        "EVERY keyword is present in the profile"
+    "EVERY keyword is present in the profile"
     "\n- (C) psychology & Python, electric guitar --> will accept if both "
-        "'psychology' AND 'Python', or if 'electric guitar' "
-        "is present in the profile"
+    "'psychology' AND 'Python', or if 'electric guitar' "
+    "is present in the profile"
     "\n\nExample:"
     "\n**Profile 1:**  psychology, gardening"
     "\n**Profile 2:**  cooking, reparing bikes, electric guitar"
@@ -83,12 +127,12 @@ COMMA_AND_SEPARATED = (
 COMMA_AND_SEPARATED_LANGUAGES = (
     "\n\n( Comma and '&' separated, e.g.:"
     "\n- (A) English, German, Spanish --> will accept if "
-        "AT LEAST ONE of the languages is present in the profile"
+    "AT LEAST ONE of the languages is present in the profile"
     "\n- (B) English & German & Spanish --> will accept if "
-        "EVERY language is present in the profile"
+    "EVERY language is present in the profile"
     "\n- (C) English & German, Spanish --> will accept if both "
-        "'English' AND 'German', or if 'Spanish' "
-        "is present in the profile"
+    "'English' AND 'German', or if 'Spanish' "
+    "is present in the profile"
     "\n\nExample:"
     "\n**Profile 1:**  English, French"
     "\n**Profile 2:**  English, German, Spanish"
@@ -106,19 +150,22 @@ STRUCTURES = {
         buttons=[
             Button(label="👤 Profile", takes_to="profile", style=ButtonStyle.primary),
             Button(label="🔍 Search", takes_to="search", style=ButtonStyle.primary),
-            Button(label="✨ Best Matches", takes_to="best_matches", style=ButtonStyle.primary),
+            Button(
+                label="✨ Best Matches",
+                takes_to="best_matches",
+                style=ButtonStyle.primary,
+            ),
         ],
     ),
     "profile": Structure(
         message=PROFILE(),
         buttons=[
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="home"),
+            Button(label="⬅️ Back", takes_to="home"),
             Button(label="✏️ Edit", takes_to="edit_profile", style=ButtonStyle.primary),
         ],
     ),
     "edit_profile": Structure(
-        message=PROFILE() + "\n\n✏️ **Editing Profile**"
-        "\nWhat do you want to change?",
+        message=PROFILE() + "\n\n✏️ **Editing Profile**" "\nWhat do you want to change?",
         buttons=[
             Button(label="🔤 Name", takes_to="edit_name"),
             Button(label="🏷️ Title", takes_to="edit_title"),
@@ -136,7 +183,7 @@ STRUCTURES = {
                 emoji=discord.PartialEmoji(name="ℹ️"),
                 row=3,
             ),
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="profile", row=4),
+            Button(label="⬅️ Back", takes_to="profile", row=4),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=4),
         ],
     ),
@@ -169,7 +216,7 @@ STRUCTURES = {
         buttons=[
             Button(label="🫲 Need Help", takes_to="edit_need_help"),
             Button(label="🫱 Can Help", takes_to="edit_can_help"),
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="edit_profile", row=1),
+            Button(label="⬅️ Back", takes_to="edit_profile", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
@@ -221,8 +268,13 @@ STRUCTURES = {
                 emoji=discord.PartialEmoji(name="ℹ️"),
                 row=3,
             ),
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="home", row=4),
-            Button(label="SHOW RESULTS", style=ButtonStyle.green, takes_to="show_results", row=4),
+            Button(label="⬅️ Back", takes_to="home", row=4),
+            Button(
+                label="SHOW RESULTS",
+                style=ButtonStyle.green,
+                takes_to="show_results",
+                row=4,
+            ),
         ],
     ),
     "search_name": Structure(
@@ -292,8 +344,12 @@ STRUCTURES = {
         f"{PROFILE(search=True)}"
         "\n\n**Results:**\n\n<search_results>",
         buttons=[
-            Button(label="🔍 Search again", style=ButtonStyle.green, takes_to="show_results"),
-            Button(label="⬅️ Back", style=ButtonStyle.red, takes_to="search", row=1),
+            Button(
+                label="🔍 Search again",
+                style=ButtonStyle.green,
+                takes_to="show_results",
+            ),
+            Button(label="⬅️ Back", takes_to="search", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
@@ -302,25 +358,89 @@ STRUCTURES = {
         "Here we have sorted all current users according to how well they match your interests"
         " and expertise. Feel free to browse and correct us if you find that our algorithm"
         " doesn't bring you the most suitable people!"
-        "\n\n**Results (<matches_from> - <matches_to>)**\n\n<best_matches>"
-        "\n\n(<matches_from> - <matches_to>)",
+        "\n\n**Results (<matches_from> - <matches_to>) from total <total_matches>**\n\n<best_matches>"
+        "\n\n(<matches_from> - <matches_to>) from total <total_matches>",
         buttons=[
-            Button(label="⬅️ Previous", takes_to="best_matches", condition="has_previous"),
-            Button(label="Next ➡️", takes_to="best_matches", condition="has_next"),
-            Button(label="🏠 Home", takes_to="home", style=ButtonStyle.primary, row=1),
+            Button(
+                label="◀️ Previous",
+                takes_to="best_matches",
+                condition="has_previous",
+                effect="best_matches_prev_page",
+            ),
+            Button(
+                label="Next ▶️",
+                takes_to="best_matches",
+                condition="has_next",
+                effect="best_matches_next_page",
+            ),
+            Button(label="⬅️ Back", takes_to="home", row=1),
+            Button(
+                label="✏️ Change priority",
+                takes_to="change_priority",
+                style=ButtonStyle.primary,
+                effect="change_priority",
+                row=1,
+            ),
         ],
     ),
-}
-
-NUM_NAME = {
-    "1": "one",
-    "2": "two",
-    "3": "three",
-    "4": "four",
-    "5": "five",
-    "6": "six",
-    "7": "seven",
-    "8": "eight",
-    "9": "nine",
-    "0": "zero",
+    "change_priority": Structure(
+        message=(
+            PRIORITY_MESSAGE := "✨✏️ Best matches **priority change**\n\n"
+            "Here you can change the priority order of your best matches."
+            "\nClick a number-reaction to add the corresponding element to your new order!"
+            "\n\nYour current order:"
+            "\n<best_match_prio_order>"
+            + "\n\nYour new order:\n<best_match_prio_order_new>\n"
+            + r"\_" * 50
+        ),
+        buttons=[
+            Button(
+                label="*️⃣ Default",
+                takes_to="default_best_matches_confirm",
+                effect="reload_message",
+            ),
+            Button(
+                label="🔄 Reset",
+                takes_to="change_priority",
+                effect="reset_new_prio",
+                style=ButtonStyle.danger,
+            ),
+            Button(
+                label="⬅️ Back",
+                takes_to="best_matches",
+                effect="cancel_change_prio",
+                row=1,
+            ),
+            Button(
+                label="🏠 Home",
+                takes_to="home",
+                style=ButtonStyle.primary,
+                effect="cancel_change_prio",
+                row=1,
+            ),
+        ],
+        changes_property="best_match_prio_order",
+        reactions=list(NUM_EMOJI.values())[:PRIO_LIST_LENGTH],
+    ),
+    "default_best_matches_confirm": Structure(
+        message="The default priority order is:"
+        "\n1. "
+        + "\n{}. ".join(DEFAULT_PRIO_ORDER).format(*range(2, PRIO_LIST_LENGTH + 1))
+        + "\n\nAre you sure you want to reset your priority order to this?\n"
+        + r"\_" * 50,
+        buttons=[
+            Button(
+                label="No",
+                takes_to="change_priority",
+                effect="cancel_change_prio",
+                style=ButtonStyle.red,
+            ),
+            Button(
+                label="Yes",
+                takes_to="best_matches",
+                effect="default_best_matches",
+                style=ButtonStyle.green,
+            ),
+        ],
+    ),
 }

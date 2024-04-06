@@ -11,15 +11,22 @@ class Status(Enum):
 
     def __lt__(self, other: "Status") -> bool:
         return ORDER.index(self) < ORDER.index(other)
-    
+
     def __gt__(self, other: "Status") -> bool:
         return ORDER.index(self) > ORDER.index(other)
-    
+
     def __le__(self, other: "Status") -> bool:
         return ORDER.index(self) <= ORDER.index(other)
-    
+
     def __ge__(self, other: "Status") -> bool:
         return ORDER.index(self) >= ORDER.index(other)
 
 
-ORDER = [Status.ANY, Status.INVISIBLE, Status.DO_NOT_DISTURB, Status.OFFLINE, Status.BUSY, Status.AVAILABLE]
+ORDER = [
+    Status.ANY,
+    Status.INVISIBLE,
+    Status.DO_NOT_DISTURB,
+    Status.OFFLINE,
+    Status.BUSY,
+    Status.AVAILABLE,
+]
