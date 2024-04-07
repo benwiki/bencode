@@ -3,7 +3,7 @@ import datetime
 import json
 import os
 import re
-from typing import Callable, Sequence
+from typing import Sequence
 
 import discord
 from discord import ButtonStyle
@@ -62,6 +62,15 @@ class Logic(commands.Cog):
     def init_other_stuff(self) -> None:
         self.home_btn: DCButton = DCButton(label="🏠 Home", style=ButtonStyle.primary)
         self.home_btn.callback = self.get_structure_callback(STRUCTURES["home"])  # type: ignore
+        self.save_btn = Button(
+            label="💾 Save",
+            takes_to="best_matches",
+            effect="save_prio",
+            style=ButtonStyle.green,
+        )
+        self.save_btn.callback = self.get_structure_callback(  # type: ignore
+            STRUCTURES["best_matches"], button=self.save_btn
+        )
         self.not_alnum = re.compile(r"[\W_]+", re.UNICODE)
         self.MATCH_STEP = 10
         self.PRIO_FUNCTIONS = [
@@ -97,7 +106,6 @@ class Logic(commands.Cog):
             "reload_message",
             "cancel_change_prio",
             "save_prio",
-            "reset_new_prio",
         ]:
             await self.delete_last_msg_of(user)
             if button.effect == "save_prio":
@@ -120,14 +128,15 @@ class Logic(commands.Cog):
         if structure.condition and not self.condition_true_for(
             structure.condition, user
         ):
-            view = self.get_ok_view_for(user)
+            ok_btn = self.get_ok_button_for(user)
+            view = self.get_view([ok_btn])
             message = self.get_condition_message(structure.condition)
             reactions = False
         else:
             buttons = [
                 button
                 for button in structure.buttons
-                if self.add_button_with_condition(button.condition, user)
+                if self.btn_condition_true_for(button.condition, user)
             ]
             view = self.get_view(buttons)
             message = self.replace_placeholders(structure.message, dc_user.id)
@@ -242,7 +251,7 @@ class Logic(commands.Cog):
             )
         return ""
 
-    def add_button_with_condition(self, condition: str, user: PlatformUser) -> bool:
+    def btn_condition_true_for(self, condition: str, user: PlatformUser) -> bool:
         if not condition:
             return True
         if condition == "has_previous":
@@ -251,6 +260,8 @@ class Logic(commands.Cog):
             return user.matches_to < len(user.best_matches)
         elif condition == "prio_order_full":
             return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
+        elif condition == "prio_order_at_least_one":
+            return bool(user.best_match_prio_order_new)
         return False
 
     def replace_placeholders(self, message: str, user_id: int) -> str:
@@ -385,14 +396,8 @@ class Logic(commands.Cog):
     def format_priority_order(self, user: PlatformUser, new: bool = False) -> str:
         """Returns the best match priority order of the user in a formatted way."""
         order = user.best_match_prio_order_new if new else user.best_match_prio_order
-        things = (
-            range(2, PRIO_LIST_LENGTH + 1)
-            if new
-            else list(NUM_EMOJI.values())[1:PRIO_LIST_LENGTH]
-        )
-        one = "1" if new else f"{NUM_EMOJI[1]}"
-        point = "." if new else "**.**"
-        return (f"{one}{point} " if order != [] else "") + "\n{}" f"{point} ".join(
+        things = range(2, PRIO_LIST_LENGTH + 1)
+        return ("1. " if order != [] else "") + "\n{}. ".join(
             DEFAULT_PRIO_ORDER[i] for i in order
         ).format(*things)
 
@@ -459,7 +464,8 @@ class Logic(commands.Cog):
         else:
             user = self.users[ctx.author.id]
             await self.delete_last_msg_of(user)
-            view = self.get_ok_view_for(user)
+            ok_btn = self.get_ok_button_for(user)
+            view = self.get_view([ok_btn])
             user.last_msg = await ctx.send(
                 SPACER + "You're already in the platform!", view=view
             )
@@ -512,8 +518,8 @@ class Logic(commands.Cog):
         ):
             return
 
-        view = self.get_ok_view_for(user, default_structure="edit_profile")
-        view.add_item(self.home_btn)
+        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
+        view = self.get_view([ok_btn, self.home_btn])
 
         await self.delete_last_msg_of(user)
         await msg.add_reaction("✅")
@@ -559,9 +565,7 @@ class Logic(commands.Cog):
         if not user.search_filter:
             return
 
-        ok_btn: DCButton = DCButton(label="OK", style=ButtonStyle.green)
-        ok_structure = user.back_to_structure or STRUCTURES["edit_profile"]
-        ok_btn.callback = self.get_structure_callback(ok_structure)  # type: ignore
+        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
         view = self.get_view([ok_btn, self.home_btn])
 
         search = user.change.startswith("search_")
@@ -599,19 +603,19 @@ class Logic(commands.Cog):
         if not num or not (1 <= num <= PRIO_LIST_LENGTH) or not user.last_msg:
             return
 
-        if not remove:
-            user.best_match_prio_order_new.append(num - 1)
-
-        if self.add_button_with_condition("prio_order_full", user) and user.last_view:
-            if remove and user.save_btn:
-                user.last_view.remove_item(user.save_btn)
-            elif not remove:
-                save_btn = self.get_save_btn()
-                user.last_view.add_item(save_btn)
-                user.save_btn = save_btn
-
         if remove:
             user.best_match_prio_order_new.remove(num - 1)
+        else:
+            user.best_match_prio_order_new.append(num - 1)
+
+        atleast1 = self.btn_condition_true_for("prio_order_at_least_one", user)
+        if user.last_view:
+            if not atleast1 and remove and user.save_btn:
+                user.last_view.remove_item(user.save_btn)
+                user.save_btn = None
+            elif atleast1 and not remove and not user.save_btn:
+                user.last_view.add_item(self.save_btn)
+                user.save_btn = self.save_btn
 
         await user.last_msg.edit(
             content=SPACER
@@ -621,18 +625,6 @@ class Logic(commands.Cog):
             ).replace("<best_match_prio_order>", self.format_priority_order(user)),
             view=user.last_view,
         )
-
-    def get_save_btn(self) -> DCButton:
-        btn = Button(
-            label="💾 Save",
-            takes_to="best_matches",
-            effect="save_prio",
-            style=ButtonStyle.green,
-        )
-        btn.callback = self.get_structure_callback(  # type: ignore
-            STRUCTURES["best_matches"], button=btn
-        )
-        return btn
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -651,12 +643,14 @@ class Logic(commands.Cog):
             await user.last_msg.delete()
             user.last_msg = None
 
-    def get_ok_view_for(self, user: PlatformUser, default_structure: str = "home"):
+    def get_ok_button_for(
+        self, user: PlatformUser, default_structure: str = "home"
+    ) -> DCButton:
         button: DCButton = DCButton(label="OK", style=ButtonStyle.green)
         button.callback = self.get_structure_callback(  # type: ignore
             user.back_to_structure or STRUCTURES[default_structure]
         )
-        return self.get_view([button])
+        return button
 
     def get_view(self, buttons: Sequence[Button | DCButton]) -> DCView:
         view = DCView()
@@ -692,7 +686,7 @@ class Logic(commands.Cog):
         }
 
     def valid_file_name(self, name: str) -> str:
-        if name.endswith(".txt") and (id_str := name[:-4]).isnumeric():
+        if name.endswith(".txt") and (id_str := name[:-4]).isdecimal():
             return id_str
         return ""
 

@@ -387,11 +387,20 @@ STRUCTURES = {
         message=(
             PRIORITY_MESSAGE := "✨✏️ Best matches **priority change**\n\n"
             "Here you can change the priority order of your best matches."
-            "\nClick a number-reaction to add the corresponding element to your new order!"
-            "\n\nYour current order:"
+            "\n***Click a number-reaction "
+            f"({NUM_EMOJI[1]} - {NUM_EMOJI[PRIO_LIST_LENGTH]}) "
+            "to add the corresponding element to your new order!***"
+            f"\nIf you select {PRIO_LIST_LENGTH - 1} or less elements, "
+            "the omitted ones won't be considered in the matching process."
+            "\n\n__Your current order:__"
             "\n<best_match_prio_order>"
-            + "\n\nYour new order:\n<best_match_prio_order_new>\n"
-            + r"\_" * 50
+            "\n\n__The default order to select from:__"
+            f"\n{NUM_EMOJI[1]}**.** "
+            + "\n{}**.** ".join(DEFAULT_PRIO_ORDER).format(
+                *(list(NUM_EMOJI.values())[1 : PRIO_LIST_LENGTH + 1])
+            )
+            + "\n\n__Your new order:__"
+            "\n<best_match_prio_order_new>\n" + r"\_" * 50
         ),
         buttons=[
             Button(
@@ -402,7 +411,7 @@ STRUCTURES = {
             Button(
                 label="🔄 Reset",
                 takes_to="change_priority",
-                effect="reset_new_prio",
+                effect="reload_message",
                 style=ButtonStyle.danger,
             ),
             Button(
