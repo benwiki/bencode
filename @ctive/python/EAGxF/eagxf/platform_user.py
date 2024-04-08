@@ -28,11 +28,8 @@ class PlatformUser:
     last_structure: Structure | None = None
     back_to_structure: Structure | None = None
     search_filter: "PlatformUser | None" = None
-    found_users: list[int] = field(default_factory=list)
-    best_matches: list[int] = field(default_factory=list)
-    matches_from: int = 1
-    matches_to: int = 10
+    results: list[int] = field(default_factory=list)
+    page: int = 0
     best_match_prio_order_new: list[int] = field(default_factory=list)
-    editing_prio_order: bool = False
-    save_btn: discord.ui.Button | None = None
+    show_save_btn: bool = field(default_factory=bool)
     change: str = ""

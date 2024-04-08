@@ -3,7 +3,7 @@ import datetime
 import json
 import os
 import re
-from typing import Sequence
+from typing import Iterator, Sequence
 
 import discord
 from discord import ButtonStyle
@@ -16,12 +16,10 @@ from eagxf.constants import (
     ADMINS,
     APP_NAME,
     DEFAULT_PRIO_ORDER,
-    EMOJI_NUM,
     EMOJI_STATUS,
     NUM_EMOJI,
     NUM_NAME,
     PRIO_LIST_LENGTH,
-    PRIORITY_MESSAGE,
     SPACER,
     STATUS_EMOJI,
     STRUCTURES,
@@ -45,12 +43,17 @@ class Logic(commands.Cog):
         self.init_other_stuff()
 
     async def send_starting_message_to(self, user_id: int):
-        user = await self.client.fetch_user(user_id)
+        user = self.users[user_id]
         await self.send_structure(user, STRUCTURES["home"])  # type: ignore
 
     def init_structures(self):
         for structure_id, structure in STRUCTURES.items():
             structure.id = structure_id
+            if structure.paged:
+                structure.button_effects = self.comma_add(
+                    structure.button_effects, "delete_message, empty_results"
+                )
+                print(f"{structure.id} button effects:", structure.button_effects)
             for button in structure.buttons:
                 to_structure = STRUCTURES[button.takes_to]
                 if to_structure is None:
@@ -58,6 +61,15 @@ class Logic(commands.Cog):
                 button.callback = self.get_structure_callback(
                     to_structure, button=button
                 )
+                if structure.button_effects:
+                    button.effects = self.comma_add(
+                        button.effects, structure.button_effects
+                    )
+
+    def comma_add(self, original: str, additional: str) -> str:
+        if original:
+            return f"{original}, {additional}"
+        return additional
 
     def init_other_stuff(self) -> None:
         self.home_btn: DCButton = DCButton(label="🏠 Home", style=ButtonStyle.primary)
@@ -72,8 +84,7 @@ class Logic(commands.Cog):
             STRUCTURES["best_matches"], button=self.save_btn
         )
         self.not_alnum = re.compile(r"[\W_]+", re.UNICODE)
-        self.MATCH_STEP = 10
-        self.PRIO_FUNCTIONS = [
+        self.PRIO_FUNCTIONS = [  # pylint: disable=C0103
             self.get_language_score,
             self.get_question_score,
             self.get_keywords_score,
@@ -81,49 +92,46 @@ class Logic(commands.Cog):
             self.get_status,
             self.get_title_score,
         ]
-        self.DEBUGGING = True
+        self.DEBUGGING = True  # pylint: disable=C0103
+        self.page_step = 10
 
     def get_structure_callback(
         self, structure: Structure, button: Button | None = None
     ):
         async def callback(interaction: discord.Interaction):
             await interaction.response.defer()
-            if button:
-                await self.affect(button, interaction.user)
-            await self.send_structure(interaction.user, structure)
+            user = self.users[interaction.user.id]
+            if button and button.effects:
+                for effect in button.effects.split(", "):
+                    await self.affect(effect, user)
+            await self.send_structure(user, structure)
 
         return callback
 
-    async def affect(self, button: Button, dc_user: discord.User | discord.Member):
-        user = self.users[dc_user.id]
-        if button.effect == "best_matches_prev_page":
-            user.matches_from -= self.MATCH_STEP
-            user.matches_to -= self.MATCH_STEP
-        if button.effect == "best_matches_next_page":
-            user.matches_from += self.MATCH_STEP
-            user.matches_to += self.MATCH_STEP
-        if button.effect in [
-            "reload_message",
-            "cancel_change_prio",
-            "save_prio",
-        ]:
+    async def affect(self, effect: str, user: PlatformUser):
+        if effect == "go_to_previous_page":
+            user.page -= 1
+        if effect == "go_to_next_page":
+            user.page += 1
+        if effect == "delete_message":
             await self.delete_last_msg_of(user)
-            if button.effect == "save_prio":
-                user.best_match_prio_order = user.best_match_prio_order_new
-                self.save_user(user)
+        if effect == "save_prio":
+            user.best_match_prio_order = user.best_match_prio_order_new
+            self.save_user(user)
+        if effect == "reset_new_prio_order":
             user.best_match_prio_order_new = []
-        if button.effect == "default_best_matches":
+        if effect == "default_best_matches":
             user.best_match_prio_order = list(range(PRIO_LIST_LENGTH))
             self.save_user(user)
+        if effect == "reset_user_property_change":
+            user.change = ""
+        if effect == "empty_results":
+            user.results = []
 
-    async def send_structure(
-        self, dc_user: discord.User | discord.Member, structure: Structure
-    ):
-        user = self.users[dc_user.id]
+    async def send_structure(self, user: PlatformUser, structure: Structure):
         user.back_to_structure = user.last_structure
 
-        if structure.id in ["search", "show_results"]:
-            user.found_users = self.search_users_for(user)
+        self.collect_data_for(user, structure)
 
         if structure.condition and not self.condition_true_for(
             structure.condition, user
@@ -131,30 +139,54 @@ class Logic(commands.Cog):
             ok_btn = self.get_ok_button_for(user)
             view = self.get_view([ok_btn])
             message = self.get_condition_message(structure.condition)
-            reactions = False
+            add_reactions = False
         else:
             buttons = [
                 button
                 for button in structure.buttons
-                if self.btn_condition_true_for(button.condition, user)
+                if self.btn_condition_true_for(user, button.condition)
             ]
             view = self.get_view(buttons)
-            message = self.replace_placeholders(structure.message, dc_user.id)
-            reactions = True
+            message = self.replace_placeholders(structure.message, user.id)
+            add_reactions = True
         user.last_view = view
 
         if user.last_msg:
             await user.last_msg.edit(content=SPACER + message, view=view)
         else:
+            dc_user = await self.client.fetch_user(user.id)
             user.last_msg = await dc_user.send(SPACER + message, view=view)
         user.last_structure = structure
 
         if structure.changes_property:
             user.change = structure.changes_property
 
-        if reactions and structure.reactions:
+        if add_reactions and structure.reactions:
             for emoji in structure.reactions:
                 await user.last_msg.add_reaction(emoji)
+        await self.add_special_reactions_for(user, structure)
+
+    def collect_data_for(self, user: PlatformUser, structure: Structure):
+        if not structure.paged:
+            return
+        if structure.id in ["search", "show_search_results"]:
+            user.results = self.search_users_for(user)
+        if structure.id == "best_matches":
+            user.results = self.search_best_matches_for(user)
+        if structure.id == "interests_sent":
+            pass
+        if structure.id == "interests_received":
+            pass
+
+    def search_best_matches_for(self, user: PlatformUser) -> list[int]:
+        matches = self.users.copy()
+        matches.pop(user.id)
+        matches_list = sorted(
+            matches.values(),
+            key=lambda u: self.get_priority(user, u),
+            reverse=True,
+        )
+        return [u.id for u in matches_list]
 
     def register_user(self, dc_user: discord.User | discord.Member):
         current = datetime.datetime.now()
@@ -166,10 +198,7 @@ class Logic(commands.Cog):
                 year=current.year,
             ),
             name=dc_user.name,
-            questions={
-                "need_help": "?",
-                "can_help": "?",
-            },
+            questions={"need_help": "?", "can_help": "?"},
             search_filter=PlatformUser(
                 questions={"need_help": "?", "can_help": "?"},
                 status=Status.ANY,
@@ -177,6 +206,12 @@ class Logic(commands.Cog):
             best_match_prio_order=list(range(PRIO_LIST_LENGTH)),
         )
         self.save_user(user)
+        return user
+
+    async def add_special_reactions_for(self, user: PlatformUser, structure: Structure):
+        if structure.paged and user.last_msg:
+            for i in range(min(self.page_step, len(user.results))):
+                await user.last_msg.add_reaction(NUM_EMOJI[i])
 
     def search_users_for(self, search_user: PlatformUser) -> list[int]:
         if not search_user.search_filter:
@@ -251,13 +286,13 @@ class Logic(commands.Cog):
             )
         return ""
 
-    def btn_condition_true_for(self, condition: str, user: PlatformUser) -> bool:
+    def btn_condition_true_for(self, user: PlatformUser, condition: str) -> bool:
         if not condition:
             return True
-        if condition == "has_previous":
-            return user.matches_from > 1
-        elif condition == "has_next":
-            return user.matches_to < len(user.best_matches)
+        if condition == "has_previous_page":
+            return user.page > 0
+        elif condition == "has_next_page":
+            return user.page < len(user.results) // self.page_step - 1
         elif condition == "prio_order_full":
             return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
         elif condition == "prio_order_at_least_one":
@@ -277,17 +312,15 @@ class Logic(commands.Cog):
             .replace("<can_help>", user.questions["can_help"])
             .replace("<keywords>", user.keywords)
             .replace("<status>", f"{STATUS_EMOJI[user.status]} ({user.status.value})")
-            .replace("<number_of_results>", str(len(user.found_users)))
-            .replace("<search_results>", self.get_results_for(user))
+            .replace("<number_of_results>", str(len(user.results)))
+            .replace("<search_results>", self.get_search_results_for(user))
             .replace("<best_matches>", self.get_best_matches_for(user))
-            .replace("<matches_from>", str(user.matches_from))
-            .replace("<matches_to>", str(user.matches_to))
+            .replace("<page_reference>", self.get_page_reference_for(user))
             .replace(
                 "<best_match_prio_order_new>",
                 self.format_priority_order(user, new=True),
             )
             .replace("<best_match_prio_order>", self.format_priority_order(user))
-            .replace("<total_matches>", str(len(user.best_matches)))
         )
         if user.search_filter:
             message = (
@@ -312,7 +345,13 @@ class Logic(commands.Cog):
             )
         return message
 
-    def get_results_for(self, user: PlatformUser) -> str:
+    def get_page_reference_for(self, user: PlatformUser) -> str:
+        page_from = user.page * self.page_step + 1
+        page_to = min((user.page + 1) * self.page_step, len(user.results))
+        page_total = len(user.results)
+        return f"**({page_from} - {page_to}) from total {page_total}**"
+
+    def get_search_results_for(self, user: PlatformUser) -> str:
         separator = "***========================***\n"
         return separator + f"\n\n{separator}".join(
             f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
@@ -325,8 +364,11 @@ class Logic(commands.Cog):
             "\n***------❓Questions ------***"
             f"\n- *Need Help:* {u.questions['need_help']}"
             f"\n- *Can Help:* {u.questions['can_help']}"
-            for i, u in enumerate(map(lambda x: self.users[x], user.found_users))
+            for i, u in enumerate(self.get_results_for(user))
         )
+
+    def get_results_for(self, user: PlatformUser):
+        return self.convert_users(self.paged_list_of(user.results, user))
 
     def get_score_summary(self, user: PlatformUser, other: PlatformUser) -> str:
         """Returns a summary of the scores of the user and the other user."""
@@ -344,25 +386,7 @@ class Logic(commands.Cog):
 
     def get_best_matches_for(self, user: PlatformUser) -> str:
         """A list of the best matches for the user.
-        Matches get sorted by multiple criteria.
-        1. number of matching keywords in
-            - languages
-            - questions (in the opposite, so need_help for can_help and vice versa)
-            - keywords
-        2. Location distance
-        3. Status
-        4. number of matching words in title
-        """
-        if not user.best_matches:
-            matches = self.users.copy()
-            matches.pop(user.id)
-            matches_list = sorted(
-                matches.values(),
-                key=lambda u: self.get_priority(user, u),
-                reverse=True,
-            )
-            user.best_matches = [u.id for u in matches_list]
-            user.matches_to = min(self.MATCH_STEP, len(user.best_matches))
+        Matches get sorted by multiple criteria."""
         return "\n".join(
             f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
             f"(Status: {STATUS_EMOJI[u.status]} "
@@ -375,13 +399,14 @@ class Logic(commands.Cog):
             "\n***------❓Questions ------***"
             f"\n- *Need Help:* {u.questions['need_help']}"
             f"\n- *Can Help:* {u.questions['can_help']}"
-            for i, u in enumerate(
-                map(
-                    lambda x: self.users[x],
-                    user.best_matches[user.matches_from - 1 : user.matches_to],
-                )
-            )
+            for i, u in enumerate(self.get_results_for(user))
         )
+
+    def paged_list_of(self, lst: list, user: PlatformUser):
+        return lst[user.page * self.page_step : (user.page + 1) * self.page_step]
+
+    def convert_users(self, user_ids: list[int]) -> Iterator[PlatformUser]:
+        return map(lambda x: self.users[x], user_ids)
 
     def get_priority(self, user: PlatformUser, u: PlatformUser) -> tuple:
         """This function takes into account the best match priority order of the user"""
@@ -402,7 +427,8 @@ class Logic(commands.Cog):
         ).format(*things)
 
     def get_language_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns 1 if the user and the other user have at least one matching language, 0 otherwise."""
+        """Returns 1 if the user and the other user have at least one matching language,
+        0 otherwise."""
         return int(
             any(
                 kw.strip().lower() in other.languages.lower()
@@ -411,7 +437,8 @@ class Logic(commands.Cog):
         )
 
     def get_question_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching keywords in the questions of the user and the other user."""
+        """Returns the number of matching keywords in the questions of the user
+        and the other user."""
         return sum(
             self.not_alnum.sub("", kw.strip().lower())
             in other.questions["need_help"].lower()
@@ -423,14 +450,16 @@ class Logic(commands.Cog):
         )
 
     def get_keywords_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching keywords in the keywords of the user and the other user."""
+        """Returns the number of matching keywords in the keywords of the user
+        and the other user."""
         return sum(
             kw.strip().lower() in other.keywords.lower()
             for kw in user.keywords.split(",")
         )
 
     def get_title_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching words in the title of the user and the other user."""
+        """Returns the number of matching words in the title of the user
+        and the other user."""
         return sum(
             self.not_alnum.sub("", kw.strip().lower()) in other.title.lower()
             for kw in user.title.split(" ")
@@ -438,7 +467,8 @@ class Logic(commands.Cog):
 
     def get_location_distance(self, user: PlatformUser, other: PlatformUser) -> int:
         """Should return the distance between the location of the user and the other user.
-        For now it just returns the number of matching words in the location of the user and the other user.
+        For now it just returns the number of matching words in the location of the user
+        and the other user.
         """
         return sum(
             self.not_alnum.sub("", kw.strip().lower()) in other.location.lower()
@@ -459,8 +489,8 @@ class Logic(commands.Cog):
     async def enter(self, ctx: commands.Context):
         """Registers the user."""
         if ctx.author.id not in self.users:
-            self.register_user(ctx.author)
-            await self.send_structure(ctx.author, STRUCTURES["home"])  # type: ignore
+            user = self.register_user(ctx.author)
+            await self.send_structure(user, STRUCTURES["home"])  # type: ignore
         else:
             user = self.users[ctx.author.id]
             await self.delete_last_msg_of(user)
@@ -473,12 +503,7 @@ class Logic(commands.Cog):
     @commands.command(name="stop")
     async def stop(self, ctx: commands.Context):
         """Stops the bot."""
-        if ctx.author.id not in ADMINS:
-            print(f"Unauthorized user ({ctx.author}) tried to stop the bot.")
-            return
-        for user in self.users.values():
-            await self.delete_last_msg_of(user)
-        await self.client.close()
+        await self.stop_request_by(ctx.author.id)
 
     @commands.command(name="reset")
     async def reset(self, ctx: commands.Context):
@@ -493,7 +518,7 @@ class Logic(commands.Cog):
         await self.bye(ctx)
         user = self.users[ctx.author.id]
         user.best_match_prio_order_new = []
-        await self.send_structure(ctx.author, user.last_structure or STRUCTURES["home"])  # type: ignore
+        await self.send_structure(user, user.last_structure or STRUCTURES["home"])  # type: ignore
 
     @commands.command(name="bye")
     async def bye(self, ctx: commands.Context):
@@ -591,7 +616,6 @@ class Logic(commands.Cog):
                     + f"✅ {pronome} status has been changed to {emoji} ({status.value})!",
                     view=view,
                 )
-                user.change = ""
                 self.save_user(user)
             if change == "best_match_prio_order":
                 await self.handle_best_match_prio_order(user, payload.emoji)
@@ -599,8 +623,10 @@ class Logic(commands.Cog):
     async def handle_best_match_prio_order(
         self, user: PlatformUser, emoji: discord.PartialEmoji, remove: bool = False
     ):
-        num = EMOJI_NUM.get(str(emoji.name))
-        if not num or not (1 <= num <= PRIO_LIST_LENGTH) or not user.last_msg:
+        if emoji.name not in NUM_EMOJI:
+            return
+        num = NUM_EMOJI.index(emoji.name) + 1
+        if not (1 <= num <= PRIO_LIST_LENGTH) or not user.last_msg:
             return
 
         if remove:
@@ -608,23 +634,16 @@ class Logic(commands.Cog):
         else:
             user.best_match_prio_order_new.append(num - 1)
 
-        atleast1 = self.btn_condition_true_for("prio_order_at_least_one", user)
+        atleast1 = self.btn_condition_true_for(user, "prio_order_at_least_one")
         if user.last_view:
-            if not atleast1 and remove and user.save_btn:
-                user.last_view.remove_item(user.save_btn)
-                user.save_btn = None
-            elif atleast1 and not remove and not user.save_btn:
+            if not atleast1 and remove:
+                user.show_save_btn = False
+                user.last_view.remove_item(self.save_btn)
+            elif not remove and not user.show_save_btn:
+                user.show_save_btn = True
                 user.last_view.add_item(self.save_btn)
-                user.save_btn = self.save_btn
 
-        await user.last_msg.edit(
-            content=SPACER
-            + PRIORITY_MESSAGE.replace(
-                "<best_match_prio_order_new>",
-                self.format_priority_order(user, new=True),
-            ).replace("<best_match_prio_order>", self.format_priority_order(user)),
-            view=user.last_view,
-        )
+        await self.send_structure(user, STRUCTURES["change_priority"])  # type: ignore
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -642,6 +661,7 @@ class Logic(commands.Cog):
         if user.last_msg:
             await user.last_msg.delete()
             user.last_msg = None
+            print("Deleted last message")
 
     def get_ok_button_for(
         self, user: PlatformUser, default_structure: str = "home"
@@ -664,8 +684,11 @@ class Logic(commands.Cog):
 
     async def stop_callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        if interaction.user.id not in ADMINS:
-            print(f"Unauthorized user ({interaction.user}) tried to stop the bot.")
+        await self.stop_request_by(interaction.user.id)
+
+    async def stop_request_by(self, user_id: int):
+        if user_id not in ADMINS:
+            print(f"Unauthorized user (id: {user_id}) tried to stop the bot.")
             return
         for user in self.users.values():
             await self.delete_last_msg_of(user)

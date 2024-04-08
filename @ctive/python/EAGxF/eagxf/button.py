@@ -3,7 +3,7 @@ from discord.ui import Button as DCButton
 
 class Button(DCButton):
     takes_to: str
-    effect: str
+    effects: str
     condition: str
 
     def __init__(
@@ -11,5 +11,5 @@ class Button(DCButton):
     ) -> None:
         super().__init__(*args, **kwargs)
         self.takes_to = takes_to
-        self.effect = effect
+        self.effects = effect
         self.condition = condition

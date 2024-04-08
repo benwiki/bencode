@@ -47,19 +47,7 @@ NUM_NAME = {
 }
 NAME_NUM = {v: k for k, v in NUM_NAME.items()}
 
-NUM_EMOJI = {
-    1: "1️⃣",
-    2: "2️⃣",
-    3: "3️⃣",
-    4: "4️⃣",
-    5: "5️⃣",
-    6: "6️⃣",
-    7: "7️⃣",
-    8: "8️⃣",
-    9: "9️⃣",
-    0: "0️⃣",
-}
-EMOJI_NUM = {v: k for k, v in NUM_EMOJI.items()}
+NUM_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "0️⃣"]
 
 DEFAULT_PRIO_ORDER = [
     "One matching language",
@@ -142,6 +130,22 @@ COMMA_AND_SEPARATED_LANGUAGES = (
     "\n- (C) will accept Profile 2 and Profile 3 )"
 )
 
+def get_previous_button(structure_name: str) -> Button:
+    return Button(
+        label="◀️ Previous",
+        takes_to=structure_name,
+        condition="has_previous_page",
+        effect="go_to_previous_page",
+    )
+
+def get_next_button(structure_name: str) -> Button:
+    return Button(
+        label="Next ▶️",
+        takes_to=structure_name,
+        condition="has_next_page",
+        effect="go_to_next_page",
+    )
+
 STRUCTURES = {
     "home": Structure(
         message="ℹ️ Status: <status>"
@@ -149,12 +153,13 @@ STRUCTURES = {
         "\nClick the buttons to use the app!",
         buttons=[
             Button(label="👤 Profile", takes_to="profile", style=ButtonStyle.primary),
-            Button(label="🔍 Search", takes_to="search", style=ButtonStyle.primary),
+            Button(label="🔍 Search", takes_to="search"),
             Button(
                 label="✨ Best Matches",
                 takes_to="best_matches",
                 style=ButtonStyle.primary,
             ),
+            Button(label="Interests", takes_to="interests", emoji="↕️"),
         ],
     ),
     "profile": Structure(
@@ -272,7 +277,7 @@ STRUCTURES = {
             Button(
                 label="SHOW RESULTS",
                 style=ButtonStyle.green,
-                takes_to="show_results",
+                takes_to="show_search_results",
                 row=4,
             ),
         ],
@@ -339,15 +344,21 @@ STRUCTURES = {
         changes_property="search_can_help",
         comma_separated=True,
     ),
-    "show_results": Structure(
+    "show_search_results": Structure(
         message="🔍 **Search Results**\n\n"
         f"{PROFILE(search=True)}"
-        "\n\n**Results:**\n\n<search_results>",
+        "\n\n**Results** <page_reference>"
+        "\nClick on the corresponding reaction to select a user!"
+        "\n\n<search_results>"
+        "\n\n<page_reference>",
+        paged=True,
         buttons=[
+            get_previous_button("show_search_results"),
+            get_next_button("show_search_results"),
             Button(
                 label="🔍 Search again",
                 style=ButtonStyle.green,
-                takes_to="show_results",
+                takes_to="show_search_results",
             ),
             Button(label="⬅️ Back", takes_to="search", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
@@ -358,98 +369,104 @@ STRUCTURES = {
         "Here we have sorted all current users according to how well they match your interests"
         " and expertise. Feel free to browse and correct us if you find that our algorithm"
         " doesn't bring you the most suitable people!"
-        "\n\n**Results (<matches_from> - <matches_to>) from total <total_matches>**\n\n<best_matches>"
-        "\n\n(<matches_from> - <matches_to>) from total <total_matches>",
+        "\n\n**Results** <page_reference>"
+        "\nClick on the corresponding reaction to select a user!"
+        "\n\n<best_matches>"
+        "\n\n<page_reference>",
+        paged=True,
         buttons=[
-            Button(
-                label="◀️ Previous",
-                takes_to="best_matches",
-                condition="has_previous",
-                effect="best_matches_prev_page",
-            ),
-            Button(
-                label="Next ▶️",
-                takes_to="best_matches",
-                condition="has_next",
-                effect="best_matches_next_page",
-            ),
+            get_previous_button("best_matches"),
+            get_next_button("best_matches"),
             Button(label="⬅️ Back", takes_to="home", row=1),
             Button(
                 label="✏️ Change priority",
                 takes_to="change_priority",
                 style=ButtonStyle.primary,
-                effect="change_priority",
                 row=1,
             ),
         ],
     ),
     "change_priority": Structure(
         message=(
-            PRIORITY_MESSAGE := "✨✏️ Best matches **priority change**\n\n"
+            "✨✏️ Best matches **priority change**\n\n"
             "Here you can change the priority order of your best matches."
             "\n***Click a number-reaction "
-            f"({NUM_EMOJI[1]} - {NUM_EMOJI[PRIO_LIST_LENGTH]}) "
+            f"({NUM_EMOJI[0]} - {NUM_EMOJI[PRIO_LIST_LENGTH - 1]}) "
             "to add the corresponding element to your new order!***"
             f"\nIf you select {PRIO_LIST_LENGTH - 1} or less elements, "
             "the omitted ones won't be considered in the matching process."
             "\n\n__Your current order:__"
             "\n<best_match_prio_order>"
             "\n\n__The default order to select from:__"
-            f"\n{NUM_EMOJI[1]}**.** "
+            f"\n{NUM_EMOJI[0]}**.** "
             + "\n{}**.** ".join(DEFAULT_PRIO_ORDER).format(
-                *(list(NUM_EMOJI.values())[1 : PRIO_LIST_LENGTH + 1])
+                *NUM_EMOJI[1:PRIO_LIST_LENGTH]
             )
             + "\n\n__Your new order:__"
             "\n<best_match_prio_order_new>\n" + r"\_" * 50
         ),
+        button_effects="delete_message, reset_new_prio_order, reset_user_property_change",
         buttons=[
-            Button(
-                label="*️⃣ Default",
-                takes_to="default_best_matches_confirm",
-                effect="reload_message",
-            ),
-            Button(
-                label="🔄 Reset",
-                takes_to="change_priority",
-                effect="reload_message",
-                style=ButtonStyle.danger,
-            ),
-            Button(
-                label="⬅️ Back",
-                takes_to="best_matches",
-                effect="cancel_change_prio",
-                row=1,
-            ),
-            Button(
-                label="🏠 Home",
-                takes_to="home",
-                style=ButtonStyle.primary,
-                effect="cancel_change_prio",
-                row=1,
-            ),
+            Button(label="*️⃣ Default", takes_to="default_best_matches_confirm"),
+            Button(label="🔄 Reset", takes_to="change_priority", style=ButtonStyle.red),
+            Button(label="⬅️ Back", takes_to="best_matches", row=1),
+            Button(label="🏠 Home", takes_to="home", style=ButtonStyle.primary, row=1),
         ],
         changes_property="best_match_prio_order",
-        reactions=list(NUM_EMOJI.values())[:PRIO_LIST_LENGTH],
+        reactions=NUM_EMOJI[:PRIO_LIST_LENGTH],
     ),
     "default_best_matches_confirm": Structure(
-        message="The default priority order is:"
+        message="__The default priority order is:__"
         "\n1. "
         + "\n{}. ".join(DEFAULT_PRIO_ORDER).format(*range(2, PRIO_LIST_LENGTH + 1))
-        + "\n\nAre you sure you want to reset your priority order to this?\n"
+        + "\n\n**Are you sure** you want to reset your priority order to this?\n"
         + r"\_" * 50,
         buttons=[
-            Button(
-                label="No",
-                takes_to="change_priority",
-                effect="cancel_change_prio",
-                style=ButtonStyle.red,
-            ),
+            Button(label="No", takes_to="change_priority", effect="cancel_change_prio"),
             Button(
                 label="Yes",
                 takes_to="best_matches",
                 effect="default_best_matches",
-                style=ButtonStyle.green,
+                style=ButtonStyle.primary,
             ),
+        ],
+    ),
+    "interests": Structure(
+        message="↕️ Interests\n\nHere you can see, who is interested in you, "
+        "and whom did you send interest."
+        "\n\nNumber of interests sent: **<no_interests_sent>**"
+        "\nNumber of interests received: **<no_interests_received>**"
+        "\n\nClick the buttons to navigate!",
+        buttons=[
+            Button(label="⬆️ Interests sent", takes_to="interests_sent"),
+            Button(label="⬇️ Interests received", takes_to="interests_received"),
+            Button(label="⬅️ Back", takes_to="home", row=1),
+        ],
+    ),
+    "interests_sent": Structure(
+        message="⬆️ **Interests sent**\n\n"
+        "Here you can see, who you sent interest to."
+        "\n\n<page_reference>"
+        "\nClick on the corresponding reaction to manage the interest!"
+        "\n\n<interests_sent>"
+        "\n\n<page_reference>",
+        paged=True,
+        buttons=[
+            Button(label="⬅️ Back", takes_to="interests"),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
+        ],
+    ),
+    "interests_received": Structure(
+        message="⬇️ **Interests received**\n\n"
+        "Here you can see, who is interested in you."
+        "\n\n<page_reference>"
+        "\nClick on the corresponding reaction to manage the interest!"
+        "\n\n<interests_received>"
+        "\n\n<page_reference>",
+        paged=True,
+        buttons=[
+            Button(label="⬅️ Back", takes_to="interests"),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
         ],
     ),
 }
