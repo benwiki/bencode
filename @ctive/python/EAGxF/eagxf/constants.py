@@ -74,9 +74,9 @@ def PROFILE(search=False):  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
         (
-            "***====== Current filters ======***"
+            "***------ Current filters ------***"
             if search
-            else "***====== Your profile ======***"
+            else "***------ Your profile ------***"
         )
         # "\n\n**Metadata**"
         # "\n- 🆔 *User ID:* <id>"
@@ -85,12 +85,12 @@ def PROFILE(search=False):  # pylint: disable=invalid-name
         f"\n- ***Title:***  <{prefix}title>"
         f"\n- ***Location:***  <{prefix}location>"
         f"\n- ***Languages:***  <{prefix}languages>"
-        "\n***======❓Questions ======***"
+        "\n***------❓Questions ------***"
         f"{ANSWERS(search)}"
-        "\n***========================***"
+        "\n***------------------------***"
         f"\n- **Keywords:**  <{prefix}keywords>"
         f"\n- **Status:**  <{prefix}status>"
-        "\n***========================***"
+        "\n***------------------------***"
         + ("\n\nNumber of results: **<number_of_results>**" if search else "")
     )
 
@@ -130,6 +130,7 @@ COMMA_AND_SEPARATED_LANGUAGES = (
     "\n- (C) will accept Profile 2 and Profile 3 )"
 )
 
+
 def get_previous_button(structure_name: str) -> Button:
     return Button(
         label="◀️ Previous",
@@ -138,6 +139,7 @@ def get_previous_button(structure_name: str) -> Button:
         effect="go_to_previous_page",
     )
 
+
 def get_next_button(structure_name: str) -> Button:
     return Button(
         label="Next ▶️",
@@ -145,6 +147,7 @@ def get_next_button(structure_name: str) -> Button:
         condition="has_next_page",
         effect="go_to_next_page",
     )
+
 
 STRUCTURES = {
     "home": Structure(
@@ -405,7 +408,7 @@ STRUCTURES = {
             + "\n\n__Your new order:__"
             "\n<best_match_prio_order_new>\n" + r"\_" * 50
         ),
-        button_effects="delete_message, reset_new_prio_order, reset_user_property_change",
+        after_button_effects="delete_message, reset_new_prio_order, reset_user_property_change",
         buttons=[
             Button(label="*️⃣ Default", takes_to="default_best_matches_confirm"),
             Button(label="🔄 Reset", takes_to="change_priority", style=ButtonStyle.red),
@@ -434,8 +437,8 @@ STRUCTURES = {
     "interests": Structure(
         message="↕️ Interests\n\nHere you can see, who is interested in you, "
         "and whom did you send interest."
-        "\n\nNumber of interests sent: **<no_interests_sent>**"
-        "\nNumber of interests received: **<no_interests_received>**"
+        "\n\nNumber of interests sent: **<num_of_interests_sent>**"
+        "\nNumber of interests received: **<num_of_interests_received>**"
         "\n\nClick the buttons to navigate!",
         buttons=[
             Button(label="⬆️ Interests sent", takes_to="interests_sent"),

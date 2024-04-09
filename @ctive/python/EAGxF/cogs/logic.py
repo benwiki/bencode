@@ -3,7 +3,7 @@ import datetime
 import json
 import os
 import re
-from typing import Iterator, Sequence
+from typing import Callable, Iterator, Sequence
 
 import discord
 from discord import ButtonStyle
@@ -50,10 +50,9 @@ class Logic(commands.Cog):
         for structure_id, structure in STRUCTURES.items():
             structure.id = structure_id
             if structure.paged:
-                structure.button_effects = self.comma_add(
-                    structure.button_effects, "delete_message, empty_results"
+                structure.after_button_effects = self.comma_add(
+                    structure.after_button_effects, "delete_message, empty_results"
                 )
-                print(f"{structure.id} button effects:", structure.button_effects)
             for button in structure.buttons:
                 to_structure = STRUCTURES[button.takes_to]
                 if to_structure is None:
@@ -61,9 +60,9 @@ class Logic(commands.Cog):
                 button.callback = self.get_structure_callback(
                     to_structure, button=button
                 )
-                if structure.button_effects:
+                if structure.after_button_effects:
                     button.effects = self.comma_add(
-                        button.effects, structure.button_effects
+                        button.effects, structure.after_button_effects
                     )
 
     def comma_add(self, original: str, additional: str) -> str:
@@ -138,7 +137,7 @@ class Logic(commands.Cog):
         ):
             ok_btn = self.get_ok_button_for(user)
             view = self.get_view([ok_btn])
-            message = self.get_condition_message(structure.condition)
+            message = self.get_condition_message(structure.condition, user)
             add_reactions = False
         else:
             buttons = [
@@ -204,6 +203,7 @@ class Logic(commands.Cog):
                 status=Status.ANY,
             ),
             best_match_prio_order=list(range(PRIO_LIST_LENGTH)),
+            interests={"sent": [], "received": []},
         )
         self.save_user(user)
         return user
@@ -219,62 +219,20 @@ class Logic(commands.Cog):
         return [
             user.id
             for user in self.users.values()
-            if (
-                search_user.search_filter.name.lower() in user.name.lower()
-                or search_user.search_filter.name == "?"
-            )
-            and (
-                search_user.search_filter.title.lower() in user.title.lower()
-                or search_user.search_filter.title == "?"
-            )
-            and (
-                search_user.search_filter.location.lower() in user.location.lower()
-                or search_user.search_filter.location == "?"
-            )
-            and self.comma_and_search(
-                user.languages, search_user.search_filter.languages
-            )
-            and self.comma_and_search(user.keywords, search_user.search_filter.keywords)
-            and (
-                user.status != Status.INVISIBLE
-                and (
-                    search_user.search_filter.status == user.status
-                    or search_user.search_filter.status == Status.ANY
-                )
-            )
-            and self.comma_and_search(
-                user.questions["need_help"],
-                search_user.search_filter.questions["need_help"],
-            )
-            and self.comma_and_search(
-                user.questions["can_help"],
-                search_user.search_filter.questions["can_help"],
-            )
+            if user.search_applicable_for(search_user)
         ]
 
     def condition_true_for(self, condition: str, user: PlatformUser) -> bool:
         if condition == "profile_complete":
-            basic_filled = all(
-                getattr(user, attr) not in ["?", ""]
-                for attr in ["name", "title", "location", "languages", "keywords"]
-            )
-            questions_filled = all(
-                user.questions[question] not in ["?", ""]
-                for question in ["need_help", "can_help"]
-            )
-            return basic_filled and questions_filled
+            return user.is_complete()
         return False
 
-    def get_condition_message(self, condition: str) -> str:
+    def get_condition_message(self, condition: str, user: PlatformUser) -> str:
         if condition == "profile_complete":
-            return (
-                "*Your profile must be complete before you can "
-                "change your status ;-)*"
-                "\n*Fill out all details and try again!*"
-            )
+            return user.incomplete_msg()
         return ""
 
-    def check_conditions(self, user: PlatformUser) -> str:
+    def additional_info_with_side_effects(self, user: PlatformUser) -> str:
         if (
             not self.condition_true_for("profile_complete", user)
             and user.status != Status.INVISIBLE
@@ -297,7 +255,7 @@ class Logic(commands.Cog):
             return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
         elif condition == "prio_order_at_least_one":
             return bool(user.best_match_prio_order_new)
-        return False
+        raise ValueError(f"Invalid condition: {condition}")
 
     def replace_placeholders(self, message: str, user_id: int) -> str:
         user = self.users[user_id]
@@ -313,8 +271,11 @@ class Logic(commands.Cog):
             .replace("<keywords>", user.keywords)
             .replace("<status>", f"{STATUS_EMOJI[user.status]} ({user.status.value})")
             .replace("<number_of_results>", str(len(user.results)))
-            .replace("<search_results>", self.get_search_results_for(user))
-            .replace("<best_matches>", self.get_best_matches_for(user))
+            .replace("<search_results>", self.get_formatted_results_for(user))
+            .replace(
+                "<best_matches>",
+                self.get_formatted_results_for(user, self.get_score_summary(user)),
+            )
             .replace("<page_reference>", self.get_page_reference_for(user))
             .replace(
                 "<best_match_prio_order_new>",
@@ -329,15 +290,7 @@ class Logic(commands.Cog):
                 .replace("<search_location>", user.search_filter.location)
                 .replace("<search_languages>", user.search_filter.languages)
                 .replace("<search_keywords>", user.search_filter.keywords)
-                .replace(
-                    "<search_status>",
-                    (
-                        "?"
-                        if user.search_filter.status == Status.ANY
-                        else f"{STATUS_EMOJI[user.search_filter.status]} "
-                        f"({user.search_filter.status.value})"
-                    ),
-                )
+                .replace("<search_status>", self.get_search_status(user.search_filter))
                 .replace(
                     "<search_need_help>", user.search_filter.questions["need_help"]
                 )
@@ -345,18 +298,31 @@ class Logic(commands.Cog):
             )
         return message
 
+    def get_search_status(self, search_filter: PlatformUser) -> str:
+        return (
+            "?"
+            if search_filter.status == Status.ANY
+            else f"{STATUS_EMOJI[search_filter.status]} "
+            f"({search_filter.status.value})"
+        )
+
     def get_page_reference_for(self, user: PlatformUser) -> str:
         page_from = user.page * self.page_step + 1
         page_to = min((user.page + 1) * self.page_step, len(user.results))
         page_total = len(user.results)
         return f"**({page_from} - {page_to}) from total {page_total}**"
 
-    def get_search_results_for(self, user: PlatformUser) -> str:
+    def get_formatted_results_for(
+        self,
+        user: PlatformUser,
+        additional: Callable[[PlatformUser], str] | None = None,
+    ) -> str:
         separator = "***========================***\n"
         return separator + f"\n\n{separator}".join(
             f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
             f"(Status: {STATUS_EMOJI[u.status]} "
             f"({u.status.value}))"
+            f"{additional(u) if additional else ''}"
             f"\n- *Title:* {u.title}"
             f"\n- *Location:* {u.location}"
             f"\n- *Languages:* {u.languages}"
@@ -364,43 +330,27 @@ class Logic(commands.Cog):
             "\n***------❓Questions ------***"
             f"\n- *Need Help:* {u.questions['need_help']}"
             f"\n- *Can Help:* {u.questions['can_help']}"
-            for i, u in enumerate(self.get_results_for(user))
+            for i, u in enumerate(self.get_results_for(user, user.results))
         )
 
-    def get_results_for(self, user: PlatformUser):
-        return self.convert_users(self.paged_list_of(user.results, user))
+    def get_results_for(self, user: PlatformUser, results: list[int]):
+        return self.convert_users(self.paged_list_of(results, user))
 
-    def get_score_summary(self, user: PlatformUser, other: PlatformUser) -> str:
+    def get_score_summary(self, user: PlatformUser) -> Callable[[PlatformUser], str]:
         """Returns a summary of the scores of the user and the other user."""
-        return (
+        return lambda other: (
+            f"\n[SCORE: "
             f"(Lang: {self.get_language_score(user, other)}) "
             f"(Q: {self.get_question_score(user, other)}) "
             f"(Kw: {self.get_keywords_score(user, other)}) "
             f"(Title: {self.get_title_score(user, other)}) "
             f"(Loc: {self.get_location_distance(user, other)}) "
+            "]"
         )
 
     def to_emojis(self, number: int) -> str:
         """Converts a number to emojis. E.g. 123 -> ":one::two::three:"""
         return "".join(f":{NUM_NAME[int(n)]}:" for n in str(number))
-
-    def get_best_matches_for(self, user: PlatformUser) -> str:
-        """A list of the best matches for the user.
-        Matches get sorted by multiple criteria."""
-        return "\n".join(
-            f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
-            f"(Status: {STATUS_EMOJI[u.status]} "
-            f"({u.status.value}))"
-            f"\n[SCORE:  {self.get_score_summary(user, u)}]"
-            f"\n- *Title:* {u.title}"
-            f"\n- *Location:* {u.location}"
-            f"\n- *Languages:* {u.languages}"
-            f"\n- *Keywords:* {u.keywords}"
-            "\n***------❓Questions ------***"
-            f"\n- *Need Help:* {u.questions['need_help']}"
-            f"\n- *Can Help:* {u.questions['can_help']}"
-            for i, u in enumerate(self.get_results_for(user))
-        )
 
     def paged_list_of(self, lst: list, user: PlatformUser):
         return lst[user.page * self.page_step : (user.page + 1) * self.page_step]
@@ -473,16 +423,6 @@ class Logic(commands.Cog):
         return sum(
             self.not_alnum.sub("", kw.strip().lower()) in other.location.lower()
             for kw in user.location.split(" ")
-        )
-
-    def comma_and_search(self, a: str, b: str) -> bool:
-        """Returns True if... for God's sake, just read the code!"""
-        return (
-            any(
-                all(kw.strip().lower() in a.lower() for kw in block.split("&"))
-                for block in b.split(", ")
-            )
-            or b == "?"
         )
 
     @commands.command(name="enter")
@@ -578,7 +518,7 @@ class Logic(commands.Cog):
             setattr(change_user, change, changed_to)
 
         message = f'✅ {pronome} {changed} {has_have} been changed to "{changed_to}"!'
-        message += self.check_conditions(user)
+        message += self.additional_info_with_side_effects(user)
 
         user.last_msg = await msg.author.send(SPACER + message, view=view)
         user.change = ""
@@ -661,7 +601,6 @@ class Logic(commands.Cog):
         if user.last_msg:
             await user.last_msg.delete()
             user.last_msg = None
-            print("Deleted last message")
 
     def get_ok_button_for(
         self, user: PlatformUser, default_structure: str = "home"
@@ -725,8 +664,6 @@ class Logic(commands.Cog):
             file.write(UserSaver.dumps(user))
 
     def init_users_path(self) -> str:
-        # curdir = __file__.replace("\\", "/")
-        # path = "/".join(curdir.split("/")[:-6]) + "/eagxf_users"
         path = f"{USERS_FOLDER_PATH}/{APP_NAME}_users"
         if not os.path.exists(path):
             os.makedirs(path)

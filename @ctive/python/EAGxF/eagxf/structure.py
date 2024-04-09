@@ -12,5 +12,6 @@ class Structure:
     changes_property: str | None = None
     comma_separated: bool = field(default_factory=bool)
     condition: str = ""
-    button_effects: str = ""  # these effects will run AFTER the button's own effects
+    # these effects will run AFTER the button's own effects
+    after_button_effects: str = ""
     paged: bool = field(default_factory=bool)
