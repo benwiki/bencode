@@ -26,7 +26,6 @@ class PlatformUser:
 
     # Properties to use only in runtime
     best_match_prio_order_new: list[int] = field(default_factory=list)
-    show_save_btn: bool = field(default_factory=bool)
     results: list[int] = field(default_factory=list)
     selected_user: "PlatformUser | None" = None
     search_filter: "PlatformUser | None" = None
@@ -34,9 +33,9 @@ class PlatformUser:
     last_view: discord.ui.View | None = None
     last_msg: discord.Message | None = None
     last_structure: Structure | None = None
+    added_save_btn: bool = False
     change: str = ""
     page: int = 0
-
 
     def is_complete(self) -> bool:
         basic_filled = all(

@@ -20,6 +20,7 @@ from eagxf.constants import (
     NUM_EMOJI,
     NUM_NAME,
     PRIO_LIST_LENGTH,
+    PRIORITY_MESSAGE,
     SPACER,
     STATUS_EMOJI,
     STRUCTURES,
@@ -52,7 +53,7 @@ class Logic(commands.Cog):
             if structure.paged:
                 self.init_paged_structure(structure)
             for button in structure.buttons:
-                self.init_structure_button(button, structure)
+                self.init_button_with(button, structure)
 
     def init_paged_structure(self, structure: Structure):
         structure.after_button_effects = self.comma_add(
@@ -76,11 +77,10 @@ class Logic(commands.Cog):
             else:
                 button.row = 1
 
-    def init_structure_button(self, button: Button, structure: Structure):
-        to_structure = STRUCTURES[button.takes_to]
+    def init_button_with(self, button: Button, structure: Structure):
+        to_structure = STRUCTURES.get(button.takes_to)
         if to_structure is None:
             print(f"Structure with id {button.takes_to} not found!")
-            return
         button.callback = self.get_structure_callback(  # type: ignore
             to_structure, button=button
         )
@@ -110,11 +110,16 @@ class Logic(commands.Cog):
             self.get_status,
             self.get_title_score,
         ]
+        self.REACTION_FUNCTIONS: dict[str, Callable] = {  # pylint: disable=C0103
+            "status": self.handle_status_change,
+            "best_match_prio_order": self.handle_best_match_prio_order,
+            "selected_user": self.handle_selected_user,
+        }
         self.DEBUGGING = False  # pylint: disable=C0103
         self.page_step = 10
 
     def get_structure_callback(
-        self, structure: Structure, button: Button | None = None
+        self, structure: Structure | None, button: Button | None = None
     ):
         async def callback(interaction: discord.Interaction):
             await interaction.response.defer()
@@ -122,7 +127,12 @@ class Logic(commands.Cog):
             if button and button.effects:
                 for effect in button.effects.split(", "):
                     await self.affect(effect, user)
-            await self.send_structure(user, structure)
+            if button and button.takes_to == "<back>" and user.back_to_structure:
+                await self.send_structure(user, user.back_to_structure)
+            elif structure:
+                await self.send_structure(user, structure)
+            else:
+                print(f"No structure found for the button '{button}'!")
 
         return callback
 
@@ -186,7 +196,7 @@ class Logic(commands.Cog):
                 if self.btn_condition_true_for(user, button.condition)
             ]
             view = self.get_view(buttons)
-            message = self.replace_placeholders(structure.message, user.id)
+            message = self.replace_placeholders(structure.message, user)
             add_reactions = True
         user.last_view = view
 
@@ -293,8 +303,6 @@ class Logic(commands.Cog):
             return user.page < (len(user.results) - 1) // self.page_step
         if condition == "prio_order_full":
             return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
-        if condition == "prio_order_at_least_one":
-            return bool(user.best_match_prio_order_new)
         if condition in ["interest_sent", "interest_not_sent"]:
             interest_sent = (
                 user.selected_user is not None
@@ -308,8 +316,7 @@ class Logic(commands.Cog):
         print(f"Invalid condition: {condition}")
         return False
 
-    def replace_placeholders(self, message: str, user_id: int) -> str:
-        user = self.users[user_id]
+    def replace_placeholders(self, message: str, user: PlatformUser) -> str:
         message = (
             message.replace("<id>", str(user.id))
             .replace("<date_joined>", str(user.date_joined))
@@ -599,22 +606,18 @@ class Logic(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         user = self.users[payload.user_id]
-        search = user.change.startswith("search_")
         change = user.change
-        if search:
-            change = user.change[7:]
+        if change.startswith("search_"):
+            change = change[7:]
 
         if user.last_msg and payload.message_id == user.last_msg.id:
-            if change == "status":
-                await self.handle_status_change(user, str(payload.emoji), search)
-            elif change == "best_match_prio_order":
-                await self.handle_best_match_prio_order(user, payload.emoji)
-            elif change == "selected_user":
-                await self.handle_selected_user(user, payload.emoji)
+            if handle_reaction := self.REACTION_FUNCTIONS.get(change):
+                await handle_reaction(user, payload.emoji.name)
 
-    async def handle_status_change(self, user: PlatformUser, emoji: str, search: bool):
+    async def handle_status_change(self, user: PlatformUser, emoji: str):
         if not user.search_filter:
             return  # only because of type hinting
+        search = user.change.startswith("search_")
         change_user = user.search_filter if search else user
         pronome = "Your" if not search else "The filter's"
 
@@ -638,10 +641,10 @@ class Logic(commands.Cog):
         self.save_user(user)
 
     async def handle_best_match_prio_order(
-        self, user: PlatformUser, emoji: discord.PartialEmoji, remove: bool = False
+        self, user: PlatformUser, emoji: str, remove: bool = False
     ):
-        num = self.validate_number_reaction(emoji.name, user)
-        if not num:
+        num = self.validate_number_reaction(emoji, user)
+        if not (num and user.last_view and user.last_msg):
             return
 
         if remove:
@@ -649,21 +652,22 @@ class Logic(commands.Cog):
         else:
             user.best_match_prio_order_new.append(num - 1)
 
-        atleast1 = self.btn_condition_true_for(user, "prio_order_at_least_one")
-        if user.last_view:
-            if not atleast1 and remove:
-                user.show_save_btn = False
-                user.last_view.remove_item(self.save_btn)
-            elif not remove and not user.show_save_btn:
-                user.show_save_btn = True
-                user.last_view.add_item(self.save_btn)
+        none_selected = user.best_match_prio_order_new == []
 
-        await self.send_structure(user, STRUCTURES["change_priority"])  # type: ignore
+        if remove and none_selected:
+            user.last_view.remove_item(self.save_btn)
+            user.added_save_btn = False
+        elif not remove and not user.added_save_btn:
+            user.last_view.add_item(self.save_btn)
+            user.added_save_btn = True
 
-    async def handle_selected_user(
-        self, user: PlatformUser, emoji: discord.PartialEmoji
-    ):
-        num = self.validate_number_reaction(emoji.name, user)
+        await user.last_msg.edit(
+            content=SPACER + self.replace_placeholders(PRIORITY_MESSAGE, user),
+            view=user.last_view,
+        )
+
+    async def handle_selected_user(self, user: PlatformUser, emoji: str):
+        num = self.validate_number_reaction(emoji, user)
         if not num:
             return
         selected_user_id = user.results[user.page * self.page_step + num - 1]
@@ -690,7 +694,7 @@ class Logic(commands.Cog):
         if user.last_msg and payload.message_id == user.last_msg.id:
             if user.change == "best_match_prio_order":
                 await self.handle_best_match_prio_order(
-                    user, payload.emoji, remove=True
+                    user, payload.emoji.name, remove=True
                 )
 
     async def delete_last_msg_of(self, user: PlatformUser):

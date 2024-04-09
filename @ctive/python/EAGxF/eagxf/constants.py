@@ -371,7 +371,7 @@ STRUCTURES = {
     ),
     "change_priority": Structure(
         message=(
-            "✨✏️ Best matches **priority change**"
+            PRIORITY_MESSAGE := "✨✏️ Best matches **priority change**"
             "\n\nHere you can change the priority order of your best matches."
             "\n***Click a number-reaction "
             f"({NUM_EMOJI[0]} - {NUM_EMOJI[PRIO_LIST_LENGTH - 1]}) "
@@ -470,7 +470,7 @@ STRUCTURES = {
                 condition="interest_sent",
                 effect="cancel_interest",
             ),
-            Button(label="⬅️ Back", takes_to="show_search_results", row=1),
+            Button(label="⬅️ Back", takes_to="<back>", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
