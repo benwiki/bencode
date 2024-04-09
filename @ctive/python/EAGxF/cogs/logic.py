@@ -29,7 +29,7 @@ from eagxf.date import Date
 from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
 from eagxf.structure import Structure
-from eagxf.user_saver import UserSaver
+from eagxf.user_saver import UserManager
 
 
 class Logic(commands.Cog):
@@ -50,25 +50,44 @@ class Logic(commands.Cog):
         for structure_id, structure in STRUCTURES.items():
             structure.id = structure_id
             if structure.paged:
-                structure.after_button_effects = self.comma_add(
-                    structure.after_button_effects, "delete_message, empty_results"
-                )
+                self.init_paged_structure(structure)
             for button in structure.buttons:
-                to_structure = STRUCTURES[button.takes_to]
-                if to_structure is None:
-                    raise ValueError(f"Structure with id {button.takes_to} not found!")
-                button.callback = self.get_structure_callback(
-                    to_structure, button=button
-                )
-                if structure.after_button_effects:
-                    button.effects = self.comma_add(
-                        button.effects, structure.after_button_effects
-                    )
+                self.init_structure_button(button, structure)
+
+    def init_paged_structure(self, structure: Structure):
+        structure.after_button_effects = self.comma_add(
+            structure.after_button_effects, "delete_message"
+        )
+        self.push_buttons_down_for(structure)
+        for button in structure.buttons:
+            button.effects = self.comma_add(button.effects, "empty_results")
+        structure.buttons += Button.get_navigation_buttons(structure.id)
+        structure.changes_property = "selected_user"
 
     def comma_add(self, original: str, additional: str) -> str:
         if original:
             return f"{original}, {additional}"
         return additional
+
+    def push_buttons_down_for(self, structure: Structure):
+        for button in structure.buttons:
+            if button.row:
+                button.row += 1
+            else:
+                button.row = 1
+
+    def init_structure_button(self, button: Button, structure: Structure):
+        to_structure = STRUCTURES[button.takes_to]
+        if to_structure is None:
+            print(f"Structure with id {button.takes_to} not found!")
+            return
+        button.callback = self.get_structure_callback(  # type: ignore
+            to_structure, button=button
+        )
+        if structure.after_button_effects:
+            button.effects = self.comma_add(
+                button.effects, structure.after_button_effects
+            )
 
     def init_other_stuff(self) -> None:
         self.home_btn: DCButton = DCButton(label="🏠 Home", style=ButtonStyle.primary)
@@ -91,7 +110,7 @@ class Logic(commands.Cog):
             self.get_status,
             self.get_title_score,
         ]
-        self.DEBUGGING = True  # pylint: disable=C0103
+        self.DEBUGGING = False  # pylint: disable=C0103
         self.page_step = 10
 
     def get_structure_callback(
@@ -126,6 +145,27 @@ class Logic(commands.Cog):
             user.change = ""
         if effect == "empty_results":
             user.results = []
+            user.page = 0
+        if effect == "send_interest":
+            self.send_interest(user)
+        if effect == "cancel_interest":
+            self.cancel_interest(user)
+
+    def send_interest(self, user: PlatformUser):
+        if not user.selected_user:
+            return
+        user.selected_user.interests["received"].append(user.id)
+        user.interests["sent"].append(user.selected_user.id)
+        self.save_user(user.selected_user)
+        self.save_user(user)
+
+    def cancel_interest(self, user: PlatformUser):
+        if not user.selected_user:
+            return
+        user.selected_user.interests["received"].remove(user.id)
+        user.interests["sent"].remove(user.selected_user.id)
+        self.save_user(user.selected_user)
+        self.save_user(user)
 
     async def send_structure(self, user: PlatformUser, structure: Structure):
         user.back_to_structure = user.last_structure
@@ -166,16 +206,14 @@ class Logic(commands.Cog):
         await self.add_special_reactions_for(user, structure)
 
     def collect_data_for(self, user: PlatformUser, structure: Structure):
-        if not structure.paged:
-            return
         if structure.id in ["search", "show_search_results"]:
             user.results = self.search_users_for(user)
         if structure.id == "best_matches":
             user.results = self.search_best_matches_for(user)
         if structure.id == "interests_sent":
-            pass
+            user.results = user.interests["sent"]
         if structure.id == "interests_received":
-            pass
+            user.results = user.interests["received"]
 
     def search_best_matches_for(self, user: PlatformUser) -> list[int]:
         matches = self.users.copy()
@@ -210,7 +248,9 @@ class Logic(commands.Cog):
 
     async def add_special_reactions_for(self, user: PlatformUser, structure: Structure):
         if structure.paged and user.last_msg:
-            for i in range(min(self.page_step, len(user.results))):
+            for i in range(
+                min(self.page_step, len(user.results) - user.page * self.page_step)
+            ):
                 await user.last_msg.add_reaction(NUM_EMOJI[i])
 
     def search_users_for(self, search_user: PlatformUser) -> list[int]:
@@ -249,13 +289,24 @@ class Logic(commands.Cog):
             return True
         if condition == "has_previous_page":
             return user.page > 0
-        elif condition == "has_next_page":
-            return user.page < len(user.results) // self.page_step - 1
-        elif condition == "prio_order_full":
+        if condition == "has_next_page":
+            return user.page < (len(user.results) - 1) // self.page_step
+        if condition == "prio_order_full":
             return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
-        elif condition == "prio_order_at_least_one":
+        if condition == "prio_order_at_least_one":
             return bool(user.best_match_prio_order_new)
-        raise ValueError(f"Invalid condition: {condition}")
+        if condition in ["interest_sent", "interest_not_sent"]:
+            interest_sent = (
+                user.selected_user is not None
+                and user.id in user.selected_user.interests["received"]
+                and user.selected_user.id in user.interests["sent"]
+            )
+            if condition == "interest_sent":
+                return interest_sent
+            if condition == "interest_not_sent":
+                return not interest_sent
+        print(f"Invalid condition: {condition}")
+        return False
 
     def replace_placeholders(self, message: str, user_id: int) -> str:
         user = self.users[user_id]
@@ -282,6 +333,13 @@ class Logic(commands.Cog):
                 self.format_priority_order(user, new=True),
             )
             .replace("<best_match_prio_order>", self.format_priority_order(user))
+            .replace("<num_of_interests_sent>", str(len(user.interests["sent"])))
+            .replace(
+                "<num_of_interests_received>", str(len(user.interests["received"]))
+            )
+            .replace("<interests_sent>", self.get_interests(user, "sent"))
+            .replace("<interests_received>", self.get_interests(user, "received"))
+            .replace("<selected_user_name>", self.get_name_of(user.selected_user))
         )
         if user.search_filter:
             message = (
@@ -297,6 +355,19 @@ class Logic(commands.Cog):
                 .replace("<search_can_help>", user.search_filter.questions["can_help"])
             )
         return message
+
+    def get_name_of(self, user: PlatformUser | None) -> str:
+        return user.name if user else ""
+
+    def get_interests(self, user: PlatformUser, kind: str) -> str:
+        return "\n".join(
+            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} .: ***{u.name}*** :. (Title: *{u.title}*)"
+            for i, u in enumerate(self.get_results_for(user, user.interests[kind]))
+        )
+
+    def prefix(self, i: int, user: PlatformUser) -> str:
+        i = i + user.page * self.page_step
+        return f"**{i // self.page_step}** " if i >= self.page_step else "   "
 
     def get_search_status(self, search_filter: PlatformUser) -> str:
         return (
@@ -334,7 +405,7 @@ class Logic(commands.Cog):
         )
 
     def get_results_for(self, user: PlatformUser, results: list[int]):
-        return self.convert_users(self.paged_list_of(results, user))
+        return self.users_by_ids(self.paged_list_of(results, user))
 
     def get_score_summary(self, user: PlatformUser) -> Callable[[PlatformUser], str]:
         """Returns a summary of the scores of the user and the other user."""
@@ -355,7 +426,7 @@ class Logic(commands.Cog):
     def paged_list_of(self, lst: list, user: PlatformUser):
         return lst[user.page * self.page_step : (user.page + 1) * self.page_step]
 
-    def convert_users(self, user_ids: list[int]) -> Iterator[PlatformUser]:
+    def users_by_ids(self, user_ids: list[int]) -> Iterator[PlatformUser]:
         return map(lambda x: self.users[x], user_ids)
 
     def get_priority(self, user: PlatformUser, u: PlatformUser) -> tuple:
@@ -476,6 +547,7 @@ class Logic(commands.Cog):
             or user.change
             in [
                 "best_match_prio_order",
+                "selected_user",
                 "status",
                 "",
             ]
@@ -527,46 +599,49 @@ class Logic(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         user = self.users[payload.user_id]
-        if not user.search_filter:
-            return
-
-        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
-        view = self.get_view([ok_btn, self.home_btn])
-
         search = user.change.startswith("search_")
-        pronome = "Your" if not search else "The filter's"
         change = user.change
-        change_user = user.search_filter if search else user
         if search:
             change = user.change[7:]
 
         if user.last_msg and payload.message_id == user.last_msg.id:
             if change == "status":
-                emoji = str(payload.emoji)
-                if not (status := EMOJI_STATUS.get(emoji)):
-                    if emoji == "❓" and search:
-                        status = Status.ANY
-                    else:
-                        return
-                change_user.status = status
-                await self.delete_last_msg_of(user)
-                dc_user = await self.client.fetch_user(user.id)
-                user.last_msg = await dc_user.send(
-                    SPACER
-                    + f"✅ {pronome} status has been changed to {emoji} ({status.value})!",
-                    view=view,
-                )
-                self.save_user(user)
-            if change == "best_match_prio_order":
+                await self.handle_status_change(user, str(payload.emoji), search)
+            elif change == "best_match_prio_order":
                 await self.handle_best_match_prio_order(user, payload.emoji)
+            elif change == "selected_user":
+                await self.handle_selected_user(user, payload.emoji)
+
+    async def handle_status_change(self, user: PlatformUser, emoji: str, search: bool):
+        if not user.search_filter:
+            return  # only because of type hinting
+        change_user = user.search_filter if search else user
+        pronome = "Your" if not search else "The filter's"
+
+        if not (status := EMOJI_STATUS.get(emoji)):
+            if emoji == "❓" and search:
+                status = Status.ANY
+            else:
+                return
+        change_user.status = status
+
+        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
+        view = self.get_view([ok_btn, self.home_btn])
+        dc_user = await self.client.fetch_user(user.id)
+
+        await self.delete_last_msg_of(user)
+        user.last_msg = await dc_user.send(
+            SPACER
+            + f"✅ {pronome} status has been changed to {emoji} ({status.value})!",
+            view=view,
+        )
+        self.save_user(user)
 
     async def handle_best_match_prio_order(
         self, user: PlatformUser, emoji: discord.PartialEmoji, remove: bool = False
     ):
-        if emoji.name not in NUM_EMOJI:
-            return
-        num = NUM_EMOJI.index(emoji.name) + 1
-        if not (1 <= num <= PRIO_LIST_LENGTH) or not user.last_msg:
+        num = self.validate_number_reaction(emoji.name, user)
+        if not num:
             return
 
         if remove:
@@ -584,6 +659,27 @@ class Logic(commands.Cog):
                 user.last_view.add_item(self.save_btn)
 
         await self.send_structure(user, STRUCTURES["change_priority"])  # type: ignore
+
+    async def handle_selected_user(
+        self, user: PlatformUser, emoji: discord.PartialEmoji
+    ):
+        num = self.validate_number_reaction(emoji.name, user)
+        if not num:
+            return
+        selected_user_id = user.results[user.page * self.page_step + num - 1]
+        user.selected_user = self.users[selected_user_id]
+        await self.delete_last_msg_of(user)
+        await self.send_structure(user, STRUCTURES["selected_user"])  # type: ignore
+
+    def validate_number_reaction(
+        self, emoji_name: str, user: PlatformUser
+    ) -> int | None:
+        if emoji_name not in NUM_EMOJI:
+            return None
+        num = NUM_EMOJI.index(emoji_name) + 1
+        if not (1 <= num <= self.page_step) or not user.last_msg:
+            return None
+        return num
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -648,20 +744,20 @@ class Logic(commands.Cog):
         }
 
     def valid_file_name(self, name: str) -> str:
-        if name.endswith(".txt") and (id_str := name[:-4]).isdecimal():
+        if name.endswith(".json") and (id_str := name[:-5]).isdecimal():
             return id_str
         return ""
 
     def load_user(self, id_str: str) -> PlatformUser:
-        filename = f"{self.users_path}/{id_str}.txt"
+        filename = f"{self.users_path}/{id_str}.json"
         with open(filename, "r", encoding="utf-8") as file:
             raw_user: dict = json.loads(file.read())
-            return UserSaver.load(raw_user)
+            return UserManager.load(raw_user)
 
     def save_user(self, user: PlatformUser):
-        filename = f"{self.users_path}/{user.id}.txt"
+        filename = f"{self.users_path}/{user.id}.json"
         with open(filename, "w", encoding="utf-8") as file:
-            file.write(UserSaver.dumps(user))
+            file.write(UserManager.dumps(user))
 
     def init_users_path(self) -> str:
         path = f"{USERS_FOLDER_PATH}/{APP_NAME}_users"

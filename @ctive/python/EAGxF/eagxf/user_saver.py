@@ -5,7 +5,7 @@ from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
 
 
-class UserSaver:
+class UserManager:
     @staticmethod
     def dumps(user: PlatformUser):
         return json.dumps(
@@ -20,7 +20,9 @@ class UserSaver:
                 "keywords": user.keywords,
                 "status": user.status.value,
                 "best_match_prio_order": user.best_match_prio_order,
-            }
+                "interests": user.interests,
+            },
+            indent=4,
         )
 
     @staticmethod
@@ -37,6 +39,7 @@ class UserSaver:
             keywords=user_data["keywords"],
             status=Status(user_data["status"]),
             best_match_prio_order=user_data["best_match_prio_order"],
+            interests=user_data["interests"],
             search_filter=PlatformUser(
                 questions={"need_help": "?", "can_help": "?"}, status=Status.ANY
             ),

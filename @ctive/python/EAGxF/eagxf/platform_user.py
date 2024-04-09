@@ -25,16 +25,18 @@ class PlatformUser:
     interests: dict[str, list[int]] = field(default_factory=dict)
 
     # Properties to use only in runtime
-    last_msg: discord.Message | None = None
-    last_view: discord.ui.View | None = None
-    last_structure: Structure | None = None
-    back_to_structure: Structure | None = None
-    search_filter: "PlatformUser | None" = None
-    results: list[int] = field(default_factory=list)
-    page: int = 0
     best_match_prio_order_new: list[int] = field(default_factory=list)
     show_save_btn: bool = field(default_factory=bool)
+    results: list[int] = field(default_factory=list)
+    selected_user: "PlatformUser | None" = None
+    search_filter: "PlatformUser | None" = None
+    back_to_structure: Structure | None = None
+    last_view: discord.ui.View | None = None
+    last_msg: discord.Message | None = None
+    last_structure: Structure | None = None
     change: str = ""
+    page: int = 0
+
 
     def is_complete(self) -> bool:
         basic_filled = all(

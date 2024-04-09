@@ -1,3 +1,5 @@
+from calendar import c
+
 import discord
 from discord import ButtonStyle
 
@@ -129,24 +131,6 @@ COMMA_AND_SEPARATED_LANGUAGES = (
     "\n- (B) will only accept Profile 3"
     "\n- (C) will accept Profile 2 and Profile 3 )"
 )
-
-
-def get_previous_button(structure_name: str) -> Button:
-    return Button(
-        label="◀️ Previous",
-        takes_to=structure_name,
-        condition="has_previous_page",
-        effect="go_to_previous_page",
-    )
-
-
-def get_next_button(structure_name: str) -> Button:
-    return Button(
-        label="Next ▶️",
-        takes_to=structure_name,
-        condition="has_next_page",
-        effect="go_to_next_page",
-    )
 
 
 STRUCTURES = {
@@ -348,16 +332,14 @@ STRUCTURES = {
         comma_separated=True,
     ),
     "show_search_results": Structure(
-        message="🔍 **Search Results**\n\n"
-        f"{PROFILE(search=True)}"
+        message="🔍 **Search Results**"
+        f"\n\n{PROFILE(search=True)}"
         "\n\n**Results** <page_reference>"
         "\nClick on the corresponding reaction to select a user!"
         "\n\n<search_results>"
         "\n\n<page_reference>",
         paged=True,
         buttons=[
-            get_previous_button("show_search_results"),
-            get_next_button("show_search_results"),
             Button(
                 label="🔍 Search again",
                 style=ButtonStyle.green,
@@ -368,8 +350,8 @@ STRUCTURES = {
         ],
     ),
     "best_matches": Structure(
-        message="✨ **Best matches**\n\n"
-        "Here we have sorted all current users according to how well they match your interests"
+        message="✨ **Best matches**"
+        "\n\nHere we have sorted all current users according to how well they match your interests"
         " and expertise. Feel free to browse and correct us if you find that our algorithm"
         " doesn't bring you the most suitable people!"
         "\n\n**Results** <page_reference>"
@@ -378,8 +360,6 @@ STRUCTURES = {
         "\n\n<page_reference>",
         paged=True,
         buttons=[
-            get_previous_button("best_matches"),
-            get_next_button("best_matches"),
             Button(label="⬅️ Back", takes_to="home", row=1),
             Button(
                 label="✏️ Change priority",
@@ -391,8 +371,8 @@ STRUCTURES = {
     ),
     "change_priority": Structure(
         message=(
-            "✨✏️ Best matches **priority change**\n\n"
-            "Here you can change the priority order of your best matches."
+            "✨✏️ Best matches **priority change**"
+            "\n\nHere you can change the priority order of your best matches."
             "\n***Click a number-reaction "
             f"({NUM_EMOJI[0]} - {NUM_EMOJI[PRIO_LIST_LENGTH - 1]}) "
             "to add the corresponding element to your new order!***"
@@ -435,7 +415,8 @@ STRUCTURES = {
         ],
     ),
     "interests": Structure(
-        message="↕️ Interests\n\nHere you can see, who is interested in you, "
+        message="↕️ Interests"
+        "\n\nHere you can see, who is interested in you, "
         "and whom did you send interest."
         "\n\nNumber of interests sent: **<num_of_interests_sent>**"
         "\nNumber of interests received: **<num_of_interests_received>**"
@@ -447,8 +428,8 @@ STRUCTURES = {
         ],
     ),
     "interests_sent": Structure(
-        message="⬆️ **Interests sent**\n\n"
-        "Here you can see, who you sent interest to."
+        message="⬆️ **Interests sent**"
+        "\n\nHere you can see, who you sent interest to."
         "\n\n<page_reference>"
         "\nClick on the corresponding reaction to manage the interest!"
         "\n\n<interests_sent>"
@@ -460,8 +441,8 @@ STRUCTURES = {
         ],
     ),
     "interests_received": Structure(
-        message="⬇️ **Interests received**\n\n"
-        "Here you can see, who is interested in you."
+        message="⬇️ **Interests received**"
+        "\n\nHere you can see, who is interested in you."
         "\n\n<page_reference>"
         "\nClick on the corresponding reaction to manage the interest!"
         "\n\n<interests_received>"
@@ -470,6 +451,27 @@ STRUCTURES = {
         buttons=[
             Button(label="⬅️ Back", takes_to="interests"),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
+        ],
+    ),
+    "selected_user": Structure(
+        message="You have selected ***<selected_user_name>*** !"
+        "\n\n<selected_user_profile>"
+        "\n\nWhat do you want to do with this user?",
+        buttons=[
+            Button(
+                label="⬆️ Send interest",
+                takes_to="selected_user",
+                condition="interest_not_sent",
+                effect="send_interest",
+            ),
+            Button(
+                label="❌ Cancel interest",
+                takes_to="selected_user",
+                condition="interest_sent",
+                effect="cancel_interest",
+            ),
+            Button(label="⬅️ Back", takes_to="show_search_results", row=1),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
         ],
     ),
 }
