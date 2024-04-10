@@ -95,7 +95,7 @@ class Logic(commands.Cog):
         self.save_btn = Button(
             label="💾 Save",
             takes_to="best_matches",
-            effect="save_prio",
+            effect="save_prio, delete_message, reset_new_prio_order",
             style=ButtonStyle.green,
         )
         self.save_btn.callback = self.get_structure_callback(  # type: ignore
@@ -551,13 +551,7 @@ class Logic(commands.Cog):
         user = self.users.get(msg.author.id)
         if (
             user is None
-            or user.change
-            in [
-                "best_match_prio_order",
-                "selected_user",
-                "status",
-                "",
-            ]
+            or user.change in [*self.REACTION_FUNCTIONS, ""]
             or not user.search_filter
         ):
             return
@@ -581,13 +575,8 @@ class Logic(commands.Cog):
         changed_to = msg.content
 
         if kw_needed:
-            evenly_spaced_kws = ", ".join(
-                " & ".join(
-                    w.capitalize() if change == "languages" else w
-                    for w in map(str.strip, kw.split("&"))
-                )
-                for kw in map(str.strip, msg.content.split(","))
-            )
+            need_caps = change == "languages"
+            evenly_spaced_kws = self.evenly_space(msg.content, need_caps)
             changed_to = evenly_spaced_kws
 
         if change in ["need_help", "can_help"]:
@@ -602,6 +591,15 @@ class Logic(commands.Cog):
         user.last_msg = await msg.author.send(SPACER + message, view=view)
         user.change = ""
         self.save_user(user)
+
+    def evenly_space(self, text: str, capitalize: bool) -> str:
+        return ", ".join(
+            " & ".join(
+                w.capitalize() if capitalize else w
+                for w in map(str.strip, kw.split("&"))
+            )
+            for kw in map(str.strip, text.split(","))
+        )
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):

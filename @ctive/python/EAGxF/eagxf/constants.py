@@ -1,5 +1,3 @@
-from calendar import c
-
 import discord
 from discord import ButtonStyle
 
