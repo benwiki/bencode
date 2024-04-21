@@ -118,7 +118,7 @@ class Logic(commands.Cog):
             "best_match_prio_order": self.handle_best_match_prio_order,
             "selected_user": self.handle_selected_user,
         }
-        self.DEBUGGING = True  # pylint: disable=C0103
+        self.DEBUGGING = False  # pylint: disable=C0103
         self.page_step = 10
         asyncio.create_task(self.refresh())
 
@@ -128,7 +128,6 @@ class Logic(commands.Cog):
             for user in self.users.values():
                 if user.last_structure:
                     await self.send_structure(user, user.last_structure)
-                print(f"Refreshed user {user.id} at {datetime.datetime.now()}")
 
     def get_structure_callback(
         self, structure: Structure | None, button: Button | None = None
@@ -700,7 +699,9 @@ class Logic(commands.Cog):
         return num
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
+    async def on_raw_reaction_remove(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         user = self.users[payload.user_id]
         if not user.search_filter:
             return
