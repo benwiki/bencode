@@ -16,7 +16,7 @@ class PlatformUser:
     id: int = 0
     date_joined: Date = field(default_factory=lambda: Date(1, 1, 2000))
     name: str = "?"  # max 50 chars
-    title: str = "?"  # max 100 chars
+    headline: str = "?"  # max 100 chars
     location: str = "?"
     languages: str = "?"  # comma separated
     questions: dict[str, str] = field(default_factory=dict)

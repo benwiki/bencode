@@ -111,7 +111,7 @@ class Logic(commands.Cog):
             self.get_keywords_score,
             self.get_location_distance,
             self.get_status,
-            self.get_title_score,
+            self.get_headline_score,
         ]
         self.REACTION_FUNCTIONS: dict[str, Callable] = {  # pylint: disable=C0103
             "status": self.handle_status_change,
@@ -381,7 +381,7 @@ class Logic(commands.Cog):
 
     def get_interests(self, user: PlatformUser, kind: str) -> str:
         return "\n".join(
-            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} .: ***{u.name}*** :. (Title: *{u.title}*)"
+            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} .: ***{u.name}*** :. (Headline: *{u.headline}*)"
             for i, u in enumerate(self.get_results_for(user, user.interests[kind]))
         )
 
@@ -439,7 +439,7 @@ class Logic(commands.Cog):
             f"(Lang: {self.get_language_score(user, other)}) "
             f"(Q: {self.get_question_score(user, other)}) "
             f"(Kw: {self.get_keywords_score(user, other)}) "
-            f"(Title: {self.get_title_score(user, other)}) "
+            f"(H.line: {self.get_headline_score(user, other)}) "
             f"(Loc: {self.get_location_distance(user, other)}) "
             "]"
         )
@@ -499,12 +499,12 @@ class Logic(commands.Cog):
             for kw in user.keywords.split(",")
         )
 
-    def get_title_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching words in the title of the user
+    def get_headline_score(self, user: PlatformUser, other: PlatformUser) -> int:
+        """Returns the number of matching words in the headline of the user
         and the other user."""
         return sum(
-            self.not_alnum.sub("", kw.strip().lower()) in other.title.lower()
-            for kw in user.title.split(" ")
+            self.not_alnum.sub("", kw.strip().lower()) in other.headline.lower()
+            for kw in user.headline.split(" ")
         )
 
     def get_location_distance(self, user: PlatformUser, other: PlatformUser) -> int:

@@ -1,4 +1,5 @@
 from typing import Iterable
+
 from eagxf.status import Status
 from eagxf.structure import Button
 from eagxf.util import invert_dict
@@ -54,7 +55,7 @@ DEFAULT_PRIO_ORDER = [
     "Number of matching keywords",
     "Location distance",
     "Status",
-    "Number of matching words in title",
+    "Number of matching words in the headline",
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
@@ -85,10 +86,10 @@ VISIBLE_SIMPLE_USER_PROPS: dict[str, dict] = {
         "before_questions": True,
         "comma_separated": False,
     },
-    "title": {
+    "headline": {
         "row": 0,
         "emoji": "🏷️",
-        "label": "Title",
+        "label": "Headline",
         "before_questions": True,
         "comma_separated": False,
     },
@@ -156,7 +157,9 @@ def SIMPLE_PROPS(prefix, before_questions=True) -> str:  # pylint: disable=inval
     )
 
 
-def SIMPLE_PROP_BUTTONS(action, before_questions=True) -> Iterable[Button]:  # pylint: disable=invalid-name
+def SIMPLE_PROP_BUTTONS(
+    action, before_questions=True
+) -> Iterable[Button]:  # pylint: disable=invalid-name
     """Returns a list of buttons for [simple properties]"""
     return (
         Button(
