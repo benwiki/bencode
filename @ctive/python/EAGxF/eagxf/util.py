@@ -13,3 +13,8 @@ def comma_and_search(a: str, b: str) -> bool:
         )
         or b == "?"
     )
+
+
+def invert_dict(d: dict) -> dict:
+    """Inverts a dictionary."""
+    return {v: k for k, v in d.items()}

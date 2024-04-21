@@ -10,7 +10,6 @@ class Structure:
     buttons: list[Button] = field(default_factory=list)
     reactions: list[str] = field(default_factory=list)
     changes_property: str | None = None
-    comma_separated: bool = field(default_factory=bool)
     condition: str = ""
     # these effects will run AFTER the button's own effects
     after_button_effects: str = ""

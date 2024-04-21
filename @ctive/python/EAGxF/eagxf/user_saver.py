@@ -1,5 +1,6 @@
 import json
 
+from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
 from eagxf.date import Date
 from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
@@ -12,15 +13,14 @@ class UserManager:
             {
                 "id": user.id,
                 "date_joined": str(user.date_joined),
-                "name": user.name,
-                "title": user.title,
-                "location": user.location,
-                "languages": user.languages,
                 "questions": user.questions,
-                "keywords": user.keywords,
                 "status": user.status.value,
                 "best_match_prio_order": user.best_match_prio_order,
                 "interests": user.interests,
+                **{
+                    attr: getattr(user, attr)
+                    for attr in VISIBLE_SIMPLE_USER_PROPS
+                },
             },
             indent=4,
         )
@@ -31,16 +31,15 @@ class UserManager:
         return PlatformUser(
             id=user_data["id"],
             date_joined=Date(day=d, month=m, year=y),
-            name=user_data["name"],
-            title=user_data["title"],
-            location=user_data["location"],
-            languages=user_data["languages"],
             questions=user_data["questions"],
-            keywords=user_data["keywords"],
             status=Status(user_data["status"]),
             best_match_prio_order=user_data["best_match_prio_order"],
             interests=user_data["interests"],
             search_filter=PlatformUser(
-                questions={"need_help": "?", "can_help": "?"}, status=Status.ANY
+                questions={q: "?" for q in QUESTION_NAMES}, status=Status.ANY
             ),
+            **{
+                attr: user_data[attr]
+                for attr in VISIBLE_SIMPLE_USER_PROPS
+            },
         )

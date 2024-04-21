@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 import discord
 
+from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
 from eagxf.date import Date
 from eagxf.status import Status
 from eagxf.structure import Structure
@@ -39,12 +40,10 @@ class PlatformUser:
 
     def is_complete(self) -> bool:
         basic_filled = all(
-            getattr(self, attr) not in ["?", ""]
-            for attr in ["name", "title", "location", "languages", "keywords"]
+            getattr(self, attr) not in ["?", ""] for attr in VISIBLE_SIMPLE_USER_PROPS
         )
         questions_filled = all(
-            self.questions[question] not in ["?", ""]
-            for question in ["need_help", "can_help"]
+            self.questions[question] not in ["?", ""] for question in QUESTION_NAMES
         )
         return basic_filled and questions_filled
 
@@ -55,37 +54,35 @@ class PlatformUser:
             "\n*Fill out all details and try again!*"
         )
 
-    def search_applicable_for(self, other: "PlatformUser") -> bool:
-        if other.search_filter is None:
+    def is_selected_by(self, searcher: "PlatformUser") -> bool:
+        if searcher.search_filter is None:
             return False
         return (
-            (
-                other.search_filter.name.lower() in self.name.lower()
-                or other.search_filter.name == "?"
-            )
-            and (
-                other.search_filter.title.lower() in self.title.lower()
-                or other.search_filter.title == "?"
-            )
-            and (
-                other.search_filter.location.lower() in self.location.lower()
-                or other.search_filter.location == "?"
-            )
-            and comma_and_search(self.languages, other.search_filter.languages)
-            and comma_and_search(self.keywords, other.search_filter.keywords)
-            and (
-                self.status != Status.INVISIBLE
-                and (
-                    other.search_filter.status == self.status
-                    or other.search_filter.status == Status.ANY
+            searcher.id != self.id
+            and all(
+                comma_and_search(
+                    getattr(self, prop_id), getattr(searcher.search_filter, prop_id)
                 )
+                for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
+                if prop["comma_separated"]
             )
-            and comma_and_search(
-                self.questions["need_help"],
-                other.search_filter.questions["need_help"],
+            and all(
+                getattr(searcher.search_filter, prop_id).lower()
+                in getattr(self, prop_id).lower()
+                or getattr(searcher.search_filter, prop_id) == "?"
+                for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
+                if not prop["comma_separated"]
             )
-            and comma_and_search(
-                self.questions["can_help"],
-                other.search_filter.questions["can_help"],
+            and self.status != Status.INVISIBLE
+            and (
+                searcher.search_filter.status == self.status
+                or searcher.search_filter.status == Status.ANY
+            )
+            and all(
+                comma_and_search(
+                    self.questions[q_id],
+                    searcher.search_filter.questions[q_id],
+                )
+                for q_id in QUESTION_NAMES
             )
         )

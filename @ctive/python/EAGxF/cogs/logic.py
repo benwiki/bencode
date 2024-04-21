@@ -20,28 +20,32 @@ from eagxf.constants import (
     NUM_EMOJI,
     NUM_NAME,
     PRIO_LIST_LENGTH,
-    PRIORITY_MESSAGE,
+    QUESTION_NAMES,
     SPACER,
     STATUS_EMOJI,
-    STRUCTURES,
     USERS_FOLDER_PATH,
+    VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
 from eagxf.platform_user import PlatformUser
 from eagxf.status import Status
 from eagxf.structure import Structure
+from eagxf.structures import PRIORITY_MESSAGE, STRUCTURES
 from eagxf.user_saver import UserManager
 
 
 class Logic(commands.Cog):
     def __init__(self, client: discord.Client) -> None:
         self.client = client
+        self.init_users()
+        self.init_structures()
+        self.init_other_stuff()
+
+    def init_users(self) -> None:
         self.users_path = self.init_users_path()
         self.users: dict[int, PlatformUser] = self.load_users()
         for user_id in self.users:
             asyncio.create_task(self.send_starting_message_to(user_id))
-        self.init_structures()
-        self.init_other_stuff()
 
     async def send_starting_message_to(self, user_id: int):
         user = self.users[user_id]
@@ -115,8 +119,17 @@ class Logic(commands.Cog):
             "best_match_prio_order": self.handle_best_match_prio_order,
             "selected_user": self.handle_selected_user,
         }
-        self.DEBUGGING = False  # pylint: disable=C0103
+        self.DEBUGGING = True  # pylint: disable=C0103
         self.page_step = 10
+        asyncio.create_task(self.refresh())
+
+    async def refresh(self):
+        while True:
+            await asyncio.sleep(60)
+            for user in self.users.values():
+                if user.last_structure:
+                    await self.send_structure(user, user.last_structure)
+                print(f"Refreshed user {user.id} at {datetime.datetime.now()}")
 
     def get_structure_callback(
         self, structure: Structure | None, button: Button | None = None
@@ -185,7 +198,7 @@ class Logic(commands.Cog):
         if structure.condition and not self.condition_true_for(
             structure.condition, user
         ):
-            ok_btn = self.get_ok_button_for(user)
+            ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
             view = self.get_view([ok_btn])
             message = self.get_condition_message(structure.condition, user)
             add_reactions = False
@@ -226,10 +239,11 @@ class Logic(commands.Cog):
             user.results = user.interests["received"]
 
     def search_best_matches_for(self, user: PlatformUser) -> list[int]:
-        matches = self.users.copy()
-        matches.pop(user.id)
         matches_list = sorted(
-            matches.values(),
+            filter(
+                lambda u: u.id != user.id and u.status != Status.INVISIBLE,
+                self.users.values(),
+            ),
             key=lambda u: self.get_priority(user, u),
             reverse=True,
         )
@@ -245,9 +259,9 @@ class Logic(commands.Cog):
                 year=current.year,
             ),
             name=dc_user.name,
-            questions={"need_help": "?", "can_help": "?"},
+            questions={q: "?" for q in QUESTION_NAMES},
             search_filter=PlatformUser(
-                questions={"need_help": "?", "can_help": "?"},
+                questions={q: "?" for q in QUESTION_NAMES},
                 status=Status.ANY,
             ),
             best_match_prio_order=list(range(PRIO_LIST_LENGTH)),
@@ -263,13 +277,13 @@ class Logic(commands.Cog):
             ):
                 await user.last_msg.add_reaction(NUM_EMOJI[i])
 
-    def search_users_for(self, search_user: PlatformUser) -> list[int]:
-        if not search_user.search_filter:
+    def search_users_for(self, user_searching: PlatformUser) -> list[int]:
+        if not user_searching.search_filter:
             return []
         return [
             user.id
             for user in self.users.values()
-            if user.search_applicable_for(search_user)
+            if user.is_selected_by(user_searching)
         ]
 
     def condition_true_for(self, condition: str, user: PlatformUser) -> bool:
@@ -289,8 +303,8 @@ class Logic(commands.Cog):
         ):
             user.status = Status.INVISIBLE
             return (
-                "\n\n*( Your profile is incomplete, so your status has been "
-                "changed to invisible! )*"
+                "\n\n*(Your profile is incomplete, so your status has been "
+                "changed to invisible!)*"
             )
         return ""
 
@@ -320,19 +334,14 @@ class Logic(commands.Cog):
         message = (
             message.replace("<id>", str(user.id))
             .replace("<date_joined>", str(user.date_joined))
-            .replace("<name>", user.name)
-            .replace("<title>", user.title)
-            .replace("<location>", user.location)
-            .replace("<languages>", user.languages)
-            .replace("<need_help>", user.questions["need_help"])
-            .replace("<can_help>", user.questions["can_help"])
-            .replace("<keywords>", user.keywords)
             .replace("<status>", f"{STATUS_EMOJI[user.status]} ({user.status.value})")
             .replace("<number_of_results>", str(len(user.results)))
             .replace("<search_results>", self.get_formatted_results_for(user))
             .replace(
                 "<best_matches>",
-                self.get_formatted_results_for(user, self.get_score_summary(user)),
+                self.get_formatted_results_for(
+                    user, additional=self.get_score_summary(user)
+                ),
             )
             .replace("<page_reference>", self.get_page_reference_for(user))
             .replace(
@@ -348,19 +357,22 @@ class Logic(commands.Cog):
             .replace("<interests_received>", self.get_interests(user, "received"))
             .replace("<selected_user_name>", self.get_name_of(user.selected_user))
         )
+        for q_id in QUESTION_NAMES:
+            message = message.replace(f"<{q_id}>", user.questions[q_id])
+        for prop_id in VISIBLE_SIMPLE_USER_PROPS:
+            message = message.replace(f"<{prop_id}>", getattr(user, prop_id))
         if user.search_filter:
-            message = (
-                message.replace("<search_name>", user.search_filter.name)
-                .replace("<search_title>", user.search_filter.title)
-                .replace("<search_location>", user.search_filter.location)
-                .replace("<search_languages>", user.search_filter.languages)
-                .replace("<search_keywords>", user.search_filter.keywords)
-                .replace("<search_status>", self.get_search_status(user.search_filter))
-                .replace(
-                    "<search_need_help>", user.search_filter.questions["need_help"]
-                )
-                .replace("<search_can_help>", user.search_filter.questions["can_help"])
+            message = message.replace(
+                "<search_status>", self.get_search_status(user.search_filter)
             )
+            for q_id in QUESTION_NAMES:
+                message = message.replace(
+                    f"<search_{q_id}>", user.search_filter.questions[q_id]
+                )
+            for prop_id in VISIBLE_SIMPLE_USER_PROPS:
+                message = message.replace(
+                    f"<search_{prop_id}>", getattr(user.search_filter, prop_id)
+                )
         return message
 
     def get_name_of(self, user: PlatformUser | None) -> str:
@@ -401,13 +413,16 @@ class Logic(commands.Cog):
             f"(Status: {STATUS_EMOJI[u.status]} "
             f"({u.status.value}))"
             f"{additional(u) if additional else ''}"
-            f"\n- *Title:* {u.title}"
-            f"\n- *Location:* {u.location}"
-            f"\n- *Languages:* {u.languages}"
-            f"\n- *Keywords:* {u.keywords}"
-            "\n***------❓Questions ------***"
-            f"\n- *Need Help:* {u.questions['need_help']}"
-            f"\n- *Can Help:* {u.questions['can_help']}"
+            + "".join(
+                f"\n- *{p['label']}:* {getattr(u, p_id)}"
+                for p_id, p in VISIBLE_SIMPLE_USER_PROPS.items()
+                if p_id != "name"
+            )
+            + "\n***------❓Questions ------***"
+            + "".join(
+                f"\n- *{q['label']}:* {u.questions[q_id]}"
+                for q_id, q in QUESTION_NAMES.items()
+            )
             for i, u in enumerate(self.get_results_for(user, user.results))
         )
 
@@ -468,13 +483,9 @@ class Logic(commands.Cog):
         """Returns the number of matching keywords in the questions of the user
         and the other user."""
         return sum(
-            self.not_alnum.sub("", kw.strip().lower())
-            in other.questions["need_help"].lower()
-            for kw in user.questions["can_help"].split(" ")
-        ) + sum(
-            self.not_alnum.sub("", kw.strip().lower())
-            in other.questions["can_help"].lower()
-            for kw in user.questions["need_help"].split(" ")
+            self.not_alnum.sub("", kw.strip().lower()) in other.questions[q_id].lower()
+            for q_id in QUESTION_NAMES
+            for kw in user.questions[q_id].split(" ")
         )
 
     def get_keywords_score(self, user: PlatformUser, other: PlatformUser) -> int:
@@ -556,7 +567,7 @@ class Logic(commands.Cog):
         ):
             return
 
-        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
+        ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
         view = self.get_view([ok_btn, self.home_btn])
 
         await self.delete_last_msg_of(user)
@@ -570,7 +581,7 @@ class Logic(commands.Cog):
         change_user = user.search_filter if search else user
         pronome = "Your" if not search else "The filter's"
         plural = change in ["keywords", "languages"]
-        kw_needed = plural or search and change in ["need_help", "can_help"]
+        kw_needed = plural or search and change in QUESTION_NAMES
         has_have = "have" if plural else "has"
         changed_to = msg.content
 
@@ -579,7 +590,7 @@ class Logic(commands.Cog):
             evenly_spaced_kws = self.evenly_space(msg.content, need_caps)
             changed_to = evenly_spaced_kws
 
-        if change in ["need_help", "can_help"]:
+        if change in QUESTION_NAMES:
             changed = "answer"
             change_user.questions[change] = changed_to
         else:
@@ -596,9 +607,9 @@ class Logic(commands.Cog):
         return ", ".join(
             " & ".join(
                 w.capitalize() if capitalize else w
-                for w in map(str.strip, kw.split("&"))
+                for w in map(str.strip, kw.split("&"))  # type: ignore
             )
-            for kw in map(str.strip, text.split(","))
+            for kw in map(str.strip, text.split(","))  # type: ignore
         )
 
     @commands.Cog.listener()
@@ -626,7 +637,7 @@ class Logic(commands.Cog):
                 return
         change_user.status = status
 
-        ok_btn = self.get_ok_button_for(user, default_structure="edit_profile")
+        ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
         view = self.get_view([ok_btn, self.home_btn])
         dc_user = await self.client.fetch_user(user.id)
 
@@ -701,11 +712,16 @@ class Logic(commands.Cog):
             user.last_msg = None
 
     def get_ok_button_for(
-        self, user: PlatformUser, default_structure: str = "home"
+        self,
+        user: PlatformUser,
+        wanted_structure: str = "",
+        default_structure: str = "home",
     ) -> DCButton:
         button: DCButton = DCButton(label="OK", style=ButtonStyle.green)
         button.callback = self.get_structure_callback(  # type: ignore
-            user.back_to_structure or STRUCTURES[default_structure]
+            STRUCTURES[wanted_structure]
+            or user.back_to_structure
+            or STRUCTURES[default_structure]
         )
         return button
 
