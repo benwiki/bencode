@@ -10,7 +10,7 @@ class Date:
     minute: int | None = None
     second: int | None = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.hour is not None:
             return (
                 f"{self.day:02}.{self.month:02}.{self.year}"
@@ -18,5 +18,5 @@ class Date:
             )
         return f"{self.day:02}.{self.month:02}.{self.year}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)

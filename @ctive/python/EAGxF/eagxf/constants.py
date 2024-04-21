@@ -1,3 +1,4 @@
+from typing import Iterable
 from eagxf.status import Status
 from eagxf.structure import Button
 from eagxf.util import invert_dict
@@ -125,7 +126,7 @@ def ANSWERS(search=False) -> str:  # pylint: disable=invalid-name
     )
 
 
-def PROFILE(search=False):  # pylint: disable=invalid-name
+def PROFILE(search=False) -> str:  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
         (
@@ -147,7 +148,7 @@ def PROFILE(search=False):  # pylint: disable=invalid-name
     )
 
 
-def SIMPLE_PROPS(prefix, before_questions=True):  # pylint: disable=invalid-name
+def SIMPLE_PROPS(prefix, before_questions=True) -> str:  # pylint: disable=invalid-name
     return "".join(
         f"\n- ***{prop['label']}:***  <{prefix}{prop_id}>"
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
@@ -155,7 +156,7 @@ def SIMPLE_PROPS(prefix, before_questions=True):  # pylint: disable=invalid-name
     )
 
 
-def SIMPLE_PROP_BUTTONS(action, before_questions=True):  # pylint: disable=invalid-name
+def SIMPLE_PROP_BUTTONS(action, before_questions=True) -> Iterable[Button]:  # pylint: disable=invalid-name
     """Returns a list of buttons for [simple properties]"""
     return (
         Button(
@@ -169,7 +170,7 @@ def SIMPLE_PROP_BUTTONS(action, before_questions=True):  # pylint: disable=inval
     )
 
 
-def QUESTION_BUTTONS(action):  # pylint: disable=invalid-name
+def QUESTION_BUTTONS(action) -> Iterable[Button]:  # pylint: disable=invalid-name
     return (
         Button(
             label=question["label"],

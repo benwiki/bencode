@@ -8,7 +8,7 @@ from eagxf.status import Status
 
 class UserManager:
     @staticmethod
-    def dumps(user: PlatformUser):
+    def dumps(user: PlatformUser) -> str:
         return json.dumps(
             {
                 "id": user.id,
@@ -26,7 +26,7 @@ class UserManager:
         )
 
     @staticmethod
-    def load(user_data: dict):
+    def load(user_data: dict) -> PlatformUser:
         d, m, y = map(int, user_data["date_joined"].split("."))
         return PlatformUser(
             id=user_data["id"],

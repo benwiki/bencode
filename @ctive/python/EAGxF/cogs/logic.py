@@ -44,14 +44,13 @@ class Logic(commands.Cog):
     def init_users(self) -> None:
         self.users_path = self.init_users_path()
         self.users: dict[int, PlatformUser] = self.load_users()
-        for user_id in self.users:
-            asyncio.create_task(self.send_starting_message_to(user_id))
+        for user in self.users.values():
+            asyncio.create_task(self.send_starting_message_to(user))
 
-    async def send_starting_message_to(self, user_id: int):
-        user = self.users[user_id]
+    async def send_starting_message_to(self, user: PlatformUser) -> None:
         await self.send_structure(user, STRUCTURES["home"])  # type: ignore
 
-    def init_structures(self):
+    def init_structures(self) -> None:
         for structure_id, structure in STRUCTURES.items():
             structure.id = structure_id
             if structure.paged:
@@ -59,7 +58,7 @@ class Logic(commands.Cog):
             for button in structure.buttons:
                 self.init_button_with(button, structure)
 
-    def init_paged_structure(self, structure: Structure):
+    def init_paged_structure(self, structure: Structure) -> None:
         structure.after_button_effects = self.comma_add(
             structure.after_button_effects, "delete_message"
         )
@@ -74,14 +73,14 @@ class Logic(commands.Cog):
             return f"{original}, {additional}"
         return additional
 
-    def push_buttons_down_for(self, structure: Structure):
+    def push_buttons_down_for(self, structure: Structure) -> None:
         for button in structure.buttons:
             if button.row:
                 button.row += 1
             else:
                 button.row = 1
 
-    def init_button_with(self, button: Button, structure: Structure):
+    def init_button_with(self, button: Button, structure: Structure) -> None:
         to_structure = STRUCTURES.get(button.takes_to)
         if to_structure is None:
             print(f"Structure with id {button.takes_to} not found!")
@@ -123,7 +122,7 @@ class Logic(commands.Cog):
         self.page_step = 10
         asyncio.create_task(self.refresh())
 
-    async def refresh(self):
+    async def refresh(self) -> None:
         while True:
             await asyncio.sleep(60)
             for user in self.users.values():
@@ -134,7 +133,7 @@ class Logic(commands.Cog):
     def get_structure_callback(
         self, structure: Structure | None, button: Button | None = None
     ):
-        async def callback(interaction: discord.Interaction):
+        async def callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
             user = self.users[interaction.user.id]
             if button and button.effects:
@@ -149,7 +148,7 @@ class Logic(commands.Cog):
 
         return callback
 
-    async def affect(self, effect: str, user: PlatformUser):
+    async def affect(self, effect: str, user: PlatformUser) -> None:
         if effect == "go_to_previous_page":
             user.page -= 1
         if effect == "go_to_next_page":
@@ -174,7 +173,7 @@ class Logic(commands.Cog):
         if effect == "cancel_interest":
             self.cancel_interest(user)
 
-    def send_interest(self, user: PlatformUser):
+    def send_interest(self, user: PlatformUser) -> None:
         if not user.selected_user:
             return
         user.selected_user.interests["received"].append(user.id)
@@ -182,7 +181,7 @@ class Logic(commands.Cog):
         self.save_user(user.selected_user)
         self.save_user(user)
 
-    def cancel_interest(self, user: PlatformUser):
+    def cancel_interest(self, user: PlatformUser) -> None:
         if not user.selected_user:
             return
         user.selected_user.interests["received"].remove(user.id)
@@ -190,7 +189,7 @@ class Logic(commands.Cog):
         self.save_user(user.selected_user)
         self.save_user(user)
 
-    async def send_structure(self, user: PlatformUser, structure: Structure):
+    async def send_structure(self, user: PlatformUser, structure: Structure) -> None:
         user.back_to_structure = user.last_structure
 
         self.collect_data_for(user, structure)
@@ -228,7 +227,7 @@ class Logic(commands.Cog):
                 await user.last_msg.add_reaction(emoji)
         await self.add_special_reactions_for(user, structure)
 
-    def collect_data_for(self, user: PlatformUser, structure: Structure):
+    def collect_data_for(self, user: PlatformUser, structure: Structure) -> None:
         if structure.id in ["search", "show_search_results"]:
             user.results = self.search_users_for(user)
         if structure.id == "best_matches":
@@ -249,7 +248,7 @@ class Logic(commands.Cog):
         )
         return [u.id for u in matches_list]
 
-    def register_user(self, dc_user: discord.User | discord.Member):
+    def register_user(self, dc_user: discord.User | discord.Member) -> PlatformUser:
         current = datetime.datetime.now()
         user = self.users[dc_user.id] = PlatformUser(
             id=dc_user.id,
@@ -270,7 +269,9 @@ class Logic(commands.Cog):
         self.save_user(user)
         return user
 
-    async def add_special_reactions_for(self, user: PlatformUser, structure: Structure):
+    async def add_special_reactions_for(
+        self, user: PlatformUser, structure: Structure
+    ) -> None:
         if structure.paged and user.last_msg:
             for i in range(
                 min(self.page_step, len(user.results) - user.page * self.page_step)
@@ -426,7 +427,9 @@ class Logic(commands.Cog):
             for i, u in enumerate(self.get_results_for(user, user.results))
         )
 
-    def get_results_for(self, user: PlatformUser, results: list[int]):
+    def get_results_for(
+        self, user: PlatformUser, results: list[int]
+    ) -> Iterator[PlatformUser]:
         return self.users_by_ids(self.paged_list_of(results, user))
 
     def get_score_summary(self, user: PlatformUser) -> Callable[[PlatformUser], str]:
@@ -445,7 +448,7 @@ class Logic(commands.Cog):
         """Converts a number to emojis. E.g. 123 -> ":one::two::three:"""
         return "".join(f":{NUM_NAME[int(n)]}:" for n in str(number))
 
-    def paged_list_of(self, lst: list, user: PlatformUser):
+    def paged_list_of(self, lst: list, user: PlatformUser) -> list[int]:
         return lst[user.page * self.page_step : (user.page + 1) * self.page_step]
 
     def users_by_ids(self, user_ids: list[int]) -> Iterator[PlatformUser]:
@@ -515,7 +518,7 @@ class Logic(commands.Cog):
         )
 
     @commands.command(name="enter")
-    async def enter(self, ctx: commands.Context):
+    async def enter(self, ctx: commands.Context) -> None:
         """Registers the user."""
         if ctx.author.id not in self.users:
             user = self.register_user(ctx.author)
@@ -530,17 +533,17 @@ class Logic(commands.Cog):
             )
 
     @commands.command(name="stop")
-    async def stop(self, ctx: commands.Context):
+    async def stop(self, ctx: commands.Context) -> None:
         """Stops the bot."""
         await self.stop_request_by(ctx.author.id)
 
     @commands.command(name="reset")
-    async def reset(self, ctx: commands.Context):
+    async def reset(self, ctx: commands.Context) -> None:
         """Resets the bot."""
         await self.hi(ctx)
 
     @commands.command(name="hi")
-    async def hi(self, ctx: commands.Context):
+    async def hi(self, ctx: commands.Context) -> None:
         """Sends the user's home structure."""
         if ctx.author.id not in self.users:
             return
@@ -550,7 +553,7 @@ class Logic(commands.Cog):
         await self.send_structure(user, user.last_structure or STRUCTURES["home"])  # type: ignore
 
     @commands.command(name="bye")
-    async def bye(self, ctx: commands.Context):
+    async def bye(self, ctx: commands.Context) -> None:
         """Deletes the user's last message."""
         if ctx.author.id not in self.users:
             return
@@ -558,7 +561,7 @@ class Logic(commands.Cog):
         await self.delete_last_msg_of(user)
 
     @commands.Cog.listener()
-    async def on_message(self, msg: discord.Message):
+    async def on_message(self, msg: discord.Message) -> None:
         user = self.users.get(msg.author.id)
         if (
             user is None
@@ -613,7 +616,9 @@ class Logic(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_add(
+        self, payload: discord.RawReactionActionEvent
+    ) -> None:
         user = self.users[payload.user_id]
         change = user.change
         if change.startswith("search_"):
@@ -623,7 +628,7 @@ class Logic(commands.Cog):
             if handle_reaction := self.REACTION_FUNCTIONS.get(change):
                 await handle_reaction(user, payload.emoji.name)
 
-    async def handle_status_change(self, user: PlatformUser, emoji: str):
+    async def handle_status_change(self, user: PlatformUser, emoji: str) -> None:
         if not user.search_filter:
             return  # only because of type hinting
         search = user.change.startswith("search_")
@@ -651,7 +656,7 @@ class Logic(commands.Cog):
 
     async def handle_best_match_prio_order(
         self, user: PlatformUser, emoji: str, remove: bool = False
-    ):
+    ) -> None:
         num = self.validate_number_reaction(emoji, user)
         if not (num and user.last_view and user.last_msg):
             return
@@ -675,7 +680,7 @@ class Logic(commands.Cog):
             view=user.last_view,
         )
 
-    async def handle_selected_user(self, user: PlatformUser, emoji: str):
+    async def handle_selected_user(self, user: PlatformUser, emoji: str) -> None:
         num = self.validate_number_reaction(emoji, user)
         if not num:
             return
@@ -695,7 +700,7 @@ class Logic(commands.Cog):
         return num
 
     @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent) -> None:
         user = self.users[payload.user_id]
         if not user.search_filter:
             return
@@ -706,7 +711,7 @@ class Logic(commands.Cog):
                     user, payload.emoji.name, remove=True
                 )
 
-    async def delete_last_msg_of(self, user: PlatformUser):
+    async def delete_last_msg_of(self, user: PlatformUser) -> None:
         if user.last_msg:
             await user.last_msg.delete()
             user.last_msg = None
@@ -735,11 +740,11 @@ class Logic(commands.Cog):
             view.add_item(stop_btn)
         return view
 
-    async def stop_callback(self, interaction: discord.Interaction):
+    async def stop_callback(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
         await self.stop_request_by(interaction.user.id)
 
-    async def stop_request_by(self, user_id: int):
+    async def stop_request_by(self, user_id: int) -> None:
         if user_id not in ADMINS:
             print(f"Unauthorized user (id: {user_id}) tried to stop the bot.")
             return
@@ -747,7 +752,7 @@ class Logic(commands.Cog):
             await self.delete_last_msg_of(user)
         await self.client.close()
 
-    def is_valid_date(self, date: str):
+    def is_valid_date(self, date: str) -> bool:
         return (
             len(date) == 10
             and date[2] == date[5] == "."
@@ -772,7 +777,7 @@ class Logic(commands.Cog):
             raw_user: dict = json.loads(file.read())
             return UserManager.load(raw_user)
 
-    def save_user(self, user: PlatformUser):
+    def save_user(self, user: PlatformUser) -> None:
         filename = f"{self.users_path}/{user.id}.json"
         with open(filename, "w", encoding="utf-8") as file:
             file.write(UserManager.dumps(user))
@@ -784,5 +789,5 @@ class Logic(commands.Cog):
         return path
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Logic(bot))

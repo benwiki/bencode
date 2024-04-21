@@ -10,10 +10,10 @@ client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 
 
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     print("I'm ready. My name is", str(client.user))
 
-async def load_extensions():
+async def load_extensions() -> None:
     curdir = __file__.replace("\\", "/")
     curdir = "/".join(curdir.split("/")[:-1])
     for filename in os.listdir(f"{curdir}/cogs"):
@@ -22,7 +22,7 @@ async def load_extensions():
             await client.load_extension(f"cogs.{filename[:-3]}")
 
 
-async def main():
+async def main() -> None:
     async with client:
         await load_extensions()
         await client.start(open(TOKEN_PATH).read())  # type: ignore
