@@ -58,11 +58,11 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialButton(
           color: Colors.amber,
           child: Text("Sign In"),
-          onPressed: () => signInWithGoogle(context))
+          onPressed: signInWithGoogle)
     ]);
   }
 
-  Future<void> signInWithGoogle(BuildContext context) async {
+  Future<void> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) throw Error();
     final googleAuth = await googleUser.authentication;
