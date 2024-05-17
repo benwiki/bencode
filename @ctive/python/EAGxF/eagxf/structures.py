@@ -6,7 +6,7 @@ from eagxf.constants import (
     ANSWERS,
     APP_NAME,
     COMMA_AND_SEPARATED,
-    COMMA_AND_SEPARATED_LANGUAGES,
+    COMMA_SEPARATED_MAP,
     DEFAULT_PRIO_ORDER,
     NUM_EMOJI,
     PRIO_LIST_LENGTH,
@@ -150,11 +150,7 @@ STRUCTURES = {
     **{  # Search simple properties
         f"search_{prop_id}": Structure(
             message=f"What {prop_id} do you want to search for?"
-            + (
-                COMMA_AND_SEPARATED
-                if prop_id == "keywords"
-                else COMMA_AND_SEPARATED_LANGUAGES if prop_id == "languages" else ""
-            )
+            + COMMA_SEPARATED_MAP.get(prop_id, "")
             + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
             "\n\nType ? to search for any.",
             changes_property=f"search_{prop_id}",
@@ -256,11 +252,13 @@ STRUCTURES = {
         + "\n\n**Are you sure** you want to reset your priority order to this?\n"
         + r"\_" * 50,
         buttons=[
-            Button(label="No", takes_to="change_priority", effect="cancel_change_prio"),
+            Button(
+                label="No", takes_to="change_priority", effects="cancel_change_prio"
+            ),
             Button(
                 label="Yes",
                 takes_to="best_matches",
-                effect="default_best_matches",
+                effects="default_best_matches",
                 style=ButtonStyle.primary,
             ),
         ],
@@ -269,12 +267,14 @@ STRUCTURES = {
         message="↕️ Interests"
         "\n\nHere you can see, who is interested in you, "
         "and whom did you send interest."
-        "\n\nNumber of interests sent: **<num_of_interests_sent>**"
-        "\nNumber of interests received: **<num_of_interests_received>**"
+        "\n\nNumber of interests __sent__: **<num_of_interests_sent>**"
+        "\nNumber of interests __received__: **<num_of_interests_received>**"
+        "\nNumber of __mutual__ interests: **<num_of_mutual_interests>**"
         "\n\nClick the buttons to navigate!",
         buttons=[
-            Button(label="⬆️ Interests sent", takes_to="interests_sent"),
-            Button(label="⬇️ Interests received", takes_to="interests_received"),
+            Button(label="⬆️ Sent", takes_to="interests_sent"),
+            Button(label="⬇️ Received", takes_to="interests_received"),
+            Button(label="✅ Mutual", takes_to="mutual_interests"),
             Button(label="⬅️ Back", takes_to="home", row=1),
         ],
     ),
@@ -304,6 +304,19 @@ STRUCTURES = {
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
         ],
     ),
+    "mutual_interests": Structure(
+        message="✅ **Mutual interests**"
+        "\n\nHere you can see the people who you have a mutual interest with.."
+        "\n\n<page_reference>"
+        "\nClick on the corresponding reaction to manage the interest!"
+        "\n\n<mutual_interests>"
+        "\n\n<page_reference>",
+        paged=True,
+        buttons=[
+            Button(label="⬅️ Back", takes_to="interests"),
+            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
+        ],
+    ),
     "selected_user": Structure(
         message="You have selected ***<selected_user_name>*** !"
         "\n\n<selected_user_profile>"
@@ -312,14 +325,20 @@ STRUCTURES = {
             Button(
                 label="⬆️ Send interest",
                 takes_to="selected_user",
-                condition="interest_not_sent",
-                effect="send_interest",
+                conditions="can_send_interest",
+                effects="send_interest",
             ),
             Button(
                 label="❌ Cancel interest",
                 takes_to="selected_user",
-                condition="interest_sent",
-                effect="cancel_interest",
+                conditions="can_cancel_interest",
+                effects="cancel_interest",
+            ),
+            Button(
+                label="✅ Confirm interest",
+                takes_to="selected_user",
+                conditions="can_confirm_interest",
+                effects="send_interest",
             ),
             Button(label="⬅️ Back", takes_to="<back>", row=1),
             Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),

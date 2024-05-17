@@ -1,17 +1,15 @@
 from dataclasses import dataclass, field
 
-import discord
-
 from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
 from eagxf.date import Date
 from eagxf.status import Status
 from eagxf.structure import Structure
 from eagxf.util import comma_and_search
+from eagxf.view_msg import ViewMsg
 
 
 @dataclass
 class PlatformUser:
-
     # Properties to save
     id: int = 0
     date_joined: Date = field(default_factory=lambda: Date(1, 1, 2000))
@@ -27,14 +25,14 @@ class PlatformUser:
 
     # Properties to use only in runtime
     best_match_prio_order_new: list[int] = field(default_factory=list)
+    view_msg: ViewMsg = field(default_factory=ViewMsg)
     results: list[int] = field(default_factory=list)
     selected_user: "PlatformUser | None" = None
     search_filter: "PlatformUser | None" = None
     back_to_structure: Structure | None = None
-    last_view: discord.ui.View | None = None
-    last_msg: discord.Message | None = None
     last_structure: Structure | None = None
     added_save_btn: bool = False
+    add_reactions: bool = True
     change: str = ""
     page: int = 0
 
@@ -46,13 +44,6 @@ class PlatformUser:
             self.questions[question] not in ["?", ""] for question in QUESTION_NAMES
         )
         return basic_filled and questions_filled
-
-    def incomplete_msg(self) -> str:
-        return (
-            "*Your profile must be complete before you can "
-            "change your status ;-)*"
-            "\n*Fill out all details and try again!*"
-        )
 
     def is_selected_by(self, searcher: "PlatformUser") -> bool:
         if searcher.search_filter is None:
@@ -86,3 +77,8 @@ class PlatformUser:
                 for q_id in QUESTION_NAMES
             )
         )
+
+    def valid_condition(self, condition: str) -> bool:
+        if condition == "profile_complete":
+            return self.is_complete()
+        return False

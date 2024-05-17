@@ -59,13 +59,29 @@ DEFAULT_PRIO_ORDER = [
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
+SPECIAL_DESTINATIONS = ("<back>",)
+
+INCOMPLETE_PROFILE_MSG = (
+    "*Your profile must be complete before you can "
+    "change your status ;-)*"
+    "\n*Fill out all details and try again!*"
+)
+INCOMPLETE_PROFILE_WARNING = (
+    "\n\n*(Your profile is incomplete, so your status has been "
+    "changed to invisible!)*"
+)
+
 QUESTION_NAMES = {
     "about_me": {
         "label": "About me",
         "text": "About me: (general info)",
         "emoji": "🙋",
     },
-    "can_help": {"label": "Can help", "text": "How I can help others:", "emoji": "🫱"},
+    "can_help": {
+        "label": "Can help",
+        "text": "How I can help others:",
+        "emoji": "🫱",
+    },
     "need_help": {
         "label": "Need help",
         "text": "How others can help me:",
@@ -127,13 +143,13 @@ def ANSWERS(search=False) -> str:  # pylint: disable=invalid-name
     )
 
 
-def PROFILE(search=False) -> str:  # pylint: disable=invalid-name
+def PROFILE(search=False, name="Your") -> str:  # pylint: disable=invalid-name
     prefix = "search_" if search else ""
     return (
         (
             "***------ Current filters ------***"
             if search
-            else "***------ Your profile ------***"
+            else f"***------ {name} profile ------***"
         )
         # "\n\n**Metadata**"
         # "\n- 🆔 *User ID:* <id>"
@@ -218,3 +234,8 @@ COMMA_AND_SEPARATED_LANGUAGES = (
     "\n- (B) will only accept Profile 3"
     "\n- (C) will accept Profile 2 and Profile 3 )"
 )
+
+COMMA_SEPARATED_MAP = {
+    "keywords": COMMA_AND_SEPARATED,
+    "languages": COMMA_AND_SEPARATED_LANGUAGES,
+}
