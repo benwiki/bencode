@@ -1,7 +1,7 @@
-from typing import Iterable
 
+import re
+from eagxf.constant_functions import INIT_USERS_PATH
 from eagxf.status import Status
-from eagxf.structure import Button
 from eagxf.util import invert_dict
 
 APP_NAME = "EAGxF"
@@ -9,6 +9,7 @@ APP_NAME = "EAGxF"
 # ========== PATHS =====================================
 TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
 USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+USERS_PATH = INIT_USERS_PATH()
 # ======================================================
 
 ADMINS = (
@@ -23,6 +24,8 @@ SPACER = (
     + "if you see this!"
     + "\n" * 50
 )
+
+PAGE_STEP = 10
 
 STATUS_EMOJI: dict[Status, str] = {
     Status.AVAILABLE: "🟢",
@@ -60,6 +63,9 @@ DEFAULT_PRIO_ORDER = [
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
 SPECIAL_DESTINATIONS = ("<back>",)
+
+NOT_ALNUM = re.compile(r"[\W_]+", re.UNICODE)
+DATE_FORMAT = re.compile(r"\d{2}\.\d{2}\.\d{4}(?: \d{2}:\d{2}(?::\d{2})?)?")
 
 INCOMPLETE_PROFILE_MSG = (
     "*Your profile must be complete before you can "
@@ -133,72 +139,6 @@ VISIBLE_SIMPLE_USER_PROPS: dict[str, dict] = {
         "example": "psychology, Python, electric guitar",
     },
 }
-
-
-def ANSWERS(search=False) -> str:  # pylint: disable=invalid-name
-    prefix = "search_" if search else ""
-    return "\n" + "\n".join(
-        f"__{question['text']}__" f"\n{question['emoji']}  <{prefix}{q_id}>"
-        for q_id, question in QUESTION_NAMES.items()
-    )
-
-
-def PROFILE(search=False, name="Your") -> str:  # pylint: disable=invalid-name
-    prefix = "search_" if search else ""
-    return (
-        (
-            "***------ Current filters ------***"
-            if search
-            else f"***------ {name} profile ------***"
-        )
-        # "\n\n**Metadata**"
-        # "\n- 🆔 *User ID:* <id>"
-        # "\n- 📅 *Date Joined:* <date_joined>"
-        + SIMPLE_PROPS(prefix, before_questions=True)
-        + "\n***------❓Questions ------***"
-        f"{ANSWERS(search)}"
-        "\n***------------------------***"
-        + SIMPLE_PROPS(prefix, before_questions=False)
-        + f"\n- ***Status:***  <{prefix}status>"
-        + "\n***------------------------***"
-        + ("\n\nNumber of results: **<number_of_results>**" if search else "")
-    )
-
-
-def SIMPLE_PROPS(prefix, before_questions=True) -> str:  # pylint: disable=invalid-name
-    return "".join(
-        f"\n- ***{prop['label']}:***  <{prefix}{prop_id}>"
-        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if before_questions == prop["before_questions"]
-    )
-
-
-def SIMPLE_PROP_BUTTONS(
-    action, before_questions=True
-) -> Iterable[Button]:  # pylint: disable=invalid-name
-    """Returns a list of buttons for [simple properties]"""
-    return (
-        Button(
-            label=prop["label"],
-            emoji=prop["emoji"],
-            takes_to=f"{action}_{prop_id}",
-            row=prop["row"],
-        )
-        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if before_questions == prop["before_questions"]
-    )
-
-
-def QUESTION_BUTTONS(action) -> Iterable[Button]:  # pylint: disable=invalid-name
-    return (
-        Button(
-            label=question["label"],
-            emoji=question["emoji"],
-            takes_to=f"{action}_{q_id}",
-        )
-        for q_id, question in QUESTION_NAMES.items()
-    )
-
 
 COMMA_AND_SEPARATED = (
     "\n\n( Comma and '&' separated, e.g.:"

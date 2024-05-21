@@ -2,22 +2,27 @@ import discord
 from discord import ButtonStyle
 
 from eagxf.button import Button
+from eagxf.constant_functions import ANSWERS, PROFILE
 from eagxf.constants import (
-    ANSWERS,
     APP_NAME,
     COMMA_AND_SEPARATED,
     COMMA_SEPARATED_MAP,
     DEFAULT_PRIO_ORDER,
     NUM_EMOJI,
     PRIO_LIST_LENGTH,
-    PROFILE,
-    QUESTION_BUTTONS,
     QUESTION_NAMES,
-    SIMPLE_PROP_BUTTONS,
     STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.structure import Structure
+
+
+def back_home(row=None):
+    return [
+        Button(label="⬅️ Back", takes_to="<back>", row=row),
+        Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=row),
+    ]
+
 
 STRUCTURES = {
     "home": Structure(
@@ -33,6 +38,7 @@ STRUCTURES = {
                 style=ButtonStyle.primary,
             ),
             Button(label="Interests", takes_to="interests", emoji="↕️"),
+            Button(label="🗓️ Meetings", takes_to="meetings", style=ButtonStyle.primary),
         ],
     ),
     "profile": Structure(
@@ -45,21 +51,20 @@ STRUCTURES = {
     "edit_profile": Structure(
         message=PROFILE() + "\n\n✏️ **Editing Profile**" "\nWhat do you want to change?",
         buttons=[
-            *SIMPLE_PROP_BUTTONS("edit", before_questions=True),
+            *Button.simple_prop_buttons("edit", before_questions=True),
             Button(
                 label="Answers to ❓Questions",
                 takes_to="edit_answers",
                 row=2,
             ),
-            *SIMPLE_PROP_BUTTONS("edit", before_questions=False),
+            *Button.simple_prop_buttons("edit", before_questions=False),
             Button(
                 label="Status",
                 takes_to="edit_status",
                 emoji=discord.PartialEmoji(name="ℹ️"),
                 row=3,
             ),
-            Button(label="⬅️ Back", takes_to="profile", row=4),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=4),
+            *back_home(row=4),
         ],
     ),
     "edit_answers": Structure(
@@ -67,16 +72,18 @@ STRUCTURES = {
         f"\n{ANSWERS()}"
         "\n\nWhat do you want to change?",
         buttons=[
-            *QUESTION_BUTTONS("edit"),
-            Button(label="⬅️ Back", takes_to="edit_profile", row=1),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
+            *Button.question_buttons("edit"),
+            *back_home(row=1),
         ],
+        stacked=False,
     ),
     **{  # Edit simple properties
         f"edit_{prop_id}": Structure(
             message=f"Your current {prop_id} is:\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?",
-            changes_property=prop_id,
+            changed_property=prop_id,
+            buttons=back_home(),
+            stacked=False,
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
         if not prop["comma_separated"]
@@ -86,7 +93,9 @@ STRUCTURES = {
             message=f"Your current {prop_id} are:\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?"
             f"\n(Comma separated, e.g. {prop['example']})",
-            changes_property=prop_id,
+            changed_property=prop_id,
+            buttons=back_home(),
+            stacked=False,
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
         if prop["comma_separated"]
@@ -99,14 +108,18 @@ STRUCTURES = {
             f"{emoji} ({status.value})" for status, emoji in STATUS_EMOJI.items()
         ),
         reactions=list(STATUS_EMOJI.values()),
-        changes_property="status",
+        changed_property="status",
         condition="profile_complete",
+        buttons=back_home(),
+        stacked=False,
     ),
     **{  # Edit questions
         f"edit_{q_id}": Structure(
             message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
             "\n\nWhat do you want to change it to?",
-            changes_property=q_id,
+            changed_property=q_id,
+            buttons=back_home(),
+            stacked=False,
         )
         for q_id, question in QUESTION_NAMES.items()
     },
@@ -115,13 +128,13 @@ STRUCTURES = {
         f"{PROFILE(search=True)}"
         "\n\nClick the buttons to change the filters!",
         buttons=[
-            *SIMPLE_PROP_BUTTONS("search", before_questions=True),
+            *Button.simple_prop_buttons("search", before_questions=True),
             Button(
                 label="Answers to ❓Questions",
                 takes_to="edit_search_answers",
                 row=2,
             ),
-            *SIMPLE_PROP_BUTTONS("search", before_questions=False),
+            *Button.simple_prop_buttons("search", before_questions=False),
             Button(
                 label="Status",
                 takes_to="search_status",
@@ -142,10 +155,10 @@ STRUCTURES = {
         f"\n{ANSWERS(search=True)}"
         "\n\nWhat do you want to change?",
         buttons=[
-            *QUESTION_BUTTONS("search"),
-            Button(label="⬅️ Back", takes_to="search", row=1),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
+            *Button.question_buttons("search"),
+            *back_home(row=1),
         ],
+        stacked=False,
     ),
     **{  # Search simple properties
         f"search_{prop_id}": Structure(
@@ -153,7 +166,9 @@ STRUCTURES = {
             + COMMA_SEPARATED_MAP.get(prop_id, "")
             + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
             "\n\nType ? to search for any.",
-            changes_property=f"search_{prop_id}",
+            changed_property=f"search_{prop_id}",
+            buttons=back_home(),
+            stacked=False,
         )
         for prop_id in VISIBLE_SIMPLE_USER_PROPS
     },
@@ -165,7 +180,9 @@ STRUCTURES = {
             + ["❓ (Any)"]
         ),
         reactions=list(STATUS_EMOJI.values()) + ["❓"],
-        changes_property="search_status",
+        changed_property="search_status",
+        buttons=back_home(),
+        stacked=False,
     ),
     **{  # Search questions
         f"search_{q_id}": Structure(
@@ -174,7 +191,9 @@ STRUCTURES = {
             f"{COMMA_AND_SEPARATED}"
             f"\n\nCurrent filter:\n*<search_{q_id}>*"
             "\n\nType ? to search for any keyword.",
-            changes_property=f"search_{q_id}",
+            changed_property=f"search_{q_id}",
+            buttons=back_home(),
+            stacked=False,
         )
         for q_id, question in QUESTION_NAMES.items()
     },
@@ -192,8 +211,7 @@ STRUCTURES = {
                 style=ButtonStyle.green,
                 takes_to="show_search_results",
             ),
-            Button(label="⬅️ Back", takes_to="search", row=1),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
+            *back_home(row=1),
         ],
     ),
     "best_matches": Structure(
@@ -226,23 +244,22 @@ STRUCTURES = {
             f"\nIf you select {PRIO_LIST_LENGTH - 1} or less elements, "
             "the omitted ones won't be considered in the matching process."
             "\n\n__Your current order:__"
-            "\n<best_match_prio_order>"
+            "\n<prio_order>"
             "\n\n__The default order to select from:__"
             f"\n{NUM_EMOJI[0]}**.** "
             + "\n{}**.** ".join(DEFAULT_PRIO_ORDER).format(
                 *NUM_EMOJI[1:PRIO_LIST_LENGTH]
             )
             + "\n\n__Your new order:__"
-            "\n<best_match_prio_order_new>\n" + r"\_" * 50
+            "\n<prio_order_new>\n" + r"\_" * 50
         ),
         after_button_effects="delete_message, reset_new_prio_order, reset_user_property_change",
         buttons=[
             Button(label="*️⃣ Default", takes_to="default_best_matches_confirm"),
             Button(label="🔄 Reset", takes_to="change_priority", style=ButtonStyle.red),
-            Button(label="⬅️ Back", takes_to="best_matches", row=1),
-            Button(label="🏠 Home", takes_to="home", style=ButtonStyle.primary, row=1),
+            *back_home(row=1),
         ],
-        changes_property="best_match_prio_order",
+        changed_property="best_match_prio_order",
         reactions=NUM_EMOJI[:PRIO_LIST_LENGTH],
     ),
     "default_best_matches_confirm": Structure(
@@ -262,6 +279,7 @@ STRUCTURES = {
                 style=ButtonStyle.primary,
             ),
         ],
+        stacked=False,
     ),
     "interests": Structure(
         message="↕️ Interests"
@@ -286,10 +304,7 @@ STRUCTURES = {
         "\n\n<interests_sent>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=[
-            Button(label="⬅️ Back", takes_to="interests"),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
-        ],
+        buttons=back_home(),
     ),
     "interests_received": Structure(
         message="⬇️ **Interests received**"
@@ -299,10 +314,7 @@ STRUCTURES = {
         "\n\n<interests_received>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=[
-            Button(label="⬅️ Back", takes_to="interests"),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
-        ],
+        buttons=back_home(),
     ),
     "mutual_interests": Structure(
         message="✅ **Mutual interests**"
@@ -312,14 +324,14 @@ STRUCTURES = {
         "\n\n<mutual_interests>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=[
-            Button(label="⬅️ Back", takes_to="interests"),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home"),
-        ],
+        buttons=back_home(),
     ),
     "selected_user": Structure(
         message="You have selected ***<selected_user_name>*** !"
         "\n\n<selected_user_profile>"
+        "\n\nYour interest status with this user:\n**<interest_status>**"
+        "\n\nMeetings with this user:"
+        "\n<selected_user_meetings>"
         "\n\nWhat do you want to do with this user?",
         buttons=[
             Button(
@@ -340,8 +352,49 @@ STRUCTURES = {
                 conditions="can_confirm_interest",
                 effects="send_interest",
             ),
-            Button(label="⬅️ Back", takes_to="<back>", row=1),
-            Button(label="🏠 Home", style=ButtonStyle.primary, takes_to="home", row=1),
+            Button(
+                label="📅 Request meeting",
+                takes_to="meeting_request",
+                conditions="can_request_meeting",
+            ),
+            Button(
+                label="❌ Cancel meeting",
+                takes_to="cancel_meeting_confirm",
+                conditions="can_cancel_meeting",
+            ),
+            *back_home(row=2),
         ],
+    ),
+    "meeting_request": Structure(
+        message="📅 **Meeting Request**"
+        "\n\nYou are requesting a meeting with ***<selected_user_name>*** !"
+        "\n\nPlease specify a date and time for the meeting in this format:"
+        "\ndd.mm.yyyy hh:mm"
+        "\n\nExample: 03.11.2024 09:30",
+        changed_property="meeting_request",
+        buttons=back_home(),
+        stacked=False,
+    ),
+    "cancel_meeting_confirm": Structure(
+        message="Are you sure you want to cancel the meeting with ***<selected_user_name>*** ?",
+        buttons=[
+            Button(label="No", takes_to="selected_user"),
+            Button(
+                label="Yes",
+                takes_to="selected_user",
+                effects="cancel_meeting",
+                style=ButtonStyle.red,
+            ),
+        ],
+        stacked=False,
+    ),
+    "meetings": Structure(
+        message="🗓️ **Meetings**"
+        "\n\n( **<num_of_upcoming_meetings>** ) Upcoming meetings:"
+        "\n<upcoming_meetings>"
+        "\n\n( **<num_of_past_meetings>** ) Past meetings:"
+        "\n<past_meetings>"
+        "\n\nChoose a meeting to manage it! (coming soon)",
+        buttons=back_home(),
     ),
 }

@@ -66,7 +66,7 @@ class ViewMsg:
             await self.message.delete()
             self.message = None
         else:
-            print(f"No message to delete")
+            print("No message to delete")
 
     def add_button(self, button: DcButton) -> None:
         assert self.view

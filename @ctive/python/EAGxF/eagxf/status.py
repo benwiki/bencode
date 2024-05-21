@@ -21,6 +21,10 @@ class Status(Enum):
     def __ge__(self, other: "Status") -> bool:
         return ORDER.index(self) >= ORDER.index(other)
 
+    def __str__(self) -> str:
+        from eagxf.constants import STATUS_EMOJI
+        return f"{STATUS_EMOJI[self]} ({self.value})"
+
 
 ORDER = [
     Status.ANY,

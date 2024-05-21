@@ -1,4 +1,8 @@
+from typing import Iterable
+
 from discord.ui import Button as DCButton
+
+from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
 
 
 class Button(DCButton):
@@ -12,7 +16,7 @@ class Button(DCButton):
         takes_to: str = "",
         effects: str = "",
         conditions: str = "",
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.takes_to = takes_to
@@ -37,3 +41,29 @@ class Button(DCButton):
                 row=0,
             ),
         ]
+
+    @staticmethod
+    def simple_prop_buttons(action, before_questions=True) -> Iterable["Button"]:
+        """Returns a list of buttons for [simple properties]"""
+        return (
+            Button(
+                label=prop["label"],
+                emoji=prop["emoji"],
+                takes_to=f"{action}_{prop_id}",
+                row=prop["row"],
+            )
+            for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
+            if before_questions == prop["before_questions"]
+        )
+
+    @staticmethod
+    def question_buttons(action) -> Iterable["Button"]:
+        """Returns a list of buttons for [questions]"""
+        return (
+            Button(
+                label=question["label"],
+                emoji=question["emoji"],
+                takes_to=f"{action}_{q_id}",
+            )
+            for q_id, question in QUESTION_NAMES.items()
+        )

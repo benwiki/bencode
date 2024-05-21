@@ -1,40 +1,35 @@
 import asyncio
-import datetime
-import json
 import os
-import re
-from typing import Callable, Iterator, Sequence
+from typing import Callable, Iterable, Iterator
 
 import discord
 from discord import ButtonStyle
 from discord.ext import commands
 
 from eagxf.button import Button
+from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
-    APP_NAME,
-    DEFAULT_PRIO_ORDER,
     EMOJI_STATUS,
     INCOMPLETE_PROFILE_MSG,
     INCOMPLETE_PROFILE_WARNING,
     NUM_EMOJI,
-    NUM_NAME,
-    PRIO_LIST_LENGTH,
-    PROFILE,
+    PAGE_STEP,
     QUESTION_NAMES,
     SPACER,
     SPECIAL_DESTINATIONS,
     STATUS_EMOJI,
-    USERS_FOLDER_PATH,
+    USERS_PATH,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
-from eagxf.platform_user import PlatformUser
+from eagxf.meetings import Meeting
 from eagxf.status import Status
 from eagxf.structure import Structure
 from eagxf.structures import PRIORITY_MESSAGE, STRUCTURES
-from eagxf.typedefs import DcButton, DcMessage, DcView
-from eagxf.user_saver import UserManager
+from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
+from eagxf.user import User
+from eagxf.util import to_emojis
 from eagxf.view_msg import ViewMsg
 
 
@@ -46,12 +41,11 @@ class Logic(commands.Cog):
         self.init_other_stuff()
 
     def init_users(self) -> None:
-        self.users_path = self.init_users_path()
-        self.users: dict[int, PlatformUser] = self.load_users()
+        self.users: dict[int, User] = self.load_users()
         for user in self.users.values():
             asyncio.create_task(self.send_starting_message_to(user))
 
-    async def send_starting_message_to(self, user: PlatformUser) -> None:
+    async def send_starting_message_to(self, user: User) -> None:
         await self.send_structure(STRUCTURES["home"], user)  # type: ignore
 
     def init_structures(self) -> None:
@@ -70,7 +64,7 @@ class Logic(commands.Cog):
         for button in structure.buttons:
             button.effects = self.comma_add(button.effects, "empty_results")
         structure.buttons += Button.get_navigation_buttons(structure.id)
-        structure.changes_property = "selected_user"
+        structure.changed_property = "selected_user"
 
     def comma_add(self, original: str, additional: str) -> str:
         if original:
@@ -102,37 +96,35 @@ class Logic(commands.Cog):
         self.save_btn = Button(
             label="💾 Save",
             takes_to="best_matches",
-            effects="save_prio, delete_message, reset_new_prio_order",
+            effects="save_best_matches, delete_message, reset_new_prio_order",
             style=ButtonStyle.green,
         )
         self.save_btn.callback = self.get_structure_callback(  # type: ignore
             STRUCTURES["best_matches"], button=self.save_btn
         )
-        self.not_alnum = re.compile(r"[\W_]+", re.UNICODE)
-        self.PRIO_FUNCTIONS = [  # pylint: disable=C0103
-            self.get_language_score,
-            self.get_question_score,
-            self.get_keywords_score,
-            self.get_location_distance,
-            self.get_status,
-            self.get_headline_score,
+        self.prio_functions: list[Callable[[User, User], int | Status]] = [
+            lambda user, u: user.get_language_score(u),
+            lambda user, u: user.get_question_score(u),
+            lambda user, u: user.get_keywords_score(u),
+            lambda user, u: user.get_location_distance(u),
+            lambda user, u: user.get_status(u),
+            lambda user, u: user.get_headline_score(u),
         ]
-        self.REACTION_FUNCTIONS: dict[str, Callable] = {  # pylint: disable=C0103
+        self.reaction_funcs: dict[str, Callable] = {  # pylint: disable=C0103
             "status": self.handle_status_change,
             "best_match_prio_order": self.handle_best_match_prio_order,
             "selected_user": self.handle_selected_user,
         }
         self.add_reactions = True
         self.DEBUGGING = True  # pylint: disable=C0103
-        self.page_step = 10
         asyncio.create_task(self.refresh())
 
     async def refresh(self) -> None:
         while True:
             await asyncio.sleep(60)
             for user in self.users.values():
-                if user.last_structure:
-                    await self.send_structure(user.last_structure, user=user)
+                if user.structure_stack:
+                    await self.send_structure(user.structure_stack[-1], user=user)
 
     def get_structure_callback(
         self, structure: Structure | None, button: Button | None = None
@@ -142,9 +134,9 @@ class Logic(commands.Cog):
             user = self.users[interaction.user.id]
             if button and button.effects:
                 for effect in button.effects.split(", "):
-                    await self.affect(effect, user)
-            if button and button.takes_to == "<back>" and user.back_to_structure:
-                await self.send_structure(user.back_to_structure, user)
+                    await user.apply_effect(effect)
+            if button and button.takes_to == "<back>" and len(user.structure_stack) > 1:
+                await self.send_structure(user.back_to_structure, user)  # type: ignore
             elif structure:
                 await self.send_structure(structure, user)
             else:
@@ -152,55 +144,13 @@ class Logic(commands.Cog):
 
         return callback
 
-    async def affect(self, effect: str, user: PlatformUser) -> None:
-        if effect == "go_to_previous_page":
-            user.page -= 1
-        if effect == "go_to_next_page":
-            user.page += 1
-        if effect == "delete_message":
-            await user.view_msg.delete()
-        if effect == "save_prio":
-            user.best_match_prio_order = user.best_match_prio_order_new
-            self.save_user(user)
-        if effect == "reset_new_prio_order":
-            user.best_match_prio_order_new = []
-        if effect == "default_best_matches":
-            user.best_match_prio_order = list(range(PRIO_LIST_LENGTH))
-            self.save_user(user)
-        if effect == "reset_user_property_change":
-            user.change = ""
-        if effect == "empty_results":
-            user.results = []
-            user.page = 0
-        if effect == "send_interest":
-            self.send_interest(user)
-        if effect == "cancel_interest":
-            self.cancel_interest(user)
-
-    def send_interest(self, user: PlatformUser) -> None:
-        if not user.selected_user:
-            return
-        user.selected_user.interests["received"].append(user.id)
-        user.interests["sent"].append(user.selected_user.id)
-        self.save_user(user.selected_user)
-        self.save_user(user)
-
-    def cancel_interest(self, user: PlatformUser) -> None:
-        if not user.selected_user:
-            return
-        user.selected_user.interests["received"].remove(user.id)
-        user.interests["sent"].remove(user.selected_user.id)
-        self.save_user(user.selected_user)
-        self.save_user(user)
-
-    async def send_structure(
-        self,
-        structure: Structure,
-        user: PlatformUser,
-    ) -> None:
-        if user.last_structure and user.last_structure.id != structure.id:
-            user.back_to_structure = user.last_structure
-        user.last_structure = structure
+    async def send_structure(self, structure: Structure, user: User) -> None:
+        if structure.id == "home":
+            user.structure_stack = [structure]
+        elif structure.stacked and (
+            not user.structure_stack or user.structure_stack[-1].id != structure.id
+        ):
+            user.structure_stack.append(structure)
 
         self.collect_data_for(user, structure)
 
@@ -208,59 +158,43 @@ class Logic(commands.Cog):
         receiver_future = self.client.fetch_user(user.id)
         await user.view_msg.send(receiver_future=receiver_future)
 
-        if structure.changes_property:
-            user.change = structure.changes_property
+        if structure.changed_property:
+            user.change = structure.changed_property
 
         if user.add_reactions and structure.reactions:
             for emoji in structure.reactions:
                 await user.view_msg.add_reaction(emoji)
-        await self.add_special_reactions_for(user, structure)
 
-    def collect_data_for(self, user: PlatformUser, structure: Structure) -> None:
+        if structure.paged and user.view_msg:
+            await self.add_special_reactions_for(user)
+
+    def collect_data_for(self, user: User, structure: Structure) -> None:
         if structure.id in ["search", "show_search_results"]:
             user.results = self.search_users_for(user)
         if structure.id == "best_matches":
             user.results = self.search_best_matches_for(user)
         if structure.id == "interests_sent":
-            user.results = self.subtract(
-                user.interests["sent"], user.interests["received"]
-            )
+            user.results = user.interests_sent_not_received
         if structure.id == "interests_received":
-            user.results = self.subtract(
-                user.interests["received"], user.interests["sent"]
-            )
+            user.results = user.interests_received_not_sent
         if structure.id == "mutual_interests":
-            user.results = self.intersect(
-                user.interests["sent"], user.interests["received"]
-            )
+            user.results = user.mutual_interests
 
-    def subtract(self, list_a: list, list_b: list) -> list:
-        return [item for item in list_a if item not in list_b]
-
-    def intersect(self, list_a: list, list_b: list) -> list:
-        return [item for item in list_a if item in list_b]
-
-    async def get_view_msg_for(
-        self, user: PlatformUser, structure: Structure
-    ) -> ViewMsg:
+    async def get_view_msg_for(self, user: User, structure: Structure) -> ViewMsg:
         if structure.condition and not user.valid_condition(structure.condition):
             ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
             view = self.get_view([ok_btn])
             message = self.get_condition_message(structure.condition)
             user.add_reactions = False
         else:
-            buttons = [
-                button
-                for button in structure.buttons
-                if self.btn_condition_true_for(user, button.conditions)
-            ]
+            buttons = filter(user.conditions_apply_for, structure.buttons)
             view = self.get_view(buttons)
             message = self.replace_placeholders(structure.message, user)
             user.add_reactions = True
 
         return user.view_msg.update(view, raw_message=SPACER + message)
 
-    def search_best_matches_for(self, user: PlatformUser) -> list[int]:
+    def search_best_matches_for(self, user: User) -> list[int]:
         matches_list = sorted(
             filter(
                 lambda u: u.id != user.id and u.status != Status.INVISIBLE,
@@ -271,39 +205,16 @@ class Logic(commands.Cog):
         )
         return [u.id for u in matches_list]
 
-    def register_user(self, dc_user: discord.User | discord.Member) -> PlatformUser:
-        current = datetime.datetime.now()
-        user = self.users[dc_user.id] = PlatformUser(
-            id=dc_user.id,
-            date_joined=Date(
-                day=current.day,
-                month=current.month,
-                year=current.year,
-            ),
-            name=dc_user.name,
-            questions={q: "?" for q in QUESTION_NAMES},
-            search_filter=PlatformUser(
-                questions={q: "?" for q in QUESTION_NAMES},
-                status=Status.ANY,
-            ),
-            best_match_prio_order=list(range(PRIO_LIST_LENGTH)),
-            interests={"sent": [], "received": []},
-        )
-        self.save_user(user)
+    def register_user(self, dc_user: DcUser) -> User:
+        user = self.users[dc_user.id] = User.from_dc_user(dc_user)
+        user.save()
         return user
 
-    async def add_special_reactions_for(
-        self, user: PlatformUser, structure: Structure
-    ) -> None:
-        if structure.paged and user.view_msg:
-            for i in range(
-                min(self.page_step, len(user.results) - user.page * self.page_step)
-            ):
-                await user.view_msg.add_reaction(NUM_EMOJI[i])
+    async def add_special_reactions_for(self, user: User) -> None:
+        for i in range(min(PAGE_STEP, len(user.results) - user.page * PAGE_STEP)):
+            await user.view_msg.add_reaction(NUM_EMOJI[i])
 
-    def search_users_for(self, user_searching: PlatformUser) -> list[int]:
-        if not user_searching.search_filter:
-            return []
+    def search_users_for(self, user_searching: User) -> list[int]:
         return [
             user.id
             for user in self.users.values()
@@ -315,134 +226,105 @@ class Logic(commands.Cog):
             return INCOMPLETE_PROFILE_MSG
         return ""
 
-    def additional_info_with_side_effects(self, user: PlatformUser) -> str:
+    def additional_info_with_side_effects(self, user: User) -> str:
         if not user.is_complete() and user.status != Status.INVISIBLE:
             user.status = Status.INVISIBLE
             return INCOMPLETE_PROFILE_WARNING
         return ""
 
-    def btn_condition_true_for(self, user: PlatformUser, condition: str) -> bool:
-        if not condition:
-            return True
-        if condition == "has_previous_page":
-            return user.page > 0
-        if condition == "has_next_page":
-            return user.page < (len(user.results) - 1) // self.page_step
-        if condition == "prio_order_full":
-            return len(user.best_match_prio_order_new) == PRIO_LIST_LENGTH
-        if condition.startswith("can_"):
-            interest_sent = (
-                user.selected_user is not None
-                and user.id in user.selected_user.interests["received"]
-                and user.selected_user.id in user.interests["sent"]
-            )
-            interest_received = (
-                user.selected_user is not None
-                and user.id in user.selected_user.interests["sent"]
-                and user.selected_user.id not in user.interests["sent"]
-            )
-            if condition == "can_cancel_interest":
-                return interest_sent
-            if condition == "can_send_interest":
-                return not interest_sent and not interest_received
-            if condition == "can_confirm_interest":
-                return interest_received
-        print(f"Invalid condition: {condition}")
-        return False
-
-    def replace_placeholders(self, msg: str, user: PlatformUser | None) -> str:
+    def replace_placeholders(self, msg: str, user: User | None) -> str:
         if not user:
             return msg
 
-        sent_wo_received = self.subtract(
-            user.interests["sent"], user.interests["received"]
-        )
-        received_wo_sent = self.subtract(
-            user.interests["received"], user.interests["sent"]
-        )
-        mutual = self.intersect(user.interests["sent"], user.interests["received"])
-
+        msg = user.replace_placeholders(msg)
         msg = (
-            msg.replace("<id>", str(user.id))
-            .replace("<date_joined>", str(user.date_joined))
-            .replace("<status>", f"{STATUS_EMOJI[user.status]} ({user.status.value})")
-            .replace("<number_of_results>", str(len(user.results)))
-            .replace("<search_results>", self.get_formatted_results_for(user))
+            msg.replace("<search_results>", self.get_formatted_results_for(user))
             .replace(
                 "<best_matches>",
-                self.get_formatted_results_for(
-                    user, additional=self.get_score_summary(user)
-                ),
+                self.get_formatted_results_for(user, additional=user.get_score_summary),
             )
             .replace("<page_reference>", self.get_page_reference_for(user))
-            .replace(
-                "<best_match_prio_order_new>",
-                self.format_priority_order(user, new=True),
-            )
-            .replace("<best_match_prio_order>", self.format_priority_order(user))
-            .replace("<num_of_interests_sent>", str(len(sent_wo_received)))
-            .replace("<num_of_interests_received>", str(len(received_wo_sent)))
-            .replace("<num_of_mutual_interests>", str(len(mutual)))
             .replace("<interests_sent>", self.get_interests(user))
             .replace("<interests_received>", self.get_interests(user))
             .replace("<mutual_interests>", self.get_interests(user))
             .replace("<selected_user_name>", self.get_name_of(user.selected_user))
             .replace(
                 "<selected_user_profile>",
-                self.replace_placeholders(
-                    PROFILE(name=self.get_name_of(user.selected_user) + "'s"),
-                    user.selected_user,
+                (
+                    user.selected_user.replace_placeholders(
+                        PROFILE(name=self.get_name_of(user.selected_user) + "'s")
+                    )
+                    if user.selected_user
+                    else ""
                 ),
             )
+            .replace(
+                "<selected_user_meetings>",
+                self.get_meetings(user, "upcoming", selected=True),
+            )
+            .replace("<upcoming_meetings>", self.get_meetings(user, "upcoming"))
+            .replace("<past_meetings>", self.get_meetings(user, "past"))
         )
         for q_id in QUESTION_NAMES:
             msg = msg.replace(f"<{q_id}>", user.questions[q_id])
         for prop_id in VISIBLE_SIMPLE_USER_PROPS:
             msg = msg.replace(f"<{prop_id}>", getattr(user, prop_id))
-        if user.search_filter:
-            _filter = user.search_filter
-            msg = msg.replace("<search_status>", self.get_search_status(_filter))
+        _filter = user.search_filter
+        if _filter:
+            msg = msg.replace("<search_status>", _filter.get_search_status())
             for q_id in QUESTION_NAMES:
                 msg = msg.replace(f"<search_{q_id}>", _filter.questions[q_id])
             for prop_id in VISIBLE_SIMPLE_USER_PROPS:
                 msg = msg.replace(f"<search_{prop_id}>", getattr(_filter, prop_id))
         return msg
 
-    def get_name_of(self, user: PlatformUser | None) -> str:
+    def get_name_of(self, user: User | None) -> str:
         return user.name if user else ""
 
-    def get_interests(self, user: PlatformUser) -> str:
+    def get_meetings(self, user: User, kind: str, selected: bool = False) -> str:
+        if kind == "upcoming":
+            meetings = user.meetings.upcoming
+        elif kind == "past":
+            meetings = user.meetings.past
+        else:
+            return ""
+
+        if selected and user.selected_user:
+            meetings = [m for m in meetings if m.partner_id == user.selected_user.id]
+
+        if not meetings:
+            return "**No meetings yet!**"
+        return "- " + "\n - ".join(
+            f"**{m.date}**"
+            + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
+            for m in meetings
+        )
+
+    def get_interests(self, user: User) -> str:
         return "\n".join(
-            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} .: ***{u.name}*** :. (Headline: *{u.headline}*)"
+            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} "
+            f".: ***{u.name}*** :. (Headline: *{u.headline}*)"
             for i, u in enumerate(self.get_results_for(user))
         )
 
-    def prefix(self, i: int, user: PlatformUser) -> str:
-        i = i + user.page * self.page_step
-        return f"**{i // self.page_step}** " if i >= self.page_step else "   "
+    def prefix(self, i: int, user: User) -> str:
+        i = i + user.page * PAGE_STEP
+        return f"**{i // PAGE_STEP}** " if i >= PAGE_STEP else "   "
 
-    def get_search_status(self, search_filter: PlatformUser) -> str:
-        return (
-            "?"
-            if search_filter.status == Status.ANY
-            else f"{STATUS_EMOJI[search_filter.status]} "
-            f"({search_filter.status.value})"
-        )
-
-    def get_page_reference_for(self, user: PlatformUser) -> str:
-        page_from = user.page * self.page_step + 1
-        page_to = min((user.page + 1) * self.page_step, len(user.results))
+    def get_page_reference_for(self, user: User) -> str:
+        page_from = user.page * PAGE_STEP + 1
+        page_to = min((user.page + 1) * PAGE_STEP, len(user.results))
         page_total = len(user.results)
         return f"**({page_from} - {page_to}) from total {page_total}**"
 
     def get_formatted_results_for(
         self,
-        user: PlatformUser,
-        additional: Callable[[PlatformUser], str] | None = None,
+        user: User,
+        additional: Callable[[User], str] | None = None,
     ) -> str:
         separator = "***========================***\n"
         return separator + f"\n\n{separator}".join(
-            f"{self.to_emojis(i+1)} .: ***{u.name}*** :. "
+            f"{to_emojis(i+1)} .: ***{u.name}*** :. "
             f"(Status: {STATUS_EMOJI[u.status]} "
             f"({u.status.value}))"
             f"{additional(u) if additional else ''}"
@@ -459,92 +341,19 @@ class Logic(commands.Cog):
             for i, u in enumerate(self.get_results_for(user))
         )
 
-    def get_results_for(self, user: PlatformUser) -> Iterator[PlatformUser]:
+    def get_results_for(self, user: User) -> Iterator[User]:
         return self.users_by_ids(self.paged_list_of(user.results, user))
 
-    def get_score_summary(self, user: PlatformUser) -> Callable[[PlatformUser], str]:
-        """Returns a summary of the scores of the user and the other user."""
-        return lambda other: (
-            f"\n[SCORE: "
-            f"(Lang: {self.get_language_score(user, other)}) "
-            f"(Q: {self.get_question_score(user, other)}) "
-            f"(Kw: {self.get_keywords_score(user, other)}) "
-            f"(H.line: {self.get_headline_score(user, other)}) "
-            f"(Loc: {self.get_location_distance(user, other)}) "
-            "]"
-        )
+    def paged_list_of(self, lst: list, user: User) -> list[int]:
+        return lst[user.page * PAGE_STEP : (user.page + 1) * PAGE_STEP]
 
-    def to_emojis(self, number: int) -> str:
-        """Converts a number to emojis. E.g. 123 -> ":one::two::three:"""
-        return "".join(f":{NUM_NAME[int(n)]}:" for n in str(number))
-
-    def paged_list_of(self, lst: list, user: PlatformUser) -> list[int]:
-        return lst[user.page * self.page_step : (user.page + 1) * self.page_step]
-
-    def users_by_ids(self, user_ids: list[int]) -> Iterator[PlatformUser]:
+    def users_by_ids(self, user_ids: list[int]) -> Iterator[User]:
         return map(lambda x: self.users[x], user_ids)
 
-    def get_priority(self, user: PlatformUser, u: PlatformUser) -> tuple:
+    def get_priority(self, user: User, u: User) -> tuple:
         """This function takes into account the best match priority order of the user"""
         return tuple(
-            self.PRIO_FUNCTIONS[i](user, u) for i in user.best_match_prio_order
-        )
-
-    def get_status(self, _: PlatformUser, u: PlatformUser) -> Status:
-        """Returns the status of the user."""
-        return u.status
-
-    def format_priority_order(self, user: PlatformUser, new: bool = False) -> str:
-        """Returns the best match priority order of the user in a formatted way."""
-        order = user.best_match_prio_order_new if new else user.best_match_prio_order
-        things = range(2, PRIO_LIST_LENGTH + 1)
-        return ("1. " if order != [] else "") + "\n{}. ".join(
-            DEFAULT_PRIO_ORDER[i] for i in order
-        ).format(*things)
-
-    def get_language_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns 1 if the user and the other user have at least one matching language,
-        0 otherwise."""
-        return int(
-            any(
-                kw.strip().lower() in other.languages.lower()
-                for kw in user.languages.split(",")
-            )
-        )
-
-    def get_question_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching keywords in the questions of the user
-        and the other user."""
-        return sum(
-            self.not_alnum.sub("", kw.strip().lower()) in other.questions[q_id].lower()
-            for q_id in QUESTION_NAMES
-            for kw in user.questions[q_id].split(" ")
-        )
-
-    def get_keywords_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching keywords in the keywords of the user
-        and the other user."""
-        return sum(
-            kw.strip().lower() in other.keywords.lower()
-            for kw in user.keywords.split(",")
-        )
-
-    def get_headline_score(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Returns the number of matching words in the headline of the user
-        and the other user."""
-        return sum(
-            self.not_alnum.sub("", kw.strip().lower()) in other.headline.lower()
-            for kw in user.headline.split(" ")
-        )
-
-    def get_location_distance(self, user: PlatformUser, other: PlatformUser) -> int:
-        """Should return the distance between the location of the user and the other user.
-        For now it just returns the number of matching words in the location of the user
-        and the other user.
-        """
-        return sum(
-            self.not_alnum.sub("", kw.strip().lower()) in other.location.lower()
-            for kw in user.location.split(" ")
+            self.prio_functions[i](user, u) for i in user.best_match_prio_order
         )
 
     @commands.command(name="enter")
@@ -595,16 +404,14 @@ class Logic(commands.Cog):
         user = self.users.get(msg.author.id)
         if (
             user is None
-            or user.change in [*self.REACTION_FUNCTIONS, ""]
+            or user.change in [*self.reaction_funcs, ""]
             or not user.search_filter
         ):
             return
 
         ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
-        view = self.get_view([ok_btn, self.home_btn])
 
         await user.view_msg.delete()
-        await msg.add_reaction("✅")
 
         changed = change = user.change
         search = change.startswith("search_")
@@ -617,6 +424,7 @@ class Logic(commands.Cog):
         kw_needed = plural or search and change in QUESTION_NAMES
         has_have = "have" if plural else "has"
         changed_to = msg.content
+        verb = "changed"
 
         if kw_needed:
             need_caps = change == "languages"
@@ -625,17 +433,43 @@ class Logic(commands.Cog):
 
         if change in QUESTION_NAMES:
             changed = "answer"
+            # TODO: ratyi!
             change_user.questions[change] = changed_to
+        # TODO: úristen de ratyi!
+        elif change == "meeting_request":
+            if Date.valid_str(changed_to) and user.selected_user:
+                user.meetings.upcoming.append(
+                    Meeting(
+                        partner_id=user.selected_user.id, date=Date.from_str(changed_to)
+                    )
+                )
+                user.selected_user.meetings.upcoming.append(
+                    Meeting(partner_id=user.id, date=Date.from_str(changed_to))
+                )
+                user.selected_user.save()
+                ok_btn = self.get_ok_button_for(user)
+                changed = f"meeting with ***{user.selected_user.name}***"
+                verb = "set"
+            else:
+                await msg.add_reaction("❌")
+                message = "Invalid date! Try again!\nFormat should be: dd.mm.yyyy hh:mm"
+                ok_btn = self.get_ok_button_for(user)
+                view = self.get_view([ok_btn, self.home_btn])
+                user.view_msg.update(raw_message=SPACER + message, view=view)
+                await user.view_msg.send(receiver=msg.author)
+                return
         else:
             setattr(change_user, change, changed_to)
 
-        message = f'✅ {pronome} {changed} {has_have} been changed to "{changed_to}"!'
+        await msg.add_reaction("✅")
+        message = f'✅ {pronome} {changed} {has_have} been {verb} to "{changed_to}"!'
         message += self.additional_info_with_side_effects(user)
 
+        view = self.get_view([ok_btn, self.home_btn])
         user.view_msg.update(raw_message=SPACER + message, view=view)
         await user.view_msg.send(receiver=msg.author)
         user.change = ""
-        self.save_user(user)
+        user.save()
 
     def evenly_space(self, text: str, capitalize: bool) -> str:
         return ", ".join(
@@ -650,28 +484,29 @@ class Logic(commands.Cog):
     async def on_raw_reaction_add(
         self, payload: discord.RawReactionActionEvent
     ) -> None:
-        user = self.users[payload.user_id]
+        user = self.users.get(payload.user_id)
+        if not user:
+            return
         change = user.change
         if change.startswith("search_"):
             change = change[7:]
 
         if user.view_msg.message and payload.message_id == user.view_msg.message.id:
-            if handle_reaction := self.REACTION_FUNCTIONS.get(change):
+            if handle_reaction := self.reaction_funcs.get(change):
                 await handle_reaction(user, payload.emoji.name)
 
-    async def handle_status_change(self, user: PlatformUser, emoji: str) -> None:
+    async def handle_status_change(self, user: User, emoji: str) -> None:
         if not user.search_filter:
             return  # only because of type hinting
         search = user.change.startswith("search_")
-        change_user = user.search_filter if search else user
+        changed_user = user.search_filter if search else user
         pronome = "Your" if not search else "The filter's"
 
         if not (status := EMOJI_STATUS.get(emoji)):
-            if emoji == "❓" and search:
-                status = Status.ANY
-            else:
+            if not (emoji == "❓" and search):
                 return
-        change_user.status = status
+            status = Status.ANY
+        changed_user.status = status
 
         ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
         view = self.get_view([ok_btn, self.home_btn])
@@ -681,10 +516,10 @@ class Logic(commands.Cog):
         user.view_msg.update(raw_message=SPACER + message, view=view)
         receiver_future = self.client.fetch_user(user.id)
         await user.view_msg.send(receiver_future=receiver_future)
-        self.save_user(user)
+        user.save()
 
     async def handle_best_match_prio_order(
-        self, user: PlatformUser, emoji: str, remove: bool = False
+        self, user: User, emoji: str, remove: bool = False
     ) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
@@ -698,31 +533,29 @@ class Logic(commands.Cog):
 
         if remove and none_selected:
             user.view_msg.remove_button(self.save_btn)
-            user.added_save_btn = False
-        elif not remove and not user.added_save_btn:
+            user.has_save_btn = False
+        elif not remove and not user.has_save_btn:
             user.view_msg.add_button(self.save_btn)
-            user.added_save_btn = True
+            user.has_save_btn = True
 
         message = self.replace_placeholders(PRIORITY_MESSAGE, user)
         user.view_msg.update(raw_message=SPACER + message)
         await user.view_msg.send()
 
-    async def handle_selected_user(self, user: PlatformUser, emoji: str) -> None:
+    async def handle_selected_user(self, user: User, emoji: str) -> None:
         num = self.validate_number_reaction(emoji, user)
         if not num:
             return
-        selected_user_id = user.results[user.page * self.page_step + num - 1]
+        selected_user_id = user.results[user.page * PAGE_STEP + num - 1]
         user.selected_user = self.users[selected_user_id]
         await user.view_msg.delete()
         await self.send_structure(STRUCTURES["selected_user"], user)  # type: ignore
 
-    def validate_number_reaction(
-        self, emoji_name: str, user: PlatformUser
-    ) -> int | None:
+    def validate_number_reaction(self, emoji_name: str, user: User) -> int | None:
         if emoji_name not in NUM_EMOJI:
             return None
         num = NUM_EMOJI.index(emoji_name) + 1
-        if not (1 <= num <= self.page_step) or not user.view_msg.message:
+        if not (1 <= num <= PAGE_STEP) or not user.view_msg.message:
             return None
         return num
 
@@ -730,8 +563,8 @@ class Logic(commands.Cog):
     async def on_raw_reaction_remove(
         self, payload: discord.RawReactionActionEvent
     ) -> None:
-        user = self.users[payload.user_id]
-        if not user.search_filter:
+        user = self.users.get(payload.user_id)
+        if not user or not user.search_filter:
             return
 
         if user.view_msg.message and payload.message_id == user.view_msg.message.id:
@@ -742,19 +575,19 @@ class Logic(commands.Cog):
 
     def get_ok_button_for(
         self,
-        user: PlatformUser,
+        user: User,
         wanted_structure: str = "",
         default_structure: str = "home",
     ) -> DcButton:
         button: DcButton = DcButton(label="OK", style=ButtonStyle.green)
         button.callback = self.get_structure_callback(  # type: ignore
-            STRUCTURES[wanted_structure]
+            STRUCTURES.get(wanted_structure)
             or user.back_to_structure
             or STRUCTURES[default_structure]
         )
         return button
 
-    def get_view(self, buttons: Sequence[Button | DcButton]) -> DcView:
+    def get_view(self, buttons: Iterable[Button | DcButton]) -> DcView:
         view = DcView()
         for button in buttons:
             view.add_item(button)
@@ -783,10 +616,10 @@ class Logic(commands.Cog):
             and date.replace(".", "").isnumeric()
         )
 
-    def load_users(self) -> dict[int, PlatformUser]:
+    def load_users(self) -> dict[int, User]:
         return {
-            int(id_str): self.load_user(id_str)
-            for filename in os.listdir(self.users_path)
+            int(id_str): User.load_by_id(id_str)
+            for filename in os.listdir(USERS_PATH)
             if (id_str := self.valid_file_name(filename))
         }
 
@@ -794,23 +627,6 @@ class Logic(commands.Cog):
         if name.endswith(".json") and (id_str := name[:-5]).isdecimal():
             return id_str
         return ""
-
-    def load_user(self, id_str: str) -> PlatformUser:
-        filename = f"{self.users_path}/{id_str}.json"
-        with open(filename, "r", encoding="utf-8") as file:
-            raw_user: dict = json.loads(file.read())
-            return UserManager.load(raw_user)
-
-    def save_user(self, user: PlatformUser) -> None:
-        filename = f"{self.users_path}/{user.id}.json"
-        with open(filename, "w", encoding="utf-8") as file:
-            file.write(UserManager.dumps(user))
-
-    def init_users_path(self) -> str:
-        path = f"{USERS_FOLDER_PATH}/{APP_NAME}_users"
-        if not os.path.exists(path):
-            os.makedirs(path)
-        return path
 
 
 async def setup(bot: commands.Bot) -> None:
