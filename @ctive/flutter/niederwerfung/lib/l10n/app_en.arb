@@ -3,5 +3,15 @@
   "@appName": {
     "description": "The name of the app."
   },
-  "homeScreenName": "Prostrations"
+  "homeScreenName": "Prostrations",
+  "gongInterval": "Gong interval",
+  "sec": "sec.",
+  "numberOfProstrations": "Number of prostrations",
+  "mantraIsOn": "Mantra is on",
+  "mantraIsOff": "Mantra is off",
+  "title": "Title",
+  "start": "Start",
+  "stop": "STOP",
+  "mantraPaceWarning": "Gong interval is too short for mantra. At least 8 seconds are required.",
+  "gongIntervalWarning": "Gong interval is too short for mantra. At least 8 seconds are required. Mantra turned off."
 }

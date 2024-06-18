@@ -1,4 +1,14 @@
 {
     "appName": "Niederwerfungen",
-    "homeScreenName": "Niederwerfungen"
+    "homeScreenName": "Niederwerfungen",
+    "gongInterval": "Gong-Intervall",
+    "sec": "Sek.",
+    "numberOfProstrations": "Anzahl der Niederwerfungen",
+    "mantraIsOn": "Mantra eingeschaltet",
+    "mantraIsOff": "Mantra ausgeschaltet",
+    "title": "Titel",
+    "start": "Start",
+    "stop": "STOP",
+    "mantraPaceWarning": "Gong-Intervall ist zu kurz für Mantra. Mindestens 8 Sekunden sind erforderlich.",
+    "gongIntervalWarning": "Gong-Intervall ist zu kurz für Mantra. Mindestens 8 Sekunden sind erforderlich. Mantra ausgeschaltet."
 }

@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:niederwerfung/app_theme.dart';
+import 'package:niederwerfung/context_extensions.dart';
 import 'package:niederwerfung/homepage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const NwApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class NwApp extends StatefulWidget {
+  const NwApp({super.key});
+
+  @override
+  State<NwApp> createState() => NwAppState();
+
+  static NwAppState? of(BuildContext context) => context.findAncestorStateOfType<NwAppState>();
+}
+
+class NwAppState extends State<NwApp> {
+  Locale _locale = const Locale("en");
+
+  void setLocale(Locale value) {
+    setState(() {
+      _locale = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    const Color mainColor = Color.fromARGB(255, 252, 218, 118);
-    const Color backgroundColor = Color.fromARGB(255, 1, 25, 62);
-
     return MaterialApp(
-      // title: AppLocalizations.of(context)!.appName,
-      onGenerateTitle: (context) {
-        final l10n = AppLocalizations.of(context);
-
-        return l10n!.appName;
+      onGenerateTitle: (BuildContext context) {
+        return context.text.appName;
       },
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: mainColor,
-          primary: backgroundColor,
-          surface: mainColor,
-          background: backgroundColor,
-        ),
-        useMaterial3: true,
-      ),
+      theme: appTheme,
+      locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -39,8 +43,8 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(
-          builder: (context) =>
-              MyHomePage(title: AppLocalizations.of(context)!.homeScreenName)),
+        builder: (context) => const HomePage(),
+      ),
     );
   }
 }

@@ -28,11 +28,13 @@ def pictures_identical(pic_1: str, pic_2: str) -> bool:
     pic2 = Image.open(pic_2)
 
     diff = ImageChops.difference(pic1, pic2)
-    # p1name = pic_1.split('\\')[-1]
-    # p2name = pic_2.split('\\')[-1]
+    p1name = pic_1.split('\\')[-1]
+    p2name = pic_2.split('\\')[-1]
+    name = f"diff_{p1name}_{p2name}.png"
+    # diff.save(name)
     # name = "diff"+ pic_1.split('\\')[-1]+"_"+ pic_2.split('\\')[-1] + ".png"
     avg_brightness = brightness(diff)
-    # print(p1name, p2name, avg_brightness)
+    print(p1name, p2name, "*" * int(avg_brightness * 10))
     return avg_brightness < 10
 
 def brightness(img: Image.Image):
@@ -42,9 +44,9 @@ def brightness(img: Image.Image):
 
 
 if __name__ == "__main__":
-    PATH_1 = r"C:\Users\b.hargitai\Downloads\how_to_komp"
+    PATH_1 = r"C:\Users\b.hargitai\Downloads\how_to_komp_2"
     pics1 = [PATH_1 + "\\" + item for item in os.walk(PATH_1).__next__()[2]]
-    PATH_2 = r"C:\Users\b.hargitai\Downloads\how_to_komp_2"
+    PATH_2 = r"C:\Users\b.hargitai\Downloads\how_to_komp_3"
     pics2 = [PATH_2 + "\\" + item for item in os.walk(PATH_2).__next__()[2]]
 
     # differing_pics1, differing_pics2 = compare_picture_lists(pics1, pics2)
