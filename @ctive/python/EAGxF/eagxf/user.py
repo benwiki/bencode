@@ -1,5 +1,6 @@
 import json
 from dataclasses import dataclass, field
+import re
 from typing import Any, Callable
 
 from eagxf.button import Button
@@ -49,6 +50,7 @@ class User:
     structure_stack: list[Structure] = field(default_factory=list)
     has_save_btn: bool = False
     add_reactions: bool = True
+    feedback_message: str = ""
     change: str = ""
     page: int = 0
 
@@ -158,6 +160,14 @@ class User:
             return self.is_complete()
         return False
 
+    def struct_conditions_apply_for(self, structure: Structure) -> bool:
+        if not structure.conditions:
+            return True
+        for condition in structure.conditions.split(","):
+            if not self.valid_condition(condition.strip()):
+                return False
+        return True
+
     def save_priority_order(self):
         self.best_match_prio_order = self.best_match_prio_order_new
         self.save()
@@ -251,18 +261,31 @@ class User:
         self.selected_user.save()
         self.save()
 
+    def request_meeting_with_selected(self, date: Date):
+        assert self.selected_user is not None
+        self.meetings.request_meeting(self.selected_user.id, date)
+        self.selected_user.meetings.request_meeting(self.id, date)
+        self.selected_user.save()
+        self.save()
+
     def cancel_meeting_with_selected(self):
         assert self.selected_user is not None
-        self.meetings.upcoming = [
-            meeting
-            for meeting in self.meetings.upcoming
-            if meeting.partner_id != self.selected_user.id
-        ]
-        self.selected_user.meetings.upcoming = [
-            meeting
-            for meeting in self.selected_user.meetings.upcoming
-            if meeting.partner_id != self.id
-        ]
+        self.meetings.cancel_meeting_with(self.selected_user.id)
+        self.selected_user.meetings.cancel_meeting_with(self.id)
+        self.selected_user.save()
+        self.save()
+
+    def request_video_call_with_selected(self):
+        assert self.selected_user is not None
+        self.meetings.request_video_call(self.selected_user.id)
+        self.selected_user.meetings.request_video_call(self.id)
+        self.selected_user.save()
+        self.save()
+
+    def cancel_video_call_with_selected(self):
+        assert self.selected_user is not None
+        self.meetings.cancel_meeting_with(self.selected_user.id)
+        self.selected_user.meetings.cancel_meeting_with(self.id)
         self.selected_user.save()
         self.save()
 
@@ -298,13 +321,26 @@ class User:
     def mutual_interests_with_selected(self) -> bool:
         return self.interest_sent_to_selected and self.interest_received_from_selected
 
+    # TODO: multiple meetings with the same user
     @property
     def has_meeting_with_selected(self) -> bool:
         if not self.selected_user:
             return False
-        return self.selected_user.id in map(
-            lambda meeting: meeting.partner_id, self.meetings.upcoming
-        )
+        return self.selected_user.id in [
+            meeting.partner_id
+            for meeting in self.meetings.upcoming
+            if meeting.time_bound
+        ]
+
+    @property
+    def has_call_request_with_selected(self) -> bool:
+        if not self.selected_user:
+            return False
+        return self.selected_user.id in [
+            meeting.partner_id
+            for meeting in self.meetings.upcoming
+            if not meeting.time_bound
+        ]
 
     def get_interest_status(self) -> str:
         if self.mutual_interests_with_selected:
@@ -313,7 +349,7 @@ class User:
             return "⬆️ You have sent an interest to this user."
         if self.interest_received_from_selected:
             return "⬇️ This user has sent you an interest."
-        return "No interest sent or received..."
+        return "No interest sent or received."
 
     async def apply_effect(self, effect: str) -> None:
         match effect:
@@ -340,6 +376,10 @@ class User:
                 self.cancel_interest_to_selected()
             case "cancel_meeting":
                 self.cancel_meeting_with_selected()
+            case "request_video_call":
+                self.request_video_call_with_selected()
+            case "cancel_video_call":
+                self.cancel_video_call_with_selected()
 
     def button_condition_applies(self, condition: str) -> bool:
         if not condition:
@@ -353,7 +393,9 @@ class User:
         if condition.startswith("can_"):
             interest_sent = self.interest_sent_to_selected
             interest_received = self.interest_received_from_selected
+            mutual_interest = interest_sent and interest_received
             has_meeting = self.has_meeting_with_selected
+            has_call_request = self.has_call_request_with_selected
             if condition == "can_send_interest":
                 return not interest_sent and not interest_received
             if condition == "can_cancel_interest":
@@ -361,16 +403,20 @@ class User:
             if condition == "can_confirm_interest":
                 return interest_received and not interest_sent
             if condition == "can_request_meeting":
-                return interest_sent and interest_received and not has_meeting
+                return mutual_interest and not has_meeting
             if condition == "can_cancel_meeting":
-                return interest_sent and interest_received and has_meeting
+                return mutual_interest and has_meeting
+            if condition == "can_request_video_call":
+                return mutual_interest and not has_call_request
+            if condition == "can_cancel_video_call":
+                return mutual_interest and has_call_request
         print(f"Invalid condition: {condition}")
         return False
 
     def replace_placeholders(self, text: str) -> str:
         sent = self.interests_sent_not_received
         received = self.interests_received_not_sent
-        return (
+        text = (
             text.replace("<id>", str(self.id))
             .replace("<date_joined>", str(self.date_joined))
             .replace("<status>", str(self.status))
@@ -384,8 +430,20 @@ class User:
             .replace("<num_of_upcoming_meetings>", str(len(self.meetings.upcoming)))
             .replace("<num_of_past_meetings>", str(len(self.meetings.past)))
         )
+        for q_id in QUESTION_NAMES:
+            text = text.replace(f"<{q_id}>", self.questions[q_id])
+        for prop_id in VISIBLE_SIMPLE_USER_PROPS:
+            text = text.replace(f"<{prop_id}>", getattr(self, prop_id))
+        _filter = self.search_filter
+        if _filter:
+            text = text.replace("<search_status>", _filter.get_search_status())
+            for q_id in QUESTION_NAMES:
+                text = text.replace(f"<search_{q_id}>", _filter.questions[q_id])
+            for prop_id in VISIBLE_SIMPLE_USER_PROPS:
+                text = text.replace(f"<search_{prop_id}>", getattr(_filter, prop_id))
+        return text
 
-    def conditions_apply_for(self, button: Button):
+    def btn_conditions_apply_for(self, button: Button):
         for condition in button.conditions.split(","):
             if not self.button_condition_applies(condition):
                 return False

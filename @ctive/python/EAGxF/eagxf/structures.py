@@ -75,7 +75,6 @@ STRUCTURES = {
             *Button.question_buttons("edit"),
             *back_home(row=1),
         ],
-        stacked=False,
     ),
     **{  # Edit simple properties
         f"edit_{prop_id}": Structure(
@@ -83,7 +82,6 @@ STRUCTURES = {
             f"\n\nWhat do you want to change your {prop_id} to?",
             changed_property=prop_id,
             buttons=back_home(),
-            stacked=False,
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
         if not prop["comma_separated"]
@@ -95,7 +93,6 @@ STRUCTURES = {
             f"\n(Comma separated, e.g. {prop['example']})",
             changed_property=prop_id,
             buttons=back_home(),
-            stacked=False,
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
         if prop["comma_separated"]
@@ -109,9 +106,8 @@ STRUCTURES = {
         ),
         reactions=list(STATUS_EMOJI.values()),
         changed_property="status",
-        condition="profile_complete",
+        conditions="profile_complete",
         buttons=back_home(),
-        stacked=False,
     ),
     **{  # Edit questions
         f"edit_{q_id}": Structure(
@@ -119,7 +115,6 @@ STRUCTURES = {
             "\n\nWhat do you want to change it to?",
             changed_property=q_id,
             buttons=back_home(),
-            stacked=False,
         )
         for q_id, question in QUESTION_NAMES.items()
     },
@@ -158,7 +153,6 @@ STRUCTURES = {
             *Button.question_buttons("search"),
             *back_home(row=1),
         ],
-        stacked=False,
     ),
     **{  # Search simple properties
         f"search_{prop_id}": Structure(
@@ -168,7 +162,6 @@ STRUCTURES = {
             "\n\nType ? to search for any.",
             changed_property=f"search_{prop_id}",
             buttons=back_home(),
-            stacked=False,
         )
         for prop_id in VISIBLE_SIMPLE_USER_PROPS
     },
@@ -182,7 +175,6 @@ STRUCTURES = {
         reactions=list(STATUS_EMOJI.values()) + ["❓"],
         changed_property="search_status",
         buttons=back_home(),
-        stacked=False,
     ),
     **{  # Search questions
         f"search_{q_id}": Structure(
@@ -193,7 +185,6 @@ STRUCTURES = {
             "\n\nType ? to search for any keyword.",
             changed_property=f"search_{q_id}",
             buttons=back_home(),
-            stacked=False,
         )
         for q_id, question in QUESTION_NAMES.items()
     },
@@ -279,7 +270,6 @@ STRUCTURES = {
                 style=ButtonStyle.primary,
             ),
         ],
-        stacked=False,
     ),
     "interests": Structure(
         message="↕️ Interests"
@@ -362,6 +352,18 @@ STRUCTURES = {
                 takes_to="cancel_meeting_confirm",
                 conditions="can_cancel_meeting",
             ),
+            Button(
+                label="📞 Request video call",
+                takes_to="selected_user",
+                conditions="can_request_video_call",
+                effects="request_video_call",
+            ),
+            Button(
+                label="❌ Cancel video call",
+                takes_to="selected_user",
+                conditions="can_cancel_video_call",
+                effects="cancel_video_call",
+            ),
             *back_home(row=2),
         ],
     ),
@@ -373,7 +375,6 @@ STRUCTURES = {
         "\n\nExample: 03.11.2024 09:30",
         changed_property="meeting_request",
         buttons=back_home(),
-        stacked=False,
     ),
     "cancel_meeting_confirm": Structure(
         message="Are you sure you want to cancel the meeting with ***<selected_user_name>*** ?",
@@ -386,7 +387,6 @@ STRUCTURES = {
                 style=ButtonStyle.red,
             ),
         ],
-        stacked=False,
     ),
     "meetings": Structure(
         message="🗓️ **Meetings**"

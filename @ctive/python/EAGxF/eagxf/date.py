@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
 
 from eagxf.constants import DATE_FORMAT
 
@@ -21,9 +21,9 @@ class Date:
 
     def __repr__(self) -> str:
         return str(self)
-    
+
     @staticmethod
-    def valid_str(date: str) -> bool:
+    def is_valid(date: str) -> bool:
         return bool(DATE_FORMAT.fullmatch(date))
 
     @staticmethod
@@ -39,7 +39,7 @@ class Date:
     @staticmethod
     def default() -> "Date":
         return Date(1, 1, 2000)
-    
+
     @staticmethod
     def current() -> "Date":
         current = datetime.datetime.now()

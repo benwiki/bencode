@@ -9,6 +9,10 @@ class Meeting:
     partner_id: int
     date: Date = field(default_factory=Date.default)
 
+    @property
+    def time_bound(self) -> bool:
+        return self.date != Date.default()
+
     def to_dict(self) -> dict[str, int | str]:
         return {
             "partner_id": self.partner_id,
@@ -37,3 +41,14 @@ class Meetings:
             Meeting(m["partner_id"], Date.from_str(m["date"])) for m in data["past"]
         ]
         return Meetings(upcoming, past)
+    
+    def request_meeting(self, partner_id: int, date: Date) -> None:
+        self.upcoming.append(Meeting(partner_id, date))
+
+    def request_video_call(self, partner_id: int) -> None:
+        self.upcoming.append(Meeting(partner_id))
+
+    def cancel_meeting_with(self, partner_id: int) -> None:
+        self.upcoming = [
+            meeting for meeting in self.upcoming if meeting.partner_id != partner_id
+        ]

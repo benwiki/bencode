@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from eagxf.button import Button
+from eagxf.constants import INCOMPLETE_PROFILE_MSG
 
 
 @dataclass
@@ -10,8 +11,20 @@ class Structure:
     buttons: list[Button] = field(default_factory=list)
     reactions: list[str] = field(default_factory=list)
     changed_property: str | None = None
-    condition: str = ""
+    conditions: str = ""
     # these effects will run AFTER the button's own effects
     after_button_effects: str = ""
     paged: bool = field(default_factory=bool)
-    stacked: bool = field(default_factory=lambda: True)
+
+    @property
+    def condition_message(self) -> str:
+        messages = []
+        for condition in self.conditions.split(", "):
+            if msg := self.get_message_for_condition(condition):
+                messages.append(msg)
+        return "\n\n".join(messages)
+
+    def get_message_for_condition(self, condition: str) -> str:
+        if condition == "profile_complete":
+            return INCOMPLETE_PROFILE_MSG
+        return ""

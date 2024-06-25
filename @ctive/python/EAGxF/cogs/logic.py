@@ -11,7 +11,6 @@ from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
     EMOJI_STATUS,
-    INCOMPLETE_PROFILE_MSG,
     INCOMPLETE_PROFILE_WARNING,
     NUM_EMOJI,
     PAGE_STEP,
@@ -103,12 +102,12 @@ class Logic(commands.Cog):
             STRUCTURES["best_matches"], button=self.save_btn
         )
         self.prio_functions: list[Callable[[User, User], int | Status]] = [
-            lambda user, u: user.get_language_score(u),
-            lambda user, u: user.get_question_score(u),
-            lambda user, u: user.get_keywords_score(u),
-            lambda user, u: user.get_location_distance(u),
-            lambda user, u: user.get_status(u),
-            lambda user, u: user.get_headline_score(u),
+            lambda u1, u2: u1.get_language_score(u2),
+            lambda u1, u2: u1.get_question_score(u2),
+            lambda u1, u2: u1.get_keywords_score(u2),
+            lambda u1, u2: u1.get_location_distance(u2),
+            lambda u1, u2: u1.get_status(u2),
+            lambda u1, u2: u1.get_headline_score(u2),
         ]
         self.reaction_funcs: dict[str, Callable] = {  # pylint: disable=C0103
             "status": self.handle_status_change,
@@ -145,13 +144,7 @@ class Logic(commands.Cog):
         return callback
 
     async def send_structure(self, structure: Structure, user: User) -> None:
-        if structure.id == "home":
-            user.structure_stack = [structure]
-        elif structure.stacked and (
-            not user.structure_stack or user.structure_stack[-1].id != structure.id
-        ):
-            user.structure_stack.append(structure)
-
+        self.stack_structure(user, structure)
         self.collect_data_for(user, structure)
 
         user.view_msg = await self.get_view_msg_for(user, structure)
@@ -168,6 +161,15 @@ class Logic(commands.Cog):
         if structure.paged and user.view_msg:
             await self.add_special_reactions_for(user)
 
+    def stack_structure(self, user: User, structure: Structure) -> None:
+        if structure.id == "home":
+            user.structure_stack = [structure]
+        elif structure.id in user.structure_stack:
+            struct_index = user.structure_stack.index(structure)
+            user.structure_stack = user.structure_stack[: struct_index + 1]
+        elif user.structure_stack == [] or user.structure_stack[-1].id != structure.id:
+            user.structure_stack.append(structure)
+
     def collect_data_for(self, user: User, structure: Structure) -> None:
         if structure.id in ["search", "show_search_results"]:
             user.results = self.search_users_for(user)
@@ -181,13 +183,15 @@ class Logic(commands.Cog):
             user.results = user.mutual_interests
 
     async def get_view_msg_for(self, user: User, structure: Structure) -> ViewMsg:
-        if structure.condition and not user.valid_condition(structure.condition):
+        if not user.struct_conditions_apply_for(structure):
             ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
             view = self.get_view([ok_btn])
-            message = self.get_condition_message(structure.condition)
+            message = structure.condition_message
             user.add_reactions = False
         else:
-            buttons = filter(user.conditions_apply_for, structure.buttons)
+            buttons: Iterator[Button] = filter(
+                user.btn_conditions_apply_for, structure.buttons
+            )
             view = self.get_view(buttons)
             message = self.replace_placeholders(structure.message, user)
             user.add_reactions = True
@@ -220,11 +224,6 @@ class Logic(commands.Cog):
             for user in self.users.values()
             if user.is_selected_by(user_searching)
         ]
-
-    def get_condition_message(self, condition: str) -> str:
-        if condition == "profile_complete":
-            return INCOMPLETE_PROFILE_MSG
-        return ""
 
     def additional_info_with_side_effects(self, user: User) -> str:
         if not user.is_complete() and user.status != Status.INVISIBLE:
@@ -265,17 +264,6 @@ class Logic(commands.Cog):
             .replace("<upcoming_meetings>", self.get_meetings(user, "upcoming"))
             .replace("<past_meetings>", self.get_meetings(user, "past"))
         )
-        for q_id in QUESTION_NAMES:
-            msg = msg.replace(f"<{q_id}>", user.questions[q_id])
-        for prop_id in VISIBLE_SIMPLE_USER_PROPS:
-            msg = msg.replace(f"<{prop_id}>", getattr(user, prop_id))
-        _filter = user.search_filter
-        if _filter:
-            msg = msg.replace("<search_status>", _filter.get_search_status())
-            for q_id in QUESTION_NAMES:
-                msg = msg.replace(f"<search_{q_id}>", _filter.questions[q_id])
-            for prop_id in VISIBLE_SIMPLE_USER_PROPS:
-                msg = msg.replace(f"<search_{prop_id}>", getattr(_filter, prop_id))
         return msg
 
     def get_name_of(self, user: User | None) -> str:
@@ -293,7 +281,7 @@ class Logic(commands.Cog):
             meetings = [m for m in meetings if m.partner_id == user.selected_user.id]
 
         if not meetings:
-            return "**No meetings yet!**"
+            return "**No meetings yet.**"
         return "- " + "\n - ".join(
             f"**{m.date}**"
             + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
@@ -409,7 +397,7 @@ class Logic(commands.Cog):
         ):
             return
 
-        ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
+        ok_btn = self.get_ok_button_for(user)
 
         await user.view_msg.delete()
 
@@ -437,16 +425,8 @@ class Logic(commands.Cog):
             change_user.questions[change] = changed_to
         # TODO: úristen de ratyi!
         elif change == "meeting_request":
-            if Date.valid_str(changed_to) and user.selected_user:
-                user.meetings.upcoming.append(
-                    Meeting(
-                        partner_id=user.selected_user.id, date=Date.from_str(changed_to)
-                    )
-                )
-                user.selected_user.meetings.upcoming.append(
-                    Meeting(partner_id=user.id, date=Date.from_str(changed_to))
-                )
-                user.selected_user.save()
+            if Date.is_valid(changed_to) and user.selected_user:
+                user.request_meeting_with_selected(Date.from_str(changed_to))
                 ok_btn = self.get_ok_button_for(user)
                 changed = f"meeting with ***{user.selected_user.name}***"
                 verb = "set"

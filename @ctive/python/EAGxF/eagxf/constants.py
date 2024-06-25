@@ -7,8 +7,8 @@ from eagxf.util import invert_dict
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
-USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
+USERS_FOLDER_PATH = "/Users/benke/Dev"
 USERS_PATH = INIT_USERS_PATH()
 # ======================================================
 
