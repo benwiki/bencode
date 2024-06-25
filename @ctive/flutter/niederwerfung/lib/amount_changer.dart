@@ -3,7 +3,7 @@ import 'package:niederwerfung/context_extensions.dart';
 
 class AmountChanger extends StatelessWidget {
   final Function(double) changeAmountBy;
-  final Function() getAmount;
+  final num amount;
   final String title;
   final String? unit;
   final List<List<num>> amountChangerValues;
@@ -17,7 +17,7 @@ class AmountChanger extends StatelessWidget {
   const AmountChanger({
     super.key,
     required this.changeAmountBy,
-    required this.getAmount,
+    required this.amount,
     required this.amountChangerValues,
     this.title = "Title",
     this.unit,
@@ -49,7 +49,7 @@ class AmountChanger extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(convertToText(getAmount()), style: amountTextStyle),
+            Text(convertToText(amount), style: amountTextStyle),
             if (unit != null) ...[
               const SizedBox(width: 10),
               Text(unit ?? '', style: normalTextStyle)
@@ -60,7 +60,7 @@ class AmountChanger extends StatelessWidget {
     );
   }
 
-  String convertToText(double value) {
+  String convertToText(num value) {
     return value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
   }
 

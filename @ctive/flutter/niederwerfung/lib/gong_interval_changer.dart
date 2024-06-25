@@ -29,7 +29,7 @@ class _GongIntervalChangerState extends State<GongIntervalChanger> {
         [-10, 10]
       ],
       changeAmountBy: (value) => _changeGongIntervalBy(value),
-      getAmount: () => _gongInterval,
+      amount: _gongInterval,
       textColor: context.appColors.whiteStrong,
       buttonTextColor: context.appColors.blueDeep,
     );

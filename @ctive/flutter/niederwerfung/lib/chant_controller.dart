@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:niederwerfung/chant_model.dart';
 import 'package:niederwerfung/context_extensions.dart';
+import 'package:provider/provider.dart';
 
 class ChantController extends StatefulWidget {
   const ChantController({
@@ -14,7 +16,7 @@ class ChantController extends StatefulWidget {
 }
 
 class _ChantControllerState extends State<ChantController> {
-  bool _mantraOn = false;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -52,28 +54,32 @@ class _ChantControllerState extends State<ChantController> {
   }
 
   Widget _buildMantraText(BuildContext context) {
+    final chantModel = Provider.of<ChantModel>(context);
+
     final offColor = context.appColors.redVivid;
     final onColor = context.appColors.greenVivid;
     final mantraTextStyle = TextStyle(
-      color: _mantraOn ? onColor : offColor,
+      color: chantModel.chantIsOn ? onColor : offColor,
       fontSize: 20,
       fontWeight: FontWeight.bold,
     );
     final mantraText =
-        _mantraOn ? context.text.mantraIsOn : context.text.mantraIsOff;
+        chantModel.chantIsOn ? context.text.mantraIsOn : context.text.mantraIsOff;
     return Text(mantraText, style: mantraTextStyle);
   }
 
   Widget _buildMantraSwitch(BuildContext context) {
+    final chantModel = Provider.of<ChantModel>(context);
+
     return Switch(
       activeTrackColor: context.appColors.greenMedium,
       inactiveTrackColor: context.appColors.blueDeep,
       activeColor: context.appColors.whiteStrong,
       inactiveThumbColor: context.appColors.whiteStrong,
-      value: _mantraOn,
+      value: chantModel.chantIsOn,
       onChanged: (value) {
         setState(() {
-          _mantraOn = value;
+          chantModel.setChantState(value);
           widget.onSwitch(value);
         });
       },

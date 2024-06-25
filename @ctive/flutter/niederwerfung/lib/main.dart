@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:niederwerfung/app_theme.dart';
+import 'package:niederwerfung/chant_model.dart';
 import 'package:niederwerfung/context_extensions.dart';
 import 'package:niederwerfung/homepage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:niederwerfung/prostrations_model.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const NwApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProstrationsModel()),
+        ChangeNotifierProvider(create: (_) => ChantModel()),
+      ],
+      child: const NwApp(),
+    ),
+  );
 }
 
 class NwApp extends StatefulWidget {
@@ -15,7 +26,8 @@ class NwApp extends StatefulWidget {
   @override
   State<NwApp> createState() => NwAppState();
 
-  static NwAppState? of(BuildContext context) => context.findAncestorStateOfType<NwAppState>();
+  static NwAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<NwAppState>();
 }
 
 class NwAppState extends State<NwApp> {
@@ -30,6 +42,7 @@ class NwAppState extends State<NwApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       onGenerateTitle: (BuildContext context) {
         return context.text.appName;
       },
