@@ -21,11 +21,9 @@ class ViewMsg:
         receiver: Optional[Receiver] = None,
     ) -> None:
         assert self.message or self.raw_message and self.view
-        assert receiver or receiver_future
-
+        assert self.message or receiver or receiver_future
         if (self.message or receiver) and receiver_future:
             receiver_future.close()
-
         if self.message:
             await self.edit()
         elif self.raw_message and self.view:
@@ -56,17 +54,17 @@ class ViewMsg:
         return self
 
     async def add_reaction(self, reaction: discord.Emoji | str) -> None:
-        if self.message:
-            await self.message.add_reaction(reaction)
-        else:
+        if not self.message:
             print("No message to add reaction to")
+            return
+        await self.message.add_reaction(reaction)
 
     async def delete(self) -> None:
-        if self.message:
-            await self.message.delete()
-            self.message = None
-        else:
+        if not self.message:
             print("No message to delete")
+            return
+        await self.message.delete()
+        self.message = None
 
     def add_button(self, button: DcButton) -> None:
         assert self.view

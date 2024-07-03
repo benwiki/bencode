@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from eagxf.constants import NOT_ALNUM, QUESTION_NAMES
+from eagxf.enums.property import Property
 
 
 @dataclass
@@ -26,9 +27,12 @@ class Questions:
     def __setitem__(self, key: str, value: str) -> None:
         self.__dict__[key] = value
 
+    def set_property(self, prop: Property, value: str) -> None:
+        self[prop.low] = value
+
     def get_score(self, other: "Questions") -> int:
         return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other[q_id].lower()
+            NOT_ALNUM.sub("", kw.strip().lower()) in other[q_id.low].lower()
             for q_id in QUESTION_NAMES
-            for kw in self[q_id].split(" ")
+            for kw in self[q_id.low].split(" ")
         )

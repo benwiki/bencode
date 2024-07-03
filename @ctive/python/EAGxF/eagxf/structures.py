@@ -8,12 +8,17 @@ from eagxf.constants import (
     COMMA_AND_SEPARATED,
     COMMA_SEPARATED_MAP,
     DEFAULT_PRIO_ORDER,
+    MEETINGS,
     NUM_EMOJI,
     PRIO_LIST_LENGTH,
     QUESTION_NAMES,
     STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
+from eagxf.enums.condition import ButtonCond
+from eagxf.enums.effect import Effect
+from eagxf.enums.property import Property
+from eagxf.enums.structure_condition import StructCond
 from eagxf.structure import Structure
 
 
@@ -76,27 +81,6 @@ STRUCTURES = {
             *back_home(row=1),
         ],
     ),
-    **{  # Edit simple properties
-        f"edit_{prop_id}": Structure(
-            message=f"Your current {prop_id} is:\n*<{prop_id}>*"
-            f"\n\nWhat do you want to change your {prop_id} to?",
-            changed_property=prop_id,
-            buttons=back_home(),
-        )
-        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if not prop["comma_separated"]
-    },
-    **{  # Edit simple comma separated properties
-        f"edit_{prop_id}": Structure(
-            message=f"Your current {prop_id} are:\n*<{prop_id}>*"
-            f"\n\nWhat do you want to change your {prop_id} to?"
-            f"\n(Comma separated, e.g. {prop['example']})",
-            changed_property=prop_id,
-            buttons=back_home(),
-        )
-        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if prop["comma_separated"]
-    },
     "edit_status": Structure(
         message="Your current status is:\n*<status>*"
         "\nWhat do you want to change your status to?"
@@ -105,19 +89,10 @@ STRUCTURES = {
             f"{emoji} ({status.value})" for status, emoji in STATUS_EMOJI.items()
         ),
         reactions=list(STATUS_EMOJI.values()),
-        changed_property="status",
-        conditions="profile_complete",
-        buttons=back_home(),
+        changed_property=Property.STATUS,
+        conditions=[StructCond.PROFILE_COMPLETE],
+        buttons=[*back_home()],
     ),
-    **{  # Edit questions
-        f"edit_{q_id}": Structure(
-            message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
-            "\n\nWhat do you want to change it to?",
-            changed_property=q_id,
-            buttons=back_home(),
-        )
-        for q_id, question in QUESTION_NAMES.items()
-    },
     "search": Structure(
         message="🔍 **Search**\n\n"
         f"{PROFILE(search=True)}"
@@ -154,17 +129,6 @@ STRUCTURES = {
             *back_home(row=1),
         ],
     ),
-    **{  # Search simple properties
-        f"search_{prop_id}": Structure(
-            message=f"What {prop_id} do you want to search for?"
-            + COMMA_SEPARATED_MAP.get(prop_id, "")
-            + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
-            "\n\nType ? to search for any.",
-            changed_property=f"search_{prop_id}",
-            buttons=back_home(),
-        )
-        for prop_id in VISIBLE_SIMPLE_USER_PROPS
-    },
     "search_status": Structure(
         message="What status do you want to search for?"
         "\n(Select the corresponding reaction!)\n"
@@ -173,21 +137,9 @@ STRUCTURES = {
             + ["❓ (Any)"]
         ),
         reactions=list(STATUS_EMOJI.values()) + ["❓"],
-        changed_property="search_status",
-        buttons=back_home(),
+        changed_property=Property.SEARCH_STATUS,
+        buttons=[*back_home()],
     ),
-    **{  # Search questions
-        f"search_{q_id}": Structure(
-            message=f"What keywords do you want to search for in the answers to the question:"
-            f"\n**'{question['text']}'**"
-            f"{COMMA_AND_SEPARATED}"
-            f"\n\nCurrent filter:\n*<search_{q_id}>*"
-            "\n\nType ? to search for any keyword.",
-            changed_property=f"search_{q_id}",
-            buttons=back_home(),
-        )
-        for q_id, question in QUESTION_NAMES.items()
-    },
     "show_search_results": Structure(
         message="🔍 **Search Results**"
         f"\n\n{PROFILE(search=True)}"
@@ -244,13 +196,17 @@ STRUCTURES = {
             + "\n\n__Your new order:__"
             "\n<prio_order_new>\n" + r"\_" * 50
         ),
-        after_button_effects="delete_message, reset_new_prio_order, reset_user_property_change",
+        after_button_effects=[
+            Effect.DELETE_MESSAGE,
+            Effect.RESET_NEW_PRIO_ORDER,
+            Effect.RESET_USER_PROPERTY_CHANGE,
+        ],
         buttons=[
             Button(label="*️⃣ Default", takes_to="default_best_matches_confirm"),
             Button(label="🔄 Reset", takes_to="change_priority", style=ButtonStyle.red),
             *back_home(row=1),
         ],
-        changed_property="best_match_prio_order",
+        changed_property=Property.BEST_MATCH_PRIO_ORDER,
         reactions=NUM_EMOJI[:PRIO_LIST_LENGTH],
     ),
     "default_best_matches_confirm": Structure(
@@ -260,13 +216,11 @@ STRUCTURES = {
         + "\n\n**Are you sure** you want to reset your priority order to this?\n"
         + r"\_" * 50,
         buttons=[
-            Button(
-                label="No", takes_to="change_priority", effects="cancel_change_prio"
-            ),
+            Button(label="No", takes_to="change_priority"),
             Button(
                 label="Yes",
                 takes_to="best_matches",
-                effects="default_best_matches",
+                effects=[Effect.DEFAULT_BEST_MATCHES],
                 style=ButtonStyle.primary,
             ),
         ],
@@ -294,7 +248,7 @@ STRUCTURES = {
         "\n\n<interests_sent>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=back_home(),
+        buttons=[*back_home()],
     ),
     "interests_received": Structure(
         message="⬇️ **Interests received**"
@@ -304,7 +258,7 @@ STRUCTURES = {
         "\n\n<interests_received>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=back_home(),
+        buttons=[*back_home()],
     ),
     "mutual_interests": Structure(
         message="✅ **Mutual interests**"
@@ -314,7 +268,7 @@ STRUCTURES = {
         "\n\n<mutual_interests>"
         "\n\n<page_reference>",
         paged=True,
-        buttons=back_home(),
+        buttons=[*back_home()],
     ),
     "selected_user": Structure(
         message="You have selected ***<selected_user_name>*** !"
@@ -322,47 +276,49 @@ STRUCTURES = {
         "\n\nYour interest status with this user:\n**<interest_status>**"
         "\n\nMeetings with this user:"
         "\n<selected_user_meetings>"
+        "<video_call_link>"
         "\n\nWhat do you want to do with this user?",
         buttons=[
             Button(
                 label="⬆️ Send interest",
                 takes_to="selected_user",
-                conditions="can_send_interest",
-                effects="send_interest",
+                conditions=[ButtonCond.CAN_SEND_INTEREST],
+                effects=[Effect.SEND_INTEREST],
             ),
             Button(
                 label="❌ Cancel interest",
                 takes_to="selected_user",
-                conditions="can_cancel_interest",
-                effects="cancel_interest",
+                conditions=[ButtonCond.CAN_CANCEL_INTEREST],
+                effects=[Effect.CANCEL_INTEREST],
             ),
             Button(
                 label="✅ Confirm interest",
                 takes_to="selected_user",
-                conditions="can_confirm_interest",
-                effects="send_interest",
+                conditions=[ButtonCond.CAN_CONFIRM_INTEREST],
+                effects=[Effect.SEND_INTEREST],
             ),
             Button(
                 label="📅 Request meeting",
                 takes_to="meeting_request",
-                conditions="can_request_meeting",
+                conditions=[ButtonCond.CAN_REQUEST_MEETING],
             ),
             Button(
-                label="❌ Cancel meeting",
-                takes_to="cancel_meeting_confirm",
-                conditions="can_cancel_meeting",
+                label="🛠️ Manage meetings",
+                takes_to="meetings",
+                conditions=[ButtonCond.HAS_MEETINGS],
             ),
             Button(
-                label="📞 Request video call",
+                label="📞 Start call",
                 takes_to="selected_user",
-                conditions="can_request_video_call",
-                effects="request_video_call",
+                conditions=[ButtonCond.CAN_START_CALL],
+                effects=[Effect.START_CALL],
+                style=ButtonStyle.primary,
             ),
             Button(
-                label="❌ Cancel video call",
+                label="❌ Cancel call",
                 takes_to="selected_user",
-                conditions="can_cancel_video_call",
-                effects="cancel_video_call",
+                conditions=[ButtonCond.CAN_CANCEL_CALL],
+                effects=[Effect.CANCEL_CALL],
             ),
             *back_home(row=2),
         ],
@@ -370,31 +326,141 @@ STRUCTURES = {
     "meeting_request": Structure(
         message="📅 **Meeting Request**"
         "\n\nYou are requesting a meeting with ***<selected_user_name>*** !"
-        "\n\nPlease specify a date and time for the meeting in this format:"
-        "\ndd.mm.yyyy hh:mm"
-        "\n\nExample: 03.11.2024 09:30",
-        changed_property="meeting_request",
-        buttons=back_home(),
-    ),
-    "cancel_meeting_confirm": Structure(
-        message="Are you sure you want to cancel the meeting with ***<selected_user_name>*** ?",
-        buttons=[
-            Button(label="No", takes_to="selected_user"),
-            Button(
-                label="Yes",
-                takes_to="selected_user",
-                effects="cancel_meeting",
-                style=ButtonStyle.red,
-            ),
-        ],
+        "\n\nPlease specify a date and time (in the future) for the meeting in this format:"
+        "\n**dd.mm.yyyy hh:mm**"
+        "\nand send it via text message."
+        "\n\nExample: 23.05.<next_year> 09:30",
+        changed_property=Property.MEETING_REQUEST,
+        buttons=[*back_home()],
     ),
     "meetings": Structure(
         message="🗓️ **Meetings**"
-        "\n\n( **<num_of_upcoming_meetings>** ) Upcoming meetings:"
-        "\n<upcoming_meetings>"
-        "\n\n( **<num_of_past_meetings>** ) Past meetings:"
-        "\n<past_meetings>"
-        "\n\nChoose a meeting to manage it! (coming soon)",
-        buttons=back_home(),
+        "\n\n( **<num_of_past_meetings>** )  ◀️ Past meetings:"
+        "\n<past_meetings_peek>"
+        "\n\n( **<num_of_future_meetings>** )  ▶️ Future meetings:"
+        "\n<future_meetings_peek>"
+        "\n\nDo you want to manage past or future meetings?",
+        buttons=[
+            Button(label="◀️ Past", takes_to="past_meetings"),
+            Button(label="▶️ Future", takes_to="future_meetings"),
+            *back_home(row=1),
+        ],
     ),
+    "edit_meeting": Structure(
+        message="You have selected a meeting with ***<selected_user_name>*** "
+        "at **<selected_meeting_time>** !"
+        "\n\nWhat do you want to do with this meeting?",
+        buttons=[
+            Button(
+                label="❌ Cancel meeting",
+                takes_to="cancel_meeting_confirm",
+                conditions=[ButtonCond.CAN_CANCEL_MEETING],
+            ),
+            Button(
+                label="🗑️ Delete meeting",
+                takes_to="delete_meeting_confirm",
+                conditions=[ButtonCond.CAN_DELETE_MEETING],
+            ),
+            Button(
+                label="📅 Change date",
+                takes_to="change_meeting_date",
+                conditions=[ButtonCond.CAN_CHANGE_MEETING_DATE],
+            ),
+            *back_home(row=1),
+        ],
+    ),
+    "change_meeting_date": Structure(
+        message="You want to change the meeting with ***<selected_user_name>*** "
+        "at **<selected_meeting_time>** !"
+        "\n\nPlease specify a new date and time for the meeting in this format:"
+        "\n**dd.mm.yyyy hh:mm**"
+        "\nand send it via text message."
+        "\n\nExample: 03.11.2024 09:30",
+        changed_property=Property.MEETING_DATE,
+        buttons=[*back_home()],
+    ),
+    # ______________________________________________________________
+    # ==================== GENERATED STRUCTURES ====================
+    **{
+        f"{kw}_meeting_confirm": Structure(
+            message=f"Are you sure you want to {kw} the meeting at "
+            "<selected_meeting_time> with ***<selected_user_name>*** ?",
+            buttons=[
+                Button(label="No", takes_to="<back>"),
+                Button(
+                    label="Yes",
+                    takes_to="meetings",
+                    effects=[Effect.CANCEL_MEETING],
+                    style=ButtonStyle.red,
+                ),
+            ],
+        )
+        for kw in ("cancel", "delete")
+    },
+    **{
+        f"{time_id}_meetings": Structure(
+            message=f"{time['emoji']} **{time['label']}**"
+            "\n\n<page_reference>"
+            "\nClick on the corresponding reaction to manage the meeting!"
+            f"\n\n<{time_id}_meetings>"
+            "\n\n<page_reference>",
+            paged=True,
+            buttons=[*back_home()],
+            changed_property=Property.MEETING,
+        )
+        for time_id, time in MEETINGS.items()
+    },
+    **{  # Edit questions
+        f"edit_{q_id}": Structure(
+            message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
+            "\n\nWhat do you want to change it to?",
+            changed_property=q_id,
+            buttons=[*back_home()],
+        )
+        for q_id, question in QUESTION_NAMES.items()
+    },
+    **{  # Edit simple properties
+        f"edit_{prop_id}": Structure(
+            message=f"Your current {prop_id} is:\n*<{prop_id}>*"
+            f"\n\nWhat do you want to change your {prop_id} to?",
+            changed_property=prop_id,
+            buttons=[*back_home()],
+        )
+        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
+        if not prop["comma_separated"]
+    },
+    **{  # Edit simple comma separated properties
+        f"edit_{prop_id}": Structure(
+            message=f"Your current {prop_id} are:\n*<{prop_id}>*"
+            f"\n\nWhat do you want to change your {prop_id} to?"
+            f"\n(Comma separated, e.g. {prop['example']})",
+            changed_property=prop_id,
+            buttons=[*back_home()],
+        )
+        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
+        if prop["comma_separated"]
+    },
+    **{  # Search simple properties
+        f"search_{prop_id}": Structure(
+            message=f"What {prop_id} do you want to search for?"
+            + COMMA_SEPARATED_MAP.get(prop_id, "")
+            + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
+            "\n\nType ? to search for any.",
+            changed_property=Property.search(prop_id),
+            buttons=[*back_home()],
+        )
+        for prop_id in VISIBLE_SIMPLE_USER_PROPS
+    },
+    **{  # Search questions
+        f"search_{q_id}": Structure(
+            message=f"What keywords do you want to search for in the answers to the question:"
+            f"\n**'{question['text']}'**"
+            f"{COMMA_AND_SEPARATED}"
+            f"\n\nCurrent filter:\n*<search_{q_id}>*"
+            "\n\nType ? to search for any keyword.",
+            changed_property=Property.search(q_id),
+            buttons=[*back_home()],
+        )
+        for q_id, question in QUESTION_NAMES.items()
+    },
 }

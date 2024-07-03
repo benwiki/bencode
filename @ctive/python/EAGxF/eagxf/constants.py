@@ -1,14 +1,18 @@
-
 import re
+
 from eagxf.constant_functions import INIT_USERS_PATH
+from eagxf.enums.meeting_time import MtgTime
+from eagxf.enums.property import Property
 from eagxf.status import Status
 from eagxf.util import invert_dict
 
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
-USERS_FOLDER_PATH = "/Users/benke/Dev"
+# TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
+# USERS_FOLDER_PATH = "/Users/benke/Dev"
+TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
+USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 USERS_PATH = INIT_USERS_PATH()
 # ======================================================
 
@@ -78,51 +82,51 @@ INCOMPLETE_PROFILE_WARNING = (
 )
 
 QUESTION_NAMES = {
-    "about_me": {
+    Property.ABOUT_ME: {
         "label": "About me",
         "text": "About me: (general info)",
         "emoji": "🙋",
     },
-    "can_help": {
+    Property.CAN_HELP: {
         "label": "Can help",
         "text": "How I can help others:",
         "emoji": "🫱",
     },
-    "need_help": {
+    Property.NEED_HELP: {
         "label": "Need help",
         "text": "How others can help me:",
         "emoji": "🫲",
     },
-    "concerns": {
+    Property.CONCERNS: {
         "label": "Concerns",
         "text": "What am I concerned about:",
         "emoji": "🤔",
     },
 }
 
-VISIBLE_SIMPLE_USER_PROPS: dict[str, dict] = {
-    "name": {
+VISIBLE_SIMPLE_USER_PROPS: dict[Property, dict] = {
+    Property.NAME: {
         "row": 0,
         "emoji": "🔤",
         "label": "Name",
         "before_questions": True,
         "comma_separated": False,
     },
-    "headline": {
+    Property.HEADLINE: {
         "row": 0,
         "emoji": "🏷️",
         "label": "Headline",
         "before_questions": True,
         "comma_separated": False,
     },
-    "location": {
+    Property.LOCATION: {
         "row": 1,
         "emoji": "📍",
         "label": "Location",
         "before_questions": True,
         "comma_separated": False,
     },
-    "languages": {
+    Property.LANGUAGES: {
         "row": 1,
         "emoji": "💬",
         "label": "Languages",
@@ -130,13 +134,24 @@ VISIBLE_SIMPLE_USER_PROPS: dict[str, dict] = {
         "comma_separated": True,
         "example": "English, German, Spanish",
     },
-    "keywords": {
+    Property.KEYWORDS: {
         "row": 3,
         "emoji": "🔑",
         "label": "Keywords",
         "before_questions": False,
         "comma_separated": True,
         "example": "psychology, Python, electric guitar",
+    },
+}
+
+MEETINGS = {
+    MtgTime.FUTURE: {
+        "emoji": "▶️",
+        "label": "Future meetings",
+    },
+    MtgTime.PAST: {
+        "emoji": "◀️",
+        "label": "Past meetings",
     },
 }
 
@@ -176,6 +191,6 @@ COMMA_AND_SEPARATED_LANGUAGES = (
 )
 
 COMMA_SEPARATED_MAP = {
-    "keywords": COMMA_AND_SEPARATED,
-    "languages": COMMA_AND_SEPARATED_LANGUAGES,
+    Property.KEYWORDS: COMMA_AND_SEPARATED,
+    Property.LANGUAGES: COMMA_AND_SEPARATED_LANGUAGES,
 }

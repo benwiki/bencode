@@ -2,7 +2,10 @@
 Programming utilities.
 """
 
-from typing import Callable
+import discord
+from eagxf.typedefs import DcClient
+
+GUILD_ID = 1199560998328205452
 
 
 def comma_and_search(a: str, b: str) -> bool:
@@ -36,3 +39,11 @@ def to_emojis(number: int) -> str:
     from eagxf.constants import NUM_NAME
 
     return "".join(f":{NUM_NAME[int(n)]}:" for n in str(number))
+
+
+def get_guild(client: DcClient) -> discord.Guild:
+    guild = client.get_guild(GUILD_ID)
+    assert guild
+    return guild
+
+CHANNELS = []

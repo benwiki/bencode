@@ -3,25 +3,27 @@ from typing import Iterable
 from discord.ui import Button as DCButton
 
 from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
+from eagxf.enums.condition import ButtonCond
+from eagxf.enums.effect import Effect
 
 
 class Button(DCButton):
     takes_to: str
-    effects: str
-    conditions: str
+    effects: list[Effect]
+    conditions: list[ButtonCond]
 
     def __init__(
         self,
         *args,
         takes_to: str = "",
-        effects: str = "",
-        conditions: str = "",
+        effects: list[Effect] | None = None,
+        conditions: list[ButtonCond] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.takes_to = takes_to
-        self.effects = effects
-        self.conditions = conditions
+        self.effects = effects or []
+        self.conditions = conditions or []
 
     @staticmethod
     def get_navigation_buttons(structure_name: str) -> list["Button"]:
@@ -29,15 +31,15 @@ class Button(DCButton):
             Button(
                 label="◀️ Previous",
                 takes_to=structure_name,
-                conditions="has_previous_page",
-                effects="go_to_previous_page",
+                conditions=[ButtonCond.HAS_PREVIOUS_PAGE],
+                effects=[Effect.GO_TO_PREVIOUS_PAGE],
                 row=0,
             ),
             Button(
                 label="Next ▶️",
                 takes_to=structure_name,
-                conditions="has_next_page",
-                effects="go_to_next_page",
+                conditions=[ButtonCond.HAS_NEXT_PAGE],
+                effects=[Effect.GO_TO_NEXT_PAGE],
                 row=0,
             ),
         ]

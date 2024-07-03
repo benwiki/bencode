@@ -1,12 +1,16 @@
 import json
 from dataclasses import dataclass, field
-import re
+from datetime import datetime
 from typing import Any, Callable
+
+import discord
 
 from eagxf.button import Button
 from eagxf.constants import (
     DEFAULT_PRIO_ORDER,
+    INCOMPLETE_PROFILE_WARNING,
     NOT_ALNUM,
+    NUM_EMOJI,
     PAGE_STEP,
     PRIO_LIST_LENGTH,
     QUESTION_NAMES,
@@ -15,13 +19,17 @@ from eagxf.constants import (
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
+from eagxf.enums.condition import ButtonCond
+from eagxf.enums.effect import Effect
+from eagxf.enums.property import Property
+from eagxf.enums.structure_condition import StructCond
 from eagxf.interests import Interests
-from eagxf.meetings import Meetings
+from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
 from eagxf.status import Status
 from eagxf.structure import Structure
-from eagxf.typedefs import DcUser
-from eagxf.util import comma_and_search, intersect, subtract
+from eagxf.typedefs import DcClient, DcUser
+from eagxf.util import CHANNELS, GUILD_ID, comma_and_search, get_guild, intersect, subtract
 from eagxf.view_msg import ViewMsg
 
 
@@ -43,20 +51,28 @@ class User:
 
     # Properties to use only in runtime
     best_match_prio_order_new: list[int] = field(default_factory=list)
+    structure_stack: list[Structure] = field(default_factory=list)
     view_msg: ViewMsg = field(default_factory=ViewMsg)
     results: list[int] = field(default_factory=list)
+    selected_meeting: Meeting | None = None
     selected_user: "User | None" = None
     search_filter: "User | None" = None
-    structure_stack: list[Structure] = field(default_factory=list)
+    change: Property | None = None
     has_save_btn: bool = False
     add_reactions: bool = True
     feedback_message: str = ""
-    change: str = ""
+    call_channel_id: int = 0
     page: int = 0
 
     @staticmethod
     def search_profile() -> "User":
         return User(status=Status.ANY)
+
+    @property
+    def last_structure(self) -> Structure | None:
+        if not self.structure_stack:
+            return None
+        return self.structure_stack[-1]
 
     @property
     def back_to_structure(self) -> Structure | None:
@@ -67,7 +83,8 @@ class User:
 
     def is_complete(self) -> bool:
         basic_filled = all(
-            getattr(self, attr) not in ("?", "") for attr in VISIBLE_SIMPLE_USER_PROPS
+            getattr(self, attr.low) not in ("?", "")
+            for attr in VISIBLE_SIMPLE_USER_PROPS
         )
         return basic_filled and self.questions.is_complete()
 
@@ -78,15 +95,16 @@ class User:
             searcher.id != self.id
             and all(
                 comma_and_search(
-                    getattr(self, prop_id), getattr(searcher.search_filter, prop_id)
+                    getattr(self, prop_id.low),
+                    getattr(searcher.search_filter, prop_id.low),
                 )
                 for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
                 if prop["comma_separated"]
             )
             and all(
-                getattr(searcher.search_filter, prop_id).lower()
-                in getattr(self, prop_id).lower()
-                or getattr(searcher.search_filter, prop_id) == "?"
+                getattr(searcher.search_filter, prop_id.low).lower()
+                in getattr(self, prop_id.low).lower()
+                or getattr(searcher.search_filter, prop_id.low) == "?"
                 for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
                 if not prop["comma_separated"]
             )
@@ -97,10 +115,10 @@ class User:
             )
             and all(  # TODO: ratyi!
                 comma_and_search(
-                    self.questions.to_dict()[q_id],
-                    searcher.search_filter.questions.to_dict()[q_id],
+                    self.questions.to_dict()[q.low],
+                    searcher.search_filter.questions.to_dict()[q.low],
                 )
-                for q_id in QUESTION_NAMES
+                for q in QUESTION_NAMES
             )
         )
 
@@ -115,7 +133,10 @@ class User:
                 "best_match_prio_order": user.best_match_prio_order,
                 "interests": user.interests.to_dict(),
                 "meetings": user.meetings.to_dict(),
-                **{attr: getattr(user, attr) for attr in VISIBLE_SIMPLE_USER_PROPS},
+                **{
+                    attr.low: getattr(user, attr.low)
+                    for attr in VISIBLE_SIMPLE_USER_PROPS
+                },
             },
             indent=4,
         )
@@ -138,7 +159,7 @@ class User:
             interests=Interests.from_dict(user_data["interests"]),
             search_filter=User.search_profile(),
             meetings=Meetings.from_dict(user_data["meetings"]),
-            **{attr: user_data[attr] for attr in VISIBLE_SIMPLE_USER_PROPS},
+            **{attr.low: user_data[attr.low] for attr in VISIBLE_SIMPLE_USER_PROPS},
         )
 
     @staticmethod
@@ -155,16 +176,16 @@ class User:
         with open(filename, "w", encoding="utf-8") as file:
             file.write(User.dumps(self))
 
-    def valid_condition(self, condition: str) -> bool:
-        if condition == "profile_complete":
-            return self.is_complete()
-        return False
+    def valid_condition(self, condition: StructCond) -> bool:
+        return {
+            StructCond.PROFILE_COMPLETE: self.is_complete(),
+        }.get(condition, False)
 
     def struct_conditions_apply_for(self, structure: Structure) -> bool:
         if not structure.conditions:
             return True
-        for condition in structure.conditions.split(","):
-            if not self.valid_condition(condition.strip()):
+        for condition in structure.conditions:
+            if not self.valid_condition(condition):
                 return False
         return True
 
@@ -231,14 +252,15 @@ class User:
 
     def get_score_summary(self, other: "User") -> str:
         """Returns a summary of the scores of the user and the other user."""
+        lang = self.get_language_score(other)
+        q = self.get_question_score(other)
+        kw = self.get_keywords_score(other)
+        h = self.get_headline_score(other)
+        loc = self.get_location_distance(other)
+        altogether = lang + q + kw + h + loc
         return (
-            f"\n[SCORE: "
-            f"(Lang: {self.get_language_score(other)}) "
-            f"(Q: {self.get_question_score(other)}) "
-            f"(Kw: {self.get_keywords_score(other)}) "
-            f"(H.line: {self.get_headline_score(other)}) "
-            f"(Loc: {self.get_location_distance(other)}) "
-            "]"
+            f"\n[SCORE: **{altogether}** = (Languages: {lang}) + (Questions: {q})"
+            f" + (Keywords: {kw}) + (Headline: {h}) + (Location: {loc})]"
         )
 
     def get_search_status(self) -> str:
@@ -247,6 +269,31 @@ class User:
             if self.status == Status.ANY
             else f"{STATUS_EMOJI[self.status]} " f"({self.status.value})"
         )
+
+    def additional_info_with_side_effects(self) -> str:
+        if not self.is_complete() and self.status != Status.INVISIBLE:
+            self.status = Status.INVISIBLE
+            return INCOMPLETE_PROFILE_WARNING
+        return ""
+
+    def paged_list_of(self, lst: list) -> list[int]:
+        return lst[self.page * PAGE_STEP : (self.page + 1) * PAGE_STEP]
+
+    def paged_list_of_results(self) -> list[int]:
+        return self.paged_list_of(self.results)
+
+    def get_page_reference(self) -> str:
+        page_total = len(self.results)
+        if page_total == 0:
+            return "**(0 - 0) from total 0**"
+        page_from = self.page * PAGE_STEP + 1
+        page_to = min((self.page + 1) * PAGE_STEP, len(self.results))
+        return f"**({page_from} - {page_to}) from total {page_total}**"
+
+    def selected_meeting_time(self) -> str:
+        if not self.selected_meeting:
+            return "**No meeting selected.**"
+        return datetime.strftime(self.selected_meeting.date, "%d.%m.%Y %H:%M")
 
     def send_interest_to_selected(self):
         self.manage_interest(list.append)
@@ -263,31 +310,59 @@ class User:
 
     def request_meeting_with_selected(self, date: Date):
         assert self.selected_user is not None
-        self.meetings.request_meeting(self.selected_user.id, date)
-        self.selected_user.meetings.request_meeting(self.id, date)
+        self.meetings.request(self.selected_user.id, date)
+        self.selected_user.meetings.request(self.id, date)
         self.selected_user.save()
         self.save()
 
     def cancel_meeting_with_selected(self):
-        assert self.selected_user is not None
-        self.meetings.cancel_meeting_with(self.selected_user.id)
-        self.selected_user.meetings.cancel_meeting_with(self.id)
+        assert self.selected_user and self.selected_meeting
+        self.meetings.cancel(self.selected_user.id, self.selected_meeting)
+        self.selected_user.meetings.cancel(self.id, self.selected_meeting)
         self.selected_user.save()
         self.save()
 
-    def request_video_call_with_selected(self):
+    async def start_video_call_with_selected(self, client: DcClient):
+        """Assigns a Discord voice room to the user and the selected user
+        to start a video call."""
         assert self.selected_user is not None
-        self.meetings.request_video_call(self.selected_user.id)
-        self.selected_user.meetings.request_video_call(self.id)
-        self.selected_user.save()
-        self.save()
+        me, partner, role, channel = self.get_members_role_and_channel(client)
+        if not (me and partner and role and channel):
+            return
+        await me.add_roles(role)
+        await partner.add_roles(role)
+        self.call_channel_id = channel.id
+        self.selected_user.call_channel_id = channel.id
 
-    def cancel_video_call_with_selected(self):
+    async def cancel_video_call_with_selected(self, client: DcClient):
+        """Removes the Discord voice room assigned to the user and the selected user
+        to cancel a video call."""
         assert self.selected_user is not None
-        self.meetings.cancel_meeting_with(self.selected_user.id)
-        self.selected_user.meetings.cancel_meeting_with(self.id)
-        self.selected_user.save()
-        self.save()
+        me, partner, role, _ = self.get_members_role_and_channel(client)
+        if not (me and partner and role):
+            return
+        await me.remove_roles(role)
+        await partner.remove_roles(role)
+        self.call_channel_id = 0
+        self.selected_user.call_channel_id = 0
+
+    def get_members_role_and_channel(self, client: DcClient):
+        assert self.selected_user is not None
+        guild = get_guild(client)
+        me = guild.get_member(self.id)
+        partner = guild.get_member(self.selected_user.id)
+        if not CHANNELS:
+            i = 1
+        elif len(CHANNELS) < 248:
+            i = max(CHANNELS) + 1
+            CHANNELS.append(i)
+        else:
+            self.call_channel_id = -1
+            self.selected_user.call_channel_id = -1
+            return None, None, None, None
+        role = discord.utils.get(guild.roles, name=f"channel-{i}-role")
+        channel = discord.utils.get(guild.voice_channels, name=f"channel-{i}")
+        return me, partner, role, channel
 
     @property
     def interests_sent_not_received(self) -> list[int]:
@@ -321,26 +396,31 @@ class User:
     def mutual_interests_with_selected(self) -> bool:
         return self.interest_sent_to_selected and self.interest_received_from_selected
 
-    # TODO: multiple meetings with the same user
     @property
-    def has_meeting_with_selected(self) -> bool:
+    def started_call_with_selected(self) -> bool:
+        if not self.selected_user:
+            return False
+        not_zero = self.call_channel_id > 0 and self.selected_user.call_channel_id > 0
+        identical = self.call_channel_id == self.selected_user.call_channel_id
+        return not_zero and identical
+
+    @property
+    def has_meetings_with_selected(self) -> bool:
         if not self.selected_user:
             return False
         return self.selected_user.id in [
-            meeting.partner_id
-            for meeting in self.meetings.upcoming
-            if meeting.time_bound
+            meeting.partner_id for meeting in self.meetings.all
         ]
 
     @property
-    def has_call_request_with_selected(self) -> bool:
-        if not self.selected_user:
-            return False
-        return self.selected_user.id in [
-            meeting.partner_id
-            for meeting in self.meetings.upcoming
-            if not meeting.time_bound
-        ]
+    def selected_meeting_is_future(self) -> bool:
+        mtg = self.selected_meeting
+        return mtg is not None and mtg.is_future()
+
+    @property
+    def selected_meeting_is_past(self) -> bool:
+        mtg = self.selected_meeting
+        return mtg is not None and mtg.is_past()
 
     def get_interest_status(self) -> str:
         if self.mutual_interests_with_selected:
@@ -351,65 +431,69 @@ class User:
             return "⬇️ This user has sent you an interest."
         return "No interest sent or received."
 
-    async def apply_effect(self, effect: str) -> None:
+    async def apply_effect(self, effect: Effect, client: DcClient) -> None:
         match effect:
-            case "go_to_previous_page":
+            case Effect.GO_TO_PREVIOUS_PAGE:
                 self.page -= 1
-            case "go_to_next_page":
+            case Effect.GO_TO_NEXT_PAGE:
                 self.page += 1
-            case "delete_message":
+            case Effect.DELETE_MESSAGE:
                 await self.view_msg.delete()
-            case "save_best_matches":
+            case Effect.SAVE_BEST_MATCHES:
                 self.save_priority_order()
-            case "reset_new_prio_order":
+            case Effect.RESET_NEW_PRIO_ORDER:
                 self.best_match_prio_order_new = []
-            case "default_best_matches":
+            case Effect.DEFAULT_BEST_MATCHES:
                 self.update_priority_order(list(range(PRIO_LIST_LENGTH)))
-            case "reset_user_property_change":
-                self.change = ""
-            case "empty_results":
+            case Effect.RESET_USER_PROPERTY_CHANGE:
+                self.change = None
+            case Effect.EMPTY_RESULTS:
                 self.results = []
                 self.page = 0
-            case "send_interest":
+            case Effect.SEND_INTEREST:
                 self.send_interest_to_selected()
-            case "cancel_interest":
+            case Effect.CANCEL_INTEREST:
                 self.cancel_interest_to_selected()
-            case "cancel_meeting":
+            case Effect.CANCEL_MEETING:
                 self.cancel_meeting_with_selected()
-            case "request_video_call":
-                self.request_video_call_with_selected()
-            case "cancel_video_call":
-                self.cancel_video_call_with_selected()
+            case Effect.START_CALL:
+                await self.start_video_call_with_selected(client)
+            case Effect.CANCEL_CALL:
+                await self.cancel_video_call_with_selected(client)
 
-    def button_condition_applies(self, condition: str) -> bool:
-        if not condition:
-            return True
-        if condition == "has_previous_page":
-            return self.page > 0
-        if condition == "has_next_page":
-            return self.page < (len(self.results) - 1) // PAGE_STEP
-        if condition == "prio_order_full":
-            return len(self.best_match_prio_order_new) == PRIO_LIST_LENGTH
-        if condition.startswith("can_"):
-            interest_sent = self.interest_sent_to_selected
-            interest_received = self.interest_received_from_selected
-            mutual_interest = interest_sent and interest_received
-            has_meeting = self.has_meeting_with_selected
-            has_call_request = self.has_call_request_with_selected
-            if condition == "can_send_interest":
+    def button_condition_applies(self, condition: ButtonCond) -> bool:
+        interest_sent = self.interest_sent_to_selected
+        interest_received = self.interest_received_from_selected
+        mutual_interest = interest_sent and interest_received
+        has_started_call = self.started_call_with_selected
+        has_meetings = self.has_meetings_with_selected
+        future_meeting = self.selected_meeting_is_future
+        past_meeting = self.selected_meeting_is_past
+        match condition:
+            case ButtonCond.CAN_SEND_INTEREST:
                 return not interest_sent and not interest_received
-            if condition == "can_cancel_interest":
+            case ButtonCond.CAN_CANCEL_INTEREST:
                 return interest_sent
-            if condition == "can_confirm_interest":
+            case ButtonCond.CAN_CONFIRM_INTEREST:
                 return interest_received and not interest_sent
-            if condition == "can_request_meeting":
-                return mutual_interest and not has_meeting
-            if condition == "can_cancel_meeting":
-                return mutual_interest and has_meeting
-            if condition == "can_request_video_call":
-                return mutual_interest and not has_call_request
-            if condition == "can_cancel_video_call":
-                return mutual_interest and has_call_request
+            case ButtonCond.CAN_REQUEST_MEETING:
+                return mutual_interest
+            case ButtonCond.HAS_MEETINGS:
+                return has_meetings
+            case ButtonCond.CAN_CANCEL_MEETING | ButtonCond.CAN_CHANGE_MEETING_DATE:
+                return has_meetings and future_meeting
+            case ButtonCond.CAN_DELETE_MEETING:
+                return has_meetings and past_meeting
+            case ButtonCond.CAN_START_CALL:
+                return mutual_interest and not has_started_call
+            case ButtonCond.CAN_CANCEL_CALL:
+                return mutual_interest and has_started_call
+            case ButtonCond.HAS_PREVIOUS_PAGE:
+                return self.page > 0
+            case ButtonCond.HAS_NEXT_PAGE:
+                return self.page < (len(self.results) - 1) // PAGE_STEP
+            case ButtonCond.PRIO_ORDER_FULL:
+                return len(self.best_match_prio_order_new) == PRIO_LIST_LENGTH
         print(f"Invalid condition: {condition}")
         return False
 
@@ -427,24 +511,61 @@ class User:
             .replace("<num_of_interests_received>", str(len(received)))
             .replace("<num_of_mutual_interests>", str(len(self.mutual_interests)))
             .replace("<interest_status>", self.get_interest_status())
-            .replace("<num_of_upcoming_meetings>", str(len(self.meetings.upcoming)))
+            .replace("<num_of_future_meetings>", str(len(self.meetings.future)))
             .replace("<num_of_past_meetings>", str(len(self.meetings.past)))
+            .replace("<page_reference>", self.get_page_reference())
+            .replace("<selected_meeting_time>", self.selected_meeting_time())
+            .replace("<video_call_link>", self.call_text())
+            .replace("<next_year>", str(datetime.now().year + 1))
         )
-        for q_id in QUESTION_NAMES:
-            text = text.replace(f"<{q_id}>", self.questions[q_id])
-        for prop_id in VISIBLE_SIMPLE_USER_PROPS:
-            text = text.replace(f"<{prop_id}>", getattr(self, prop_id))
+        for q in QUESTION_NAMES:
+            text = text.replace(f"<{q}>", self.questions[q.low])
+        for prop in VISIBLE_SIMPLE_USER_PROPS:
+            text = text.replace(f"<{prop}>", getattr(self, prop.low))
         _filter = self.search_filter
         if _filter:
             text = text.replace("<search_status>", _filter.get_search_status())
-            for q_id in QUESTION_NAMES:
-                text = text.replace(f"<search_{q_id}>", _filter.questions[q_id])
-            for prop_id in VISIBLE_SIMPLE_USER_PROPS:
-                text = text.replace(f"<search_{prop_id}>", getattr(_filter, prop_id))
+            for q in QUESTION_NAMES:
+                text = text.replace(f"<search_{q}>", _filter.questions[q.low])
+            for prop in VISIBLE_SIMPLE_USER_PROPS:
+                text = text.replace(f"<search_{prop}>", getattr(_filter, prop.low))
         return text
 
+    def call_text(self) -> str:
+        if self.call_channel_id == 0:
+            return "\n\n☎️ **Call:**  No call has been started."
+        if self.call_channel_id == -1:
+            return "\n\n☎️ **Call:**  All channels are ***occupied...*** Please try again later."
+        return (
+            "\n\n☎️ **Call:**  Click here to join: "
+            f"https://discord.com/channels/{GUILD_ID}/{self.call_channel_id}"
+        )
+
     def btn_conditions_apply_for(self, button: Button):
-        for condition in button.conditions.split(","):
+        for condition in button.conditions:
             if not self.button_condition_applies(condition):
                 return False
         return True
+
+    def stack(self, structure: Structure) -> None:
+        if structure.id == "home":
+            self.structure_stack = [structure]
+        elif structure.id in self.structure_stack:
+            struct_index = self.structure_stack.index(structure)
+            self.structure_stack = self.structure_stack[: struct_index + 1]
+        elif not (self.structure_stack and self.structure_stack[-1].id == structure.id):
+            self.structure_stack.append(structure)
+
+    async def add_special_reactions(self) -> None:
+        for i in range(min(PAGE_STEP, len(self.results) - self.page * PAGE_STEP)):
+            await self.view_msg.add_reaction(NUM_EMOJI[i])
+
+    def page_prefix(self, i: int) -> str:
+        i = i + self.page * PAGE_STEP
+        return f"**{i // PAGE_STEP}** " if i >= PAGE_STEP else "   "
+
+    def get_result_by_number(self, num: int) -> Any:
+        return self.results[self.page * PAGE_STEP + num - 1]
+
+    def get_item_by_number(self, lst: list, num: int) -> Any:
+        return lst[self.page * PAGE_STEP + num - 1]

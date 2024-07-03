@@ -1,26 +1,14 @@
-import datetime
-from dataclasses import dataclass
+from datetime import datetime
 
 from eagxf.constants import DATE_FORMAT
 
 
-@dataclass
-class Date:
-    day: int
-    month: int
-    year: int
-    hour: int | None = None
-    minute: int | None = None
-    second: int | None = None
+class Date(datetime):
+    def is_future(self) -> bool:
+        return self >= Date.current()
 
-    def __str__(self) -> str:
-        dmy = f"{self.day:02}.{self.month:02}.{self.year}"
-        if self.hour is not None:
-            return f"{dmy} {self.hour:02}:{self.minute:02}:{self.second:02}"
-        return dmy
-
-    def __repr__(self) -> str:
-        return str(self)
+    def is_past(self) -> bool:
+        return self < Date.current()
 
     @staticmethod
     def is_valid(date: str) -> bool:
@@ -29,25 +17,33 @@ class Date:
     @staticmethod
     def from_str(date_str: str) -> "Date":
         date_str = date_str.strip()
-        if " " in date_str:
-            dmy, hms = date_str.split(" ")
-            if hms.count(":") == 1:
-                hms += ":00"
-            return Date(*map(int, dmy.split(".") + hms.split(":")))
-        return Date(*map(int, date_str.split(".")))
+        if " " not in date_str:
+            d, m, y = map(int, date_str.split("."))
+            return Date(y, m, d)
+
+        dmy, hms = date_str.split(" ")
+        if hms.count(":") == 1:
+            hms += ":00"
+        d, m, y = map(int, dmy.split("."))
+        h, mi, s = map(int, hms.split(":"))
+        return Date(y, m, d, h, mi, s)
+
+    def __str__(self) -> str:
+        return self.strftime(r"%d.%m.%Y %H:%M")
+
+    def __repr__(self) -> str:
+        y, m, d = self.year, self.month, self.day
+        h, mi, s = self.hour, self.minute, self.second
+        return f"Date({y=}, {m=}, {d=}, {h=}, {mi=}, {s=})"
 
     @staticmethod
     def default() -> "Date":
-        return Date(1, 1, 2000)
+        return Date(1, 1, 1900)
+
+    @staticmethod
+    def from_datetime(dt: datetime) -> "Date":
+        return Date(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
 
     @staticmethod
     def current() -> "Date":
-        current = datetime.datetime.now()
-        return Date(
-            day=current.day,
-            month=current.month,
-            year=current.year,
-            hour=current.hour,
-            minute=current.minute,
-            second=current.second,
-        )
+        return Date.from_datetime(datetime.now())

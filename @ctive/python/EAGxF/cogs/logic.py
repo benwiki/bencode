@@ -1,5 +1,6 @@
 import asyncio
 import os
+from operator import is_
 from typing import Callable, Iterable, Iterator
 
 import discord
@@ -11,7 +12,6 @@ from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
     EMOJI_STATUS,
-    INCOMPLETE_PROFILE_WARNING,
     NUM_EMOJI,
     PAGE_STEP,
     QUESTION_NAMES,
@@ -22,6 +22,9 @@ from eagxf.constants import (
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
+from eagxf.enums.effect import Effect
+from eagxf.enums.meeting_time import MtgTime
+from eagxf.enums.property import Property
 from eagxf.meetings import Meeting
 from eagxf.status import Status
 from eagxf.structure import Structure
@@ -51,31 +54,9 @@ class Logic(commands.Cog):
         for structure_id, structure in STRUCTURES.items():
             structure.id = structure_id
             if structure.paged:
-                self.init_paged_structure(structure)
+                structure.init_pagination()
             for button in structure.buttons:
                 self.init_button_with(button, structure)
-
-    def init_paged_structure(self, structure: Structure) -> None:
-        structure.after_button_effects = self.comma_add(
-            structure.after_button_effects, "delete_message"
-        )
-        self.push_buttons_down_for(structure)
-        for button in structure.buttons:
-            button.effects = self.comma_add(button.effects, "empty_results")
-        structure.buttons += Button.get_navigation_buttons(structure.id)
-        structure.changed_property = "selected_user"
-
-    def comma_add(self, original: str, additional: str) -> str:
-        if original:
-            return f"{original}, {additional}"
-        return additional
-
-    def push_buttons_down_for(self, structure: Structure) -> None:
-        for button in structure.buttons:
-            if button.row:
-                button.row += 1
-            else:
-                button.row = 1
 
     def init_button_with(self, button: Button, structure: Structure) -> None:
         to_structure = STRUCTURES.get(button.takes_to)
@@ -85,9 +66,7 @@ class Logic(commands.Cog):
             to_structure, button=button
         )
         if structure.after_button_effects:
-            button.effects = self.comma_add(
-                button.effects, structure.after_button_effects
-            )
+            button.effects += structure.after_button_effects
 
     def init_other_stuff(self) -> None:
         self.home_btn: DcButton = DcButton(label="🏠 Home", style=ButtonStyle.primary)
@@ -95,7 +74,11 @@ class Logic(commands.Cog):
         self.save_btn = Button(
             label="💾 Save",
             takes_to="best_matches",
-            effects="save_best_matches, delete_message, reset_new_prio_order",
+            effects=[
+                Effect.SAVE_BEST_MATCHES,
+                Effect.DELETE_MESSAGE,
+                Effect.RESET_NEW_PRIO_ORDER,
+            ],
             style=ButtonStyle.green,
         )
         self.save_btn.callback = self.get_structure_callback(  # type: ignore
@@ -109,10 +92,11 @@ class Logic(commands.Cog):
             lambda u1, u2: u1.get_status(u2),
             lambda u1, u2: u1.get_headline_score(u2),
         ]
-        self.reaction_funcs: dict[str, Callable] = {  # pylint: disable=C0103
-            "status": self.handle_status_change,
-            "best_match_prio_order": self.handle_best_match_prio_order,
-            "selected_user": self.handle_selected_user,
+        self.reaction_funcs: dict[Property, Callable] = {  # pylint: disable=C0103
+            Property.STATUS: self.handle_status_change,
+            Property.BEST_MATCH_PRIO_ORDER: self.handle_best_match_prio_order,
+            Property.SELECTED_USER: self.handle_selected_user,
+            Property.MEETING: self.handle_meeting,
         }
         self.add_reactions = True
         self.DEBUGGING = True  # pylint: disable=C0103
@@ -122,18 +106,19 @@ class Logic(commands.Cog):
         while True:
             await asyncio.sleep(60)
             for user in self.users.values():
-                if user.structure_stack:
-                    await self.send_structure(user.structure_stack[-1], user=user)
+                if user.last_structure:
+                    await self.send_structure(user.last_structure, user)
 
     def get_structure_callback(
         self, structure: Structure | None, button: Button | None = None
     ):
         async def callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
+
             user = self.users[interaction.user.id]
             if button and button.effects:
-                for effect in button.effects.split(", "):
-                    await user.apply_effect(effect)
+                for effect in button.effects:
+                    await user.apply_effect(effect, self.client)
             if button and button.takes_to == "<back>" and len(user.structure_stack) > 1:
                 await self.send_structure(user.back_to_structure, user)  # type: ignore
             elif structure:
@@ -144,8 +129,8 @@ class Logic(commands.Cog):
         return callback
 
     async def send_structure(self, structure: Structure, user: User) -> None:
-        self.stack_structure(user, structure)
-        self.collect_data_for(user, structure)
+        user.stack(structure)
+        user.results = self.structure_to_data(user, structure.id)
 
         user.view_msg = await self.get_view_msg_for(user, structure)
         receiver_future = self.client.fetch_user(user.id)
@@ -158,29 +143,29 @@ class Logic(commands.Cog):
             for emoji in structure.reactions:
                 await user.view_msg.add_reaction(emoji)
 
-        if structure.paged and user.view_msg:
-            await self.add_special_reactions_for(user)
+        if structure.paged:
+            await user.add_special_reactions()
 
-    def stack_structure(self, user: User, structure: Structure) -> None:
-        if structure.id == "home":
-            user.structure_stack = [structure]
-        elif structure.id in user.structure_stack:
-            struct_index = user.structure_stack.index(structure)
-            user.structure_stack = user.structure_stack[: struct_index + 1]
-        elif user.structure_stack == [] or user.structure_stack[-1].id != structure.id:
-            user.structure_stack.append(structure)
-
-    def collect_data_for(self, user: User, structure: Structure) -> None:
-        if structure.id in ["search", "show_search_results"]:
-            user.results = self.search_users_for(user)
-        if structure.id == "best_matches":
-            user.results = self.search_best_matches_for(user)
-        if structure.id == "interests_sent":
-            user.results = user.interests_sent_not_received
-        if structure.id == "interests_received":
-            user.results = user.interests_received_not_sent
-        if structure.id == "mutual_interests":
-            user.results = user.mutual_interests
+    def structure_to_data(self, user: User, structure_id: str) -> list:
+        match structure_id:
+            case "search":
+                return self.search_users_for(user)
+            case "show_search_results":
+                return self.search_users_for(user)
+            case "best_matches":
+                return self.search_best_matches_for(user)
+            case "interests_sent":
+                return user.interests_sent_not_received
+            case "interests_received":
+                return user.interests_received_not_sent
+            case "mutual_interests":
+                return user.mutual_interests
+            case "future_meetings":
+                return user.meetings.future
+            case "past_meetings":
+                return user.meetings.past
+            case _:
+                return []
 
     async def get_view_msg_for(self, user: User, structure: Structure) -> ViewMsg:
         if not user.struct_conditions_apply_for(structure):
@@ -214,10 +199,6 @@ class Logic(commands.Cog):
         user.save()
         return user
 
-    async def add_special_reactions_for(self, user: User) -> None:
-        for i in range(min(PAGE_STEP, len(user.results) - user.page * PAGE_STEP)):
-            await user.view_msg.add_reaction(NUM_EMOJI[i])
-
     def search_users_for(self, user_searching: User) -> list[int]:
         return [
             user.id
@@ -225,85 +206,79 @@ class Logic(commands.Cog):
             if user.is_selected_by(user_searching)
         ]
 
-    def additional_info_with_side_effects(self, user: User) -> str:
-        if not user.is_complete() and user.status != Status.INVISIBLE:
-            user.status = Status.INVISIBLE
-            return INCOMPLETE_PROFILE_WARNING
-        return ""
-
     def replace_placeholders(self, msg: str, user: User | None) -> str:
         if not user:
             return msg
 
         msg = user.replace_placeholders(msg)
-        msg = (
-            msg.replace("<search_results>", self.get_formatted_results_for(user))
-            .replace(
-                "<best_matches>",
-                self.get_formatted_results_for(user, additional=user.get_score_summary),
-            )
-            .replace("<page_reference>", self.get_page_reference_for(user))
-            .replace("<interests_sent>", self.get_interests(user))
-            .replace("<interests_received>", self.get_interests(user))
-            .replace("<mutual_interests>", self.get_interests(user))
-            .replace("<selected_user_name>", self.get_name_of(user.selected_user))
-            .replace(
-                "<selected_user_profile>",
-                (
-                    user.selected_user.replace_placeholders(
-                        PROFILE(name=self.get_name_of(user.selected_user) + "'s")
-                    )
-                    if user.selected_user
-                    else ""
-                ),
-            )
-            .replace(
-                "<selected_user_meetings>",
-                self.get_meetings(user, "upcoming", selected=True),
-            )
-            .replace("<upcoming_meetings>", self.get_meetings(user, "upcoming"))
-            .replace("<past_meetings>", self.get_meetings(user, "past"))
-        )
+        functions: dict[str, Callable[[User], str]] = {
+            "<search_results>": self.get_formatted_results_for,
+            "<best_matches>": lambda u: self.get_formatted_results_for(
+                u, additional=u.get_score_summary
+            ),
+            "<interests_sent>": self.get_interests,
+            "<interests_received>": self.get_interests,
+            "<mutual_interests>": self.get_interests,
+            "<selected_user_name>": lambda u: self.get_name_of(u.selected_user),
+            "<selected_user_profile>": self.selected_user_profile,
+            "<selected_user_meetings>": lambda u: self.get_meetings(
+                u, MtgTime.FUTURE, selected=True, peek=True
+            ),
+            "<future_meetings_peek>": lambda u: self.get_meetings(
+                u, MtgTime.FUTURE, peek=True
+            ),
+            "<past_meetings_peek>": lambda u: self.get_meetings(
+                u, MtgTime.PAST, peek=True
+            ),
+            "<future_meetings>": lambda u: self.get_meetings(u, MtgTime.FUTURE),
+            "<past_meetings>": lambda u: self.get_meetings(u, MtgTime.PAST),
+        }
+        for placeholder, function in functions.items():
+            if placeholder in msg:
+                msg = msg.replace(placeholder, function(user))
         return msg
 
-    def get_name_of(self, user: User | None) -> str:
-        return user.name if user else ""
-
-    def get_meetings(self, user: User, kind: str, selected: bool = False) -> str:
-        if kind == "upcoming":
-            meetings = user.meetings.upcoming
-        elif kind == "past":
-            meetings = user.meetings.past
-        else:
+    def selected_user_profile(self, user: User) -> str:
+        if not user.selected_user:
             return ""
+        return user.selected_user.replace_placeholders(
+            PROFILE(name=self.get_name_of(user.selected_user) + "'s")
+        )
+
+    def get_name_of(self, user: User | None) -> str:
+        return user.name if user else "(no user selected)"
+
+    def get_meetings(
+        self, user: User, kind: MtgTime, selected=False, peek=False
+    ) -> str:
+        meetings = {
+            MtgTime.FUTURE: user.meetings.future,
+            MtgTime.PAST: user.meetings.past,
+        }.get(kind, [])
 
         if selected and user.selected_user:
             meetings = [m for m in meetings if m.partner_id == user.selected_user.id]
-
         if not meetings:
-            return "**No meetings yet.**"
-        return "- " + "\n - ".join(
-            f"**{m.date}**"
+            return "***No meetings to show.***"
+
+        dots_needed = False
+        if peek:
+            dots_needed = len(meetings) > 5
+            meetings = meetings[:5]
+
+        return "\n".join(
+            ("- " if peek else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
+            + f"**{m.date}**"
             + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
-            for m in meetings
-        )
+            for i, m in enumerate(meetings)
+        ) + ("\n**...**" if dots_needed else "")
 
     def get_interests(self, user: User) -> str:
         return "\n".join(
-            f"{self.prefix(i+1, user)}{NUM_EMOJI[i]} "
+            f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
             f".: ***{u.name}*** :. (Headline: *{u.headline}*)"
             for i, u in enumerate(self.get_results_for(user))
         )
-
-    def prefix(self, i: int, user: User) -> str:
-        i = i + user.page * PAGE_STEP
-        return f"**{i // PAGE_STEP}** " if i >= PAGE_STEP else "   "
-
-    def get_page_reference_for(self, user: User) -> str:
-        page_from = user.page * PAGE_STEP + 1
-        page_to = min((user.page + 1) * PAGE_STEP, len(user.results))
-        page_total = len(user.results)
-        return f"**({page_from} - {page_to}) from total {page_total}**"
 
     def get_formatted_results_for(
         self,
@@ -317,23 +292,20 @@ class Logic(commands.Cog):
             f"({u.status.value}))"
             f"{additional(u) if additional else ''}"
             + "".join(
-                f"\n- *{p['label']}:* {getattr(u, p_id)}"
+                f"\n- *{p['label']}:* {getattr(u, p_id.low)}"
                 for p_id, p in VISIBLE_SIMPLE_USER_PROPS.items()
                 if p_id != "name"
             )
             + "\n***------❓Questions ------***"
             + "".join(
-                f"\n- *{q['label']}:* {u.questions[q_id]}"
+                f"\n- *{q['label']}:* {u.questions[q_id.low]}"
                 for q_id, q in QUESTION_NAMES.items()
             )
             for i, u in enumerate(self.get_results_for(user))
         )
 
     def get_results_for(self, user: User) -> Iterator[User]:
-        return self.users_by_ids(self.paged_list_of(user.results, user))
-
-    def paged_list_of(self, lst: list, user: User) -> list[int]:
-        return lst[user.page * PAGE_STEP : (user.page + 1) * PAGE_STEP]
+        return self.users_by_ids(user.paged_list_of_results())
 
     def users_by_ids(self, user_ids: list[int]) -> Iterator[User]:
         return map(lambda x: self.users[x], user_ids)
@@ -371,7 +343,7 @@ class Logic(commands.Cog):
 
     @commands.command(name="hi")
     async def hi(self, ctx: commands.Context) -> None:
-        """Sends the user's home structure."""
+        """Sends the user's last structure."""
         if ctx.author.id not in self.users:
             return
         await self.bye(ctx)
@@ -390,65 +362,80 @@ class Logic(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, msg: DcMessage) -> None:
         user = self.users.get(msg.author.id)
-        if (
-            user is None
-            or user.change in [*self.reaction_funcs, ""]
-            or not user.search_filter
-        ):
+        if user is None or user.change is None or user.change in self.reaction_funcs:
             return
 
         ok_btn = self.get_ok_button_for(user)
-
         await user.view_msg.delete()
 
-        changed = change = user.change
-        search = change.startswith("search_")
+        change = user.change
+        search = change.is_search()
         if search:  # chop off the "search_" prefix
-            change = changed = change[7:]
+            change = change.from_search()
+        changed = change.low
 
-        change_user = user.search_filter if search else user
+        change_user = user
+        if search and user.search_filter is not None:
+            change_user = user.search_filter
+        elif search:
+            return
+
         pronome = "Your" if not search else "The filter's"
-        plural = change in ["keywords", "languages"]
+        plural = change in [Property.KEYWORDS, Property.LANGUAGES]
         kw_needed = plural or search and change in QUESTION_NAMES
         has_have = "have" if plural else "has"
         changed_to = msg.content
         verb = "changed"
 
         if kw_needed:
-            need_caps = change == "languages"
+            need_caps = change == Property.LANGUAGES
             evenly_spaced_kws = self.evenly_space(msg.content, need_caps)
             changed_to = evenly_spaced_kws
 
         if change in QUESTION_NAMES:
             changed = "answer"
-            # TODO: ratyi!
-            change_user.questions[change] = changed_to
+            # TODO: kevésbé ratyi, de ratyi!
+            change_user.questions.set_property(change, changed_to)
         # TODO: úristen de ratyi!
-        elif change == "meeting_request":
-            if Date.is_valid(changed_to) and user.selected_user:
+        elif change in [Property.MEETING_REQUEST, Property.MEETING_DATE]:
+            assert user.selected_user, "(E1) No selected user for meeting!"
+            if Date.is_valid(changed_to) and Date.from_str(changed_to).is_future():
+                if change == Property.MEETING_DATE:
+                    user.cancel_meeting_with_selected()
                 user.request_meeting_with_selected(Date.from_str(changed_to))
-                ok_btn = self.get_ok_button_for(user)
+                wanted_structure = {
+                    Property.MEETING_REQUEST: "selected_user",
+                    Property.MEETING_DATE: "future_meetings",
+                }[change]
+                ok_btn = self.get_ok_button_for(user, wanted_structure=wanted_structure)
                 changed = f"meeting with ***{user.selected_user.name}***"
                 verb = "set"
             else:
                 await msg.add_reaction("❌")
-                message = "Invalid date! Try again!\nFormat should be: dd.mm.yyyy hh:mm"
-                ok_btn = self.get_ok_button_for(user)
+                message = (
+                    "Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
+                    "\nAnd it should be in the future!\n\nClick OK to proceed!"
+                )
+                wanted_structure = {
+                    Property.MEETING_REQUEST: "meeting_request",
+                    Property.MEETING_DATE: "edit_meeting",
+                }[change]
+                ok_btn = self.get_ok_button_for(user, wanted_structure=wanted_structure)
                 view = self.get_view([ok_btn, self.home_btn])
                 user.view_msg.update(raw_message=SPACER + message, view=view)
                 await user.view_msg.send(receiver=msg.author)
                 return
         else:
-            setattr(change_user, change, changed_to)
+            setattr(change_user, change.low, changed_to)
 
         await msg.add_reaction("✅")
         message = f'✅ {pronome} {changed} {has_have} been {verb} to "{changed_to}"!'
-        message += self.additional_info_with_side_effects(user)
+        message += user.additional_info_with_side_effects()
 
         view = self.get_view([ok_btn, self.home_btn])
         user.view_msg.update(raw_message=SPACER + message, view=view)
         await user.view_msg.send(receiver=msg.author)
-        user.change = ""
+        user.change = None
         user.save()
 
     def evenly_space(self, text: str, capitalize: bool) -> str:
@@ -465,20 +452,21 @@ class Logic(commands.Cog):
         self, payload: discord.RawReactionActionEvent
     ) -> None:
         user = self.users.get(payload.user_id)
-        if not user:
+        if not user or not user.change:
             return
         change = user.change
-        if change.startswith("search_"):
-            change = change[7:]
+        if change.is_search():
+            change = change.from_search()
 
         if user.view_msg.message and payload.message_id == user.view_msg.message.id:
             if handle_reaction := self.reaction_funcs.get(change):
                 await handle_reaction(user, payload.emoji.name)
 
+    # ====================================================================== #
     async def handle_status_change(self, user: User, emoji: str) -> None:
-        if not user.search_filter:
+        if not user.search_filter or not user.change:
             return  # only because of type hinting
-        search = user.change.startswith("search_")
+        search = user.change.is_search()
         changed_user = user.search_filter if search else user
         pronome = "Your" if not search else "The filter's"
 
@@ -498,6 +486,7 @@ class Logic(commands.Cog):
         await user.view_msg.send(receiver_future=receiver_future)
         user.save()
 
+    # ====================================================================== #
     async def handle_best_match_prio_order(
         self, user: User, emoji: str, remove: bool = False
     ) -> None:
@@ -522,15 +511,6 @@ class Logic(commands.Cog):
         user.view_msg.update(raw_message=SPACER + message)
         await user.view_msg.send()
 
-    async def handle_selected_user(self, user: User, emoji: str) -> None:
-        num = self.validate_number_reaction(emoji, user)
-        if not num:
-            return
-        selected_user_id = user.results[user.page * PAGE_STEP + num - 1]
-        user.selected_user = self.users[selected_user_id]
-        await user.view_msg.delete()
-        await self.send_structure(STRUCTURES["selected_user"], user)  # type: ignore
-
     def validate_number_reaction(self, emoji_name: str, user: User) -> int | None:
         if emoji_name not in NUM_EMOJI:
             return None
@@ -538,6 +518,26 @@ class Logic(commands.Cog):
         if not (1 <= num <= PAGE_STEP) or not user.view_msg.message:
             return None
         return num
+
+    # ====================================================================== #
+    async def handle_selected_user(self, user: User, emoji: str) -> None:
+        if not (num := self.validate_number_reaction(emoji, user)):
+            return
+        selected_user_id = user.get_result_by_number(num)
+        user.selected_user = self.users[selected_user_id]
+        await user.view_msg.delete()
+        await self.send_structure(STRUCTURES["selected_user"], user)  # type: ignore
+
+    # ====================================================================== #
+    async def handle_meeting(self, user: User, emoji: str) -> None:
+        last_struct = user.last_structure
+        if not (num := self.validate_number_reaction(emoji, user)) or not last_struct:
+            return
+        selected_meeting: Meeting = user.get_result_by_number(num)
+        user.selected_meeting = selected_meeting
+        user.selected_user = self.users[selected_meeting.partner_id]
+        await user.view_msg.delete()
+        await self.send_structure(STRUCTURES["edit_meeting"], user)  # type: ignore
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(
@@ -548,7 +548,7 @@ class Logic(commands.Cog):
             return
 
         if user.view_msg.message and payload.message_id == user.view_msg.message.id:
-            if user.change == "best_match_prio_order":
+            if user.change == Property.BEST_MATCH_PRIO_ORDER:
                 await self.handle_best_match_prio_order(
                     user, payload.emoji.name, remove=True
                 )

@@ -8,6 +8,7 @@ DcView = discord.ui.View
 DcUser = discord.User | discord.Member
 DcMessage = discord.Message
 DcContext = commands.Context
+DcClient = discord.Client
 
 Receiver = DcUser | DcContext
 ReceiverFuture = Coroutine[Any, Any, Receiver]

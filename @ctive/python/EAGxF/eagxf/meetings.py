@@ -19,36 +19,52 @@ class Meeting:
             "date": str(self.date),
         }
 
+    def is_future(self) -> bool:
+        return self.date.is_future()
+
+    def is_past(self) -> bool:
+        return self.date.is_past()
+
 
 @dataclass
 class Meetings:
-    upcoming: list[Meeting] = field(default_factory=list)
+    future: list[Meeting] = field(default_factory=list)
     past: list[Meeting] = field(default_factory=list)
     ongoing: Meeting | None = None
 
+    @property
+    def all(self) -> list[Meeting]:
+        return self.future + self.past
+
     def to_dict(self) -> dict[str, list[dict[str, int | str]]]:
         return {
-            "future": [meeting.to_dict() for meeting in self.upcoming],
+            "future": [meeting.to_dict() for meeting in self.future],
             "past": [meeting.to_dict() for meeting in self.past],
         }
 
     @staticmethod
     def from_dict(data: dict[str, list[dict[str, Any]]]) -> "Meetings":
-        upcoming = [
+        future = [
             Meeting(m["partner_id"], Date.from_str(m["date"])) for m in data["future"]
         ]
         past = [
             Meeting(m["partner_id"], Date.from_str(m["date"])) for m in data["past"]
         ]
-        return Meetings(upcoming, past)
-    
-    def request_meeting(self, partner_id: int, date: Date) -> None:
-        self.upcoming.append(Meeting(partner_id, date))
+        not_future = [meeting for meeting in future if not meeting.is_future()]
+        future = [meeting for meeting in future if not meeting in not_future]
+        past.extend(not_future)
+        return Meetings(future, past)
 
-    def request_video_call(self, partner_id: int) -> None:
-        self.upcoming.append(Meeting(partner_id))
+    def request(self, partner_id: int, date: Date) -> None:
+        self.future.append(Meeting(partner_id, date))
 
-    def cancel_meeting_with(self, partner_id: int) -> None:
-        self.upcoming = [
-            meeting for meeting in self.upcoming if meeting.partner_id != partner_id
-        ]
+    def cancel(self, partner_id: int, meeting: Meeting) -> None:
+        if meeting in self.future:
+            self.future.remove(meeting)
+        elif meeting in self.past:
+            self.past.remove(meeting)
+        # self.future = [
+        #     mtg
+        #     for mtg in self.future
+        #     if not (mtg.partner_id == partner_id and mtg.date == meeting.date)
+        # ]
