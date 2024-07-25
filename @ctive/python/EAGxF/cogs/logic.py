@@ -23,12 +23,12 @@ from eagxf.constants import (
 from eagxf.date import Date
 from eagxf.enums.effect import Effect
 from eagxf.enums.meeting_time import MtgTime
-from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
+from eagxf.enums.screen_id import ScreenId
 from eagxf.meetings import Meeting
-from eagxf.status import Status
 from eagxf.screen import Screen
 from eagxf.screens import PRIORITY_MESSAGE, SCREENS
+from eagxf.status import Status
 from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import to_emojis
@@ -121,7 +121,11 @@ class Logic(commands.Cog):
             if button and button.effects:
                 for effect in button.effects:
                     await user.apply_effect(effect, self.client)
-            if button and button.takes_to == "<back>" and len(user.screen_stack) > 1:
+            if (
+                button
+                and button.takes_to == ScreenId.BACK__
+                and len(user.screen_stack) > 1
+            ):
                 await self.send_screen(user.back_to_screen, user)  # type: ignore
             elif screen:
                 await self.send_screen(screen, user)
@@ -295,13 +299,13 @@ class Logic(commands.Cog):
             f"({u.status.value}))"
             f"{additional(u) if additional else ''}"
             + "".join(
-                f"\n- *{p['label']}:* {getattr(u, p_id.low)}"
+                f"\n- *{p['label']}:* {getattr(u, p_id.to_str)}"
                 for p_id, p in VISIBLE_SIMPLE_USER_PROPS.items()
                 if p_id != "name"
             )
             + "\n***------❓Questions ------***"
             + "".join(
-                f"\n- *{q['label']}:* {u.questions[q_id.low]}"
+                f"\n- *{q['label']}:* {u.questions[q_id]}"
                 for q_id, q in QUESTION_NAMES.items()
             )
             for i, u in enumerate(self.get_results_for(user))
@@ -372,20 +376,21 @@ class Logic(commands.Cog):
         await user.view_msg.delete()
 
         prop_to_change = user.change
-        search = prop_to_change.is_search()
-        if search:  # chop off the "search_" prefix
+        searching = prop_to_change.is_search()
+        if searching:  # chop off the "search_" prefix
             prop_to_change = prop_to_change.from_search()
-        changed = prop_to_change.low
+        changed = prop_to_change.to_str
 
         change_user = user
-        if search and user.search_filter is not None:
+        if searching and user.search_filter is not None:
             change_user = user.search_filter
-        elif search:
+        elif searching:
             return
 
-        pronome = "Your" if not search else "The filter's"
+        # TODO: SPAGHETTI-CODE. GOTTA FIX.
+        pronome = "Your" if not searching else "The filter's"
         plural = prop_to_change in [Property.KEYWORDS, Property.LANGUAGES]
-        kw_needed = plural or search and prop_to_change in QUESTION_NAMES
+        kw_needed = plural or searching and prop_to_change in QUESTION_NAMES
         has_have = "have" if plural else "has"
         new_prop_value = msg.content
         verb = "changed"
@@ -397,9 +402,8 @@ class Logic(commands.Cog):
 
         if prop_to_change in QUESTION_NAMES:
             changed = "answer"
-            # TODO: better, but still terrible! GOTTA FIX
-            change_user.questions.set(prop_to_change, new_prop_value)
-        # TODO: goodness, terrible code! GOTTA FIX
+            change_user.set_question(prop_to_change, new_prop_value)
+        # TODO: SPAGHETTI-CODE. GOTTA FIX.
         elif prop_to_change in [Property.MEETING_REQUEST, Property.MEETING_DATE]:
             assert user.selected_user, "(E1) No selected user for meeting!"
             if (
@@ -432,7 +436,7 @@ class Logic(commands.Cog):
                 await user.view_msg.send(receiver=msg.author)
                 return
         else:
-            setattr(change_user, prop_to_change.low, new_prop_value)
+            setattr(change_user, prop_to_change.to_str, new_prop_value)
 
         await msg.add_reaction("✅")
         message = (
@@ -547,6 +551,7 @@ class Logic(commands.Cog):
         await user.view_msg.delete()
         await self.send_screen(SCREENS["edit_meeting"], user)  # type: ignore
 
+    # ====================================================================== #
     @commands.Cog.listener()
     async def on_raw_reaction_remove(
         self, payload: discord.RawReactionActionEvent
@@ -561,6 +566,7 @@ class Logic(commands.Cog):
                     user, payload.emoji.name, remove=True
                 )
 
+    # ====================================================================== #
     def get_ok_button_for(
         self,
         user: User,
@@ -596,13 +602,6 @@ class Logic(commands.Cog):
         for user in self.users.values():
             await user.view_msg.delete()
         await self.client.close()
-
-    def is_valid_date(self, date: str) -> bool:
-        return (
-            len(date) == 10
-            and date[2] == date[5] == "."
-            and date.replace(".", "").isnumeric()
-        )
 
     def load_users(self) -> dict[int, User]:
         return {

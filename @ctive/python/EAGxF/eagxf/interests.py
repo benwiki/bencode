@@ -9,7 +9,7 @@ class Interests:
     @staticmethod
     def from_dict(data: dict[str, list[int]]) -> "Interests":
         return Interests(sent=data["sent"], received=data["received"])
-    
+
     def to_dict(self) -> dict[str, list[int]]:
         return {"sent": self.sent, "received": self.received}
 

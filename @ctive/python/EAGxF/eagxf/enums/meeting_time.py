@@ -10,7 +10,7 @@ class MtgTime(Enum):
 
     def __repr__(self):
         return self.name.lower()
-    
+
     @property
-    def low(self):
+    def to_str(self):
         return self.name.lower()

@@ -17,9 +17,9 @@ from eagxf.constants import (
 )
 from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
-from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.enums.screen_condition import ScreenCond
+from eagxf.enums.screen_id import ScreenId
 from eagxf.screen import Screen
 
 
@@ -415,7 +415,7 @@ SCREENS: dict[ScreenId, Screen] = {
         for kw in ("cancel", "delete")
     },
     **{
-        ScreenId.meetings(time_id.low): Screen(
+        ScreenId.meetings(time_id.to_str): Screen(
             message=f"{time['emoji']} **{time['label']}**"
             "\n\n<page_reference>"
             "\nClick on the corresponding reaction to manage the meeting!"
@@ -428,7 +428,7 @@ SCREENS: dict[ScreenId, Screen] = {
         for time_id, time in MEETINGS.items()
     },
     **{  # Edit questions
-        ScreenId.edit(q_id.low): Screen(
+        ScreenId.edit(q_id.to_str): Screen(
             message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
             "\n\nWhat do you want to change it to?",
             changed_property=q_id,
@@ -437,7 +437,7 @@ SCREENS: dict[ScreenId, Screen] = {
         for q_id, question in QUESTION_NAMES.items()
     },
     **{  # Edit simple properties
-        ScreenId.edit(prop_id.low): Screen(
+        ScreenId.edit(prop_id.to_str): Screen(
             message=f"Your current {prop_id} is:\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?",
             changed_property=prop_id,
@@ -447,7 +447,7 @@ SCREENS: dict[ScreenId, Screen] = {
         if not prop["comma_separated"]
     },
     **{  # Edit simple comma separated properties
-        ScreenId.edit(prop_id.low): Screen(
+        ScreenId.edit(prop_id.to_str): Screen(
             message=f"Your current {prop_id} are:\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?"
             f"\n(Comma separated, e.g. {prop['example']})",
@@ -458,7 +458,7 @@ SCREENS: dict[ScreenId, Screen] = {
         if prop["comma_separated"]
     },
     **{  # Search simple properties
-        ScreenId.search(prop_id.low): Screen(
+        ScreenId.search(prop_id.to_str): Screen(
             message=f"What {prop_id} do you want to search for?"
             + COMMA_SEPARATED_MAP.get(prop_id, "")
             + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
@@ -469,7 +469,7 @@ SCREENS: dict[ScreenId, Screen] = {
         for prop_id in VISIBLE_SIMPLE_USER_PROPS
     },
     **{  # Search questions
-        ScreenId.search(q_id.low): Screen(
+        ScreenId.search(q_id.to_str): Screen(
             message=f"What keywords do you want to search for in the answers to the question:"
             f"\n**'{question['text']}'**"
             f"{COMMA_AND_SEPARATED}"

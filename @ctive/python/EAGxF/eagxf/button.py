@@ -52,7 +52,7 @@ class Button(DCButton):
             Button(
                 label=prop["label"],
                 emoji=prop["emoji"],
-                takes_to=ScreenId.search_or_edit(action, prop_id.low),
+                takes_to=ScreenId.search_or_edit(action, prop_id.to_str),
                 row=prop["row"],
             )
             for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
@@ -66,7 +66,7 @@ class Button(DCButton):
             Button(
                 label=question["label"],
                 emoji=question["emoji"],
-                takes_to=ScreenId.search_or_edit(action, q_id.low),
+                takes_to=ScreenId.search_or_edit(action, q_id.to_str),
             )
             for q_id, question in QUESTION_NAMES.items()
         )

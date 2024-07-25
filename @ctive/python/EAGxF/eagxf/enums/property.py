@@ -35,7 +35,7 @@ class Property(Enum):
         return matchdict.get(thing, thing)
 
     @property
-    def low(self) -> str:
+    def to_str(self) -> str:
         return self.name.lower()
 
     def __str__(self) -> str:

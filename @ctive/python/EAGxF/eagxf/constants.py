@@ -66,7 +66,7 @@ DEFAULT_PRIO_ORDER = [
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
-SPECIAL_DESTINATIONS = ("<back>",)
+SPECIAL_DESTINATIONS = (ScreenId.BACK__,)
 
 NOT_ALNUM = re.compile(r"[\W_]+", re.UNICODE)
 DATE_FORMAT = re.compile(r"\d{2}\.\d{2}\.\d{4}(?: \d{2}:\d{2}(?::\d{2})?)?")

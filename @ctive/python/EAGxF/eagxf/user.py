@@ -25,8 +25,8 @@ from eagxf.enums.screen_condition import ScreenCond
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
-from eagxf.status import Status
 from eagxf.screen import Screen
+from eagxf.status import Status
 from eagxf.typedefs import DcClient, DcUser
 from eagxf.util import (
     CHANNELS,
@@ -92,7 +92,7 @@ class User:
 
     def is_complete(self) -> bool:
         basic_filled = all(
-            getattr(self, attr.low) not in ("?", "")
+            getattr(self, attr.to_str) not in ("?", "")
             for attr in VISIBLE_SIMPLE_USER_PROPS
         )
         return basic_filled and self.questions.is_complete()
@@ -104,16 +104,16 @@ class User:
             searcher.id != self.id
             and all(
                 comma_and_search(
-                    getattr(self, prop_id.low),
-                    getattr(searcher.search_filter, prop_id.low),
+                    getattr(self, prop_id.to_str),
+                    getattr(searcher.search_filter, prop_id.to_str),
                 )
                 for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
                 if prop["comma_separated"]
             )
             and all(
-                getattr(searcher.search_filter, prop_id.low).lower()
-                in getattr(self, prop_id.low).lower()
-                or getattr(searcher.search_filter, prop_id.low) == "?"
+                getattr(searcher.search_filter, prop_id.to_str).lower()
+                in getattr(self, prop_id.to_str).lower()
+                or getattr(searcher.search_filter, prop_id.to_str) == "?"
                 for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
                 if not prop["comma_separated"]
             )
@@ -124,8 +124,8 @@ class User:
             )
             and all(  # TODO: ratyi!
                 comma_and_search(
-                    self.questions.to_dict()[q.low],
-                    searcher.search_filter.questions.to_dict()[q.low],
+                    self.questions[q],
+                    searcher.search_filter.questions[q],
                 )
                 for q in QUESTION_NAMES
             )
@@ -143,7 +143,7 @@ class User:
                 "interests": user.interests.to_dict(),
                 "meetings": user.meetings.to_dict(),
                 **{
-                    attr.low: getattr(user, attr.low)
+                    attr.to_str: getattr(user, attr.to_str)
                     for attr in VISIBLE_SIMPLE_USER_PROPS
                 },
             },
@@ -168,7 +168,10 @@ class User:
             interests=Interests.from_dict(user_data["interests"]),
             search_filter=User.search_profile(),
             meetings=Meetings.from_dict(user_data["meetings"]),
-            **{attr.low: user_data[attr.low] for attr in VISIBLE_SIMPLE_USER_PROPS},
+            **{
+                attr.to_str: user_data[attr.to_str]
+                for attr in VISIBLE_SIMPLE_USER_PROPS
+            },
         )
 
     @staticmethod
@@ -549,11 +552,11 @@ class User:
             text = text.replace("<search_status>", _filter.get_search_status())
         for prefix, user in prefixes.items():
             for q in QUESTION_NAMES:
-                subtext = user.questions[q.low]
+                subtext = user.questions[q]
                 text = text.replace(f"<{prefix}{q}>_peek", peek(subtext))
                 text = text.replace(f"<{prefix}{q}>", subtext)
             for prop in VISIBLE_SIMPLE_USER_PROPS:
-                subtext = getattr(user, prop.low)
+                subtext = getattr(user, prop.to_str)
                 text = text.replace(f"<{prefix}{prop}>_peek", peek(subtext))
                 text = text.replace(f"<{prefix}{prop}>", subtext)
         return text
@@ -596,3 +599,6 @@ class User:
 
     def get_item_by_number(self, lst: list, num: int) -> Any:
         return lst[self.page * PAGE_STEP + num - 1]
+
+    def set_question(self, question: Property, new_value: str):
+        self.questions[question] = new_value
