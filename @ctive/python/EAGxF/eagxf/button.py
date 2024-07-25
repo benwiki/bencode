@@ -5,17 +5,18 @@ from discord.ui import Button as DCButton
 from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
 from eagxf.enums.condition import ButtonCond
 from eagxf.enums.effect import Effect
+from eagxf.enums.page_id import ScreenId
 
 
 class Button(DCButton):
-    takes_to: str
+    takes_to: ScreenId
     effects: list[Effect]
     conditions: list[ButtonCond]
 
     def __init__(
         self,
         *args,
-        takes_to: str = "",
+        takes_to: ScreenId = ScreenId.HOME,
         effects: list[Effect] | None = None,
         conditions: list[ButtonCond] | None = None,
         **kwargs,
@@ -26,18 +27,18 @@ class Button(DCButton):
         self.conditions = conditions or []
 
     @staticmethod
-    def get_navigation_buttons(structure_name: str) -> list["Button"]:
+    def get_navigation_buttons(screen_id: ScreenId) -> list["Button"]:
         return [
             Button(
                 label="◀️ Previous",
-                takes_to=structure_name,
+                takes_to=screen_id,
                 conditions=[ButtonCond.HAS_PREVIOUS_PAGE],
                 effects=[Effect.GO_TO_PREVIOUS_PAGE],
                 row=0,
             ),
             Button(
                 label="Next ▶️",
-                takes_to=structure_name,
+                takes_to=screen_id,
                 conditions=[ButtonCond.HAS_NEXT_PAGE],
                 effects=[Effect.GO_TO_NEXT_PAGE],
                 row=0,
@@ -45,13 +46,13 @@ class Button(DCButton):
         ]
 
     @staticmethod
-    def simple_prop_buttons(action, before_questions=True) -> Iterable["Button"]:
+    def simple_prop_buttons(action: str, before_questions=True) -> Iterable["Button"]:
         """Returns a list of buttons for [simple properties]"""
         return (
             Button(
                 label=prop["label"],
                 emoji=prop["emoji"],
-                takes_to=f"{action}_{prop_id}",
+                takes_to=ScreenId.search_or_edit(action, prop_id.low),
                 row=prop["row"],
             )
             for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
@@ -59,13 +60,13 @@ class Button(DCButton):
         )
 
     @staticmethod
-    def question_buttons(action) -> Iterable["Button"]:
+    def question_buttons(action: str) -> Iterable["Button"]:
         """Returns a list of buttons for [questions]"""
         return (
             Button(
                 label=question["label"],
                 emoji=question["emoji"],
-                takes_to=f"{action}_{q_id}",
+                takes_to=ScreenId.search_or_edit(action, q_id.low),
             )
             for q_id, question in QUESTION_NAMES.items()
         )

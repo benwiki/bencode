@@ -5,7 +5,8 @@ class Property(Enum):
     SELECTED_USER = auto()
     BEST_MATCH_PRIO_ORDER = auto()
     NAME = auto()
-    HEADLINE = auto()
+    JOB = auto()
+    COMPANY = auto()
     LOCATION = auto()
     LANGUAGES = auto()
     KEYWORDS = auto()
@@ -36,16 +37,16 @@ class Property(Enum):
     @property
     def low(self) -> str:
         return self.name.lower()
-    
+
     def __str__(self) -> str:
         return self.name.lower()
-    
+
     def __repr__(self) -> str:
         return self.name.lower()
-    
+
     def is_search(self) -> bool:
         return self.name.startswith("SEARCH_")
-    
+
     def from_search(self) -> "Property":
         if not self.is_search():
             raise ValueError(f"Property {self} is not a search property")

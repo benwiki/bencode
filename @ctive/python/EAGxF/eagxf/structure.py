@@ -3,18 +3,19 @@ from dataclasses import dataclass, field
 from eagxf.button import Button
 from eagxf.constants import INCOMPLETE_PROFILE_MSG
 from eagxf.enums.effect import Effect
+from eagxf.enums.page_id import ScreenId
 from eagxf.enums.property import Property
-from eagxf.enums.structure_condition import StructCond
+from eagxf.enums.structure_condition import ScreenCond
 
 
 @dataclass
-class Structure:
-    id: str = field(default_factory=str)
+class Screen:
+    id: ScreenId = field(default_factory=lambda: ScreenId.HOME)
     message: str = field(default_factory=str)
     buttons: list[Button] = field(default_factory=list)
     reactions: list[str] = field(default_factory=list)
     changed_property: Property | None = None
-    conditions: list[StructCond] = field(default_factory=list)
+    conditions: list[ScreenCond] = field(default_factory=list)
     # ⏬ These effects will run AFTER the button's own effects
     after_button_effects: list[Effect] = field(default_factory=list)
     paged: bool = field(default_factory=lambda: False)
@@ -27,9 +28,9 @@ class Structure:
                 messages.append(msg)
         return "\n\n".join(messages)
 
-    def get_message_for_condition(self, condition: StructCond) -> str:
+    def get_message_for_condition(self, condition: ScreenCond) -> str:
         return {
-            StructCond.PROFILE_COMPLETE: INCOMPLETE_PROFILE_MSG,
+            ScreenCond.PROFILE_COMPLETE: INCOMPLETE_PROFILE_MSG,
         }.get(condition, "")
 
     def init_pagination(self) -> None:

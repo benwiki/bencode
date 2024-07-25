@@ -1,7 +1,7 @@
 import re
 
-from eagxf.constant_functions import INIT_USERS_PATH
 from eagxf.enums.meeting_time import MtgTime
+from eagxf.enums.page_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.status import Status
 from eagxf.util import invert_dict
@@ -13,7 +13,6 @@ APP_NAME = "EAGxF"
 # USERS_FOLDER_PATH = "/Users/benke/Dev"
 TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
 USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
-USERS_PATH = INIT_USERS_PATH()
 # ======================================================
 
 ADMINS = (
@@ -62,7 +61,8 @@ DEFAULT_PRIO_ORDER = [
     "Number of matching keywords",
     "Location distance",
     "Status",
-    "Number of matching words in the headline",
+    "Matching job",
+    "Matching company",
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
@@ -112,10 +112,17 @@ VISIBLE_SIMPLE_USER_PROPS: dict[Property, dict] = {
         "before_questions": True,
         "comma_separated": False,
     },
-    Property.HEADLINE: {
+    Property.JOB: {
         "row": 0,
-        "emoji": "🏷️",
-        "label": "Headline",
+        "emoji": "💼",
+        "label": "Job",
+        "before_questions": True,
+        "comma_separated": False,
+    },
+    Property.COMPANY: {
+        "row": 0,
+        "emoji": "©️",
+        "label": "Company",
         "before_questions": True,
         "comma_separated": False,
     },
@@ -193,4 +200,37 @@ COMMA_AND_SEPARATED_LANGUAGES = (
 COMMA_SEPARATED_MAP = {
     Property.KEYWORDS: COMMA_AND_SEPARATED,
     Property.LANGUAGES: COMMA_AND_SEPARATED_LANGUAGES,
+}
+
+SEARCH_SCREEN = {
+    "about_me": ScreenId.SEARCH_ABOUT_ME,
+    "can_help": ScreenId.SEARCH_CAN_HELP,
+    "need_help": ScreenId.SEARCH_NEED_HELP,
+    "concerns": ScreenId.SEARCH_CONCERNS,
+    "name": ScreenId.SEARCH_NAME,
+    "job": ScreenId.SEARCH_JOB,
+    "company": ScreenId.SEARCH_COMPANY,
+    "location": ScreenId.SEARCH_LOCATION,
+    "languages": ScreenId.SEARCH_LANGUAGES,
+    "keywords": ScreenId.SEARCH_KEYWORDS,
+}
+EDIT_SCREEN = {
+    "about_me": ScreenId.EDIT_ABOUT_ME,
+    "can_help": ScreenId.EDIT_CAN_HELP,
+    "need_help": ScreenId.EDIT_NEED_HELP,
+    "concerns": ScreenId.EDIT_CONCERNS,
+    "name": ScreenId.EDIT_NAME,
+    "job": ScreenId.EDIT_JOB,
+    "company": ScreenId.EDIT_COMPANY,
+    "location": ScreenId.EDIT_LOCATION,
+    "languages": ScreenId.EDIT_LANGUAGES,
+    "keywords": ScreenId.EDIT_KEYWORDS,
+}
+CONFIRM_CANCEL_OR_DELETE = {
+    "cancel": ScreenId.CANCEL_MEETING_CONFIRM,
+    "delete": ScreenId.DELETE_MEETING_CONFIRM,
+}
+MEETINGS_TIME = {
+    "past": ScreenId.PAST_MEETINGS,
+    "future": ScreenId.FUTURE_MEETINGS,
 }

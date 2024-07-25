@@ -27,7 +27,7 @@ class Questions:
     def __setitem__(self, key: str, value: str) -> None:
         self.__dict__[key] = value
 
-    def set_property(self, prop: Property, value: str) -> None:
+    def set(self, prop: Property, value: str) -> None:
         self[prop.low] = value
 
     def get_score(self, other: "Questions") -> int:

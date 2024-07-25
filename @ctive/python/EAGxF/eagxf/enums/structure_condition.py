@@ -1,5 +1,5 @@
 from enum import Enum, auto
 
 
-class StructCond(Enum):
+class ScreenCond(Enum):
     PROFILE_COMPLETE = auto()

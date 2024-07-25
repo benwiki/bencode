@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable
+from typing import Any
 
 import discord
 
@@ -15,22 +15,30 @@ from eagxf.constants import (
     PRIO_LIST_LENGTH,
     QUESTION_NAMES,
     STATUS_EMOJI,
-    USERS_PATH,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
 from eagxf.enums.condition import ButtonCond
 from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
-from eagxf.enums.structure_condition import StructCond
+from eagxf.enums.structure_condition import ScreenCond
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
 from eagxf.status import Status
-from eagxf.structure import Structure
+from eagxf.structure import Screen
 from eagxf.typedefs import DcClient, DcUser
-from eagxf.util import CHANNELS, GUILD_ID, comma_and_search, get_guild, intersect, subtract
+from eagxf.util import (
+    CHANNELS,
+    GUILD_ID,
+    comma_and_search,
+    get_guild,
+    intersect,
+    peek,
+    subtract,
+)
 from eagxf.view_msg import ViewMsg
+from main import USERS_PATH
 
 
 @dataclass
@@ -39,7 +47,8 @@ class User:
     id: int = 0
     date_joined: Date = field(default_factory=Date.current)
     name: str = "?"  # max 50 chars
-    headline: str = "?"  # max 100 chars
+    job: str = "?"  # max 100 chars
+    company: str = "?"  # max 50 chars
     location: str = "?"
     languages: str = "?"  # comma separated
     questions: Questions = field(default_factory=Questions)
@@ -51,7 +60,7 @@ class User:
 
     # Properties to use only in runtime
     best_match_prio_order_new: list[int] = field(default_factory=list)
-    structure_stack: list[Structure] = field(default_factory=list)
+    screen_stack: list[Screen] = field(default_factory=list)
     view_msg: ViewMsg = field(default_factory=ViewMsg)
     results: list[int] = field(default_factory=list)
     selected_meeting: Meeting | None = None
@@ -69,17 +78,17 @@ class User:
         return User(status=Status.ANY)
 
     @property
-    def last_structure(self) -> Structure | None:
-        if not self.structure_stack:
+    def last_screen(self) -> Screen | None:
+        if not self.screen_stack:
             return None
-        return self.structure_stack[-1]
+        return self.screen_stack[-1]
 
     @property
-    def back_to_structure(self) -> Structure | None:
-        if len(self.structure_stack) < 2:
+    def back_to_screen(self) -> Screen | None:
+        if len(self.screen_stack) < 2:
             return None
-        self.structure_stack.pop()
-        return self.structure_stack[-1]
+        self.screen_stack.pop()
+        return self.screen_stack[-1]
 
     def is_complete(self) -> bool:
         basic_filled = all(
@@ -176,15 +185,15 @@ class User:
         with open(filename, "w", encoding="utf-8") as file:
             file.write(User.dumps(self))
 
-    def valid_condition(self, condition: StructCond) -> bool:
+    def valid_condition(self, condition: ScreenCond) -> bool:
         return {
-            StructCond.PROFILE_COMPLETE: self.is_complete(),
+            ScreenCond.PROFILE_COMPLETE: self.is_complete(),
         }.get(condition, False)
 
-    def struct_conditions_apply_for(self, structure: Structure) -> bool:
-        if not structure.conditions:
+    def screen_conditions_apply_for(self, screen: Screen) -> bool:
+        if not screen.conditions:
             return True
-        for condition in structure.conditions:
+        for condition in screen.conditions:
             if not self.valid_condition(condition):
                 return False
         return True
@@ -232,12 +241,20 @@ class User:
             for kw in self.keywords.split(",")
         )
 
-    def get_headline_score(self, other: "User") -> int:
-        """Returns the number of matching words in the headline of the user
+    def get_job_score(self, other: "User") -> int:
+        """Returns the number of matching words in the job of the user
         and the other user."""
         return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other.headline.lower()
-            for kw in self.headline.split(" ")
+            NOT_ALNUM.sub("", kw.strip().lower()) in other.job.lower()
+            for kw in self.job.split(" ")
+        )
+
+    def get_company_score(self, other: "User") -> int:
+        """Returns the number of matching words in the company of the user
+        and the other user."""
+        return sum(
+            NOT_ALNUM.sub("", kw.strip().lower()) in other.company.lower()
+            for kw in self.company.split(" ")
         )
 
     def get_location_distance(self, other: "User") -> int:
@@ -255,12 +272,13 @@ class User:
         lang = self.get_language_score(other)
         q = self.get_question_score(other)
         kw = self.get_keywords_score(other)
-        h = self.get_headline_score(other)
+        j = self.get_job_score(other)
+        c = self.get_company_score(other)
         loc = self.get_location_distance(other)
-        altogether = lang + q + kw + h + loc
+        total = lang + q + kw + j + c + loc
         return (
-            f"\n[SCORE: **{altogether}** = (Languages: {lang}) + (Questions: {q})"
-            f" + (Keywords: {kw}) + (Headline: {h}) + (Location: {loc})]"
+            f"\n[SCORE: **{total}** = (Languages: {lang}) + (Questions: {q})"
+            f" + (Keywords: {kw}) + (Job: {j}) + (Company: {c}) + (Location: {loc})]"
         )
 
     def get_search_status(self) -> str:
@@ -293,20 +311,27 @@ class User:
     def selected_meeting_time(self) -> str:
         if not self.selected_meeting:
             return "**No meeting selected.**"
-        return datetime.strftime(self.selected_meeting.date, "%d.%m.%Y %H:%M")
+        return str(self.selected_meeting.date)
 
     def send_interest_to_selected(self):
-        self.manage_interest(list.append)
-
-    def cancel_interest_to_selected(self):
-        self.manage_interest(list.remove)
-
-    def manage_interest(self, action: Callable[[list, Any], None]):
         assert self.selected_user is not None
-        action(self.interests.sent, self.selected_user.id)
-        action(self.selected_user.interests.received, self.id)
+        self.send_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
+
+    def send_interest_to(self, user: "User"):
+        self.interests.send_to(user.id)
+        user.interests.receive_from(self.id)
+
+    def cancel_interest_to_selected(self):
+        assert self.selected_user is not None
+        self.cancel_interest_to(self.selected_user)
+        self.selected_user.save()
+        self.save()
+
+    def cancel_interest_to(self, user: "User"):
+        self.interests.unsend_to(user.id)
+        user.interests.unreceive_from(self.id)
 
     def request_meeting_with_selected(self, date: Date):
         assert self.selected_user is not None
@@ -518,17 +543,19 @@ class User:
             .replace("<video_call_link>", self.call_text())
             .replace("<next_year>", str(datetime.now().year + 1))
         )
-        for q in QUESTION_NAMES:
-            text = text.replace(f"<{q}>", self.questions[q.low])
-        for prop in VISIBLE_SIMPLE_USER_PROPS:
-            text = text.replace(f"<{prop}>", getattr(self, prop.low))
-        _filter = self.search_filter
-        if _filter:
+        prefixes: dict[str, User] = {"": self}
+        if _filter := self.search_filter:
+            prefixes["search_"] = _filter
             text = text.replace("<search_status>", _filter.get_search_status())
+        for prefix, user in prefixes.items():
             for q in QUESTION_NAMES:
-                text = text.replace(f"<search_{q}>", _filter.questions[q.low])
+                subtext = user.questions[q.low]
+                text = text.replace(f"<{prefix}{q}>_peek", peek(subtext))
+                text = text.replace(f"<{prefix}{q}>", subtext)
             for prop in VISIBLE_SIMPLE_USER_PROPS:
-                text = text.replace(f"<search_{prop}>", getattr(_filter, prop.low))
+                subtext = getattr(user, prop.low)
+                text = text.replace(f"<{prefix}{prop}>_peek", peek(subtext))
+                text = text.replace(f"<{prefix}{prop}>", subtext)
         return text
 
     def call_text(self) -> str:
@@ -547,14 +574,14 @@ class User:
                 return False
         return True
 
-    def stack(self, structure: Structure) -> None:
-        if structure.id == "home":
-            self.structure_stack = [structure]
-        elif structure.id in self.structure_stack:
-            struct_index = self.structure_stack.index(structure)
-            self.structure_stack = self.structure_stack[: struct_index + 1]
-        elif not (self.structure_stack and self.structure_stack[-1].id == structure.id):
-            self.structure_stack.append(structure)
+    def stack(self, screen: Screen) -> None:
+        if screen.id == "home":
+            self.screen_stack = [screen]
+        elif screen.id in self.screen_stack:
+            screen_index = self.screen_stack.index(screen)
+            self.screen_stack = self.screen_stack[: screen_index + 1]
+        elif not (self.screen_stack and self.screen_stack[-1].id == screen.id):
+            self.screen_stack.append(screen)
 
     async def add_special_reactions(self) -> None:
         for i in range(min(PAGE_STEP, len(self.results) - self.page * PAGE_STEP)):

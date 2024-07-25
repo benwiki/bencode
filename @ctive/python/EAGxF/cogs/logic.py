@@ -18,28 +18,29 @@ from eagxf.constants import (
     SPACER,
     SPECIAL_DESTINATIONS,
     STATUS_EMOJI,
-    USERS_PATH,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
 from eagxf.enums.effect import Effect
 from eagxf.enums.meeting_time import MtgTime
+from eagxf.enums.page_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.meetings import Meeting
 from eagxf.status import Status
-from eagxf.structure import Structure
-from eagxf.structures import PRIORITY_MESSAGE, STRUCTURES
+from eagxf.structure import Screen
+from eagxf.structures import PRIORITY_MESSAGE, SCREENS
 from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import to_emojis
 from eagxf.view_msg import ViewMsg
+from main import USERS_PATH
 
 
 class Logic(commands.Cog):
     def __init__(self, client: discord.Client) -> None:
         self.client = client
         self.init_users()
-        self.init_structures()
+        self.init_screens()
         self.init_other_stuff()
 
     def init_users(self) -> None:
@@ -48,32 +49,32 @@ class Logic(commands.Cog):
             asyncio.create_task(self.send_starting_message_to(user))
 
     async def send_starting_message_to(self, user: User) -> None:
-        await self.send_structure(STRUCTURES["home"], user)  # type: ignore
+        await self.send_screen(SCREENS[ScreenId.HOME], user)  # type: ignore
 
-    def init_structures(self) -> None:
-        for structure_id, structure in STRUCTURES.items():
-            structure.id = structure_id
-            if structure.paged:
-                structure.init_pagination()
-            for button in structure.buttons:
-                self.init_button_with(button, structure)
+    def init_screens(self) -> None:
+        for screen_id, screen in SCREENS.items():
+            screen.id = screen_id
+            if screen.paged:
+                screen.init_pagination()
+            for button in screen.buttons:
+                self.init_button_with(button, screen)
 
-    def init_button_with(self, button: Button, structure: Structure) -> None:
-        to_structure = STRUCTURES.get(button.takes_to)
-        if to_structure is None and button.takes_to not in SPECIAL_DESTINATIONS:
-            print(f"Structure with id {button.takes_to} not found!")
-        button.callback = self.get_structure_callback(  # type: ignore
-            to_structure, button=button
+    def init_button_with(self, button: Button, screen: Screen) -> None:
+        go_to_screen = SCREENS.get(button.takes_to)
+        if go_to_screen is None and button.takes_to not in SPECIAL_DESTINATIONS:
+            print(f"Screen with id {button.takes_to} not found!")
+        button.callback = self.get_callback_to_screen(  # type: ignore
+            go_to_screen, button=button
         )
-        if structure.after_button_effects:
-            button.effects += structure.after_button_effects
+        if screen.after_button_effects:
+            button.effects += screen.after_button_effects
 
     def init_other_stuff(self) -> None:
         self.home_btn: DcButton = DcButton(label="🏠 Home", style=ButtonStyle.primary)
-        self.home_btn.callback = self.get_structure_callback(STRUCTURES["home"])  # type: ignore
+        self.home_btn.callback = self.get_callback_to_screen(SCREENS["home"])  # type: ignore
         self.save_btn = Button(
             label="💾 Save",
-            takes_to="best_matches",
+            takes_to=ScreenId.BEST_MATCHES,
             effects=[
                 Effect.SAVE_BEST_MATCHES,
                 Effect.DELETE_MESSAGE,
@@ -81,8 +82,8 @@ class Logic(commands.Cog):
             ],
             style=ButtonStyle.green,
         )
-        self.save_btn.callback = self.get_structure_callback(  # type: ignore
-            STRUCTURES["best_matches"], button=self.save_btn
+        self.save_btn.callback = self.get_callback_to_screen(  # type: ignore
+            SCREENS[ScreenId.BEST_MATCHES], button=self.save_btn
         )
         self.prio_functions: list[Callable[[User, User], int | Status]] = [
             lambda u1, u2: u1.get_language_score(u2),
@@ -90,7 +91,8 @@ class Logic(commands.Cog):
             lambda u1, u2: u1.get_keywords_score(u2),
             lambda u1, u2: u1.get_location_distance(u2),
             lambda u1, u2: u1.get_status(u2),
-            lambda u1, u2: u1.get_headline_score(u2),
+            lambda u1, u2: u1.get_job_score(u2),
+            lambda u1, u2: u1.get_company_score(u2),
         ]
         self.reaction_funcs: dict[Property, Callable] = {  # pylint: disable=C0103
             Property.STATUS: self.handle_status_change,
@@ -106,11 +108,11 @@ class Logic(commands.Cog):
         while True:
             await asyncio.sleep(60)
             for user in self.users.values():
-                if user.last_structure:
-                    await self.send_structure(user.last_structure, user)
+                if user.last_screen:
+                    await self.send_screen(user.last_screen, user)
 
-    def get_structure_callback(
-        self, structure: Structure | None, button: Button | None = None
+    def get_callback_to_screen(
+        self, screen: Screen | None, button: Button | None = None
     ):
         async def callback(interaction: discord.Interaction) -> None:
             await interaction.response.defer()
@@ -119,66 +121,66 @@ class Logic(commands.Cog):
             if button and button.effects:
                 for effect in button.effects:
                     await user.apply_effect(effect, self.client)
-            if button and button.takes_to == "<back>" and len(user.structure_stack) > 1:
-                await self.send_structure(user.back_to_structure, user)  # type: ignore
-            elif structure:
-                await self.send_structure(structure, user)
+            if button and button.takes_to == "<back>" and len(user.screen_stack) > 1:
+                await self.send_screen(user.back_to_screen, user)  # type: ignore
+            elif screen:
+                await self.send_screen(screen, user)
             else:
-                print(f"No structure found for the button '{button}'!")
+                print(f"No screen found for the button '{button}'!")
 
         return callback
 
-    async def send_structure(self, structure: Structure, user: User) -> None:
-        user.stack(structure)
-        user.results = self.structure_to_data(user, structure.id)
+    async def send_screen(self, screen: Screen, user: User) -> None:
+        user.stack(screen)
+        user.results = self.screen_to_data(user, screen.id)
 
-        user.view_msg = await self.get_view_msg_for(user, structure)
+        user.view_msg = await self.get_view_msg_for(user, screen)
         receiver_future = self.client.fetch_user(user.id)
         await user.view_msg.send(receiver_future=receiver_future)
 
-        if structure.changed_property:
-            user.change = structure.changed_property
+        if screen.changed_property:
+            user.change = screen.changed_property
 
-        if user.add_reactions and structure.reactions:
-            for emoji in structure.reactions:
+        if user.add_reactions and screen.reactions:
+            for emoji in screen.reactions:
                 await user.view_msg.add_reaction(emoji)
 
-        if structure.paged:
+        if screen.paged:
             await user.add_special_reactions()
 
-    def structure_to_data(self, user: User, structure_id: str) -> list:
-        match structure_id:
-            case "search":
+    def screen_to_data(self, user: User, screen_id: ScreenId) -> list:
+        match screen_id:
+            case ScreenId.SEARCH:
                 return self.search_users_for(user)
-            case "show_search_results":
+            case ScreenId.SHOW_SEARCH_RESULTS:
                 return self.search_users_for(user)
-            case "best_matches":
+            case ScreenId.BEST_MATCHES:
                 return self.search_best_matches_for(user)
-            case "interests_sent":
+            case ScreenId.INTERESTS_SENT:
                 return user.interests_sent_not_received
-            case "interests_received":
+            case ScreenId.INTERESTS_RECEIVED:
                 return user.interests_received_not_sent
-            case "mutual_interests":
+            case ScreenId.MUTUAL_INTERESTS:
                 return user.mutual_interests
-            case "future_meetings":
+            case ScreenId.FUTURE_MEETINGS:
                 return user.meetings.future
-            case "past_meetings":
+            case ScreenId.PAST_MEETINGS:
                 return user.meetings.past
             case _:
                 return []
 
-    async def get_view_msg_for(self, user: User, structure: Structure) -> ViewMsg:
-        if not user.struct_conditions_apply_for(structure):
-            ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
+    async def get_view_msg_for(self, user: User, screen: Screen) -> ViewMsg:
+        if not user.screen_conditions_apply_for(screen):
+            ok_btn = self.get_ok_button_for(user, wanted_screen=ScreenId.EDIT_PROFILE)
             view = self.get_view([ok_btn])
-            message = structure.condition_message
+            message = screen.condition_message
             user.add_reactions = False
         else:
             buttons: Iterator[Button] = filter(
-                user.btn_conditions_apply_for, structure.buttons
+                user.btn_conditions_apply_for, screen.buttons
             )
             view = self.get_view(buttons)
-            message = self.replace_placeholders(structure.message, user)
+            message = self.replace_placeholders(screen.message, user)
             user.add_reactions = True
 
         return user.view_msg.update(view, raw_message=SPACER + message)
@@ -213,9 +215,10 @@ class Logic(commands.Cog):
         msg = user.replace_placeholders(msg)
         functions: dict[str, Callable[[User], str]] = {
             "<search_results>": self.get_formatted_results_for,
-            "<best_matches>": lambda u: self.get_formatted_results_for(
-                u, additional=u.get_score_summary
-            ),
+            "<best_matches>": self.get_formatted_results_for,
+            # lambda u: self.get_formatted_results_for(
+            #     u, additional=u.get_score_summary
+            # ),
             "<interests_sent>": self.get_interests,
             "<interests_received>": self.get_interests,
             "<mutual_interests>": self.get_interests,
@@ -276,7 +279,7 @@ class Logic(commands.Cog):
     def get_interests(self, user: User) -> str:
         return "\n".join(
             f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
-            f".: ***{u.name}*** :. (Headline: *{u.headline}*)"
+            f".: ***{u.name}*** :. (Job: *{u.job}*, Company: *{u.company}*)"
             for i, u in enumerate(self.get_results_for(user))
         )
 
@@ -321,7 +324,7 @@ class Logic(commands.Cog):
         """Registers the user."""
         if ctx.author.id not in self.users:
             user = self.register_user(ctx.author)
-            await self.send_structure(STRUCTURES["home"], user)  # type: ignore
+            await self.send_screen(SCREENS["home"], user)  # type: ignore
         else:
             user = self.users[ctx.author.id]
             await user.view_msg.delete()
@@ -343,13 +346,13 @@ class Logic(commands.Cog):
 
     @commands.command(name="hi")
     async def hi(self, ctx: commands.Context) -> None:
-        """Sends the user's last structure."""
+        """Sends the user's last screen."""
         if ctx.author.id not in self.users:
             return
         await self.bye(ctx)
         user = self.users[ctx.author.id]
         user.best_match_prio_order_new = []
-        await self.send_structure(user.last_structure or STRUCTURES["home"], user)  # type: ignore
+        await self.send_screen(user.last_screen or SCREENS["home"], user)  # type: ignore
 
     @commands.command(name="bye")
     async def bye(self, ctx: commands.Context) -> None:
@@ -368,11 +371,11 @@ class Logic(commands.Cog):
         ok_btn = self.get_ok_button_for(user)
         await user.view_msg.delete()
 
-        change = user.change
-        search = change.is_search()
+        prop_to_change = user.change
+        search = prop_to_change.is_search()
         if search:  # chop off the "search_" prefix
-            change = change.from_search()
-        changed = change.low
+            prop_to_change = prop_to_change.from_search()
+        changed = prop_to_change.low
 
         change_user = user
         if search and user.search_filter is not None:
@@ -381,33 +384,36 @@ class Logic(commands.Cog):
             return
 
         pronome = "Your" if not search else "The filter's"
-        plural = change in [Property.KEYWORDS, Property.LANGUAGES]
-        kw_needed = plural or search and change in QUESTION_NAMES
+        plural = prop_to_change in [Property.KEYWORDS, Property.LANGUAGES]
+        kw_needed = plural or search and prop_to_change in QUESTION_NAMES
         has_have = "have" if plural else "has"
-        changed_to = msg.content
+        new_prop_value = msg.content
         verb = "changed"
 
         if kw_needed:
-            need_caps = change == Property.LANGUAGES
+            need_caps = prop_to_change == Property.LANGUAGES
             evenly_spaced_kws = self.evenly_space(msg.content, need_caps)
-            changed_to = evenly_spaced_kws
+            new_prop_value = evenly_spaced_kws
 
-        if change in QUESTION_NAMES:
+        if prop_to_change in QUESTION_NAMES:
             changed = "answer"
-            # TODO: kevésbé ratyi, de ratyi!
-            change_user.questions.set_property(change, changed_to)
-        # TODO: úristen de ratyi!
-        elif change in [Property.MEETING_REQUEST, Property.MEETING_DATE]:
+            # TODO: better, but still terrible! GOTTA FIX
+            change_user.questions.set(prop_to_change, new_prop_value)
+        # TODO: goodness, terrible code! GOTTA FIX
+        elif prop_to_change in [Property.MEETING_REQUEST, Property.MEETING_DATE]:
             assert user.selected_user, "(E1) No selected user for meeting!"
-            if Date.is_valid(changed_to) and Date.from_str(changed_to).is_future():
-                if change == Property.MEETING_DATE:
+            if (
+                Date.is_valid(new_prop_value)
+                and Date.from_str(new_prop_value).is_future()
+            ):
+                if prop_to_change == Property.MEETING_DATE:
                     user.cancel_meeting_with_selected()
-                user.request_meeting_with_selected(Date.from_str(changed_to))
-                wanted_structure = {
-                    Property.MEETING_REQUEST: "selected_user",
-                    Property.MEETING_DATE: "future_meetings",
-                }[change]
-                ok_btn = self.get_ok_button_for(user, wanted_structure=wanted_structure)
+                user.request_meeting_with_selected(Date.from_str(new_prop_value))
+                wanted_screen = {
+                    Property.MEETING_REQUEST: ScreenId.SELECTED_USER,
+                    Property.MEETING_DATE: ScreenId.FUTURE_MEETINGS,
+                }[prop_to_change]
+                ok_btn = self.get_ok_button_for(user, wanted_screen=wanted_screen)
                 changed = f"meeting with ***{user.selected_user.name}***"
                 verb = "set"
             else:
@@ -416,20 +422,22 @@ class Logic(commands.Cog):
                     "Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
                     "\nAnd it should be in the future!\n\nClick OK to proceed!"
                 )
-                wanted_structure = {
-                    Property.MEETING_REQUEST: "meeting_request",
-                    Property.MEETING_DATE: "edit_meeting",
-                }[change]
-                ok_btn = self.get_ok_button_for(user, wanted_structure=wanted_structure)
+                wanted_screen = {
+                    Property.MEETING_REQUEST: ScreenId.MEETING_REQUEST,
+                    Property.MEETING_DATE: ScreenId.EDIT_MEETING,
+                }[prop_to_change]
+                ok_btn = self.get_ok_button_for(user, wanted_screen=wanted_screen)
                 view = self.get_view([ok_btn, self.home_btn])
                 user.view_msg.update(raw_message=SPACER + message, view=view)
                 await user.view_msg.send(receiver=msg.author)
                 return
         else:
-            setattr(change_user, change.low, changed_to)
+            setattr(change_user, prop_to_change.low, new_prop_value)
 
         await msg.add_reaction("✅")
-        message = f'✅ {pronome} {changed} {has_have} been {verb} to "{changed_to}"!'
+        message = (
+            f'✅ {pronome} {changed} {has_have} been {verb} to "{new_prop_value}"!'
+        )
         message += user.additional_info_with_side_effects()
 
         view = self.get_view([ok_btn, self.home_btn])
@@ -476,7 +484,7 @@ class Logic(commands.Cog):
             status = Status.ANY
         changed_user.status = status
 
-        ok_btn = self.get_ok_button_for(user, wanted_structure="edit_profile")
+        ok_btn = self.get_ok_button_for(user, wanted_screen=ScreenId.EDIT_PROFILE)
         view = self.get_view([ok_btn, self.home_btn])
 
         await user.view_msg.delete()
@@ -526,18 +534,18 @@ class Logic(commands.Cog):
         selected_user_id = user.get_result_by_number(num)
         user.selected_user = self.users[selected_user_id]
         await user.view_msg.delete()
-        await self.send_structure(STRUCTURES["selected_user"], user)  # type: ignore
+        await self.send_screen(SCREENS["selected_user"], user)  # type: ignore
 
     # ====================================================================== #
     async def handle_meeting(self, user: User, emoji: str) -> None:
-        last_struct = user.last_structure
-        if not (num := self.validate_number_reaction(emoji, user)) or not last_struct:
+        last_screen = user.last_screen
+        if not (num := self.validate_number_reaction(emoji, user)) or not last_screen:
             return
         selected_meeting: Meeting = user.get_result_by_number(num)
         user.selected_meeting = selected_meeting
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.view_msg.delete()
-        await self.send_structure(STRUCTURES["edit_meeting"], user)  # type: ignore
+        await self.send_screen(SCREENS["edit_meeting"], user)  # type: ignore
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(
@@ -556,14 +564,14 @@ class Logic(commands.Cog):
     def get_ok_button_for(
         self,
         user: User,
-        wanted_structure: str = "",
-        default_structure: str = "home",
+        wanted_screen: ScreenId | None = None,
+        default_screen: ScreenId = ScreenId.HOME,
     ) -> DcButton:
         button: DcButton = DcButton(label="OK", style=ButtonStyle.green)
-        button.callback = self.get_structure_callback(  # type: ignore
-            STRUCTURES.get(wanted_structure)
-            or user.back_to_structure
-            or STRUCTURES[default_structure]
+        button.callback = self.get_callback_to_screen(  # type: ignore
+            SCREENS.get(wanted_screen)
+            if wanted_screen
+            else user.back_to_screen or SCREENS[default_screen]
         )
         return button
 

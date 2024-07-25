@@ -9,7 +9,9 @@ GUILD_ID = 1199560998328205452
 
 
 def comma_and_search(a: str, b: str) -> bool:
-    """Returns True if... for God's sake, just read the code!"""
+    """Returns True if the ',' - '&' search succeeds.
+    You can find more about this in [COMMA_AND_SEPARATED]
+    from constants.py"""
     return (
         any(
             all(kw.strip().lower() in a.lower() for kw in block.split("&"))
@@ -47,3 +49,8 @@ def get_guild(client: DcClient) -> discord.Guild:
     return guild
 
 CHANNELS = []
+
+def peek(text: str):
+    if len(text) > 100:
+        return f"{text[:101]}..."
+    return text
