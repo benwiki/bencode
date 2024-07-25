@@ -1,7 +1,7 @@
 import re
 
 from eagxf.enums.meeting_time import MtgTime
-from eagxf.enums.page_id import ScreenId
+from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.status import Status
 from eagxf.util import invert_dict

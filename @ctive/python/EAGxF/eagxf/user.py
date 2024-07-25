@@ -18,15 +18,15 @@ from eagxf.constants import (
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
-from eagxf.enums.condition import ButtonCond
+from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
-from eagxf.enums.structure_condition import ScreenCond
+from eagxf.enums.screen_condition import ScreenCond
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
 from eagxf.status import Status
-from eagxf.structure import Screen
+from eagxf.screen import Screen
 from eagxf.typedefs import DcClient, DcUser
 from eagxf.util import (
     CHANNELS,

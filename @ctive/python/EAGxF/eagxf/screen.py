@@ -3,9 +3,9 @@ from dataclasses import dataclass, field
 from eagxf.button import Button
 from eagxf.constants import INCOMPLETE_PROFILE_MSG
 from eagxf.enums.effect import Effect
-from eagxf.enums.page_id import ScreenId
+from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
-from eagxf.enums.structure_condition import ScreenCond
+from eagxf.enums.screen_condition import ScreenCond
 
 
 @dataclass

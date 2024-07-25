@@ -3,9 +3,9 @@ from typing import Iterable
 from discord.ui import Button as DCButton
 
 from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
-from eagxf.enums.condition import ButtonCond
+from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
-from eagxf.enums.page_id import ScreenId
+from eagxf.enums.screen_id import ScreenId
 
 
 class Button(DCButton):

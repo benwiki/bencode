@@ -23,12 +23,12 @@ from eagxf.constants import (
 from eagxf.date import Date
 from eagxf.enums.effect import Effect
 from eagxf.enums.meeting_time import MtgTime
-from eagxf.enums.page_id import ScreenId
+from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.meetings import Meeting
 from eagxf.status import Status
-from eagxf.structure import Screen
-from eagxf.structures import PRIORITY_MESSAGE, SCREENS
+from eagxf.screen import Screen
+from eagxf.screens import PRIORITY_MESSAGE, SCREENS
 from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import to_emojis

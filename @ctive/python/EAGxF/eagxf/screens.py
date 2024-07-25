@@ -15,12 +15,12 @@ from eagxf.constants import (
     STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
-from eagxf.enums.condition import ButtonCond
+from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
-from eagxf.enums.page_id import ScreenId
+from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
-from eagxf.enums.structure_condition import ScreenCond
-from eagxf.structure import Screen
+from eagxf.enums.screen_condition import ScreenCond
+from eagxf.screen import Screen
 
 
 def back_home(row=None):
@@ -397,7 +397,7 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[*back_home()],
     ),
     # ______________________________________________________________
-    # ==================== GENERATED STRUCTURES ====================
+    # ==================== GENERATED SCREENS =======================
     **{
         ScreenId.confirm(kw): Screen(
             message=f"Are you sure you want to {kw} the meeting at "
