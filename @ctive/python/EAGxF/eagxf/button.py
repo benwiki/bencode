@@ -53,7 +53,7 @@ class Button(DCButton):
                 label=prop["label"],
                 emoji=prop["emoji"],
                 takes_to=ScreenId.search_or_edit(action, prop_id.to_str),
-                row=prop["row"],
+                # row=prop["row"],
             )
             for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
             if before_questions == prop["before_questions"]

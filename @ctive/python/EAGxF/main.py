@@ -4,11 +4,9 @@ import os
 import discord
 from discord.ext import commands
 
-from eagxf.constant_functions import INIT_USERS_PATH
 from eagxf.constants import TOKEN_PATH
 
 client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
-USERS_PATH = INIT_USERS_PATH()
 
 
 @client.event

@@ -38,7 +38,7 @@ from eagxf.util import (
     subtract,
 )
 from eagxf.view_msg import ViewMsg
-from main import USERS_PATH
+from eagxf.users_path import USERS_PATH
 
 
 @dataclass
@@ -159,6 +159,8 @@ class User:
 
     @staticmethod
     def load(user_data: dict[str, Any]) -> "User":
+        if "headline" in user_data:
+            user_data = User.migrate(user_data)
         return User(
             id=user_data["id"],
             date_joined=Date.from_str(user_data["date_joined"]),
@@ -173,6 +175,16 @@ class User:
                 for attr in VISIBLE_SIMPLE_USER_PROPS
             },
         )
+
+    @staticmethod
+    def migrate(input_data: dict[str, Any]) -> dict[str, Any]:
+        data = input_data.copy()
+        job = data["headline"]
+        del data["headline"]
+        data["job"] = job
+        data["company"] = "?"
+        return data
+
 
     @staticmethod
     def from_dc_user(dc_user: DcUser):
@@ -553,11 +565,11 @@ class User:
         for prefix, user in prefixes.items():
             for q in QUESTION_NAMES:
                 subtext = user.questions[q]
-                text = text.replace(f"<{prefix}{q}>_peek", peek(subtext))
+                text = text.replace(f"<{prefix}{q}_peek>", peek(subtext))
                 text = text.replace(f"<{prefix}{q}>", subtext)
             for prop in VISIBLE_SIMPLE_USER_PROPS:
                 subtext = getattr(user, prop.to_str)
-                text = text.replace(f"<{prefix}{prop}>_peek", peek(subtext))
+                text = text.replace(f"<{prefix}{prop}_peek>", peek(subtext))
                 text = text.replace(f"<{prefix}{prop}>", subtext)
         return text
 

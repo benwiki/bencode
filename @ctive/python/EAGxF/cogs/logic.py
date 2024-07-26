@@ -33,7 +33,7 @@ from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import to_emojis
 from eagxf.view_msg import ViewMsg
-from main import USERS_PATH
+from eagxf.users_path import USERS_PATH
 
 
 class Logic(commands.Cog):
@@ -71,7 +71,7 @@ class Logic(commands.Cog):
 
     def init_other_stuff(self) -> None:
         self.home_btn: DcButton = DcButton(label="🏠 Home", style=ButtonStyle.primary)
-        self.home_btn.callback = self.get_callback_to_screen(SCREENS["home"])  # type: ignore
+        self.home_btn.callback = self.get_callback_to_screen(SCREENS[ScreenId.HOME])  # type: ignore
         self.save_btn = Button(
             label="💾 Save",
             takes_to=ScreenId.BEST_MATCHES,
@@ -328,7 +328,7 @@ class Logic(commands.Cog):
         """Registers the user."""
         if ctx.author.id not in self.users:
             user = self.register_user(ctx.author)
-            await self.send_screen(SCREENS["home"], user)  # type: ignore
+            await self.send_screen(SCREENS[ScreenId.HOME], user)  # type: ignore
         else:
             user = self.users[ctx.author.id]
             await user.view_msg.delete()
@@ -356,7 +356,7 @@ class Logic(commands.Cog):
         await self.bye(ctx)
         user = self.users[ctx.author.id]
         user.best_match_prio_order_new = []
-        await self.send_screen(user.last_screen or SCREENS["home"], user)  # type: ignore
+        await self.send_screen(user.last_screen or SCREENS[ScreenId.HOME], user)  # type: ignore
 
     @commands.command(name="bye")
     async def bye(self, ctx: commands.Context) -> None:
@@ -538,7 +538,7 @@ class Logic(commands.Cog):
         selected_user_id = user.get_result_by_number(num)
         user.selected_user = self.users[selected_user_id]
         await user.view_msg.delete()
-        await self.send_screen(SCREENS["selected_user"], user)  # type: ignore
+        await self.send_screen(SCREENS[ScreenId.SELECTED_USER], user)  # type: ignore
 
     # ====================================================================== #
     async def handle_meeting(self, user: User, emoji: str) -> None:
@@ -549,7 +549,7 @@ class Logic(commands.Cog):
         user.selected_meeting = selected_meeting
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.view_msg.delete()
-        await self.send_screen(SCREENS["edit_meeting"], user)  # type: ignore
+        await self.send_screen(SCREENS[ScreenId.EDIT_MEETING], user)  # type: ignore
 
     # ====================================================================== #
     @commands.Cog.listener()

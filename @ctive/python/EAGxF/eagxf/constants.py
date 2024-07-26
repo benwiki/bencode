@@ -121,7 +121,7 @@ VISIBLE_SIMPLE_USER_PROPS: dict[Property, dict] = {
     },
     Property.COMPANY: {
         "row": 0,
-        "emoji": "©️",
+        "emoji": "🏢",
         "label": "Company",
         "before_questions": True,
         "comma_separated": False,
@@ -200,37 +200,4 @@ COMMA_AND_SEPARATED_LANGUAGES = (
 COMMA_SEPARATED_MAP = {
     Property.KEYWORDS: COMMA_AND_SEPARATED,
     Property.LANGUAGES: COMMA_AND_SEPARATED_LANGUAGES,
-}
-
-SEARCH_SCREEN = {
-    "about_me": ScreenId.SEARCH_ABOUT_ME,
-    "can_help": ScreenId.SEARCH_CAN_HELP,
-    "need_help": ScreenId.SEARCH_NEED_HELP,
-    "concerns": ScreenId.SEARCH_CONCERNS,
-    "name": ScreenId.SEARCH_NAME,
-    "job": ScreenId.SEARCH_JOB,
-    "company": ScreenId.SEARCH_COMPANY,
-    "location": ScreenId.SEARCH_LOCATION,
-    "languages": ScreenId.SEARCH_LANGUAGES,
-    "keywords": ScreenId.SEARCH_KEYWORDS,
-}
-EDIT_SCREEN = {
-    "about_me": ScreenId.EDIT_ABOUT_ME,
-    "can_help": ScreenId.EDIT_CAN_HELP,
-    "need_help": ScreenId.EDIT_NEED_HELP,
-    "concerns": ScreenId.EDIT_CONCERNS,
-    "name": ScreenId.EDIT_NAME,
-    "job": ScreenId.EDIT_JOB,
-    "company": ScreenId.EDIT_COMPANY,
-    "location": ScreenId.EDIT_LOCATION,
-    "languages": ScreenId.EDIT_LANGUAGES,
-    "keywords": ScreenId.EDIT_KEYWORDS,
-}
-CONFIRM_CANCEL_OR_DELETE = {
-    "cancel": ScreenId.CANCEL_MEETING_CONFIRM,
-    "delete": ScreenId.DELETE_MEETING_CONFIRM,
-}
-MEETINGS_TIME = {
-    "past": ScreenId.PAST_MEETINGS,
-    "future": ScreenId.FUTURE_MEETINGS,
 }

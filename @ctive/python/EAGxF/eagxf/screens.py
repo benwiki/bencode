@@ -70,11 +70,12 @@ SCREENS: dict[ScreenId, Screen] = {
         message=PROFILE() + "\n\n✏️ **Editing Profile**" "\nWhat do you want to change?",
         buttons=[
             *Button.simple_prop_buttons("edit", before_questions=True),
-            Button(
-                label="Answers to ❓Questions",
-                takes_to=ScreenId.EDIT_ANSWERS,
-                row=2,
-            ),
+            # Button(
+            #     label="Answers to ❓Questions",
+            #     takes_to=ScreenId.EDIT_ANSWERS,
+            #     row=2,
+            # ),
+            *Button.question_buttons("edit"),
             *Button.simple_prop_buttons("edit", before_questions=False),
             Button(
                 label="Status",
@@ -85,15 +86,15 @@ SCREENS: dict[ScreenId, Screen] = {
             *back_home(row=4),
         ],
     ),
-    ScreenId.EDIT_ANSWERS: Screen(
-        message="**Your current answers to questions are:**"
-        f"\n{ANSWERS()}"
-        "\n\nWhat do you want to change?",
-        buttons=[
-            *Button.question_buttons("edit"),
-            *back_home(row=1),
-        ],
-    ),
+    # ScreenId.EDIT_ANSWERS: Screen(
+    #     message="**Your current answers to the questions are:**"
+    #     f"\n{ANSWERS()}"
+    #     "\n\nWhat do you want to change?",
+    #     buttons=[
+    #         *Button.question_buttons("edit"),
+    #         *back_home(row=1),
+    #     ],
+    # ),
     ScreenId.EDIT_STATUS: Screen(
         message="Your current status is:\n*<status>*"
         "\nWhat do you want to change your status to?"
@@ -112,11 +113,12 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\nClick the buttons to change the filters!",
         buttons=[
             *Button.simple_prop_buttons("search", before_questions=True),
-            Button(
-                label="Answers to ❓Questions",
-                takes_to=ScreenId.EDIT_SEARCH_ANSWERS,
-                row=2,
-            ),
+            # Button(
+            #     label="Answers to ❓Questions",
+            #     takes_to=ScreenId.EDIT_SEARCH_ANSWERS,
+            #     row=2,
+            # ),
+            *Button.question_buttons("search"),
             *Button.simple_prop_buttons("search", before_questions=False),
             Button(
                 label="Status",
@@ -133,15 +135,15 @@ SCREENS: dict[ScreenId, Screen] = {
             ),
         ],
     ),
-    ScreenId.EDIT_SEARCH_ANSWERS: Screen(
-        message="**The current question filters are:**"
-        f"\n{ANSWERS(search=True)}"
-        "\n\nWhat do you want to change?",
-        buttons=[
-            *Button.question_buttons("search"),
-            *back_home(row=1),
-        ],
-    ),
+    # ScreenId.EDIT_SEARCH_ANSWERS: Screen(
+    #     message="**The current question filters are:**"
+    #     f"\n{ANSWERS(search=True)}"
+    #     "\n\nWhat do you want to change?",
+    #     buttons=[
+    #         *Button.question_buttons("search"),
+    #         *back_home(row=1),
+    #     ],
+    # ),
     ScreenId.SEARCH_STATUS: Screen(
         message="What status do you want to search for?"
         "\n(Select the corresponding reaction!)\n"

@@ -1,12 +1,5 @@
 from enum import Enum, auto
 
-from eagxf.constants import (
-    CONFIRM_CANCEL_OR_DELETE,
-    EDIT_SCREEN,
-    MEETINGS_TIME,
-    SEARCH_SCREEN,
-)
-
 
 class ScreenId(Enum):
     HOME = auto()
@@ -82,3 +75,40 @@ class ScreenId(Enum):
                 return ScreenId.search(thing)
             case _:
                 raise RuntimeError("`action` invalid!")
+
+
+SEARCH_SCREEN = {
+    "about_me": ScreenId.SEARCH_ABOUT_ME,
+    "can_help": ScreenId.SEARCH_CAN_HELP,
+    "need_help": ScreenId.SEARCH_NEED_HELP,
+    "concerns": ScreenId.SEARCH_CONCERNS,
+    "name": ScreenId.SEARCH_NAME,
+    "job": ScreenId.SEARCH_JOB,
+    "company": ScreenId.SEARCH_COMPANY,
+    "location": ScreenId.SEARCH_LOCATION,
+    "languages": ScreenId.SEARCH_LANGUAGES,
+    "keywords": ScreenId.SEARCH_KEYWORDS,
+}
+
+EDIT_SCREEN = {
+    "about_me": ScreenId.EDIT_ABOUT_ME,
+    "can_help": ScreenId.EDIT_CAN_HELP,
+    "need_help": ScreenId.EDIT_NEED_HELP,
+    "concerns": ScreenId.EDIT_CONCERNS,
+    "name": ScreenId.EDIT_NAME,
+    "job": ScreenId.EDIT_JOB,
+    "company": ScreenId.EDIT_COMPANY,
+    "location": ScreenId.EDIT_LOCATION,
+    "languages": ScreenId.EDIT_LANGUAGES,
+    "keywords": ScreenId.EDIT_KEYWORDS,
+}
+
+MEETINGS_TIME = {
+    "past": ScreenId.PAST_MEETINGS,
+    "future": ScreenId.FUTURE_MEETINGS,
+}
+
+CONFIRM_CANCEL_OR_DELETE = {
+    "cancel": ScreenId.CANCEL_MEETING_CONFIRM,
+    "delete": ScreenId.DELETE_MEETING_CONFIRM,
+}
