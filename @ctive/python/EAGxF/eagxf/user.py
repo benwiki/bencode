@@ -9,7 +9,7 @@ from eagxf.button import Button
 from eagxf.constants import (
     DEFAULT_PRIO_ORDER,
     INCOMPLETE_PROFILE_WARNING,
-    NOT_ALNUM,
+    NOT_ALPHANUMERIC,
     NUM_EMOJI,
     PAGE_STEP,
     PRIO_LIST_LENGTH,
@@ -28,6 +28,7 @@ from eagxf.questions import Questions
 from eagxf.screen import Screen
 from eagxf.status import Status
 from eagxf.typedefs import DcClient, DcUser
+from eagxf.users_path import USERS_PATH
 from eagxf.util import (
     CHANNELS,
     GUILD_ID,
@@ -38,7 +39,6 @@ from eagxf.util import (
     subtract,
 )
 from eagxf.view_msg import ViewMsg
-from eagxf.users_path import USERS_PATH
 
 
 @dataclass
@@ -185,7 +185,6 @@ class User:
         data["company"] = "?"
         return data
 
-
     @staticmethod
     def from_dc_user(dc_user: DcUser):
         return User(
@@ -238,8 +237,8 @@ class User:
         0 otherwise."""
         return int(
             any(
-                kw.strip().lower() in other.languages.lower()
-                for kw in self.languages.split(",")
+                kw.strip() in other.languages.lower()
+                for kw in self.languages.lower().split(",")
             )
         )
 
@@ -252,24 +251,23 @@ class User:
         """Returns the number of matching keywords in the keywords of the user
         and the other user."""
         return sum(
-            kw.strip().lower() in other.keywords.lower()
-            for kw in self.keywords.split(",")
+            kw.strip() in other.keywords.lower()
+            for kw in self.keywords.lower().split(",")
         )
 
     def get_job_score(self, other: "User") -> int:
         """Returns the number of matching words in the job of the user
         and the other user."""
         return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other.job.lower()
-            for kw in self.job.split(" ")
+            kw in other.job.lower() for kw in NOT_ALPHANUMERIC.split(self.job.lower())
         )
 
     def get_company_score(self, other: "User") -> int:
         """Returns the number of matching words in the company of the user
         and the other user."""
         return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other.company.lower()
-            for kw in self.company.split(" ")
+            kw in other.company.lower()
+            for kw in NOT_ALPHANUMERIC.split(self.company.lower())
         )
 
     def get_location_distance(self, other: "User") -> int:
@@ -278,8 +276,8 @@ class User:
         and the other user.
         """
         return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other.location.lower()
-            for kw in self.location.split(" ")
+            kw in other.location.lower()
+            for kw in NOT_ALPHANUMERIC.split(self.location.lower())
         )
 
     def get_score_summary(self, other: "User") -> str:

@@ -1,6 +1,5 @@
 import asyncio
 import os
-from operator import is_
 from typing import Callable, Iterable, Iterator
 
 import discord

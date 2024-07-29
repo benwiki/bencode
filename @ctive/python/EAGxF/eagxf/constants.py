@@ -1,8 +1,8 @@
 import re
 
 from eagxf.enums.meeting_time import MtgTime
-from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
+from eagxf.enums.screen_id import ScreenId
 from eagxf.status import Status
 from eagxf.util import invert_dict
 
@@ -68,7 +68,8 @@ PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
 SPECIAL_DESTINATIONS = (ScreenId.BACK__,)
 
-NOT_ALNUM = re.compile(r"[\W_]+", re.UNICODE)
+NOT_ALPHANUMERIC = re.compile(r"\W+", re.UNICODE)
+ALPHANUMERIC = re.compile(r"\w+", re.UNICODE)
 DATE_FORMAT = re.compile(r"\d{2}\.\d{2}\.\d{4}(?: \d{2}:\d{2}(?::\d{2})?)?")
 
 INCOMPLETE_PROFILE_MSG = (
@@ -200,4 +201,11 @@ COMMA_AND_SEPARATED_LANGUAGES = (
 COMMA_SEPARATED_MAP = {
     Property.KEYWORDS: COMMA_AND_SEPARATED,
     Property.LANGUAGES: COMMA_AND_SEPARATED_LANGUAGES,
+}
+
+Q_MAPPING = {
+    Property.ABOUT_ME: Property.ABOUT_ME,
+    Property.NEED_HELP: Property.CAN_HELP,
+    Property.CAN_HELP: Property.NEED_HELP,
+    Property.CONCERNS: Property.CONCERNS,
 }

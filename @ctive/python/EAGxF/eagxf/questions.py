@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from eagxf.constants import NOT_ALNUM, QUESTION_NAMES
+from eagxf.constants import NOT_ALPHANUMERIC, Q_MAPPING, QUESTION_NAMES
 from eagxf.enums.property import Property
 
 
@@ -31,8 +31,16 @@ class Questions:
         self[prop] = value
 
     def get_score(self, other: "Questions") -> int:
-        return sum(
-            NOT_ALNUM.sub("", kw.strip().lower()) in other[q_id].lower()
-            for q_id in QUESTION_NAMES
-            for kw in self[q_id].split(" ")
+        with open("stopwords.txt", "r", encoding="utf-8") as f:
+            stopwords = set(f.read().splitlines())
+        return sum(  # type: ignore
+            (  # type: ignore
+                (1.0 if q_id2 == Q_MAPPING[q_id1] else 0.5)
+                if kw in other[q_id2].lower()
+                else 0.0
+            )
+            for q_id1 in QUESTION_NAMES
+            for q_id2 in QUESTION_NAMES
+            for kw in NOT_ALPHANUMERIC.split(self[q_id1].lower())
+            if kw not in stopwords
         )
