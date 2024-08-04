@@ -3,7 +3,6 @@ import re
 from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
-from eagxf.status import Status
 from eagxf.util import invert_dict
 
 APP_NAME = "EAGxF"
@@ -14,6 +13,8 @@ APP_NAME = "EAGxF"
 TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
 USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
+
+DEBUGGING = True
 
 ADMINS = (
     348976146689294336,
@@ -30,14 +31,7 @@ SPACER = (
 
 PAGE_STEP = 10
 
-STATUS_EMOJI: dict[Status, str] = {
-    Status.AVAILABLE: "🟢",
-    Status.BUSY: "🟡",
-    Status.OFFLINE: "⚪",
-    Status.DO_NOT_DISTURB: "🔴",
-    Status.INVISIBLE: "🟣",
-}
-EMOJI_STATUS = invert_dict(STATUS_EMOJI)
+MAX_PROP_LENGTH = 1800
 
 NUM_NAME = {
     1: "one",
@@ -66,7 +60,7 @@ DEFAULT_PRIO_ORDER = [
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
-SPECIAL_DESTINATIONS = (ScreenId.BACK__,)
+SPECIAL_DESTINATIONS = (ScreenId.BACK__, ScreenId.MEETINGS_AT_TIME__)
 
 NOT_ALPHANUMERIC = re.compile(r"\W+", re.UNICODE)
 ALPHANUMERIC = re.compile(r"\w+", re.UNICODE)
@@ -78,8 +72,12 @@ INCOMPLETE_PROFILE_MSG = (
     "\n*Fill out all details and try again!*"
 )
 INCOMPLETE_PROFILE_WARNING = (
-    "\n\n*(Your profile is incomplete, so your status has been "
-    "changed to invisible!)*"
+    "\n\nWARNING: *Your profile is incomplete, so your status has been "
+    "changed to invisible!*"
+)
+COMPLETE_PROFILE_HINT = (
+    "\n\nHINT: *You can change your status now, because your profile "
+    "is complete!*"
 )
 
 QUESTION_NAMES = {

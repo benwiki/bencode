@@ -10,13 +10,13 @@ from eagxf.button import Button
 from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
-    EMOJI_STATUS,
+    DEBUGGING,
+    MAX_PROP_LENGTH,
     NUM_EMOJI,
     PAGE_STEP,
     QUESTION_NAMES,
     SPACER,
     SPECIAL_DESTINATIONS,
-    STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
@@ -27,12 +27,12 @@ from eagxf.enums.screen_id import ScreenId
 from eagxf.meetings import Meeting
 from eagxf.screen import Screen
 from eagxf.screens import PRIORITY_MESSAGE, SCREENS
-from eagxf.status import Status
+from eagxf.status import EMOJI_STATUS, STATUS_EMOJI, Status
 from eagxf.typedefs import DcButton, DcMessage, DcUser, DcView
 from eagxf.user import User
-from eagxf.util import to_emojis
-from eagxf.view_msg import ViewMsg
 from eagxf.users_path import USERS_PATH
+from eagxf.util import peek, to_emojis
+from eagxf.view_msg import ViewMsg
 
 
 class Logic(commands.Cog):
@@ -61,7 +61,7 @@ class Logic(commands.Cog):
     def init_button_with(self, button: Button, screen: Screen) -> None:
         go_to_screen = SCREENS.get(button.takes_to)
         if go_to_screen is None and button.takes_to not in SPECIAL_DESTINATIONS:
-            print(f"Screen with id {button.takes_to} not found!")
+            print(f"(Error 4) Screen with id {button.takes_to} not found!")
         button.callback = self.get_callback_to_screen(  # type: ignore
             go_to_screen, button=button
         )
@@ -71,6 +71,12 @@ class Logic(commands.Cog):
     def init_other_stuff(self) -> None:
         self.home_btn: DcButton = DcButton(label="🏠 Home", style=ButtonStyle.primary)
         self.home_btn.callback = self.get_callback_to_screen(SCREENS[ScreenId.HOME])  # type: ignore
+        self.back_btn: Button = Button(
+            label="🔙 Back",
+            takes_to=ScreenId.BACK__,
+            style=ButtonStyle.secondary,
+        )
+        self.back_btn.callback = self.get_callback_to_screen(None, self.back_btn)  # type: ignore
         self.save_btn = Button(
             label="💾 Save",
             takes_to=ScreenId.BEST_MATCHES,
@@ -100,12 +106,11 @@ class Logic(commands.Cog):
             Property.MEETING: self.handle_meeting,
         }
         self.add_reactions = True
-        self.DEBUGGING = True  # pylint: disable=C0103
         asyncio.create_task(self.refresh())
 
     async def refresh(self) -> None:
         while True:
-            await asyncio.sleep(60)
+            await asyncio.sleep(30)
             for user in self.users.values():
                 if user.last_screen:
                     await self.send_screen(user.last_screen, user)
@@ -120,18 +125,24 @@ class Logic(commands.Cog):
             if button and button.effects:
                 for effect in button.effects:
                     await user.apply_effect(effect, self.client)
-            if (
-                button
-                and button.takes_to == ScreenId.BACK__
-                and len(user.screen_stack) > 1
-            ):
-                await self.send_screen(user.back_to_screen, user)  # type: ignore
+            if button and button.takes_to in SPECIAL_DESTINATIONS:
+                await self.special_screen_send(user, button)
             elif screen:
                 await self.send_screen(screen, user)
             else:
-                print(f"No screen found for the button '{button}'!")
+                print(f"(Error 3) No screen found for the button '{button}'!")
 
         return callback
+
+    async def special_screen_send(self, user: User, button: Button) -> None:
+        match button.takes_to:
+            case ScreenId.BACK__ if len(user.screen_stack) > 1:
+                await self.send_screen(user.back_to_screen, user)  # type: ignore
+            case ScreenId.MEETINGS_AT_TIME__:
+                user.remove_screens_until_stop()
+                ascreen = user.last_screen
+                assert ascreen is not None, "(Error 23) No screen found for the button!"
+                await self.send_screen(ascreen, user)
 
     async def send_screen(self, screen: Screen, user: User) -> None:
         user.stack(screen)
@@ -153,9 +164,7 @@ class Logic(commands.Cog):
 
     def screen_to_data(self, user: User, screen_id: ScreenId) -> list:
         match screen_id:
-            case ScreenId.SEARCH:
-                return self.search_users_for(user)
-            case ScreenId.SHOW_SEARCH_RESULTS:
+            case ScreenId.SEARCH | ScreenId.SHOW_SEARCH_RESULTS:
                 return self.search_users_for(user)
             case ScreenId.BEST_MATCHES:
                 return self.search_best_matches_for(user)
@@ -174,8 +183,13 @@ class Logic(commands.Cog):
 
     async def get_view_msg_for(self, user: User, screen: Screen) -> ViewMsg:
         if not user.screen_conditions_apply_for(screen):
-            ok_btn = self.get_ok_button_for(user, wanted_screen=ScreenId.EDIT_PROFILE)
-            view = self.get_view([ok_btn])
+            view = self.get_view(
+                [
+                    Button(
+                        label="OK", style=ButtonStyle.primary, takes_to=ScreenId.BACK__
+                    )
+                ]
+            )
             message = screen.condition_message
             user.add_reactions = False
         else:
@@ -186,7 +200,8 @@ class Logic(commands.Cog):
             message = self.replace_placeholders(screen.message, user)
             user.add_reactions = True
 
-        return user.view_msg.update(view, raw_message=SPACER + message)
+        raw_message = SPACER + message if screen.spacer else message
+        return user.view_msg.update(view, raw_message=raw_message)
 
     def search_best_matches_for(self, user: User) -> list[int]:
         matches_list = sorted(
@@ -280,6 +295,8 @@ class Logic(commands.Cog):
         ) + ("\n**...**" if dots_needed else "")
 
     def get_interests(self, user: User) -> str:
+        if not user.results:
+            return "***No interests to show.***"
         return "\n".join(
             f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
             f".: ***{u.name}*** :. (Job: *{u.job}*, Company: *{u.company}*)"
@@ -291,6 +308,8 @@ class Logic(commands.Cog):
         user: User,
         additional: Callable[[User], str] | None = None,
     ) -> str:
+        if not user.results:
+            return "***No results to show.***"
         separator = "***========================***\n"
         return separator + f"\n\n{separator}".join(
             f"{to_emojis(i+1)} .: ***{u.name}*** :. "
@@ -304,7 +323,7 @@ class Logic(commands.Cog):
             )
             + "\n***------❓Questions ------***"
             + "".join(
-                f"\n- *{q['label']}:* {u.questions[q_id]}"
+                f"\n- *{q['label']}:* {peek(u.questions[q_id])}"
                 for q_id, q in QUESTION_NAMES.items()
             )
             for i, u in enumerate(self.get_results_for(user))
@@ -331,11 +350,10 @@ class Logic(commands.Cog):
         else:
             user = self.users[ctx.author.id]
             await user.view_msg.delete()
-            ok_btn = self.get_ok_button_for(user)
-            view = self.get_view([ok_btn])
+            view = self.get_view([self.back_btn])
             message = "You're already in the platform!"
             user.view_msg.update(view=view, raw_message=SPACER + message)
-            await user.view_msg.send(receiver=ctx)
+            await user.view_msg.send(receiver=ctx)  # TODO: Create a screen for this
 
     @commands.command(name="stop")
     async def stop(self, ctx: commands.Context) -> None:
@@ -371,14 +389,14 @@ class Logic(commands.Cog):
         if user is None or user.change is None or user.change in self.reaction_funcs:
             return
 
-        ok_btn = self.get_ok_button_for(user)
+        ok_btn = self.back_btn
         await user.view_msg.delete()
 
         prop_to_change = user.change
         searching = prop_to_change.is_search()
         if searching:  # chop off the "search_" prefix
             prop_to_change = prop_to_change.from_search()
-        changed = prop_to_change.to_str
+        changed_prop = prop_to_change.to_str
 
         change_user = user
         if searching and user.search_filter is not None:
@@ -390,9 +408,7 @@ class Logic(commands.Cog):
         pronome = "Your" if not searching else "The filter's"
         plural = prop_to_change in [Property.KEYWORDS, Property.LANGUAGES]
         kw_needed = plural or searching and prop_to_change in QUESTION_NAMES
-        has_have = "have" if plural else "has"
         new_prop_value = msg.content
-        verb = "changed"
 
         if kw_needed:
             need_caps = prop_to_change == Property.LANGUAGES
@@ -400,11 +416,21 @@ class Logic(commands.Cog):
             new_prop_value = evenly_spaced_kws
 
         if prop_to_change in QUESTION_NAMES:
-            changed = "answer"
+            q = QUESTION_NAMES[prop_to_change]
+            changed_prop = f"answer to the question '**{q['label']}**'"
+            if len(new_prop_value) > MAX_PROP_LENGTH:
+                await msg.add_reaction("❌")
+                user.replace = {
+                    "<changed_prop>": f"{pronome} {changed_prop}",
+                    "<exceeding_number>": str(len(new_prop_value) - MAX_PROP_LENGTH),
+                    "<to_cut_off>": new_prop_value[MAX_PROP_LENGTH:],
+                }
+                await self.send_screen(SCREENS[ScreenId.TOO_LONG_PROP_TEXT], user)
+                return
             change_user.set_question(prop_to_change, new_prop_value)
         # TODO: SPAGHETTI-CODE. GOTTA FIX.
         elif prop_to_change in [Property.MEETING_REQUEST, Property.MEETING_DATE]:
-            assert user.selected_user, "(E1) No selected user for meeting!"
+            assert user.selected_user, "(Error 1) No selected user for meeting!"
             if (
                 Date.is_valid(new_prop_value)
                 and Date.from_str(new_prop_value).is_future()
@@ -416,36 +442,30 @@ class Logic(commands.Cog):
                     Property.MEETING_REQUEST: ScreenId.SELECTED_USER,
                     Property.MEETING_DATE: ScreenId.FUTURE_MEETINGS,
                 }[prop_to_change]
-                ok_btn = self.get_ok_button_for(user, wanted_screen=wanted_screen)
-                changed = f"meeting with ***{user.selected_user.name}***"
-                verb = "set"
+                ok_btn = Button(
+                    label="OK",
+                    style=ButtonStyle.primary,
+                    takes_to=wanted_screen,
+                )
+                ok_btn.callback = self.get_callback_to_screen(  # type: ignore
+                    SCREENS.get(wanted_screen)
+                )
+                changed_prop = f"meeting with ***{user.selected_user.name}***"
             else:
                 await msg.add_reaction("❌")
-                message = (
-                    "Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
-                    "\nAnd it should be in the future!\n\nClick OK to proceed!"
-                )
-                wanted_screen = {
-                    Property.MEETING_REQUEST: ScreenId.MEETING_REQUEST,
-                    Property.MEETING_DATE: ScreenId.EDIT_MEETING,
-                }[prop_to_change]
-                ok_btn = self.get_ok_button_for(user, wanted_screen=wanted_screen)
-                view = self.get_view([ok_btn, self.home_btn])
-                user.view_msg.update(raw_message=SPACER + message, view=view)
-                await user.view_msg.send(receiver=msg.author)
+                await self.send_screen(SCREENS[ScreenId.INVALID_DATE], user)  # type: ignore
                 return
         else:
             setattr(change_user, prop_to_change.to_str, new_prop_value)
 
         await msg.add_reaction("✅")
-        message = (
-            f'✅ {pronome} {changed} {has_have} been {verb} to "{new_prop_value}"!'
-        )
-        message += user.additional_info_with_side_effects()
-
-        view = self.get_view([ok_btn, self.home_btn])
-        user.view_msg.update(raw_message=SPACER + message, view=view)
-        await user.view_msg.send(receiver=msg.author)
+        user.remove_screens_until_stop()
+        user.replace = {
+            "<changed_prop>": changed_prop,
+            "<new_value>": "'*" + new_prop_value.replace("*", r"\*") + "*'",
+            "<plus_info>": user.additional_info_with_side_effects(),
+        }
+        await self.send_screen(SCREENS[ScreenId.SUCCESSFUL_PROP_CHANGE], user)
         user.change = None
         user.save()
 
@@ -465,12 +485,12 @@ class Logic(commands.Cog):
         user = self.users.get(payload.user_id)
         if not user or not user.change:
             return
-        change = user.change
-        if change.is_search():
-            change = change.from_search()
+        prop_to_change = user.change
+        if prop_to_change.is_search():
+            prop_to_change = prop_to_change.from_search()
 
         if user.view_msg.message and payload.message_id == user.view_msg.message.id:
-            if handle_reaction := self.reaction_funcs.get(change):
+            if handle_reaction := self.reaction_funcs.get(prop_to_change):
                 await handle_reaction(user, payload.emoji.name)
 
     # ====================================================================== #
@@ -487,14 +507,15 @@ class Logic(commands.Cog):
             status = Status.ANY
         changed_user.status = status
 
-        ok_btn = self.get_ok_button_for(user, wanted_screen=ScreenId.EDIT_PROFILE)
-        view = self.get_view([ok_btn, self.home_btn])
+        view = self.get_view([self.back_btn, self.home_btn])
 
         await user.view_msg.delete()
         message = f"✅ {pronome} status has been changed to {emoji} ({status.value})!"
         user.view_msg.update(raw_message=SPACER + message, view=view)
         receiver_future = self.client.fetch_user(user.id)
-        await user.view_msg.send(receiver_future=receiver_future)
+        await user.view_msg.send(
+            receiver_future=receiver_future
+        )  # TODO: Create a screen for this
         user.save()
 
     # ====================================================================== #
@@ -520,7 +541,7 @@ class Logic(commands.Cog):
 
         message = self.replace_placeholders(PRIORITY_MESSAGE, user)
         user.view_msg.update(raw_message=SPACER + message)
-        await user.view_msg.send()
+        await user.view_msg.send()  # TODO: Create a screen for this
 
     def validate_number_reaction(self, emoji_name: str, user: User) -> int | None:
         if emoji_name not in NUM_EMOJI:
@@ -565,26 +586,11 @@ class Logic(commands.Cog):
                     user, payload.emoji.name, remove=True
                 )
 
-    # ====================================================================== #
-    def get_ok_button_for(
-        self,
-        user: User,
-        wanted_screen: ScreenId | None = None,
-        default_screen: ScreenId = ScreenId.HOME,
-    ) -> DcButton:
-        button: DcButton = DcButton(label="OK", style=ButtonStyle.green)
-        button.callback = self.get_callback_to_screen(  # type: ignore
-            SCREENS.get(wanted_screen)
-            if wanted_screen
-            else user.back_to_screen or SCREENS[default_screen]
-        )
-        return button
-
     def get_view(self, buttons: Iterable[Button | DcButton]) -> DcView:
         view = DcView()
         for button in buttons:
             view.add_item(button)
-        if self.DEBUGGING:
+        if DEBUGGING:
             stop_btn = Button(label="STOP", style=ButtonStyle.red)
             stop_btn.callback = self.stop_callback  # type: ignore
             view.add_item(stop_btn)
@@ -596,7 +602,7 @@ class Logic(commands.Cog):
 
     async def stop_request_by(self, user_id: int) -> None:
         if user_id not in ADMINS:
-            print(f"Unauthorized user (id: {user_id}) tried to stop the bot.")
+            print(f"(Error 2) Unauthorized user (id: {user_id}) tried to stop the bot.")
             return
         for user in self.users.values():
             await user.view_msg.delete()

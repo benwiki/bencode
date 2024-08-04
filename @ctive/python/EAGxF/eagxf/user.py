@@ -7,6 +7,7 @@ import discord
 
 from eagxf.button import Button
 from eagxf.constants import (
+    COMPLETE_PROFILE_HINT,
     DEFAULT_PRIO_ORDER,
     INCOMPLETE_PROFILE_WARNING,
     NOT_ALPHANUMERIC,
@@ -14,7 +15,6 @@ from eagxf.constants import (
     PAGE_STEP,
     PRIO_LIST_LENGTH,
     QUESTION_NAMES,
-    STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
@@ -22,11 +22,12 @@ from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
 from eagxf.enums.screen_condition import ScreenCond
+from eagxf.enums.screen_id import ScreenId
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
 from eagxf.screen import Screen
-from eagxf.status import Status
+from eagxf.status import STATUS_EMOJI, Status
 from eagxf.typedefs import DcClient, DcUser
 from eagxf.users_path import USERS_PATH
 from eagxf.util import (
@@ -61,6 +62,7 @@ class User:
     # Properties to use only in runtime
     best_match_prio_order_new: list[int] = field(default_factory=list)
     screen_stack: list[Screen] = field(default_factory=list)
+    replace: dict[str, str] = field(default_factory=dict)
     view_msg: ViewMsg = field(default_factory=ViewMsg)
     results: list[int] = field(default_factory=list)
     selected_meeting: Meeting | None = None
@@ -89,6 +91,12 @@ class User:
             return None
         self.screen_stack.pop()
         return self.screen_stack[-1]
+
+    def remove_screens_until_stop(self) -> None:
+        for i in range(len(self.screen_stack) - 1, -1, -1):
+            if self.screen_stack[i].stop_screen:
+                break
+            self.screen_stack.pop()
 
     def is_complete(self) -> bool:
         basic_filled = all(
@@ -305,6 +313,8 @@ class User:
         if not self.is_complete() and self.status != Status.INVISIBLE:
             self.status = Status.INVISIBLE
             return INCOMPLETE_PROFILE_WARNING
+        elif self.is_complete() and self.status == Status.INVISIBLE:
+            return COMPLETE_PROFILE_HINT
         return ""
 
     def paged_list_of(self, lst: list) -> list[int]:
@@ -327,7 +337,7 @@ class User:
         return str(self.selected_meeting.date)
 
     def send_interest_to_selected(self):
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 8) No selected user"
         self.send_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -337,7 +347,7 @@ class User:
         user.interests.receive_from(self.id)
 
     def cancel_interest_to_selected(self):
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 9) No selected user"
         self.cancel_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -347,14 +357,16 @@ class User:
         user.interests.unreceive_from(self.id)
 
     def request_meeting_with_selected(self, date: Date):
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 10) No selected user"
         self.meetings.request(self.selected_user.id, date)
         self.selected_user.meetings.request(self.id, date)
         self.selected_user.save()
         self.save()
 
     def cancel_meeting_with_selected(self):
-        assert self.selected_user and self.selected_meeting
+        assert (
+            self.selected_user and self.selected_meeting
+        ), "(Error 11) No selected user or meeting"
         self.meetings.cancel(self.selected_user.id, self.selected_meeting)
         self.selected_user.meetings.cancel(self.id, self.selected_meeting)
         self.selected_user.save()
@@ -363,7 +375,7 @@ class User:
     async def start_video_call_with_selected(self, client: DcClient):
         """Assigns a Discord voice room to the user and the selected user
         to start a video call."""
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 12) No selected user"
         me, partner, role, channel = self.get_members_role_and_channel(client)
         if not (me and partner and role and channel):
             return
@@ -375,7 +387,7 @@ class User:
     async def cancel_video_call_with_selected(self, client: DcClient):
         """Removes the Discord voice room assigned to the user and the selected user
         to cancel a video call."""
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 13) No selected user"
         me, partner, role, _ = self.get_members_role_and_channel(client)
         if not (me and partner and role):
             return
@@ -385,7 +397,7 @@ class User:
         self.selected_user.call_channel_id = 0
 
     def get_members_role_and_channel(self, client: DcClient):
-        assert self.selected_user is not None
+        assert self.selected_user is not None, "(Error 14) No selected user"
         guild = get_guild(client)
         me = guild.get_member(self.id)
         partner = guild.get_member(self.selected_user.id)
@@ -532,7 +544,7 @@ class User:
                 return self.page < (len(self.results) - 1) // PAGE_STEP
             case ButtonCond.PRIO_ORDER_FULL:
                 return len(self.best_match_prio_order_new) == PRIO_LIST_LENGTH
-        print(f"Invalid condition: {condition}")
+        print(f"(Error 5) Invalid condition: {condition}")
         return False
 
     def replace_placeholders(self, text: str) -> str:
@@ -569,6 +581,9 @@ class User:
                 subtext = getattr(user, prop.to_str)
                 text = text.replace(f"<{prefix}{prop}_peek>", peek(subtext))
                 text = text.replace(f"<{prefix}{prop}>", subtext)
+        if self.replace:
+            for key, value in self.replace.items():
+                text = text.replace(key, value)
         return text
 
     def call_text(self) -> str:
@@ -588,9 +603,9 @@ class User:
         return True
 
     def stack(self, screen: Screen) -> None:
-        if screen.id == "home":
+        if screen.id == ScreenId.HOME:
             self.screen_stack = [screen]
-        elif screen.id in self.screen_stack:
+        elif screen in self.screen_stack:
             screen_index = self.screen_stack.index(screen)
             self.screen_stack = self.screen_stack[: screen_index + 1]
         elif not (self.screen_stack and self.screen_stack[-1].id == screen.id):

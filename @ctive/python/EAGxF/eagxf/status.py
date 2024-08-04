@@ -1,5 +1,7 @@
 from enum import Enum
 
+from eagxf.util import invert_dict
+
 
 class Status(Enum):
     AVAILABLE = "Available"
@@ -22,7 +24,6 @@ class Status(Enum):
         return ORDER.index(self) >= ORDER.index(other)
 
     def __str__(self) -> str:
-        from eagxf.constants import STATUS_EMOJI
         return f"{STATUS_EMOJI[self]} ({self.value})"
 
 
@@ -34,3 +35,12 @@ ORDER = [
     Status.BUSY,
     Status.AVAILABLE,
 ]
+
+STATUS_EMOJI: dict[Status, str] = {
+    Status.AVAILABLE: "🟢",
+    Status.BUSY: "🟡",
+    Status.OFFLINE: "⚪",
+    Status.DO_NOT_DISTURB: "🔴",
+    Status.INVISIBLE: "🟣",
+}
+EMOJI_STATUS = invert_dict(STATUS_EMOJI)

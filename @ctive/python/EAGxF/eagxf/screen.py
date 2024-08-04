@@ -19,6 +19,8 @@ class Screen:
     # ⏬ These effects will run AFTER the button's own effects
     after_button_effects: list[Effect] = field(default_factory=list)
     paged: bool = field(default_factory=lambda: False)
+    stop_screen: bool = field(default_factory=lambda: False)
+    spacer: bool = field(default_factory=lambda: True)
 
     @property
     def condition_message(self) -> str:

@@ -45,10 +45,12 @@ def to_emojis(number: int) -> str:
 
 def get_guild(client: DcClient) -> discord.Guild:
     guild = client.get_guild(GUILD_ID)
-    assert guild
+    assert guild, "(Error 15) Guild not found!"
     return guild
 
+
 CHANNELS = []
+
 
 def peek(text: str):
     if len(text) > 100:

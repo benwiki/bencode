@@ -2,17 +2,17 @@ import discord
 from discord import ButtonStyle
 
 from eagxf.button import Button
-from eagxf.constant_functions import ANSWERS, PROFILE
+from eagxf.constant_functions import PAGE_REFERENCE, PROFILE, back_home, ok_home
 from eagxf.constants import (
     APP_NAME,
     COMMA_AND_SEPARATED,
     COMMA_SEPARATED_MAP,
     DEFAULT_PRIO_ORDER,
+    MAX_PROP_LENGTH,
     MEETINGS,
     NUM_EMOJI,
     PRIO_LIST_LENGTH,
     QUESTION_NAMES,
-    STATUS_EMOJI,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.enums.button_condition import ButtonCond
@@ -21,15 +21,7 @@ from eagxf.enums.property import Property
 from eagxf.enums.screen_condition import ScreenCond
 from eagxf.enums.screen_id import ScreenId
 from eagxf.screen import Screen
-
-
-def back_home(row=None):
-    return [
-        Button(label="⬅️ Back", takes_to=ScreenId.BACK__, row=row),
-        Button(
-            label="🏠 Home", style=ButtonStyle.primary, takes_to=ScreenId.HOME, row=row
-        ),
-    ]
+from eagxf.status import STATUS_EMOJI
 
 
 SCREENS: dict[ScreenId, Screen] = {
@@ -70,11 +62,6 @@ SCREENS: dict[ScreenId, Screen] = {
         message=PROFILE() + "\n\n✏️ **Editing Profile**" "\nWhat do you want to change?",
         buttons=[
             *Button.simple_prop_buttons("edit", before_questions=True),
-            # Button(
-            #     label="Answers to ❓Questions",
-            #     takes_to=ScreenId.EDIT_ANSWERS,
-            #     row=2,
-            # ),
             *Button.question_buttons("edit"),
             *Button.simple_prop_buttons("edit", before_questions=False),
             Button(
@@ -85,16 +72,8 @@ SCREENS: dict[ScreenId, Screen] = {
             ),
             *back_home(row=4),
         ],
+        stop_screen=True,
     ),
-    # ScreenId.EDIT_ANSWERS: Screen(
-    #     message="**Your current answers to the questions are:**"
-    #     f"\n{ANSWERS()}"
-    #     "\n\nWhat do you want to change?",
-    #     buttons=[
-    #         *Button.question_buttons("edit"),
-    #         *back_home(row=1),
-    #     ],
-    # ),
     ScreenId.EDIT_STATUS: Screen(
         message="Your current status is:\n*<status>*"
         "\nWhat do you want to change your status to?"
@@ -113,11 +92,6 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\nClick the buttons to change the filters!",
         buttons=[
             *Button.simple_prop_buttons("search", before_questions=True),
-            # Button(
-            #     label="Answers to ❓Questions",
-            #     takes_to=ScreenId.EDIT_SEARCH_ANSWERS,
-            #     row=2,
-            # ),
             *Button.question_buttons("search"),
             *Button.simple_prop_buttons("search", before_questions=False),
             Button(
@@ -134,16 +108,8 @@ SCREENS: dict[ScreenId, Screen] = {
                 row=4,
             ),
         ],
+        stop_screen=True,
     ),
-    # ScreenId.EDIT_SEARCH_ANSWERS: Screen(
-    #     message="**The current question filters are:**"
-    #     f"\n{ANSWERS(search=True)}"
-    #     "\n\nWhat do you want to change?",
-    #     buttons=[
-    #         *Button.question_buttons("search"),
-    #         *back_home(row=1),
-    #     ],
-    # ),
     ScreenId.SEARCH_STATUS: Screen(
         message="What status do you want to search for?"
         "\n(Select the corresponding reaction!)\n"
@@ -158,10 +124,8 @@ SCREENS: dict[ScreenId, Screen] = {
     ScreenId.SHOW_SEARCH_RESULTS: Screen(
         message="🔍 **Search Results**"
         f"\n\n{PROFILE(search=True)}"
-        "\n\n**Results** <page_reference>"
-        "\nClick on the corresponding reaction to select a user!"
-        "\n\n<search_results>"
-        "\n\n<page_reference>",
+        "\n\n**Results**\n"
+        + PAGE_REFERENCE("select a user", "<search_results>"),
         paged=True,
         buttons=[
             Button(
@@ -177,10 +141,8 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\nHere we have sorted all current users according to how well they match your interests"
         " and expertise. Feel free to browse and correct us if you find that our algorithm"
         " doesn't bring you the most suitable people!"
-        "\n\n**Results** <page_reference>"
-        "\nClick on the corresponding reaction to select a user!"
-        "\n\n<best_matches>"
-        "\n\n<page_reference>",
+        "\n\n**Results**\n"
+        + PAGE_REFERENCE("select a user", "<best_matches>"),
         paged=True,
         buttons=[
             Button(label="⬅️ Back", takes_to=ScreenId.HOME, row=1),
@@ -232,7 +194,7 @@ SCREENS: dict[ScreenId, Screen] = {
         message="__The default priority order is:__"
         "\n1. "
         + "\n{}. ".join(DEFAULT_PRIO_ORDER).format(*range(2, PRIO_LIST_LENGTH + 1))
-        + "\n\n**Are you sure** you want to reset your priority order to this?\n"
+        + "\n\nAre you sure you want to reset your priority order to this?\n"
         + r"\_" * 50,
         buttons=[
             Button(label="No", takes_to=ScreenId.CHANGE_PRIORITY),
@@ -261,31 +223,22 @@ SCREENS: dict[ScreenId, Screen] = {
     ),
     ScreenId.INTERESTS_SENT: Screen(
         message="⬆️ **Interests sent**"
-        "\n\nHere you can see, who you sent interest to."
-        "\n\n<page_reference>"
-        "\nClick on the corresponding reaction to manage the interest!"
-        "\n\n<interests_sent>"
-        "\n\n<page_reference>",
+        "\n\nHere you can see, who you sent interest to.\n\n"
+        + PAGE_REFERENCE("manage the interest", "<interests_sent>"),
         paged=True,
         buttons=[*back_home()],
     ),
     ScreenId.INTERESTS_RECEIVED: Screen(
         message="⬇️ **Interests received**"
-        "\n\nHere you can see, who is interested in you."
-        "\n\n<page_reference>"
-        "\nClick on the corresponding reaction to manage the interest!"
-        "\n\n<interests_received>"
-        "\n\n<page_reference>",
+        "\n\nHere you can see, who is interested in you.\n\n"
+        + PAGE_REFERENCE("manage the interest", "<interests_received>"),
         paged=True,
         buttons=[*back_home()],
     ),
     ScreenId.MUTUAL_INTERESTS: Screen(
         message="✅ **Mutual interests**"
-        "\n\nHere you can see the people who you have a mutual interest with.."
-        "\n\n<page_reference>"
-        "\nClick on the corresponding reaction to manage the interest!"
-        "\n\n<mutual_interests>"
-        "\n\n<page_reference>",
+        "\n\nHere you can see the people who you have a mutual interest with.\n\n"
+        + PAGE_REFERENCE("manage the interest", "<mutual_interests>"),
         paged=True,
         buttons=[*back_home()],
     ),
@@ -331,7 +284,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 takes_to=ScreenId.SELECTED_USER,
                 conditions=[ButtonCond.CAN_START_CALL],
                 effects=[Effect.START_CALL],
-                style=ButtonStyle.primary,
+                style=ButtonStyle.green,
             ),
             Button(
                 label="❌ Cancel call",
@@ -341,6 +294,7 @@ SCREENS: dict[ScreenId, Screen] = {
             ),
             *back_home(row=2),
         ],
+        stop_screen=True,
     ),
     ScreenId.MEETING_REQUEST: Screen(
         message="📅 **Meeting Request**"
@@ -398,8 +352,30 @@ SCREENS: dict[ScreenId, Screen] = {
         changed_property=Property.MEETING_DATE,
         buttons=[*back_home()],
     ),
+    ScreenId.INVALID_DATE: Screen(
+        message="❌ Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
+        "\nAnd it should be in the future!\n\nClick OK to proceed!",
+        buttons=[*back_home()],
+        spacer=False,
+    ),
+    ScreenId.TOO_LONG_PROP_TEXT: Screen(
+        message="❌ <changed_prop> is too long! "
+        f"Max length is {MAX_PROP_LENGTH} characters."
+        "\n\nYou have <exceeding_number> too many."
+        "\n\nHint: The last <exceeding_number> characters are:"
+        "```<to_cut_off>```"
+        "\nSo if you'd chop this off, you'd be good to go.",
+        buttons=[*back_home()],
+        spacer=False,
+    ),
+    ScreenId.SUCCESSFUL_PROP_CHANGE: Screen(
+        message="✅ Successfully changed <changed_prop> to <new_value>!<plus_info>",
+        buttons=[*ok_home()],
+        spacer=False,
+    ),
     # ______________________________________________________________
     # ==================== GENERATED SCREENS =======================
+    # ______________________________________________________________
     **{
         ScreenId.confirm(kw): Screen(
             message=f"Are you sure you want to {kw} the meeting at "
@@ -408,7 +384,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 Button(label="No", takes_to=ScreenId.BACK__),
                 Button(
                     label="Yes",
-                    takes_to=ScreenId.MEETINGS,
+                    takes_to=ScreenId.MEETINGS_AT_TIME__,
                     effects=[Effect.CANCEL_MEETING],
                     style=ButtonStyle.red,
                 ),
@@ -418,14 +394,12 @@ SCREENS: dict[ScreenId, Screen] = {
     },
     **{
         ScreenId.meetings(time_id.to_str): Screen(
-            message=f"{time['emoji']} **{time['label']}**"
-            "\n\n<page_reference>"
-            "\nClick on the corresponding reaction to manage the meeting!"
-            f"\n\n<{time_id}_meetings>"
-            "\n\n<page_reference>",
+            message=f"{time['emoji']} **{time['label']}**\n\n"
+            + PAGE_REFERENCE("manage the meeting", f"<{time_id}_meetings>"),
             paged=True,
             buttons=[*back_home()],
             changed_property=Property.MEETING,
+            stop_screen=True,
         )
         for time_id, time in MEETINGS.items()
     },
@@ -440,24 +414,19 @@ SCREENS: dict[ScreenId, Screen] = {
     },
     **{  # Edit simple properties
         ScreenId.edit(prop_id.to_str): Screen(
-            message=f"Your current {prop_id} is:\n*<{prop_id}>*"
-            f"\n\nWhat do you want to change your {prop_id} to?",
-            changed_property=prop_id,
-            buttons=[*back_home()],
-        )
-        for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if not prop["comma_separated"]
-    },
-    **{  # Edit simple comma separated properties
-        ScreenId.edit(prop_id.to_str): Screen(
-            message=f"Your current {prop_id} are:\n*<{prop_id}>*"
+            message=f"Your current {prop_id} "
+            f"{'are' if prop['comma_separated'] else 'is'}"
+            f":\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?"
-            f"\n(Comma separated, e.g. {prop['example']})",
+            + (
+                f"\n(Comma separated, e.g. {prop['example']})"
+                if prop["comma_separated"]
+                else ""
+            ),
             changed_property=prop_id,
             buttons=[*back_home()],
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
-        if prop["comma_separated"]
     },
     **{  # Search simple properties
         ScreenId.search(prop_id.to_str): Screen(

@@ -23,6 +23,9 @@ class ScreenId(Enum):
     MEETINGS = auto()
     EDIT_MEETING = auto()
     CHANGE_MEETING_DATE = auto()
+    INVALID_DATE = auto()
+    TOO_LONG_PROP_TEXT = auto()
+    SUCCESSFUL_PROP_CHANGE = auto()
     CANCEL_MEETING_CONFIRM = auto()
     DELETE_MEETING_CONFIRM = auto()
     FUTURE_MEETINGS = auto()
@@ -49,6 +52,7 @@ class ScreenId(Enum):
     SEARCH_KEYWORDS = auto()
     # ==== special IDs ====
     BACK__ = auto()
+    MEETINGS_AT_TIME__ = auto()
 
     @staticmethod
     def search(thing: str) -> "ScreenId":
