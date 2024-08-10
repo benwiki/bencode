@@ -1,5 +1,6 @@
 from typing import Iterable
 
+import discord
 from discord.ui import Button as DCButton
 
 from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
@@ -70,3 +71,33 @@ class Button(DCButton):
             )
             for q_id, question in QUESTION_NAMES.items()
         )
+
+    @staticmethod
+    def back(row=None):
+        return Button(label="⬅️ Back", takes_to=ScreenId.BACK__, row=row)
+
+    @staticmethod
+    def ok(row=None):
+        return Button(
+            label="OK",
+            style=discord.ButtonStyle.green,
+            takes_to=ScreenId.BACK__,
+            row=row,
+        )
+
+    @staticmethod
+    def home(row=None):
+        return Button(
+            label="🏠 Home",
+            style=discord.ButtonStyle.primary,
+            takes_to=ScreenId.HOME,
+            row=row,
+        )
+
+    @staticmethod
+    def back_home(row=None):
+        return [Button.back(row=row), Button.home(row=row)]
+
+    @staticmethod
+    def ok_home(row=None):
+        return [Button.ok(row=row), Button.home(row=row)]

@@ -2,14 +2,7 @@ import discord
 from discord import ButtonStyle
 
 from eagxf.button import Button
-from eagxf.constant_functions import (
-    PAGE_REFERENCE,
-    PROFILE,
-    back_btn,
-    back_home,
-    home_btn,
-    ok_home,
-)
+from eagxf.constant_functions import PAGE_REFERENCE, PROFILE
 from eagxf.constants import (
     APP_NAME,
     COMMA_AND_SEPARATED,
@@ -56,7 +49,7 @@ SCREENS: dict[ScreenId, Screen] = {
     ScreenId.PROFILE: Screen(
         message=PROFILE(),
         buttons=[
-            back_btn(),
+            Button.back(),
             Button(
                 label="✏️ Edit",
                 takes_to=ScreenId.EDIT_PROFILE,
@@ -76,7 +69,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 emoji=discord.PartialEmoji(name="ℹ️"),
                 row=3,
             ),
-            *back_home(row=4),
+            *Button.back_home(row=4),
         ],
         stop_screen=True,
     ),
@@ -90,7 +83,7 @@ SCREENS: dict[ScreenId, Screen] = {
         reactions=list(STATUS_EMOJI.values()),
         changed_property=Property.STATUS,
         conditions=[ScreenCond.PROFILE_COMPLETE],
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.SEARCH: Screen(
         message="🔍 **Search**\n\n"
@@ -106,7 +99,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 emoji=discord.PartialEmoji(name="ℹ️"),
                 row=3,
             ),
-            back_btn(row=4),
+            Button.back(row=4),
             Button(
                 label="SHOW RESULTS",
                 style=ButtonStyle.green,
@@ -126,7 +119,7 @@ SCREENS: dict[ScreenId, Screen] = {
         ),
         reactions=list(STATUS_EMOJI.values()) + ["❓"],
         changed_property=Property.SEARCH_STATUS,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.SHOW_SEARCH_RESULTS: Screen(
         message="🔍 **Search Results**"
@@ -139,7 +132,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 style=ButtonStyle.green,
                 takes_to=ScreenId.SHOW_SEARCH_RESULTS,
             ),
-            *back_home(row=1),
+            *Button.back_home(row=1),
         ],
     ),
     ScreenId.BEST_MATCHES: Screen(
@@ -150,7 +143,7 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\n**Results**\n" + PAGE_REFERENCE("select a user", "<best_matches>"),
         paged=True,
         buttons=[
-            back_btn(row=1),
+            Button.back(row=1),
             Button(
                 label="✏️ Change priority",
                 takes_to=ScreenId.CHANGE_BEST_MATCHES_PRIORITY,
@@ -191,7 +184,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 takes_to=ScreenId.CHANGE_BEST_MATCHES_PRIORITY,
                 style=ButtonStyle.red,
             ),
-            *back_home(row=1),
+            *Button.back_home(row=1),
         ],
         changed_property=Property.BEST_MATCH_PRIO_ORDER,
         reactions=NUM_EMOJI[:PRIO_LIST_LENGTH],
@@ -224,7 +217,7 @@ SCREENS: dict[ScreenId, Screen] = {
             Button(label="⬆️ Sent", takes_to=ScreenId.INTERESTS_SENT),
             Button(label="⬇️ Received", takes_to=ScreenId.INTERESTS_RECEIVED),
             Button(label="✅ Mutual", takes_to=ScreenId.MUTUAL_INTERESTS),
-            back_btn(row=1),
+            Button.back(row=1),
         ],
     ),
     ScreenId.INTERESTS_SENT: Screen(
@@ -232,21 +225,21 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\nHere you can see, who you sent interest to.\n\n"
         + PAGE_REFERENCE("manage the interest", "<interests_sent>"),
         paged=True,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.INTERESTS_RECEIVED: Screen(
         message="⬇️ **Interests received**"
         "\n\nHere you can see, who is interested in you.\n\n"
         + PAGE_REFERENCE("manage the interest", "<interests_received>"),
         paged=True,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.MUTUAL_INTERESTS: Screen(
         message="✅ **Mutual interests**"
         "\n\nHere you can see the people who you have a mutual interest with.\n\n"
         + PAGE_REFERENCE("manage the interest", "<mutual_interests>"),
         paged=True,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.SELECTED_USER: Screen(
         message="You have selected ***<selected_user_name>*** !"
@@ -298,7 +291,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 conditions=[ButtonCond.CAN_CANCEL_CALL],
                 effects=[Effect.CANCEL_CALL],
             ),
-            *back_home(row=2),
+            *Button.back_home(row=2),
         ],
         stop_screen=True,
     ),
@@ -310,7 +303,7 @@ SCREENS: dict[ScreenId, Screen] = {
         "\nand send it via text message."
         "\n\nExample: 23.05.<next_year> 09:30",
         changed_property=Property.MEETING_REQUEST,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.MEETINGS: Screen(
         message="🗓️ **Meetings**"
@@ -322,7 +315,7 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[
             Button(label="◀️ Past", takes_to=ScreenId.PAST_MEETINGS),
             Button(label="▶️ Future", takes_to=ScreenId.FUTURE_MEETINGS),
-            *back_home(row=1),
+            *Button.back_home(row=1),
         ],
     ),
     ScreenId.EDIT_MEETING: Screen(
@@ -345,7 +338,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 takes_to=ScreenId.CHANGE_MEETING_DATE,
                 conditions=[ButtonCond.CAN_CHANGE_MEETING_DATE],
             ),
-            *back_home(row=1),
+            *Button.back_home(row=1),
         ],
     ),
     ScreenId.CHANGE_MEETING_DATE: Screen(
@@ -356,12 +349,12 @@ SCREENS: dict[ScreenId, Screen] = {
         "\nand send it via text message."
         "\n\nExample: 03.11.2024 09:30",
         changed_property=Property.CHANGE_MEETING_DATE,
-        buttons=[*back_home()],
+        buttons=[*Button.back_home()],
     ),
     ScreenId.INVALID_DATE: Screen(
         message="❌ Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
         "\nAnd it should be in the future!",
-        buttons=[*ok_home()],
+        buttons=[*Button.ok_home()],
         spacer=False,
     ),
     ScreenId.TOO_LONG_PROP_TEXT: Screen(
@@ -371,12 +364,12 @@ SCREENS: dict[ScreenId, Screen] = {
         "\n\nHint: The last <exceeding_number> characters are:"
         "```<to_cut_off>```"
         "\nSo if you'd chop this off, you'd be good to go.",
-        buttons=[*ok_home()],
+        buttons=[*Button.ok_home()],
         spacer=False,
     ),
     ScreenId.SUCCESSFUL_PROP_CHANGE: Screen(
         message="✅ Successfully <changed_prop> to <new_value>!<plus_info>",
-        buttons=[*ok_home()],
+        buttons=[*Button.ok_home()],
         spacer=False,
     ),
     ScreenId.DELETING_OLD_MESSAGES: Screen(
@@ -386,7 +379,7 @@ SCREENS: dict[ScreenId, Screen] = {
     ),
     ScreenId.ALREADY_IN_PLATFORM: Screen(
         message="You are already in the platform! :)",
-        buttons=[home_btn()],
+        buttons=[Button.home()],
         spacer=False,
     ),
     # ______________________________________________________________
@@ -413,7 +406,7 @@ SCREENS: dict[ScreenId, Screen] = {
             message=f"{time['emoji']} **{time['label']}**\n\n"
             + PAGE_REFERENCE("manage the meeting", f"<{time_id}_meetings>"),
             paged=True,
-            buttons=[*back_home()],
+            buttons=[*Button.back_home()],
             changed_property=Property.MEETING,
             stop_screen=True,
         )
@@ -424,7 +417,7 @@ SCREENS: dict[ScreenId, Screen] = {
             message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
             "\n\nWhat do you want to change it to?",
             changed_property=q_id,
-            buttons=[*back_home()],
+            buttons=[*Button.back_home()],
         )
         for q_id, question in QUESTION_NAMES.items()
     },
@@ -440,7 +433,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 else ""
             ),
             changed_property=prop_id,
-            buttons=[*back_home()],
+            buttons=[*Button.back_home()],
         )
         for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
     },
@@ -451,7 +444,7 @@ SCREENS: dict[ScreenId, Screen] = {
             + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
             "\n\nType ? to search for any.",
             changed_property=Property.search(prop_id),
-            buttons=[*back_home()],
+            buttons=[*Button.back_home()],
         )
         for prop_id in VISIBLE_SIMPLE_USER_PROPS
     },
@@ -463,7 +456,7 @@ SCREENS: dict[ScreenId, Screen] = {
             f"\n\nCurrent filter:\n*<search_{q_id}>*"
             "\n\nType ? to search for any keyword.",
             changed_property=Property.search(q_id),
-            buttons=[*back_home()],
+            buttons=[*Button.back_home()],
         )
         for q_id, question in QUESTION_NAMES.items()
     },

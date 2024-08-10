@@ -1,15 +1,11 @@
 import os
 
-from discord import ButtonStyle
-
-from eagxf.button import Button
 from eagxf.constants import (
     APP_NAME,
     QUESTION_NAMES,
     USERS_FOLDER_PATH,
     VISIBLE_SIMPLE_USER_PROPS,
 )
-from eagxf.enums.screen_id import ScreenId
 
 
 def ANSWERS(search=False) -> str:  # pylint: disable=invalid-name
@@ -55,30 +51,6 @@ def INIT_USERS_PATH() -> str:  # pylint: disable=invalid-name
     if not os.path.exists(path):
         os.makedirs(path)
     return path
-
-
-def back_btn(row=None):
-    return Button(label="⬅️ Back", takes_to=ScreenId.BACK__, row=row)
-
-
-def ok_btn(row=None):
-    return Button(
-        label="OK", style=ButtonStyle.green, takes_to=ScreenId.BACK__, row=row
-    )
-
-
-def home_btn(row=None):
-    return Button(
-        label="🏠 Home", style=ButtonStyle.primary, takes_to=ScreenId.HOME, row=row
-    )
-
-
-def back_home(row=None):
-    return [back_btn(row=row), home_btn(row=row)]
-
-
-def ok_home(row=None):
-    return [ok_btn(row=row), home_btn(row=row)]
 
 
 def PAGE_REFERENCE(action: str, content: str) -> str:  # pylint: disable=invalid-name

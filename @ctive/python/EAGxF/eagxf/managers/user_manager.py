@@ -1,4 +1,3 @@
-import asyncio
 import os
 from typing import Callable, Iterator
 from eagxf.constants import NUM_EMOJI
@@ -33,7 +32,7 @@ class UserManager:
         if name.endswith(".json") and (id_str := name[:-5]).isdecimal():
             return id_str
         return ""
-    
+
     def register_user(self, dc_user: DcUser) -> User:
         user = self.users[dc_user.id] = User.from_dc_user(dc_user)
         user.save()
@@ -62,7 +61,7 @@ class UserManager:
         return tuple(
             self.prio_functions[i](user, u) for i in user.best_match_prio_order
         )
-    
+
     def get_results_for(self, user: User) -> Iterator[User]:
         return self.users_by_ids(user.paged_list_of_results())
 
@@ -95,5 +94,3 @@ class UserManager:
             + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
             for i, m in enumerate(meetings)
         ) + ("\n**...**" if dots_needed else "")
-    
-

@@ -4,7 +4,7 @@ from typing import Callable, Iterable, Iterator
 import discord
 
 from eagxf.button import Button
-from eagxf.constant_functions import PROFILE, ok_btn
+from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
     DEBUGGING,
@@ -17,13 +17,13 @@ from eagxf.constants import (
 from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.user_manager import UserManager
+from eagxf.message import Message
 from eagxf.screen import Screen
 from eagxf.screens import SCREENS
 from eagxf.status import STATUS_EMOJI
 from eagxf.typedefs import DcButton, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import peek, to_emojis
-from eagxf.message import Message
 
 
 class OutputManager:
@@ -104,7 +104,7 @@ class OutputManager:
                 for effect in button.effects:
                     await user.apply_effect(effect, self.client)
             if button and button.takes_to in SPECIAL_DESTINATIONS:
-                await self.special_screen_send(user, button)
+                await self.send_special_screen(user, button)
             elif screen:
                 await self.send_screen(screen, user)
             else:
@@ -112,7 +112,7 @@ class OutputManager:
 
         return callback
 
-    async def special_screen_send(self, user: User, button: Button) -> None:
+    async def send_special_screen(self, user: User, button: Button) -> None:
         match button.takes_to:
             case ScreenId.BACK__ if user.last_screen:
                 if user.can_go_back:
@@ -175,7 +175,7 @@ class OutputManager:
 
     async def get_message_for(self, user: User, screen: Screen) -> Message:
         if not user.screen_conditions_apply_for(screen):
-            ok_button = ok_btn()
+            ok_button = Button.ok()
             ok_button.callback = self.get_callback_to_screen(None, ok_button)  # type: ignore
             dc_view = self.get_dc_view([ok_button])
             message = screen.condition_message
