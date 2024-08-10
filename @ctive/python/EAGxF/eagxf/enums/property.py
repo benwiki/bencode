@@ -22,17 +22,16 @@ class Property(Enum):
     SEARCH_CONCERNS = auto()
     MEETING_REQUEST = auto()
     MEETING = auto()
-    MEETING_DATE = auto()
+    CHANGE_MEETING_DATE = auto()
 
     @staticmethod
     def search(thing: "Property") -> "Property":
-        matchdict = {
+        return {
             Property.ABOUT_ME: Property.SEARCH_ABOUT_ME,
             Property.CAN_HELP: Property.SEARCH_CAN_HELP,
             Property.NEED_HELP: Property.SEARCH_NEED_HELP,
             Property.CONCERNS: Property.SEARCH_CONCERNS,
-        }
-        return matchdict.get(thing, thing)
+        }.get(thing, thing)
 
     @property
     def to_str(self) -> str:
@@ -51,3 +50,8 @@ class Property(Enum):
         if not self.is_search():
             raise ValueError(f"Property {self} is not a search property")
         return Property[self.name[7:]]
+
+    def to_search(self) -> "Property":
+        if self.is_search():
+            raise ValueError(f"Property {self} is already a search property")
+        return Property.search(self)

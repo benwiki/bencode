@@ -12,7 +12,7 @@ class ScreenId(Enum):
     SEARCH_STATUS = auto()
     SHOW_SEARCH_RESULTS = auto()
     BEST_MATCHES = auto()
-    CHANGE_PRIORITY = auto()
+    CHANGE_BEST_MATCHES_PRIORITY = auto()
     DEFAULT_BEST_MATCHES_CONFIRM = auto()
     INTERESTS = auto()
     INTERESTS_SENT = auto()
@@ -50,6 +50,8 @@ class ScreenId(Enum):
     SEARCH_LOCATION = auto()
     SEARCH_LANGUAGES = auto()
     SEARCH_KEYWORDS = auto()
+    ALREADY_IN_PLATFORM = auto()
+    DELETING_OLD_MESSAGES = auto()
     # ==== special IDs ====
     BACK__ = auto()
     MEETINGS_AT_TIME__ = auto()

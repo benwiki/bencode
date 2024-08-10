@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 from eagxf.button import Button
-from eagxf.constants import INCOMPLETE_PROFILE_MSG
+from eagxf.constants import INCOMPLETE_PROFILE_MSG, INVISIBLE_MSG
 from eagxf.enums.effect import Effect
 from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
@@ -33,6 +33,7 @@ class Screen:
     def get_message_for_condition(self, condition: ScreenCond) -> str:
         return {
             ScreenCond.PROFILE_COMPLETE: INCOMPLETE_PROFILE_MSG,
+            ScreenCond.VISIBLE: INVISIBLE_MSG,
         }.get(condition, "")
 
     def init_pagination(self) -> None:

@@ -79,6 +79,18 @@ COMPLETE_PROFILE_HINT = (
     "\n\nHINT: *You can change your status now, because your profile "
     "is complete!*"
 )
+INVISIBLE_MSG = (
+    "*You are currently 🟣 **Invisible**!*"
+    "\n*Change your status to search for other users!*"
+    "\n*You can do that in the 'Profile >> Edit profile' menu.*"
+)
+
+REACTION_PROPERTIES = [
+    Property.STATUS,
+    Property.BEST_MATCH_PRIO_ORDER,
+    Property.SELECTED_USER,
+    Property.MEETING,
+]
 
 QUESTION_NAMES = {
     Property.ABOUT_ME: {

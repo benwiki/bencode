@@ -12,7 +12,26 @@ class Date(datetime):
 
     @staticmethod
     def is_valid(date: str) -> bool:
-        return bool(DATE_FORMAT.fullmatch(date))
+        valid_format = bool(DATE_FORMAT.fullmatch(date))
+        if not valid_format:
+            return False
+        try:
+            Date.from_str(date)
+        except ValueError:
+            return False
+        return True
+    
+    @staticmethod
+    def valid_future_date(date: str) -> bool:
+        if not Date.is_valid(date):
+            return False
+        return Date.from_str(date).is_future()
+    
+    @staticmethod
+    def valid_past_date(date: str) -> bool:
+        if not Date.is_valid(date):
+            return False
+        return Date.from_str(date).is_past()
 
     @staticmethod
     def from_str(date_str: str) -> "Date":

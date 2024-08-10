@@ -1,19 +1,20 @@
 from typing import Optional
+
 import discord
 
 from eagxf.typedefs import DcButton, DcMessage, DcView, Receiver, ReceiverFuture
 
 
-class ViewMsg:
+class Message:
     def __init__(
         self,
-        view: DcView | None = None,
-        message: DcMessage | None = None,
-        raw_message: str | None = None,
+        dc_view: DcView | None = None,
+        dc_message: DcMessage | None = None,
+        msg_text: str | None = None,
     ) -> None:
-        self.view = view
-        self.message = message
-        self.raw_message = raw_message
+        self.dc_view = dc_view
+        self.dc_message = dc_message
+        self.msg_text = msg_text
 
     async def send(
         self,
@@ -21,16 +22,16 @@ class ViewMsg:
         receiver: Optional[Receiver] = None,
     ) -> None:
         assert (
-            self.message or self.raw_message and self.view
+            self.dc_message or self.msg_text and self.dc_view
         ), "(Error 16) No message content or view to send"
         assert (
-            self.message or receiver or receiver_future
+            self.dc_message or receiver or receiver_future
         ), "(Error 17) No receiver to send to"
-        if (self.message or receiver) and receiver_future:
+        if (self.dc_message or receiver) and receiver_future:
             receiver_future.close()
-        if self.message:
+        if self.dc_message:
             await self.edit()
-        elif self.raw_message and self.view:
+        elif self.msg_text and self.dc_view:
             if receiver:
                 await self.deliver_to(receiver)
             elif receiver_future:
@@ -38,44 +39,46 @@ class ViewMsg:
 
     async def deliver_to(self, receiver: Receiver) -> None:
         assert (
-            self.raw_message and self.view
+            self.msg_text and self.dc_view
         ), "(Error 18) No message content or view to send"
-        self.message = await receiver.send(content=self.raw_message, view=self.view)
+        self.dc_message = await receiver.send(content=self.msg_text, view=self.dc_view)
 
     async def edit(self) -> None:
         assert (
-            self.message and self.raw_message and self.view
+            self.dc_message and self.msg_text and self.dc_view
         ), "(Error 19) No message, message content or view to edit"
-        await self.message.edit(content=self.raw_message, view=self.view)
+        self.dc_message = await self.dc_message.edit(
+            content=self.msg_text, view=self.dc_view
+        )
 
     def update(
         self,
-        view: DcView | None = None,
-        message: DcMessage | None = None,
-        raw_message: str | None = None,
-    ) -> "ViewMsg":
-        self.view = view or self.view
-        self.message = message or self.message
-        self.raw_message = raw_message or self.raw_message
+        dc_view: DcView | None = None,
+        dc_message: DcMessage | None = None,
+        message_text: str | None = None,
+    ) -> "Message":
+        self.dc_view = dc_view or self.dc_view
+        self.dc_message = dc_message or self.dc_message
+        self.msg_text = message_text or self.msg_text
         return self
 
     async def add_reaction(self, reaction: discord.Emoji | str) -> None:
-        if not self.message:
+        if not self.dc_message:
             print("(Error 6) No message to add reaction to")
             return
-        await self.message.add_reaction(reaction)
+        await self.dc_message.add_reaction(reaction)
 
     async def delete(self) -> None:
-        if not self.message:
+        if not self.dc_message:
             print("(Error 7) No message to delete")
             return
-        await self.message.delete()
-        self.message = None
+        await self.dc_message.delete()
+        self.dc_message = None
 
     def add_button(self, button: DcButton) -> None:
-        assert self.view, "(Error 20) No view to add button to"
-        self.view.add_item(button)
+        assert self.dc_view, "(Error 20) No view to add button to"
+        self.dc_view.add_item(button)
 
     def remove_button(self, button: DcButton) -> None:
-        assert self.view, "(Error 21) No view to remove button from"
-        self.view.remove_item(button)
+        assert self.dc_view, "(Error 21) No view to remove button from"
+        self.dc_view.remove_item(button)

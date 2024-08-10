@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 import discord
 
@@ -28,7 +28,7 @@ from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
 from eagxf.screen import Screen
 from eagxf.status import STATUS_EMOJI, Status
-from eagxf.typedefs import DcClient, DcUser
+from eagxf.typedefs import DcButton, DcClient, DcUser, Receiver, ReceiverFuture
 from eagxf.users_path import USERS_PATH
 from eagxf.util import (
     CHANNELS,
@@ -39,7 +39,7 @@ from eagxf.util import (
     peek,
     subtract,
 )
-from eagxf.view_msg import ViewMsg
+from eagxf.view_msg import Message
 
 
 @dataclass
@@ -63,7 +63,7 @@ class User:
     best_match_prio_order_new: list[int] = field(default_factory=list)
     screen_stack: list[Screen] = field(default_factory=list)
     replace: dict[str, str] = field(default_factory=dict)
-    view_msg: ViewMsg = field(default_factory=ViewMsg)
+    message: Message = field(default_factory=Message)
     results: list[int] = field(default_factory=list)
     selected_meeting: Meeting | None = None
     selected_user: "User | None" = None
@@ -86,13 +86,18 @@ class User:
         return self.screen_stack[-1]
 
     @property
-    def back_to_screen(self) -> Screen | None:
-        if len(self.screen_stack) < 2:
-            return None
+    def can_go_back(self) -> bool:
+        return len(self.screen_stack) > 1
+
+    def remove_last_screen(self) -> None:
         self.screen_stack.pop()
-        return self.screen_stack[-1]
 
     def remove_screens_until_stop(self) -> None:
+        """(Some screens have the `stop_screen` attribute set to `True`.
+        They are kind of "fallback" screens, which should be shown
+        when the user is done with the current flow.)
+        - This method removes all screens from the stack until it finds
+        a screen with the `stop_screen` attribute set to `True`."""
         for i in range(len(self.screen_stack) - 1, -1, -1):
             if self.screen_stack[i].stop_screen:
                 break
@@ -210,9 +215,11 @@ class User:
     def valid_condition(self, condition: ScreenCond) -> bool:
         return {
             ScreenCond.PROFILE_COMPLETE: self.is_complete(),
+            ScreenCond.VISIBLE: self.status != Status.INVISIBLE,
         }.get(condition, False)
 
     def screen_conditions_apply_for(self, screen: Screen) -> bool:
+        print(screen.id, screen.conditions)
         if not screen.conditions:
             return True
         for condition in screen.conditions:
@@ -317,7 +324,7 @@ class User:
             return COMPLETE_PROFILE_HINT
         return ""
 
-    def paged_list_of(self, lst: list) -> list[int]:
+    def paged_list_of(self, lst: list) -> list[Any]:
         return lst[self.page * PAGE_STEP : (self.page + 1) * PAGE_STEP]
 
     def paged_list_of_results(self) -> list[int]:
@@ -488,7 +495,7 @@ class User:
             case Effect.GO_TO_NEXT_PAGE:
                 self.page += 1
             case Effect.DELETE_MESSAGE:
-                await self.view_msg.delete()
+                await self.message.delete()
             case Effect.SAVE_BEST_MATCHES:
                 self.save_priority_order()
             case Effect.RESET_NEW_PRIO_ORDER:
@@ -561,8 +568,8 @@ class User:
             .replace("<num_of_interests_received>", str(len(received)))
             .replace("<num_of_mutual_interests>", str(len(self.mutual_interests)))
             .replace("<interest_status>", self.get_interest_status())
-            .replace("<num_of_future_meetings>", str(len(self.meetings.future)))
-            .replace("<num_of_past_meetings>", str(len(self.meetings.past)))
+            .replace("<num_of_future_meetings>", str(len(self.future_meetings)))
+            .replace("<num_of_past_meetings>", str(len(self.past_meetings)))
             .replace("<page_reference>", self.get_page_reference())
             .replace("<selected_meeting_time>", self.selected_meeting_time())
             .replace("<video_call_link>", self.call_text())
@@ -611,13 +618,15 @@ class User:
         elif not (self.screen_stack and self.screen_stack[-1].id == screen.id):
             self.screen_stack.append(screen)
 
-    async def add_special_reactions(self) -> None:
+    async def add_selection_reactions(self) -> None:
         for i in range(min(PAGE_STEP, len(self.results) - self.page * PAGE_STEP)):
-            await self.view_msg.add_reaction(NUM_EMOJI[i])
+            await self.message.add_reaction(NUM_EMOJI[i])
 
     def page_prefix(self, i: int) -> str:
-        i = i + self.page * PAGE_STEP
-        return f"**{i // PAGE_STEP}** " if i >= PAGE_STEP else "   "
+        if i < PAGE_STEP:
+            return "   "
+        num = (i + self.page * PAGE_STEP) // PAGE_STEP
+        return f"**{num}** "
 
     def get_result_by_number(self, num: int) -> Any:
         return self.results[self.page * PAGE_STEP + num - 1]
@@ -627,3 +636,45 @@ class User:
 
     def set_question(self, question: Property, new_value: str):
         self.questions[question] = new_value
+
+    async def send_message(
+        self,
+        receiver_future: Optional[ReceiverFuture] = None,
+        receiver: Optional[Receiver] = None,
+    ) -> None:
+        await self.message.send(receiver_future=receiver_future, receiver=receiver)
+
+    @property
+    def dc_message(self) -> discord.Message | None:
+        return self.message.dc_message
+
+    async def delete_message(self) -> None:
+        await self.message.delete()
+
+    def add_button_to_message(self, button: DcButton) -> None:
+        self.message.add_button(button)
+
+    def remove_button_from_message(self, button: DcButton) -> None:
+        self.message.remove_button(button)
+
+    def update_message(
+        self,
+        dc_view: discord.ui.View | None = None,
+        dc_message: discord.Message | None = None,
+        message_text: str | None = None,
+    ) -> Message:
+        return self.message.update(dc_view, dc_message, message_text)
+
+    async def add_reaction_to_message(self, reaction: discord.Emoji | str) -> None:
+        await self.message.add_reaction(reaction)
+
+    def set_message(self, message: Message) -> None:
+        self.message = message
+
+    @property
+    def future_meetings(self) -> list[Meeting]:
+        return self.meetings.future
+
+    @property
+    def past_meetings(self) -> list[Meeting]:
+        return self.meetings.past
