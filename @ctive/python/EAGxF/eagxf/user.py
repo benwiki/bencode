@@ -39,7 +39,7 @@ from eagxf.util import (
     peek,
     subtract,
 )
-from eagxf.view_msg import Message
+from eagxf.message import Message
 
 
 @dataclass

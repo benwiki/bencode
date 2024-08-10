@@ -23,7 +23,7 @@ from eagxf.status import STATUS_EMOJI
 from eagxf.typedefs import DcButton, DcUser, DcView
 from eagxf.user import User
 from eagxf.util import peek, to_emojis
-from eagxf.view_msg import Message
+from eagxf.message import Message
 
 
 class OutputManager:

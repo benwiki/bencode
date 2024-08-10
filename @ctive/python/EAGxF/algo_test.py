@@ -124,7 +124,7 @@ while True:
             if user_id_raw == "done":
                 break
             user_id = int(user_id_raw)
-            user = next(filter(lambda u: u.id == user_id, users), None)
+            user = next(filter(lambda u: u.id == user_id, users), None)  # type: ignore
             if user is None:
                 print("User not found.")
             else:
@@ -196,12 +196,12 @@ while True:
             if target_raw == "done":
                 break
             target = int(target_raw)
-            user1 = next(filter(lambda u: u.id == seeker, users), None)
-            user2 = next(filter(lambda u: u.id == target, users), None)
-            best_matches = search_best_matches_for(user1, len(users))
+            user1 = next(filter(lambda u: u.id == seeker, users), None)  # type: ignore
+            user2 = next(filter(lambda u: u.id == target, users), None)  # type: ignore
             if user1 is None or user2 is None:
                 print("User not found.")
             else:
+                best_matches = search_best_matches_for(user1, len(users))
                 print(
                     "Ranking on the best match list:",
                     best_matches.index((user2.id, get_priority(user1, user2))) + 1,
@@ -209,7 +209,7 @@ while True:
             print()
     elif choice == "4":
         user_id = int(input("Enter user ID: "))
-        user = next(filter(lambda u: u.id == user_id, users), None)
+        user = next(filter(lambda u: u.id == user_id, users), None)  # type: ignore
         if user is None:
             print("User not found.")
         else:
