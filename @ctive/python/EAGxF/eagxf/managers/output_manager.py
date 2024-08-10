@@ -21,16 +21,15 @@ from eagxf.message import Message
 from eagxf.screen import Screen
 from eagxf.screens import SCREENS
 from eagxf.status import STATUS_EMOJI
-from eagxf.typedefs import DcButton, DcUser, DcView
+from eagxf.typedefs import DcButton, DcView
 from eagxf.user import User
 from eagxf.util import peek, to_emojis
 
 
 class OutputManager:
-    def __init__(self, client: discord.Client) -> None:
-        self.client = client
-        self.um = UserManager()
-        self.users = self.um.users
+    def __init__(self, um: UserManager) -> None:
+        self.um = um
+        self.users = um.users
 
         self.replace_funcs: dict[str, Callable[[User], str]] = {
             "<search_results>": self.get_formatted_results_for,
@@ -57,10 +56,10 @@ class OutputManager:
         }
 
     def start(self) -> None:
+        self.init_screens()
         for user in self.users.values():
             asyncio.create_task(self.send_starting_message_to(user))
         asyncio.create_task(self.refresh())
-        self.init_screens()
 
     async def send_starting_message_to(self, user: User) -> None:
         # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
@@ -68,7 +67,7 @@ class OutputManager:
         await self.send_screen(ScreenId.HOME, user)
 
     async def remove_past_messages(self, user: User) -> None:
-        if dc_user := self.client.get_user(user.id):
+        if dc_user := self.um.get_user(user.id):
             async for msg in dc_user.history(limit=None):
                 if msg.author.id != dc_user.id and not (
                     user.dc_message and msg.id == user.dc_message.id
@@ -102,7 +101,7 @@ class OutputManager:
             user = self.users[interaction.user.id]
             if button and button.effects:
                 for effect in button.effects:
-                    await user.apply_effect(effect, self.client)
+                    await user.apply_effect(effect, self.um.client)
             if button and button.takes_to in SPECIAL_DESTINATIONS:
                 await self.send_special_screen(user, button)
             elif screen:
@@ -124,9 +123,6 @@ class OutputManager:
                 assert ascreen is not None, "(Error 23) No screen found for the button!"
                 await self.send_screen(ascreen, user)
 
-    def register_user(self, dc_user: DcUser) -> User:
-        return self.um.register_user(dc_user)
-
     async def refresh(self) -> None:
         while True:
             await asyncio.sleep(30)
@@ -141,7 +137,7 @@ class OutputManager:
         user.results = self.screen_to_data(user, screen.id)
 
         user.set_message(await self.get_message_for(user, screen))
-        receiver_future = self.client.fetch_user(user.id)
+        receiver_future = self.um.fetch_user(user.id)
         await user.send_message(receiver_future=receiver_future)
 
         if screen.changed_property:
@@ -209,9 +205,7 @@ class OutputManager:
         if user_id not in ADMINS:
             print(f"(Error 2) Unauthorized user (id: {user_id}) tried to stop the bot.")
             return
-        for user in self.um.users.values():
-            await user.delete_message()
-        await self.client.close()
+        await self.um.stop()
 
     def replace_placeholders(self, msg: str, user: User | None) -> str:
         if user:

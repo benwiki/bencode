@@ -5,13 +5,15 @@ from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
 from eagxf.managers.reaction_input_manager import ReactionInputManager
 from eagxf.managers.text_input_manager import TextinputManager
+from eagxf.managers.user_manager import UserManager
 from eagxf.typedefs import DcMessage
 
 
 class Logic(commands.Cog):
     def __init__(self, client: discord.Client) -> None:
         self.client = client
-        self.opm = OutputManager(client)
+        self.um = UserManager(client)
+        self.opm = OutputManager(self.um)
         self.text_ipm = TextinputManager(self.opm)
         self.reaction_ipm = ReactionInputManager(self.opm)
         self.users = self.opm.users
@@ -21,7 +23,7 @@ class Logic(commands.Cog):
     async def enter(self, ctx: commands.Context) -> None:
         """Registers the user."""
         if ctx.author.id not in self.users:
-            user = self.opm.register_user(ctx.author)
+            user = self.um.register_user(ctx.author)
             await self.opm.send_screen(ScreenId.HOME, user)
         else:
             user = self.users[ctx.author.id]

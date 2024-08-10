@@ -594,12 +594,13 @@ class User:
         return text
 
     def call_text(self) -> str:
+        call = "\n\n☎️ Call:\n"
         if self.call_channel_id == 0:
-            return "\n\n☎️ **Call:**  No call has been started."
+            return f"{call}***No call has been started.***"
         if self.call_channel_id == -1:
-            return "\n\n☎️ **Call:**  All channels are ***occupied...*** Please try again later."
+            return f"{call}All channels are ***occupied...*** Please try again later."
         return (
-            "\n\n☎️ **Call:**  Click here to join: "
+            f"{call}***Click here to join:*** "
             f"https://discord.com/channels/{GUILD_ID}/{self.call_channel_id}"
         )
 
