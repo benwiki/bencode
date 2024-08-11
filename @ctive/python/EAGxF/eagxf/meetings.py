@@ -25,6 +25,19 @@ class Meeting:
     def is_past(self) -> bool:
         return self.date.is_past()
 
+    def __eq__(self, other: Any) -> bool:
+        return (
+            isinstance(other, Meeting)
+            and self.partner_id == other.partner_id
+            and self.date == other.date
+        )
+
+    def __lt__(self, other: Any) -> bool:
+        return isinstance(other, Meeting) and self.date < other.date
+
+    def __gt__(self, other: Any) -> bool:
+        return isinstance(other, Meeting) and self.date > other.date
+
 
 @dataclass
 class Meetings:

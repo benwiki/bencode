@@ -57,5 +57,6 @@ def PAGE_REFERENCE(action: str, content: str) -> str:  # pylint: disable=invalid
     return (
         "<page_reference>"
         f"\nClick on the corresponding reaction to {action}!"
-        f"\n\n{content}\n\n<page_reference>"
+        f"\n\n{content}\n\n"
+        "<page_reference>"
     )

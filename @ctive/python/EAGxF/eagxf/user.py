@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar
 
 import discord
 
@@ -26,6 +26,7 @@ from eagxf.enums.screen_id import ScreenId
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
 from eagxf.questions import Questions
+from eagxf.recommendations import Recommendation, Recommendations
 from eagxf.screen import Screen
 from eagxf.status import STATUS_EMOJI, Status
 from eagxf.typedefs import DcButton, DcClient, DcUser, Receiver, ReceiverFuture
@@ -40,6 +41,8 @@ from eagxf.util import (
     subtract,
 )
 from eagxf.message import Message
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -57,6 +60,7 @@ class User:
     status: Status = Status.INVISIBLE
     best_match_prio_order: list[int] = field(default_factory=list)
     interests: Interests = field(default_factory=Interests)
+    recommendations: Recommendations = field(default_factory=Recommendations)
     meetings: Meetings = field(default_factory=Meetings)
 
     # Properties to use only in runtime
@@ -64,7 +68,8 @@ class User:
     screen_stack: list[Screen] = field(default_factory=list)
     replace: dict[str, str] = field(default_factory=dict)
     message: Message = field(default_factory=Message)
-    results: list[int] = field(default_factory=list)
+    results: list[Any] = field(default_factory=list)
+    selected_recommendation: Recommendation | None = None
     selected_meeting: Meeting | None = None
     selected_user: "User | None" = None
     search_filter: "User | None" = None
@@ -155,6 +160,7 @@ class User:
                 "best_match_prio_order": user.best_match_prio_order,
                 "interests": user.interests.to_dict(),
                 "meetings": user.meetings.to_dict(),
+                "recommendations": user.recommendations.to_dict(),
                 **{
                     attr.to_str: getattr(user, attr.to_str)
                     for attr in VISIBLE_SIMPLE_USER_PROPS
@@ -173,7 +179,9 @@ class User:
     @staticmethod
     def load(user_data: dict[str, Any]) -> "User":
         if "headline" in user_data:
-            user_data = User.migrate(user_data)
+            user_data = User.migrate_headline(user_data)
+        if "recommendations" not in user_data:
+            user_data["recommendations"] = []
         return User(
             id=user_data["id"],
             date_joined=Date.from_str(user_data["date_joined"]),
@@ -183,6 +191,7 @@ class User:
             interests=Interests.from_dict(user_data["interests"]),
             search_filter=User.search_profile(),
             meetings=Meetings.from_dict(user_data["meetings"]),
+            recommendations=Recommendations.from_dict(user_data["recommendations"]),
             **{
                 attr.to_str: user_data[attr.to_str]
                 for attr in VISIBLE_SIMPLE_USER_PROPS
@@ -190,7 +199,7 @@ class User:
         )
 
     @staticmethod
-    def migrate(input_data: dict[str, Any]) -> dict[str, Any]:
+    def migrate_headline(input_data: dict[str, Any]) -> dict[str, Any]:
         data = input_data.copy()
         job = data["headline"]
         del data["headline"]
@@ -219,7 +228,6 @@ class User:
         }.get(condition, False)
 
     def screen_conditions_apply_for(self, screen: Screen) -> bool:
-        print(screen.id, screen.conditions)
         if not screen.conditions:
             return True
         for condition in screen.conditions:
@@ -324,10 +332,10 @@ class User:
             return COMPLETE_PROFILE_HINT
         return ""
 
-    def paged_list_of(self, lst: list) -> list[Any]:
+    def paged_list_of(self, lst: list[T]) -> list[T]:
         return lst[self.page * PAGE_STEP : (self.page + 1) * PAGE_STEP]
 
-    def paged_list_of_results(self) -> list[int]:
+    def paged_list_of_results(self) -> list[Any]:
         return self.paged_list_of(self.results)
 
     def get_page_reference(self) -> str:
@@ -403,6 +411,17 @@ class User:
         self.call_channel_id = 0
         self.selected_user.call_channel_id = 0
 
+    def cancel_selected_recommendation(self):
+        assert self.selected_user is not None, "(Error 15) No selected user"
+        self.recommendations.remove_by_sender_and_receiver(
+            self.id, self.selected_user.id
+        )
+        self.selected_user.recommendations.remove_by_sender_and_receiver(
+            self.id, self.selected_user.id
+        )
+        self.selected_user.save()
+        self.save()
+
     def get_members_role_and_channel(self, client: DcClient):
         assert self.selected_user is not None, "(Error 14) No selected user"
         guild = get_guild(client)
@@ -452,6 +471,14 @@ class User:
     @property
     def mutual_interests_with_selected(self) -> bool:
         return self.interest_sent_to_selected and self.interest_received_from_selected
+
+    @property
+    def recommendations_sent(self) -> list[Recommendation]:
+        return self.recommendations.sent(self.id)
+
+    @property
+    def recommendations_received(self) -> list[Recommendation]:
+        return self.recommendations.received(self.id)
 
     @property
     def started_call_with_selected(self) -> bool:
@@ -517,6 +544,8 @@ class User:
                 await self.start_video_call_with_selected(client)
             case Effect.CANCEL_CALL:
                 await self.cancel_video_call_with_selected(client)
+            case Effect.CANCEL_RECOMMENDATION:
+                self.cancel_selected_recommendation()
 
     def button_condition_applies(self, condition: ButtonCond) -> bool:
         interest_sent = self.interest_sent_to_selected
@@ -574,6 +603,18 @@ class User:
             .replace("<selected_meeting_time>", self.selected_meeting_time())
             .replace("<video_call_link>", self.call_text())
             .replace("<next_year>", str(datetime.now().year + 1))
+            .replace(
+                "<user_to_recommend>",
+                self.selected_user.name if self.selected_user else "",
+            )
+            .replace(
+                "<num_of_recommendations_sent>",
+                str(len(self.recommendations.sent(self.id))),
+            )
+            .replace(
+                "<num_of_recommendations_received>",
+                str(len(self.recommendations.received(self.id))),
+            )
         )
         prefixes: dict[str, User] = {"": self}
         if _filter := self.search_filter:

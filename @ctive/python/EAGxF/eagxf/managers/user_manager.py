@@ -82,30 +82,3 @@ class UserManager:
 
     def users_by_ids(self, user_ids: list[int]) -> Iterator[User]:
         return map(lambda x: self.users[x], user_ids)
-
-    def get_meetings(
-        self, user: User, kind: MtgTime, selected=False, peek=False
-    ) -> str:
-        meetings = {
-            MtgTime.FUTURE: user.future_meetings,
-            MtgTime.PAST: user.past_meetings,
-        }.get(kind, [])
-
-        if selected and user.selected_user:
-            meetings = [m for m in meetings if m.partner_id == user.selected_user.id]
-        if not meetings:
-            return "***No meetings to show.***"
-
-        dots_needed = False
-        if peek:
-            dots_needed = len(meetings) > 5
-            meetings = meetings[:5]
-        else:
-            meetings = user.paged_list_of(meetings)
-
-        return "\n".join(
-            ("- " if peek else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
-            + f"**{m.date}**"
-            + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
-            for i, m in enumerate(meetings)
-        ) + ("\n**...**" if dots_needed else "")

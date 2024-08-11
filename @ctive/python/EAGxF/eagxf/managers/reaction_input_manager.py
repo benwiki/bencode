@@ -9,6 +9,7 @@ from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
 from eagxf.meetings import Meeting
+from eagxf.recommendations import Recommendation
 from eagxf.status import EMOJI_STATUS, Status
 from eagxf.user import User
 
@@ -23,7 +24,14 @@ class ReactionInputManager:
             self.handle_best_match_prio_order,
             self.handle_selected_user,
             self.handle_meeting,
+            self.handle_send_recommendation,
+            self.handle_recommendation,
         ]
+        assert len(self.reaction_func_list) == len(REACTION_PROPERTIES), (
+            "⚠️ (Error 30):\n"
+            f"Number of reaction functions ({len(self.reaction_func_list)}) "
+            f"does not match number of reaction properties ({len(REACTION_PROPERTIES)})!"
+        )
         self.reaction_funcs = dict(zip(REACTION_PROPERTIES, self.reaction_func_list))
 
         self.save_btn = Button(
@@ -142,3 +150,34 @@ class ReactionInputManager:
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.delete_message()
         await self.opm.send_screen(ScreenId.EDIT_MEETING, user)
+
+    # ====================================================================== #
+    async def handle_send_recommendation(self, user: User, emoji: str) -> None:
+        if not (num := self.validate_number_reaction(emoji, user)):
+            return
+        assert user.selected_user, "(Error 31): No selected user!"
+        person = user.selected_user
+        selected_user_id = user.get_result_by_number(num)
+        receiver = self.users[selected_user_id]
+        recommendation = Recommendation(user.id, receiver.id, person.id, "no message")
+        user.recommendations.add(recommendation)
+        receiver.recommendations.add(recommendation)
+        user.save()
+        receiver.save()
+        await user.delete_message()
+        user.remove_screens_until_stop()
+        user.replace = {
+            "<recommended_user_name>": person.name,
+            "<connection_name>": receiver.name,
+        }
+        await self.opm.send_screen(ScreenId.SUCCESSFUL_RECOMMENDATION, user)
+
+    # ====================================================================== #
+    async def handle_recommendation(self, user: User, emoji: str) -> None:
+        if not (num := self.validate_number_reaction(emoji, user)):
+            return
+        recommendation: Recommendation = user.get_result_by_number(num)
+        user.selected_user = self.users[recommendation.person]
+        user.selected_recommendation = recommendation
+        await user.delete_message()
+        await self.opm.send_screen(ScreenId.RECOMMENDATION, user)

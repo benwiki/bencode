@@ -40,10 +40,12 @@ SCREENS: dict[ScreenId, Screen] = {
             ),
             Button(label="Interests", takes_to=ScreenId.INTERESTS, emoji="↕️"),
             Button(
-                label="🗓️ Meetings",
-                takes_to=ScreenId.MEETINGS,
+                label="👆👇 Recommendations",
+                takes_to=ScreenId.RECOMMENDATIONS,
                 style=ButtonStyle.primary,
+                row=1,
             ),
+            Button(label="🗓️ Meetings", takes_to=ScreenId.MEETINGS, row=1),
         ],
     ),
     ScreenId.PROFILE: Screen(
@@ -245,7 +247,7 @@ SCREENS: dict[ScreenId, Screen] = {
         message="You have selected ***<selected_user_name>*** !"
         "\n\n<selected_user_profile>"
         "\n\nYour interest status with this user:\n**<interest_status>**"
-        "\n\nMeetings with this user:"
+        "\n\n🗓️ Meetings with this user:"
         "\n<selected_user_meetings>"
         "<video_call_link>"
         "\n\nWhat do you want to do with this user?",
@@ -290,6 +292,11 @@ SCREENS: dict[ScreenId, Screen] = {
                 takes_to=ScreenId.SELECTED_USER,
                 conditions=[ButtonCond.CAN_CANCEL_CALL],
                 effects=[Effect.CANCEL_CALL],
+            ),
+            Button(
+                label="👆 Recommend to a connection",
+                takes_to=ScreenId.RECOMMEND_USER,
+                row=1,
             ),
             *Button.back_home(row=2),
         ],
@@ -338,6 +345,11 @@ SCREENS: dict[ScreenId, Screen] = {
                 takes_to=ScreenId.CHANGE_MEETING_DATE,
                 conditions=[ButtonCond.CAN_CHANGE_MEETING_DATE],
             ),
+            Button(
+                label="👤 Go to their profile",
+                takes_to=ScreenId.SELECTED_USER,
+                style=ButtonStyle.primary,
+            ),
             *Button.back_home(row=1),
         ],
     ),
@@ -382,10 +394,88 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[Button.home()],
         spacer=False,
     ),
+    ScreenId.RECOMMEND_USER: Screen(
+        message="👆🔄️ Recommending ***<user_to_recommend>*** to a "
+        "connection of yours\n\n"
+        + PAGE_REFERENCE(
+            action="select the connection that you want to recommend "
+            "<user_to_recommend> to",
+            content="<mutual_interests>",
+        ),
+        changed_property=Property.SEND_RECOMMENDATION,
+        paged=True,
+    ),
+    ScreenId.RECOMMENDATIONS: Screen(
+        message="👆👇 **Recommendations**"
+        "\n\n( **<num_of_recommendations_sent>** ) 👆 Recommendations sent:"
+        "\n<recommendations_sent_peek>"
+        "\n\n( **<num_of_recommendations_received>** ) 👇 Recommendations received:"
+        "\n<recommendations_received_peek>"
+        "\n\nClick the buttons to navigate!",
+        buttons=[
+            Button(label="👆 Sent", takes_to=ScreenId.RECOMMENDATIONS_SENT),
+            Button(label="👇 Received", takes_to=ScreenId.RECOMMENDATIONS_RECEIVED),
+            *Button.back_home(row=1),
+        ],
+    ),
+    ScreenId.RECOMMENDATIONS_SENT: Screen(
+        message="👆 **Recommendations sent**"
+        "\n\nYou recommended...\n\n"
+        + PAGE_REFERENCE("manage the recommendation", "<recommendations_sent>"),
+        paged=True,
+        buttons=[*Button.back_home()],
+        changed_property=Property.RECOMMENDATION,
+        stop_screen=True,
+    ),
+    ScreenId.RECOMMENDATIONS_RECEIVED: Screen(
+        message="👇 **Recommendations received**"
+        "\n\nThese people have been recommended to you:\n\n"
+        + PAGE_REFERENCE("manage the recommendation", "<recommendations_received>"),
+        paged=True,
+        buttons=[*Button.back_home()],
+        changed_property=Property.RECOMMENDATION,
+        stop_screen=True,
+    ),
+    ScreenId.SUCCESSFUL_RECOMMENDATION: Screen(
+        message="✅ Successfully recommended ***<recommended_user_name>*** to ***<connection_name>***!",
+        buttons=[*Button.ok_home()],
+        spacer=False,
+    ),
+    ScreenId.RECOMMENDATION: Screen(
+        message="You have selected a recommendation, where you recommended "
+        "***<recommendation_receiver_name>*** to *<recommended_person_name>*."
+        "\n\nWhat do you want to do with this recommendation?",
+        buttons=[
+            Button(
+                label="❌ Cancel recommendation",
+                takes_to=ScreenId.CANCEL_RECOMMENDATION_CONFIRM,
+                # conditions=[ButtonCond.CAN_CANCEL_RECOMMENDATION],
+            ),
+            Button(
+                label="👤 Recommended person's profile",
+                takes_to=ScreenId.SELECTED_USER,
+                style=ButtonStyle.primary,
+            ),
+            *Button.back_home(row=1),
+        ],
+    ),
+    ScreenId.CANCEL_RECOMMENDATION_CONFIRM: Screen(
+        message="Are you sure you want to cancel the recommendation of "
+        "***<recommendation_receiver_name>*** to *<recommended_person_name>*?",
+        buttons=[
+            Button(label="No", takes_to=ScreenId.RECOMMENDATION),
+            Button(
+                label="Yes",
+                takes_to=ScreenId.BACK_UNTIL_STOP__,
+                effects=[Effect.CANCEL_RECOMMENDATION],
+                style=ButtonStyle.red,
+            ),
+        ],
+    ),
     # ______________________________________________________________
     # ==================== GENERATED SCREENS =======================
     # ______________________________________________________________
-    **{
+    **{  # Confirm "cancel" or "delete" meeting
         ScreenId.confirm(kw): Screen(
             message=f"Are you sure you want to {kw} the meeting at "
             "**<selected_meeting_time>** with ***<selected_user_name>*** ?",
@@ -393,7 +483,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 Button(label="No", takes_to=ScreenId.BACK__),
                 Button(
                     label="Yes",
-                    takes_to=ScreenId.MEETINGS_AT_TIME__,
+                    takes_to=ScreenId.BACK_UNTIL_STOP__,
                     effects=[Effect.CANCEL_MEETING],
                     style=ButtonStyle.red,
                 ),
@@ -401,7 +491,7 @@ SCREENS: dict[ScreenId, Screen] = {
         )
         for kw in ("cancel", "delete")
     },
-    **{
+    **{  # FUTURE and PAST meetings
         ScreenId.meetings(time_id.to_str): Screen(
             message=f"{time['emoji']} **{time['label']}**\n\n"
             + PAGE_REFERENCE("manage the meeting", f"<{time_id}_meetings>"),

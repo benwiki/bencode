@@ -52,9 +52,16 @@ class ScreenId(Enum):
     SEARCH_KEYWORDS = auto()
     ALREADY_IN_PLATFORM = auto()
     DELETING_OLD_MESSAGES = auto()
+    RECOMMEND_USER = auto()
+    RECOMMENDATIONS = auto()
+    RECOMMENDATIONS_SENT = auto()
+    RECOMMENDATIONS_RECEIVED = auto()
+    SUCCESSFUL_RECOMMENDATION = auto()
+    RECOMMENDATION = auto()
+    CANCEL_RECOMMENDATION_CONFIRM = auto()
     # ==== special IDs ====
     BACK__ = auto()
-    MEETINGS_AT_TIME__ = auto()
+    BACK_UNTIL_STOP__ = auto()
 
     @staticmethod
     def search(thing: str) -> "ScreenId":

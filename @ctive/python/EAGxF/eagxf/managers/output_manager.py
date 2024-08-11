@@ -1,4 +1,5 @@
 import asyncio
+from functools import partial
 from typing import Callable, Iterable, Iterator
 
 import discord
@@ -18,6 +19,7 @@ from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.user_manager import UserManager
 from eagxf.message import Message
+from eagxf.recommendations import Recommendation
 from eagxf.screen import Screen
 from eagxf.screens import SCREENS
 from eagxf.status import STATUS_EMOJI
@@ -42,17 +44,35 @@ class OutputManager:
             "<mutual_interests>": self.get_interests,
             "<selected_user_name>": lambda u: self.get_name_of(u.selected_user),
             "<selected_user_profile>": self.selected_user_profile,
-            "<selected_user_meetings>": lambda u: self.um.get_meetings(
+            "<selected_user_meetings>": lambda u: self.get_meetings(
                 u, MtgTime.FUTURE, selected=True, peek=True
             ),
-            "<future_meetings_peek>": lambda u: self.um.get_meetings(
+            "<future_meetings_peek>": lambda u: self.get_meetings(
                 u, MtgTime.FUTURE, peek=True
             ),
-            "<past_meetings_peek>": lambda u: self.um.get_meetings(
+            "<past_meetings_peek>": lambda u: self.get_meetings(
                 u, MtgTime.PAST, peek=True
             ),
-            "<future_meetings>": lambda u: self.um.get_meetings(u, MtgTime.FUTURE),
-            "<past_meetings>": lambda u: self.um.get_meetings(u, MtgTime.PAST),
+            "<future_meetings>": lambda u: self.get_meetings(u, MtgTime.FUTURE),
+            "<past_meetings>": lambda u: self.get_meetings(u, MtgTime.PAST),
+            "<recommendations_sent>": self.get_recommendations,
+            "<recommendations_received>": partial(self.get_recommendations, sent=False),
+            "<recommendations_sent_peek>": partial(
+                self.get_recommendations, peek_=True
+            ),
+            "<recommendations_received_peek>": partial(
+                self.get_recommendations, sent=False, peek_=True
+            ),
+            "<recommendation_receiver_name>": lambda u: self.get_name_of(
+                self.users[u.selected_recommendation.receiver]
+                if u.selected_recommendation
+                else None
+            ),
+            "<recommended_person_name>": lambda u: self.get_name_of(
+                self.users[u.selected_recommendation.person]
+                if u.selected_recommendation
+                else None
+            ),
         }
 
     def start(self) -> None:
@@ -117,11 +137,13 @@ class OutputManager:
                 if user.can_go_back:
                     user.remove_last_screen()
                 await self.send_screen(user.last_screen, user)
-            case ScreenId.MEETINGS_AT_TIME__:
+            case ScreenId.BACK_UNTIL_STOP__:
                 user.remove_screens_until_stop()
-                ascreen = user.last_screen
-                assert ascreen is not None, "(Error 23) No screen found for the button!"
-                await self.send_screen(ascreen, user)
+                last_screen = user.last_screen
+                assert (
+                    last_screen is not None
+                ), "(Error 23) No screen found for the button!"
+                await self.send_screen(last_screen, user)
 
     async def refresh(self) -> None:
         while True:
@@ -166,6 +188,12 @@ class OutputManager:
                 return user.future_meetings
             case ScreenId.PAST_MEETINGS:
                 return user.past_meetings
+            case ScreenId.RECOMMEND_USER:
+                return user.mutual_interests
+            case ScreenId.RECOMMENDATIONS_SENT:
+                return user.recommendations_sent
+            case ScreenId.RECOMMENDATIONS_RECEIVED:
+                return user.recommendations_received
             case _:
                 return []
 
@@ -248,6 +276,65 @@ class OutputManager:
             f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
             f".: ***{u.name}*** :. (Job: *{u.job}*, Company: *{u.company}*)"
             for i, u in enumerate(self.um.get_results_for(user))
+        )
+
+    def get_meetings(
+        self, user: User, time: MtgTime, selected=False, peek=False
+    ) -> str:
+        meetings = {
+            MtgTime.FUTURE: sorted(user.future_meetings),
+            MtgTime.PAST: sorted(user.past_meetings, reverse=True),
+        }.get(time, [])
+
+        if selected and user.selected_user:
+            meetings = [m for m in meetings if m.partner_id == user.selected_user.id]
+        if not meetings:
+            return "***No meetings to show.***"
+
+        dots_needed = False
+        if peek:
+            dots_needed = len(meetings) > 5
+            meetings = meetings[:5]
+        else:
+            meetings = user.paged_list_of(meetings)
+
+        return "\n".join(
+            ("- " if peek else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
+            + f"**{m.date}**"
+            + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
+            for i, m in enumerate(meetings)
+        ) + ("\n**...**" if dots_needed else "")
+
+    def get_recommendations(
+        self, user: User, sent: bool = True, peek_: bool = False
+    ) -> str:
+        recommendations = (
+            user.recommendations_sent if sent else user.recommendations_received
+        )
+        if not recommendations:
+            return "***No recommendations to show.***"
+
+        dots_needed = False
+        if peek_:
+            dots_needed = len(recommendations) > 5
+            recommendations = recommendations[:5]
+        else:
+            recommendations = user.paged_list_of(recommendations)
+
+        return "\n".join(
+            ("- " if peek_ else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
+            + (
+                f"***{self.users[rec.person].name}*** "
+                + (
+                    f"to *{self.users[rec.receiver].name}*"
+                    if sent
+                    else f"by *{self.users[rec.sender].name}*"
+                )
+                + f" ({peek(rec.message)})"
+            )
+            + ("\n**...**" if dots_needed else "")
+            for i, rec in enumerate(recommendations)
+            if isinstance(rec, Recommendation)
         )
 
     def get_name_of(self, user: User | None) -> str:

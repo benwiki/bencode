@@ -60,7 +60,7 @@ DEFAULT_PRIO_ORDER = [
 ]
 PRIO_LIST_LENGTH = len(DEFAULT_PRIO_ORDER)
 
-SPECIAL_DESTINATIONS = (ScreenId.BACK__, ScreenId.MEETINGS_AT_TIME__)
+SPECIAL_DESTINATIONS = (ScreenId.BACK__, ScreenId.BACK_UNTIL_STOP__)
 
 NOT_ALPHANUMERIC = re.compile(r"\W+", re.UNICODE)
 ALPHANUMERIC = re.compile(r"\w+", re.UNICODE)
@@ -76,8 +76,7 @@ INCOMPLETE_PROFILE_WARNING = (
     "changed to invisible!*"
 )
 COMPLETE_PROFILE_HINT = (
-    "\n\nHINT: *You can change your status now, because your profile "
-    "is complete!*"
+    "\n\nHINT: *You can change your status now, because your profile " "is complete!*"
 )
 INVISIBLE_MSG = (
     "*You are currently 🟣 **Invisible**!*"
@@ -90,6 +89,8 @@ REACTION_PROPERTIES = [
     Property.BEST_MATCH_PRIO_ORDER,
     Property.SELECTED_USER,
     Property.MEETING,
+    Property.SEND_RECOMMENDATION,
+    Property.RECOMMENDATION,
 ]
 
 QUESTION_NAMES = {

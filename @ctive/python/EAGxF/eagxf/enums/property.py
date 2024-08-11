@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 
 class Property(Enum):
+    # === Simple user properties ===
     SELECTED_USER = auto()
     BEST_MATCH_PRIO_ORDER = auto()
     NAME = auto()
@@ -11,6 +12,7 @@ class Property(Enum):
     LANGUAGES = auto()
     KEYWORDS = auto()
     STATUS = auto()
+    # === Answers to questions ===
     ABOUT_ME = auto()
     CAN_HELP = auto()
     NEED_HELP = auto()
@@ -20,9 +22,12 @@ class Property(Enum):
     SEARCH_CAN_HELP = auto()
     SEARCH_NEED_HELP = auto()
     SEARCH_CONCERNS = auto()
+    # === Strange properties ===
     MEETING_REQUEST = auto()
     MEETING = auto()
     CHANGE_MEETING_DATE = auto()
+    SEND_RECOMMENDATION = auto()
+    RECOMMENDATION = auto()
 
     @staticmethod
     def search(thing: "Property") -> "Property":

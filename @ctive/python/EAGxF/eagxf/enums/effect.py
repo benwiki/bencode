@@ -15,3 +15,4 @@ class Effect(Enum):
     CANCEL_MEETING = auto()
     START_CALL = auto()
     CANCEL_CALL = auto()
+    CANCEL_RECOMMENDATION = auto()
