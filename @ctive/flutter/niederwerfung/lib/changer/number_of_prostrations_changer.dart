@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/amount_changer.dart';
-import 'package:niederwerfung/context_extensions.dart';
-import 'package:niederwerfung/prostrations_model.dart';
-import 'package:niederwerfung/utility.dart';
+import 'package:niederwerfung/changer/amount_changer.dart';
+import 'package:niederwerfung/core/context_extension.dart';
+import 'package:niederwerfung/model/prostrations_model.dart';
+import 'package:niederwerfung/core/utility.dart';
 import 'package:provider/provider.dart';
 
 class NumberOfProstrationsChanger extends StatefulWidget {
@@ -23,7 +23,6 @@ class _NumberOfProstrationsChangerState
   @override
   Widget build(BuildContext context) {
     final prostrationsModel = Provider.of<ProstrationsModel>(context);
-    print("changer rebuit ------------");
     
     return AmountChanger(
       title: "${context.text.numberOfProstrations}:",

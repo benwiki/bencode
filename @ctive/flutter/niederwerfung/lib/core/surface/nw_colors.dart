@@ -1,4 +1,4 @@
-import 'package:niederwerfung/app_colors.dart';
+import 'package:niederwerfung/core/surface/app_colors.dart';
 import 'package:flutter/material.dart';
 
 @immutable

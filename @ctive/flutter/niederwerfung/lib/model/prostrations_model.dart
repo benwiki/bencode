@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/utility.dart';
+import 'package:niederwerfung/core/utility.dart';
 
 class ProstrationsModel with ChangeNotifier {
-  double _numberOfProstrations = 0;
+  double _numberOfProstrations = 108;
 
   double get numberOfProstrations => _numberOfProstrations;
 
   void changeNumberOfProstrationsBy(double amount) {
-    _numberOfProstrations = constrain(_numberOfProstrations + amount, min: 1);
+    _numberOfProstrations = constrain(_numberOfProstrations + amount, min: 0);
   }
 
   void subtractOne() {

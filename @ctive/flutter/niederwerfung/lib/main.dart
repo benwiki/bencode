@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/app_theme.dart';
-import 'package:niederwerfung/chant_model.dart';
-import 'package:niederwerfung/context_extensions.dart';
+import 'package:niederwerfung/core/surface/app_theme.dart';
+import 'package:niederwerfung/model/chant_model.dart';
+import 'package:niederwerfung/core/context_extension.dart';
 import 'package:niederwerfung/homepage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:niederwerfung/prostrations_model.dart';
+import 'package:niederwerfung/model/gong_interval_model.dart';
+import 'package:niederwerfung/model/prostrations_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ProstrationsModel()),
         ChangeNotifierProvider(create: (_) => ChantModel()),
+        ChangeNotifierProvider(create: (_) => GongIntervalModel()),
       ],
       child: const NwApp(),
     ),

@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:niederwerfung/app_colors.dart';
-import 'package:niederwerfung/nw_colors.dart';
-import 'package:niederwerfung/nw_text_styles.dart';
-import 'package:niederwerfung/text_styles.dart';
+import 'package:niederwerfung/core/surface/app_colors.dart';
+import 'package:niederwerfung/core/surface/nw_colors.dart';
+import 'package:niederwerfung/core/surface/nw_text_styles.dart';
+import 'package:niederwerfung/core/surface/text_styles.dart';
 import 'package:niederwerfung/generated/fonts.gen.dart';
 
 const lightYellowOverlayStyle = SystemUiOverlayStyle(

@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/chant_model.dart';
-import 'package:niederwerfung/context_extensions.dart';
+import 'package:niederwerfung/model/chant_model.dart';
+import 'package:niederwerfung/core/context_extension.dart';
+import 'package:niederwerfung/model/gong_interval_model.dart';
 import 'package:provider/provider.dart';
 
 class ChantController extends StatefulWidget {
-  const ChantController({
-    required this.onSwitch,
-    super.key,
-  });
-
-  final Function(bool) onSwitch;
+  const ChantController({super.key});
 
   @override
   State<ChantController> createState() => _ChantControllerState();
 }
 
 class _ChantControllerState extends State<ChantController> {
-  
-
   @override
   Widget build(BuildContext context) {
     final textStyle =
@@ -63,13 +57,15 @@ class _ChantControllerState extends State<ChantController> {
       fontSize: 20,
       fontWeight: FontWeight.bold,
     );
-    final mantraText =
-        chantModel.chantIsOn ? context.text.mantraIsOn : context.text.mantraIsOff;
+    final mantraText = chantModel.chantIsOn
+        ? context.text.mantraIsOn
+        : context.text.mantraIsOff;
     return Text(mantraText, style: mantraTextStyle);
   }
 
   Widget _buildMantraSwitch(BuildContext context) {
     final chantModel = Provider.of<ChantModel>(context);
+    final gongIntervalModel = Provider.of<GongIntervalModel>(context);
 
     return Switch(
       activeTrackColor: context.appColors.greenMedium,
@@ -77,11 +73,18 @@ class _ChantControllerState extends State<ChantController> {
       activeColor: context.appColors.whiteStrong,
       inactiveThumbColor: context.appColors.whiteStrong,
       value: chantModel.chantIsOn,
-      onChanged: (value) {
-        setState(() {
-          chantModel.setChantState(value);
-          widget.onSwitch(value);
-        });
+      onChanged: (chantShouldBeOn) {
+        if (gongIntervalModel.gongInterval < 8 && chantShouldBeOn) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: context.appColors.blueDeep,
+            content: Text(context.text.mantraPaceWarning),
+            duration: const Duration(seconds: 3),
+          ));
+          chantModel.setChantState(false);
+        } else {
+          chantModel.setChantState(chantShouldBeOn);
+        }
+        setState(() {});
       },
     );
   }
