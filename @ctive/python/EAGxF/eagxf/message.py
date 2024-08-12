@@ -78,6 +78,7 @@ class Message:
     def add_button(self, button: DcButton) -> None:
         assert self.dc_view, "(Error 20) No view to add button to"
         self.dc_view.add_item(button)
+        print("Button added:", button)
 
     def remove_button(self, button: DcButton) -> None:
         assert self.dc_view, "(Error 21) No view to remove button from"

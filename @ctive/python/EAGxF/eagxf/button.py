@@ -53,7 +53,7 @@ class Button(DCButton):
             Button(
                 label=prop["label"],
                 emoji=prop["emoji"],
-                takes_to=ScreenId.search_or_edit(action, prop_id.to_str),
+                takes_to=ScreenId.action(action, prop_id.to_str),
                 # row=prop["row"],
             )
             for prop_id, prop in VISIBLE_SIMPLE_USER_PROPS.items()
@@ -61,13 +61,14 @@ class Button(DCButton):
         )
 
     @staticmethod
-    def question_buttons(action: str) -> Iterable["Button"]:
+    def question_buttons(action: str, row=None) -> Iterable["Button"]:
         """Returns a list of buttons for [questions]"""
         return (
             Button(
                 label=question["label"],
                 emoji=question["emoji"],
-                takes_to=ScreenId.search_or_edit(action, q_id.to_str),
+                takes_to=ScreenId.action(action, q_id.to_str),
+                row=row,
             )
             for q_id, question in QUESTION_NAMES.items()
         )

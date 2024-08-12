@@ -84,6 +84,8 @@ class OutputManager:
     async def send_starting_message_to(self, user: User) -> None:
         # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
         # await self.remove_past_messages(user)
+        if user.id == 329635441433116674:
+            return
         await self.send_screen(ScreenId.HOME, user)
 
     async def remove_past_messages(self, user: User) -> None:
@@ -189,7 +191,7 @@ class OutputManager:
             case ScreenId.PAST_MEETINGS:
                 return user.past_meetings
             case ScreenId.RECOMMEND_USER:
-                return user.mutual_interests
+                return user.recommendables
             case ScreenId.RECOMMENDATIONS_SENT:
                 return user.recommendations_sent
             case ScreenId.RECOMMENDATIONS_RECEIVED:
