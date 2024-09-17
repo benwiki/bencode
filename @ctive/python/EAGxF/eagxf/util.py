@@ -2,8 +2,10 @@
 Programming utilities.
 """
 
+from datetime import datetime
 import discord
 from eagxf.typedefs import DcClient
+from eagxf.constants import NUM_NAME
 
 GUILD_ID = 1199560998328205452
 
@@ -38,8 +40,6 @@ def intersect(a: list, b: list) -> list:
 
 def to_emojis(number: int) -> str:
     """Converts a number to emojis. E.g. 123 -> ":one::two::three:"""
-    from eagxf.constants import NUM_NAME
-
     return "".join(f":{NUM_NAME[int(n)]}:" for n in str(number))
 
 
@@ -56,3 +56,7 @@ def peek(text: str):
     if len(text) > 100:
         return f"{text[:101]}..."
     return text
+
+
+def timestamp():
+    return datetime.now().strftime("[%Y.%m.%d. %H:%M:%S]")

@@ -30,6 +30,10 @@ class ScreenId(Enum):
     DELETE_MEETING_CONFIRM = auto()
     FUTURE_MEETINGS = auto()
     PAST_MEETINGS = auto()
+    SEE_ABOUT_ME = auto()
+    SEE_CAN_HELP = auto()
+    SEE_NEED_HELP = auto()
+    SEE_CONCERNS = auto()
     EDIT_ABOUT_ME = auto()
     EDIT_CAN_HELP = auto()
     EDIT_NEED_HELP = auto()
@@ -64,12 +68,16 @@ class ScreenId(Enum):
     BACK_UNTIL_STOP__ = auto()
 
     @staticmethod
+    def edit(thing: str) -> "ScreenId":
+        return EDIT_SCREEN[thing]
+
+    @staticmethod
     def search(thing: str) -> "ScreenId":
         return SEARCH_SCREEN[thing]
 
     @staticmethod
-    def edit(thing: str) -> "ScreenId":
-        return EDIT_SCREEN[thing]
+    def see(thing: str) -> "ScreenId":
+        return SEE_SCREEN[thing]
 
     @staticmethod
     def confirm(erase_type: str) -> "ScreenId":
@@ -80,12 +88,14 @@ class ScreenId(Enum):
         return MEETINGS_TIME[meeting_time]
 
     @staticmethod
-    def search_or_edit(action: str, thing: str) -> "ScreenId":
+    def action(action: str, thing: str) -> "ScreenId":
         match action:
             case "edit":
                 return ScreenId.edit(thing)
             case "search":
                 return ScreenId.search(thing)
+            case "see":
+                return ScreenId.see(thing)
             case _:
                 raise RuntimeError("`action` invalid!")
 
@@ -114,6 +124,13 @@ EDIT_SCREEN = {
     "location": ScreenId.EDIT_LOCATION,
     "languages": ScreenId.EDIT_LANGUAGES,
     "keywords": ScreenId.EDIT_KEYWORDS,
+}
+
+SEE_SCREEN = {
+    "about_me": ScreenId.SEE_ABOUT_ME,
+    "can_help": ScreenId.SEE_CAN_HELP,
+    "need_help": ScreenId.SEE_NEED_HELP,
+    "concerns": ScreenId.SEE_CONCERNS,
 }
 
 MEETINGS_TIME = {

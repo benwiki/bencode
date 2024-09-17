@@ -2,9 +2,7 @@ from typing import Callable
 
 import discord
 
-from eagxf.button import Button
 from eagxf.constants import NUM_EMOJI, PAGE_STEP, REACTION_PROPERTIES
-from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
@@ -34,20 +32,6 @@ class ReactionInputManager:
         )
         self.reaction_funcs = dict(zip(REACTION_PROPERTIES, self.reaction_func_list))
 
-        self.save_btn = Button(
-            label="💾 Save",
-            takes_to=ScreenId.BEST_MATCHES,
-            effects=[
-                Effect.SAVE_BEST_MATCHES,
-                Effect.DELETE_MESSAGE,
-                Effect.RESET_NEW_PRIO_ORDER,
-            ],
-            style=discord.ButtonStyle.green,
-        )
-        self.save_btn.callback = self.opm.get_callback_to_screen(  # type: ignore
-            ScreenId.BEST_MATCHES, button=self.save_btn
-        )
-
     async def handle_added_reaction(
         self, reaction: discord.RawReactionActionEvent
     ) -> None:
@@ -61,7 +45,6 @@ class ReactionInputManager:
         if user.dc_message and reaction.message_id == user.dc_message.id:
             if handle_reaction := self.reaction_funcs.get(prop_to_change):
                 await handle_reaction(user, reaction.emoji.name)
-                user.change = None
 
     async def handle_removed_reaction(
         self, reaction: discord.RawReactionActionEvent
@@ -69,7 +52,6 @@ class ReactionInputManager:
         user = self.users.get(reaction.user_id)
         if not user:
             return
-
         if user.dc_message and reaction.message_id == user.dc_message.id:
             if user.change == Property.BEST_MATCH_PRIO_ORDER:
                 await self.handle_best_match_prio_order(
@@ -98,6 +80,7 @@ class ReactionInputManager:
             "<plus_info>": "",
         }
         await self.opm.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
+        user.change = None
         user.save()
 
     # ====================================================================== #
@@ -106,21 +89,8 @@ class ReactionInputManager:
     ) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
-
-        if remove:
-            user.best_match_prio_order_new.remove(num - 1)
-        else:
-            user.best_match_prio_order_new.append(num - 1)
-
-        none_selected = user.best_match_prio_order_new == []
-
-        if remove and none_selected:
-            user.remove_button_from_message(self.save_btn)
-            user.has_save_btn = False
-        elif not remove and not user.has_save_btn:
-            user.add_button_to_message(self.save_btn)
-            user.has_save_btn = True
-
+        add_or_remove = (list.remove if remove else list.append)
+        add_or_remove(user.best_match_prio_order_new, num - 1)
         await self.opm.send_screen(ScreenId.CHANGE_BEST_MATCHES_PRIORITY, user)
 
     def validate_number_reaction(self, emoji_name: str, user: User) -> int | None:
@@ -139,6 +109,7 @@ class ReactionInputManager:
         user.selected_user = self.users[selected_user_id]
         await user.delete_message()
         await self.opm.send_screen(ScreenId.SELECTED_USER, user)
+        user.change = None
 
     # ====================================================================== #
     async def handle_meeting(self, user: User, emoji: str) -> None:
@@ -150,6 +121,7 @@ class ReactionInputManager:
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.delete_message()
         await self.opm.send_screen(ScreenId.EDIT_MEETING, user)
+        user.change = None
 
     # ====================================================================== #
     async def handle_send_recommendation(self, user: User, emoji: str) -> None:
@@ -171,13 +143,15 @@ class ReactionInputManager:
             "<connection_name>": receiver.name,
         }
         await self.opm.send_screen(ScreenId.SUCCESSFUL_RECOMMENDATION, user)
+        user.change = None
 
     # ====================================================================== #
     async def handle_recommendation(self, user: User, emoji: str) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
         recommendation: Recommendation = user.get_result_by_number(num)
-        user.selected_user = self.users[recommendation.person]
+        user.selected_user = self.users[recommendation.receiver]
         user.selected_recommendation = recommendation
         await user.delete_message()
         await self.opm.send_screen(ScreenId.RECOMMENDATION, user)
+        user.change = None

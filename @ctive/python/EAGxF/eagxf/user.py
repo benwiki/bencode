@@ -243,13 +243,19 @@ class User:
         self.best_match_prio_order_new = new_order
         self.save()
 
-    def format_priority_order(self, new: bool = False) -> str:
+    def format_priority_order(self, mode: str = "") -> str:
         """Returns the best match priority order of the user in a formatted way."""
-        order = self.best_match_prio_order_new if new else self.best_match_prio_order
-        things = range(2, PRIO_LIST_LENGTH + 1)
-        return ("1. " if order else "") + "\n{}. ".join(
-            DEFAULT_PRIO_ORDER[i] for i in order
-        ).format(*things)
+        order = self.best_match_prio_order
+        strike = ""
+        if mode == "new":
+            order = self.best_match_prio_order_new
+        elif mode == "omitted":
+            order = [i for i in range(PRIO_LIST_LENGTH) if i not in order]
+            strike = "~~"
+        return "\n".join(
+            f"{k+1}. {strike}{DEFAULT_PRIO_ORDER[i]}{strike}"
+            for k, i in enumerate(order)
+        )
 
     def get_status(self, u: "User") -> Status:
         """Returns the status of the user."""
@@ -413,13 +419,11 @@ class User:
 
     def cancel_selected_recommendation(self):
         assert self.selected_user is not None, "(Error 15) No selected user"
-        self.recommendations.remove_by_sender_and_receiver(
-            self.id, self.selected_user.id
-        )
-        self.selected_user.recommendations.remove_by_sender_and_receiver(
-            self.id, self.selected_user.id
-        )
-        self.selected_user.save()
+        self.remove_recommendation(self.selected_recommendation)
+        self.selected_user.remove_recommendation(self.selected_recommendation)
+
+    def remove_recommendation(self, recommendation: Recommendation):
+        self.recommendations.remove(recommendation)
         self.save()
 
     def get_members_role_and_channel(self, client: DcClient):
@@ -451,6 +455,14 @@ class User:
     @property
     def mutual_interests(self) -> list[int]:
         return intersect(self.interests.sent, self.interests.received)
+
+    @property
+    def recommendables(self) -> list[int]:
+        return [
+            user_id
+            for user_id in self.mutual_interests
+            if not (self.selected_user and user_id == self.selected_user.id)
+        ]
 
     @property
     def interest_sent_to_selected(self) -> bool:
@@ -580,6 +592,8 @@ class User:
                 return self.page < (len(self.results) - 1) // PAGE_STEP
             case ButtonCond.PRIO_ORDER_FULL:
                 return len(self.best_match_prio_order_new) == PRIO_LIST_LENGTH
+            case ButtonCond.CAN_SAVE:
+                return self.best_match_prio_order_new
         print(f"(Error 5) Invalid condition: {condition}")
         return False
 
@@ -591,8 +605,9 @@ class User:
             .replace("<date_joined>", str(self.date_joined))
             .replace("<status>", str(self.status))
             .replace("<number_of_results>", str(len(self.results)))
-            .replace("<prio_order_new>", self.format_priority_order(new=True))
+            .replace("<prio_order_new>", self.format_priority_order("new"))
             .replace("<prio_order>", self.format_priority_order())
+            .replace("<prio_order_omitted>", self.format_priority_order("omitted"))
             .replace("<num_of_interests_sent>", str(len(sent)))
             .replace("<num_of_interests_received>", str(len(received)))
             .replace("<num_of_mutual_interests>", str(len(self.mutual_interests)))
@@ -616,11 +631,16 @@ class User:
                 str(len(self.recommendations.received(self.id))),
             )
         )
-        prefixes: dict[str, User] = {"": self}
+        prefixes: dict[str, User] = {
+            "": self,
+            "selected_": self.selected_user,
+        }
         if _filter := self.search_filter:
             prefixes["search_"] = _filter
             text = text.replace("<search_status>", _filter.get_search_status())
         for prefix, user in prefixes.items():
+            if not user:
+                continue
             for q in QUESTION_NAMES:
                 subtext = user.questions[q]
                 text = text.replace(f"<{prefix}{q}_peek>", peek(subtext))

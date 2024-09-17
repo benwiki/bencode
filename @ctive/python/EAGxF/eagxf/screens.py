@@ -162,8 +162,10 @@ SCREENS: dict[ScreenId, Screen] = {
             "\n***Click a number-reaction "
             f"({NUM_EMOJI[0]} - {NUM_EMOJI[PRIO_LIST_LENGTH - 1]}) "
             "to add the corresponding element to your new order!***"
-            f"\nIf you select {PRIO_LIST_LENGTH - 1} or less elements, "
+            f"\n\nIf you select {PRIO_LIST_LENGTH - 1} or less elements, "
             "the omitted ones won't be considered in the matching process."
+            "\n\n__Currently omitted parameters:__"
+            "\n<prio_order_omitted>"
             "\n\n__Your current order:__"
             "\n<prio_order>"
             "\n\n__The default order to select from:__"
@@ -185,6 +187,17 @@ SCREENS: dict[ScreenId, Screen] = {
                 label="🔄 Reset",
                 takes_to=ScreenId.CHANGE_BEST_MATCHES_PRIORITY,
                 style=ButtonStyle.red,
+            ),
+            Button(
+                label="💾 Save",
+                takes_to=ScreenId.BEST_MATCHES,
+                effects=[
+                    Effect.SAVE_BEST_MATCHES,
+                    Effect.DELETE_MESSAGE,
+                    Effect.RESET_NEW_PRIO_ORDER,
+                ],
+                style=discord.ButtonStyle.green,
+                conditions=[ButtonCond.CAN_SAVE],
             ),
             *Button.back_home(row=1),
         ],
@@ -293,12 +306,13 @@ SCREENS: dict[ScreenId, Screen] = {
                 conditions=[ButtonCond.CAN_CANCEL_CALL],
                 effects=[Effect.CANCEL_CALL],
             ),
+            *Button.question_buttons("see", row=1),
             Button(
                 label="👆 Recommend to a connection",
                 takes_to=ScreenId.RECOMMEND_USER,
-                row=1,
+                row=2,
             ),
-            *Button.back_home(row=2),
+            *Button.back_home(row=3),
         ],
         stop_screen=True,
     ),
@@ -403,6 +417,7 @@ SCREENS: dict[ScreenId, Screen] = {
             content="<mutual_interests>",
         ),
         changed_property=Property.SEND_RECOMMENDATION,
+        buttons=[*Button.back_home()],
         paged=True,
     ),
     ScreenId.RECOMMENDATIONS: Screen(
@@ -437,13 +452,13 @@ SCREENS: dict[ScreenId, Screen] = {
         stop_screen=True,
     ),
     ScreenId.SUCCESSFUL_RECOMMENDATION: Screen(
-        message="✅ Successfully recommended ***<recommended_user_name>*** to ***<connection_name>***!",
+        message="✅ Successfully recommended ***<recommended_user_name>*** to *<connection_name>*!",
         buttons=[*Button.ok_home()],
         spacer=False,
     ),
     ScreenId.RECOMMENDATION: Screen(
         message="You have selected a recommendation, where you recommended "
-        "***<recommendation_receiver_name>*** to *<recommended_person_name>*."
+        "***<recommended_person_name>*** to *<recommendation_receiver_name>*."
         "\n\nWhat do you want to do with this recommendation?",
         buttons=[
             Button(
@@ -452,7 +467,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 # conditions=[ButtonCond.CAN_CANCEL_RECOMMENDATION],
             ),
             Button(
-                label="👤 Recommended person's profile",
+                label="👤 Receiver's profile",
                 takes_to=ScreenId.SELECTED_USER,
                 style=ButtonStyle.primary,
             ),
@@ -461,7 +476,7 @@ SCREENS: dict[ScreenId, Screen] = {
     ),
     ScreenId.CANCEL_RECOMMENDATION_CONFIRM: Screen(
         message="Are you sure you want to cancel the recommendation of "
-        "***<recommendation_receiver_name>*** to *<recommended_person_name>*?",
+        "***<recommended_person_name>*** to *<recommendation_receiver_name>*?",
         buttons=[
             Button(label="No", takes_to=ScreenId.RECOMMENDATION),
             Button(
@@ -504,7 +519,7 @@ SCREENS: dict[ScreenId, Screen] = {
     },
     **{  # Edit questions
         ScreenId.edit(q_id.to_str): Screen(
-            message=f"Your current answer to **'{question['text']}'** is:\n*<{q_id}>*"
+            message=f"Your current answer to **{question['text']}** is:\n\n*<{q_id}>*"
             "\n\nWhat do you want to change it to?",
             changed_property=q_id,
             buttons=[*Button.back_home()],
@@ -515,7 +530,7 @@ SCREENS: dict[ScreenId, Screen] = {
         ScreenId.edit(prop_id.to_str): Screen(
             message=f"Your current {prop_id} "
             f"{'are' if prop['comma_separated'] else 'is'}"
-            f":\n*<{prop_id}>*"
+            f":\n\n*<{prop_id}>*"
             f"\n\nWhat do you want to change your {prop_id} to?"
             + (
                 f"\n(Comma separated, e.g. {prop['example']})"
@@ -531,7 +546,7 @@ SCREENS: dict[ScreenId, Screen] = {
         ScreenId.search(prop_id.to_str): Screen(
             message=f"What {prop_id} do you want to search for?"
             + COMMA_SEPARATED_MAP.get(prop_id, "")
-            + f"\n\nCurrent filter:\n*<search_{prop_id}>*"
+            + f"\n\nCurrent filter:\n\n*<search_{prop_id}>*"
             "\n\nType ? to search for any.",
             changed_property=Property.search(prop_id),
             buttons=[*Button.back_home()],
@@ -541,11 +556,19 @@ SCREENS: dict[ScreenId, Screen] = {
     **{  # Search questions
         ScreenId.search(q_id.to_str): Screen(
             message=f"What keywords do you want to search for in the answers to the question:"
-            f"\n**'{question['text']}'**"
+            f"\n**{question['text']}**"
             f"{COMMA_AND_SEPARATED}"
-            f"\n\nCurrent filter:\n*<search_{q_id}>*"
+            f"\n\nCurrent filter:\n\n*<search_{q_id}>*"
             "\n\nType ? to search for any keyword.",
             changed_property=Property.search(q_id),
+            buttons=[*Button.back_home()],
+        )
+        for q_id, question in QUESTION_NAMES.items()
+    },
+    **{  # See questions
+        ScreenId.see(q_id.to_str): Screen(
+            message=f"***<selected_user_name>***'s answer to **{question['text']}** "
+            f"is:\n\n*<selected_{q_id}>*",
             buttons=[*Button.back_home()],
         )
         for q_id, question in QUESTION_NAMES.items()

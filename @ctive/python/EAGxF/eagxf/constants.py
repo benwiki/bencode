@@ -3,15 +3,14 @@ import re
 from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
-from eagxf.util import invert_dict
 
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-# TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
-# USERS_FOLDER_PATH = "/Users/benke/Dev"
-TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
-USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
+USERS_FOLDER_PATH = "/Users/benke/Dev"
+# TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
+# USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
 DEBUGGING = True
@@ -45,7 +44,6 @@ NUM_NAME = {
     9: "nine",
     0: "zero",
 }
-NAME_NUM = invert_dict(NUM_NAME)
 
 NUM_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "0️⃣"]
 
@@ -76,7 +74,7 @@ INCOMPLETE_PROFILE_WARNING = (
     "changed to invisible!*"
 )
 COMPLETE_PROFILE_HINT = (
-    "\n\nHINT: *You can change your status now, because your profile " "is complete!*"
+    "\n\nHINT: *You can change your status now, because your profile is complete!*"
 )
 INVISIBLE_MSG = (
     "*You are currently 🟣 **Invisible**!*"
