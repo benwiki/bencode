@@ -22,7 +22,8 @@ currentMouseX, currentMouseY = (
 )  # Returns two integers, the x and y of the mouse cursor's current position.
 sleep(2)
 time = 0.5
-for i in range(170, 201):
+click = True
+for i in range(202, 249):
     # pyautogui.moveTo(850, 120)  # Move the mouse to the x, y coordinates 100, 150.
     # pyautogui.click()
     # sleep(0.3)
@@ -34,12 +35,13 @@ for i in range(170, 201):
     # pyautogui.moveTo(360, 285)
     # pyautogui.moveTo(360, 335)
     # pyautogui.moveTo(360, 430)
-    pyautogui.moveTo(360, 480)
-    pyautogui.click()
+    # pyautogui.moveTo(360, 480)
+    pyautogui.moveTo(360, 570)
+    if click: pyautogui.click()
     sleep(time)
     # Go to "Voice"
     pyautogui.moveTo(1200, 500)
-    pyautogui.click()
+    if click: pyautogui.click()
     # sleep(time)
     # Go to text field
     pyautogui.typewrite("\t")
@@ -50,19 +52,19 @@ for i in range(170, 201):
     sleep(time)
     # Go to "private channel"
     pyautogui.moveTo(1200, 680)
-    pyautogui.click()
+    if click: pyautogui.click()
     sleep(time)
     # Go to "next"
     pyautogui.moveTo(1170, 800)
-    pyautogui.click()
+    if click: pyautogui.click()
     sleep(time)
     pyautogui.typewrite(f"channel-{i}-role")
     sleep(time)
     # Go to the top role
     pyautogui.moveTo(705, 463)
-    pyautogui.click()
+    if click: pyautogui.click()
     sleep(time)
     # Go to "create channel"
     pyautogui.moveTo(1150, 830)
-    pyautogui.click()
+    if click: pyautogui.click()
     sleep(time*2)
