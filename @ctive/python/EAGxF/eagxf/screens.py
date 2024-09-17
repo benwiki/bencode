@@ -140,9 +140,9 @@ SCREENS: dict[ScreenId, Screen] = {
     ScreenId.BEST_MATCHES: Screen(
         message="✨ **Best matches**"
         "\n\nHere we have sorted all current users according to how well they match your interests"
-        " and expertise. Feel free to browse and correct us if you find that our algorithm"
-        " doesn't bring you the most suitable people!"
-        "\n\n**Results**\n" + PAGE_REFERENCE("select a user", "<best_matches>"),
+        " and expertise. Please let us know if our algorithm"
+        " doesn't bring you the most suitable people!\n\n"
+        + PAGE_REFERENCE("select a user", "<best_matches>"),
         paged=True,
         buttons=[
             Button.back(row=1),
@@ -174,7 +174,7 @@ SCREENS: dict[ScreenId, Screen] = {
                 *NUM_EMOJI[1:PRIO_LIST_LENGTH]
             )
             + "\n\n__Your new order:__"
-            "\n<prio_order_new>\n" + r"\_" * 50
+            "\n<prio_order_new>\n" + r"\_" * 40
         ),
         after_button_effects=[
             Effect.DELETE_MESSAGE,

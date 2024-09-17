@@ -13,7 +13,7 @@ USERS_FOLDER_PATH = "/Users/benke/Dev"
 # USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
-DEBUGGING = True
+DEBUGGING = False
 
 ADMINS = (
     348976146689294336,
@@ -23,7 +23,7 @@ ADMINS = (
 
 SPACER = (
     f"Welcome to {APP_NAME}!\n\nScroll down "
-    + ":arrow_down: " * 3
+    + "⬇️ " * 3
     + "if you see this!"
     + "\n" * 50
 )

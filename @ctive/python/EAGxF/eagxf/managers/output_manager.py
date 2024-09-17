@@ -34,14 +34,14 @@ class OutputManager:
         self.users = um.users
 
         self.replace_funcs: dict[str, Callable[[User], str]] = {
-            "<search_results>": self.get_formatted_results_for,
-            "<best_matches>": self.get_formatted_results_for,
+            "<search_results>": self.get_short_profiles,
+            "<best_matches>": self.get_short_profiles,
             # lambda u: self.get_formatted_results_for(
             #     u, additional=u.get_score_summary
             # ),
-            "<interests_sent>": self.get_interests,
-            "<interests_received>": self.get_interests,
-            "<mutual_interests>": self.get_interests,
+            "<interests_sent>": self.get_short_profiles,
+            "<interests_received>": self.get_short_profiles,
+            "<mutual_interests>": self.get_short_profiles,
             "<selected_user_name>": lambda u: self.get_name_of(u.selected_user),
             "<selected_user_profile>": self.selected_user_profile,
             "<selected_user_meetings>": lambda u: self.get_meetings(
@@ -84,8 +84,9 @@ class OutputManager:
     async def send_starting_message_to(self, user: User) -> None:
         # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
         # await self.remove_past_messages(user)
-        if user.id == 329635441433116674:
-            return
+        # if user.id == 329635441433116674:
+        #     # await user.delete_message()
+        #     return
         await self.send_screen(ScreenId.HOME, user)
 
     async def remove_past_messages(self, user: User) -> None:
@@ -95,6 +96,8 @@ class OutputManager:
                     user.dc_message and msg.id == user.dc_message.id
                 ):
                     await msg.delete()
+                elif user.dc_message and msg.id == user.dc_message.id:
+                    return
 
     def init_screens(self) -> None:
         for screen_id, screen in SCREENS.items():
@@ -271,12 +274,12 @@ class OutputManager:
             for i, u in enumerate(self.um.get_results_for(user))
         )
 
-    def get_interests(self, user: User) -> str:
+    def get_short_profiles(self, user: User) -> str:
         if not user.results:
             return "***No interests to show.***"
         return "\n".join(
             f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
-            f".: ***{u.name}*** :. (Job: *{u.job}*, Company: *{u.company}*)"
+            f"{u.name} {STATUS_EMOJI[u.status]}\n- Job: {u.job}\n- Company: {u.company}\n"
             for i, u in enumerate(self.um.get_results_for(user))
         )
 
