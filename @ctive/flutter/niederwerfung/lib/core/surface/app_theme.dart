@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:niederwerfung/core/surface/app_colors.dart';
-import 'package:niederwerfung/core/surface/nw_colors.dart';
-import 'package:niederwerfung/core/surface/nw_text_styles.dart';
-import 'package:niederwerfung/core/surface/text_styles.dart';
-import 'package:niederwerfung/generated/fonts.gen.dart';
+import 'package:prostrationcounter/core/surface/app_colors.dart';
+import 'package:prostrationcounter/core/surface/nw_colors.dart';
+import 'package:prostrationcounter/core/surface/nw_text_styles.dart';
+import 'package:prostrationcounter/core/surface/text_styles.dart';
+import 'package:prostrationcounter/generated/fonts.gen.dart';
 
 const lightYellowOverlayStyle = SystemUiOverlayStyle(
   statusBarIconBrightness: Brightness.dark,
@@ -54,7 +54,7 @@ final appTheme = ThemeData(
     selectionHandleColor: Colors.black,
   ),
   navigationBarTheme: NavigationBarThemeData(
-    labelTextStyle: MaterialStateProperty.all(
+    labelTextStyle: WidgetStateProperty.all(
       const TextStyle(
         fontFamily: FontFamily.lalezar,
         fontSize: 14,
@@ -63,10 +63,10 @@ final appTheme = ThemeData(
   ),
   datePickerTheme: DatePickerThemeData(
     backgroundColor: AppColors.beecoBgMain,
-    todayBackgroundColor: const MaterialStatePropertyAll(AppColors.beecoYellow),
+    todayBackgroundColor: const WidgetStatePropertyAll(AppColors.beecoYellow),
     todayBorder: BorderSide.none,
     rangeSelectionBackgroundColor: Colors.amber,
-    todayForegroundColor: const MaterialStatePropertyAll(Colors.black),
+    todayForegroundColor: const WidgetStatePropertyAll(Colors.black),
     cancelButtonStyle: TextButton.styleFrom(
       foregroundColor: AppColors.blackStrong,
     ),

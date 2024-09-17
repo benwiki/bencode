@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/core/context_extension.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
 
 class AmountChanger extends StatelessWidget {
   final Function(double) changeAmountBy;

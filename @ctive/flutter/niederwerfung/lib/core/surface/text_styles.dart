@@ -1,4 +1,4 @@
-import 'package:niederwerfung/generated/fonts.gen.dart';
+import 'package:prostrationcounter/generated/fonts.gen.dart';
 import 'package:flutter/material.dart';
 
 abstract final class TextStyles {

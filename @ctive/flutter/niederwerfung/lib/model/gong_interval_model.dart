@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/core/utility.dart';
+import 'package:prostrationcounter/core/utility.dart';
 
 class GongIntervalModel with ChangeNotifier {
   double _gongInterval = 10;

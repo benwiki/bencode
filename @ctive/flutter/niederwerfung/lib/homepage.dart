@@ -6,21 +6,20 @@ Rules:
 
 
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/element/button/start_button.dart';
-import 'package:niederwerfung/element/sidedrawer_element.dart';
-import 'package:niederwerfung/changer/gong_interval_changer.dart';
-import 'package:niederwerfung/chant_controller.dart';
-import 'package:niederwerfung/core/context_extension.dart';
-import 'package:niederwerfung/changer/number_of_prostrations_changer.dart';
+import 'package:prostrationcounter/element/button/start_button.dart';
+import 'package:prostrationcounter/element/sidedrawer_element.dart';
+import 'package:prostrationcounter/changer/gong_interval_changer.dart';
+import 'package:prostrationcounter/chant_controller.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
+import 'package:prostrationcounter/changer/number_of_prostrations_changer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor: context.appColors.blueDeep,
+      backgroundColor: context.appColors.blueStrong,
       drawerScrimColor: Colors.black.withOpacity(0.8),
       appBar: _buildAppBar(context),
       body: _buildBody(context),

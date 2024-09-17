@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/changer/amount_changer.dart';
-import 'package:niederwerfung/core/context_extension.dart';
-import 'package:niederwerfung/core/utility.dart';
-import 'package:niederwerfung/model/chant_model.dart';
-import 'package:niederwerfung/model/gong_interval_model.dart';
+import 'package:prostrationcounter/changer/amount_changer.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
+import 'package:prostrationcounter/model/chant_model.dart';
+import 'package:prostrationcounter/model/gong_interval_model.dart';
 import 'package:provider/provider.dart';
 
 class GongIntervalChanger extends StatefulWidget {
@@ -29,7 +28,7 @@ class _GongIntervalChangerState extends State<GongIntervalChanger> {
       title: "${context.text.gongInterval}:",
       unit: context.text.sec,
       amountChangerValues: const [
-        [-0.1, 0.1],
+        // [-0.1, 0.1],
         [-1, 1],
         [-10, 10]
       ],

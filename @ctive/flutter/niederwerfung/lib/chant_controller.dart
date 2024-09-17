@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/model/chant_model.dart';
-import 'package:niederwerfung/core/context_extension.dart';
-import 'package:niederwerfung/model/gong_interval_model.dart';
+import 'package:prostrationcounter/model/chant_model.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
+import 'package:prostrationcounter/model/gong_interval_model.dart';
 import 'package:provider/provider.dart';
 
 class ChantController extends StatefulWidget {
@@ -14,14 +14,12 @@ class ChantController extends StatefulWidget {
 class _ChantControllerState extends State<ChantController> {
   @override
   Widget build(BuildContext context) {
-    final textStyle =
-        TextStyle(color: context.appColors.whiteStrong, fontSize: 20);
 
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: context.appColors.blueStrong,
+        color: context.appColors.whiteStrong,
       ),
       child: Padding(
           padding: const EdgeInsets.only(left: 30),
@@ -36,12 +34,12 @@ class _ChantControllerState extends State<ChantController> {
                 ],
               ),
               const SizedBox(height: 15),
-              Row(
-                children: [
-                  Text("${context.text.title}:", style: textStyle),
-                ],
-              ),
-              const SizedBox(height: 20),
+              // Row(
+              //   children: [
+              //     Text("${context.text.title}:", style: textStyle),
+              //   ],
+              // ),
+              // const SizedBox(height: 20),
             ],
           )),
     );
@@ -50,8 +48,8 @@ class _ChantControllerState extends State<ChantController> {
   Widget _buildMantraText(BuildContext context) {
     final chantModel = Provider.of<ChantModel>(context);
 
-    final offColor = context.appColors.redVivid;
-    final onColor = context.appColors.greenVivid;
+    final offColor = context.appColors.blueStrong;
+    final onColor = context.appColors.greenMedium;
     final mantraTextStyle = TextStyle(
       color: chantModel.chantIsOn ? onColor : offColor,
       fontSize: 20,
@@ -69,7 +67,7 @@ class _ChantControllerState extends State<ChantController> {
 
     return Switch(
       activeTrackColor: context.appColors.greenMedium,
-      inactiveTrackColor: context.appColors.blueDeep,
+      inactiveTrackColor: context.appColors.blueStrong,
       activeColor: context.appColors.whiteStrong,
       inactiveThumbColor: context.appColors.whiteStrong,
       value: chantModel.chantIsOn,

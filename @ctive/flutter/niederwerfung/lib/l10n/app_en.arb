@@ -13,5 +13,12 @@
   "start": "Start",
   "stop": "STOP",
   "mantraPaceWarning": "Gong interval is too short for mantra. At least 8 seconds are required.",
-  "gongIntervalWarning": "Gong interval is too short for mantra. At least 8 seconds are required. Mantra turned off."
+  "gongIntervalWarning": "Gong interval is too short for mantra. At least 8 seconds are required. Mantra turned off.",
+  "support": "I want to support the development",
+  "supportTitle": "Support",
+  "supportText": "If you want to give feedback about the app, or you have ideas, please contact me on this email address:\n[govindapp@proton.me;mailto:govindapp@proton.me]\n\nIf you like the app, please please consider donating via PayPal:\n[paypal.me/benkex;https://paypal.me/benkex]\n\nEven 1€ (1$) helps.",
+  "back": "Back",
+  "specialThanks": "Special thanks",
+  "specialThanksText": "Special thanks to all the people and organizations listed here!",
+  "singingBowl_1": "The sound comes from [SoundEffectStudio;https://www.youtube.com/@SoundEffectStudioNo.1], the link to the video: [Singing Bowl (Deep Sound) - Sound Effect;https://youtu.be/y96ARieC9HY]."
 }

@@ -1,14 +1,21 @@
 {
-    "appName": "Niederwerfungen",
-    "homeScreenName": "Niederwerfungen",
+    "appName": "Verneigungen",
+    "homeScreenName": "Verneigungen",
     "gongInterval": "Gong-Intervall",
     "sec": "Sek.",
-    "numberOfProstrations": "Anzahl der Niederwerfungen",
+    "numberOfProstrations": "Anzahl der Verneigungen",
     "mantraIsOn": "Mantra eingeschaltet",
     "mantraIsOff": "Mantra ausgeschaltet",
     "title": "Titel",
     "start": "Start",
     "stop": "STOP",
     "mantraPaceWarning": "Gong-Intervall ist zu kurz für Mantra. Mindestens 8 Sekunden sind erforderlich.",
-    "gongIntervalWarning": "Gong-Intervall ist zu kurz für Mantra. Mindestens 8 Sekunden sind erforderlich. Mantra ausgeschaltet."
+    "gongIntervalWarning": "Gong-Intervall ist zu kurz für Mantra. Mindestens 8 Sekunden sind erforderlich. Mantra ausgeschaltet.",
+    "support": "Ich möchte die Entwicklung unterstützen",
+    "supportTitle": "Unterstützung",
+    "supportText": "Wenn Sie Feedback zur App geben möchten oder Ideen haben, kontaktieren Sie mich bitte unter dieser E-Mail-Adresse:\n[govindapp@proton.me;mailto:govindapp@proton.me]\n\nWenn Ihnen die App gefällt, erwägen Sie bitte eine Spende über PayPal:\n[paypal.me/benkex;https://paypal.me/benkex]\n\nAuch 1€ hilft.",
+    "back": "Zurück",
+    "specialThanks": "Besonderer Dank",
+    "specialThanksText": "Besonderer Dank an alle die hier aufgelisteten Menschen und Organisationen!",
+    "singingBowl_1": "Der Klang kommt von [SoundEffectStudio;https://www.youtube.com/@SoundEffectStudioNo.1], der Link zum Video: [Singing Bowl (Deep Sound) - Sound Effect;https://youtu.be/y96ARieC9HY]."
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/core/surface/app_theme.dart';
-import 'package:niederwerfung/model/chant_model.dart';
-import 'package:niederwerfung/core/context_extension.dart';
-import 'package:niederwerfung/homepage.dart';
+import 'package:prostrationcounter/core/surface/app_theme.dart';
+import 'package:prostrationcounter/core/utility.dart';
+import 'package:prostrationcounter/model/chant_model.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
+import 'package:prostrationcounter/homepage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:niederwerfung/model/gong_interval_model.dart';
-import 'package:niederwerfung/model/prostrations_model.dart';
+import 'package:prostrationcounter/model/gong_interval_model.dart';
+import 'package:prostrationcounter/model/prostrations_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -43,6 +44,8 @@ class NwAppState extends State<NwApp> {
 
   @override
   Widget build(BuildContext context) {
+    initLanguage(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (BuildContext context) {

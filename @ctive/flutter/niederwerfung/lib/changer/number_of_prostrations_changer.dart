@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:niederwerfung/changer/amount_changer.dart';
-import 'package:niederwerfung/core/context_extension.dart';
-import 'package:niederwerfung/model/prostrations_model.dart';
-import 'package:niederwerfung/core/utility.dart';
+import 'package:prostrationcounter/changer/amount_changer.dart';
+import 'package:prostrationcounter/core/context_extension.dart';
+import 'package:prostrationcounter/model/prostrations_model.dart';
 import 'package:provider/provider.dart';
 
 class NumberOfProstrationsChanger extends StatefulWidget {

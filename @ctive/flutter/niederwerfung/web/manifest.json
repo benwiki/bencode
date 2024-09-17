@@ -1,6 +1,6 @@
 {
-    "name": "niederwerfung",
-    "short_name": "niederwerfung",
+    "name": "prostrationcounter",
+    "short_name": "prostrationcounter",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
