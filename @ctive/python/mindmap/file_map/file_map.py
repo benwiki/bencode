@@ -76,11 +76,11 @@ if __name__ == "__main__":
 
     theme = THEMES["LIGHT"]
 
-    map = MindMap(
+    mind_map = MindMap(
         get_tree_from_path(start_path),
         theme=theme,
         pr_style=ProgressStyle(theme, "sector"),
     )
-    map.set_key_command(handle_key)
-    map.win.focus_force()
-    map.start()
+    mind_map.set_key_command(handle_key)
+    mind_map.win.focus_force()
+    mind_map.start()

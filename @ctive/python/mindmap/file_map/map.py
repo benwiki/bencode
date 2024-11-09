@@ -205,20 +205,54 @@ class MindMap:
         theme: Theme,
         pr_style: ProgressStyle,
         font_style: str = FONT_STYLE,
-    ):
+    ) -> None:
         self.map = node
         self.theme = theme
         self.pr_style = pr_style
         self.font_style = font_style
+
         self.init_window()
         self.init_win_bindings()
-        self.init_attributes()
+
+        self.draw_pos = Coord(0, 0)
+        self.resolution = 1
+        self.scalepos = 0
+        self.start_radius = self.draw_w / 8
+        self.txtshowres = (self.draw_w + self.draw_h) / 70
+        self.focused = self.map
+        self.depth = self.get_depth()
+        self.selected = [0 for _ in range(self.depth)]
+        self.layer = 0
+        self.fullscreen = False
+        self.font_index = -1
+        self.font_label_size = 15
+        self.font_label_pos = Coord(10, 10)
+        self.key_command = lambda a, b, c: None
+        self.font_label = -1
+        self.scan_mark_pos = Coord(-1, -1)
+
         self.init_draw()
         if PLATFORM == "mobile":
             self.init_zoom()
 
+    def get_depth(self, mind_map=None) -> int:
+        if mind_map is None:
+            mind_map = self.map
+        if not mind_map.children:
+            return 0
+        return 1 + sum(self.get_depth(child) for child in mind_map.children)
+
+    def get_distance(self, node: Node, root: Node | None = None) -> int:
+        """Returns the distance between the root and the node.
+        root has to be an ancestor of node."""
+        if root is None:
+            root = self.map
+        if node is root or node.parent is None:
+            return 0
+        return 1 + self.get_distance(node.parent, root)
+
     # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-    def init_window(self):
+    def init_window(self) -> None:
         self.win = tk.Tk()
         self.win["bg"] = self.theme.bg
         self.win.bind("<ButtonRelease-1>", self.reset_zoom_scale)
@@ -234,10 +268,11 @@ class MindMap:
         self.scalepos = 0
 
     # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-    def init_win_bindings(self):
+    def init_win_bindings(self) -> None:
         self.win.bind("<Key>", self.handle_key)
+        self.win.protocol("WM_DELETE_WINDOW", quit)
 
-    def handle_key(self, key: tk.Event):
+    def handle_key(self, key: tk.Event) -> None:
         len_children = len(self.focused.children)
         match key.keysym:
             case "Down" if len_children != 0:
@@ -270,7 +305,7 @@ class MindMap:
         )  # self.get_ideal_rotation())
         self.create_font_label()
 
-    def zoom_to_focused(self, reverse=False):
+    def zoom_to_focused(self, reverse=False) -> None:
         iterations = 20
         stretched_pos = self.focused.params["coord"].stretch_to(
             Coord(self.draw_w / 2, self.draw_h / 2), -0.25
@@ -282,11 +317,11 @@ class MindMap:
             self.do_zoom(1 / rate if reverse else rate, stretched_pos)
             self.win.update()
 
-    def correct_selected_with(self, len_children):
+    def correct_selected_with(self, len_children) -> None:
         self.selected[self.layer] %= len_children
         self.selected[self.layer + 1 :] = [0] * (self.depth - self.layer - 1)
 
-    def reset_position(self):
+    def reset_position(self) -> None:
         self.draw.scan_mark(*self.draw_pos)
         self.draw.scan_dragto(0, 0, gain=1)
         self.draw_pos = Coord(0, 0)
@@ -296,14 +331,12 @@ class MindMap:
         rotation = (
             -1 / 4
             if len(self.focused.children) == 2
-            else -1 / 2
-            if self.focused.text == "Der Vogel"
-            else 0
+            else -1 / 2 if self.focused.text == "Der Vogel" else 0
         )
         correction = 0.75
         return rotation + correction
 
-    def create_font_label(self):
+    def create_font_label(self) -> None:
         self.font_label = self.draw.create_text(
             *self.font_label_pos,
             text=self.font_style,
@@ -312,11 +345,11 @@ class MindMap:
             font=(self.font_style, self.font_label_size),
         )
 
-    def toggle_fullscreen(self):
+    def toggle_fullscreen(self) -> None:
         self.fullscreen = not self.fullscreen
         self.win.attributes("-fullscreen", self.fullscreen)
 
-    def change_font(self, direction: str):
+    def change_font(self, direction: str) -> None:
         match direction:
             case "forwards" if self.font_index < len(font.families()) - 1:
                 self.font_index += 1
@@ -333,31 +366,7 @@ class MindMap:
         self.configure_text(self.map)
 
     # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-    def init_attributes(self):
-        self.draw_pos = Coord(0, 0)
-        self.resolution = 1
-        self.scalepos = 0
-        self.start_radius = self.draw_w / 8
-        self.txtshowres = (self.draw_w + self.draw_h) / 70
-        self.focused = self.map
-        self.depth = self.get_depth()
-        self.selected = [0 for _ in range(self.depth)]
-        self.layer = 0
-        self.fullscreen = False
-        self.font_index = -1
-        self.font_label_size = 15
-        self.font_label_pos = Coord(10, 10)
-        self.key_command = lambda a, b, c: None
-
-    def get_depth(self, map=None):
-        if map is None:
-            map = self.map
-        if len(map.children) == 0:
-            return 0
-        return 1 + sum(self.get_depth(child) for child in map.children)
-
-    # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-    def init_draw(self):
+    def init_draw(self) -> None:
         self.draw = tk.Canvas(
             self.win,
             width=self.draw_w,
@@ -371,38 +380,38 @@ class MindMap:
         self.draw.bind("<B1-Motion>", self.motion)
         self.draw.bind("<MouseWheel>", self.scrollzoom)
 
-    def press(self, event):
+    def press(self, event) -> None:
         self.scan_mark_pos = Coord(event.x, event.y)
         self.draw.scan_mark(event.x, event.y)
 
-    def release(self, event):
+    def release(self, event) -> None:
         self.draw_pos.x += event.x - self.scan_mark_pos.x
         self.draw_pos.y += event.y - self.scan_mark_pos.y
         new_label_pos = self.font_label_pos - self.draw_pos
         self.draw.moveto(self.font_label, *new_label_pos)
         self.draw.itemconfig(self.font_label, fill=self.theme.fg)
 
-    def motion(self, event):
+    def motion(self, event) -> None:
         self.draw.scan_dragto(event.x, event.y, gain=1)
         self.draw.itemconfig(self.font_label, fill="")
 
-    def scrollzoom(self, event):
+    def scrollzoom(self, event) -> None:
         factor = 1.001**event.delta
         event_pos = Coord(event.x, event.y)
         self.do_zoom(factor, event_pos)
 
-    def do_zoom(self, factor, pos: Coord):
+    def do_zoom(self, factor, pos: Coord) -> None:
         self.resolution *= factor
-        self.draw.scale("all", *(pos - self.draw_pos), factor, factor)
+        self.draw.scale("all", *(pos - self.draw_pos), factor, factor)  # type: ignore
         self.configure_text(self.focused)
         new_label_pos = self.font_label_pos - self.draw_pos
         self.draw.moveto(self.font_label, *new_label_pos)
 
-    def configure_text(self, node: Node, stop=False):
+    def configure_text(self, node: Node, stop=False) -> None:
         text = node.textparams
-        textSize = self.resolution * text["r"] * TXT_SCALE
-        textSize = int(textSize**TXT_SHRINK)
-        self.draw.itemconfig(text["obj"], font=(self.font_style, textSize))
+        text_size = self.resolution * text["r"] * TXT_SCALE
+        text_size = int(text_size**TXT_SHRINK)
+        self.draw.itemconfig(text["obj"], font=(self.font_style, text_size))
         if text["r"] * self.resolution < self.txtshowres:
             self.draw.itemconfig(text["obj"], fill="")
         else:
@@ -413,7 +422,7 @@ class MindMap:
             self.configure_text(child, stop=True)
 
     # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-    def init_zoom(self):
+    def init_zoom(self) -> None:
         self.zoom = tk.Scale(
             self.win,
             from_=-100,
@@ -432,7 +441,7 @@ class MindMap:
         self.zoom.set(0)
         self.zoom.pack()
 
-    def scalezoom(self, pos):
+    def scalezoom(self, pos) -> None:
         pos = int(pos)
         if pos == 0 or self.scalepos == pos:
             return
@@ -441,7 +450,7 @@ class MindMap:
         self.do_zoom(factor, Coord(int(self.draw_w / 2), int(self.draw_h / 2)))
 
     # ====================================================================== #
-    def start(self):
+    def start(self) -> None:
         self.draw_map(self.map, recalc_progress=True)
         self.create_font_label()
         tk.mainloop()
@@ -461,19 +470,14 @@ class MindMap:
         if radius is None:
             radius = self.start_radius
 
-        worth_drawing = (
-            node is self.focused
-            or node in self.focused.children
-            or any(node in child.children for child in self.focused.children)
-        )
+        worth_drawing = self.get_distance(node, self.focused) < 3
 
-        # initializing node params: position, rotation
         node.params["coord"] = pos
         node.params["rotation"] = rotation
 
         child_num = len(node.children)
         plus_rot = child_num % 2 == 0 and node.parent is not None
-        progress = 0
+        progress = 0.0
         for i in range(child_num):
             new_rotation = (
                 i / child_num + rotation + (0.5 / child_num if plus_rot else 0)
@@ -510,7 +514,7 @@ class MindMap:
 
         return node.progress
 
-    def line_rotate(self, pos: Coord, start, end, rotation):
+    def line_rotate(self, pos: Coord, start, end, rotation) -> tuple[float, ...]:
         return (
             *self.circle_coord(pos, start, rotation),
             *self.circle_coord(pos, end, rotation),
@@ -520,7 +524,7 @@ class MindMap:
         rotation *= 2 * pi
         return Coord(pos.x + cos(rotation) * radius, pos.y + sin(rotation) * radius)
 
-    def draw_node(self, node: Node, pos: Coord, r: float):
+    def draw_node(self, node: Node, pos: Coord, r: float) -> None:
         self.draw.create_oval(
             self.oval_coords(pos, r), outline=self.theme.bd, fill=self.circle_fill(node)
         )
@@ -533,15 +537,15 @@ class MindMap:
             width=self.pr_style.arc_width,
         )
 
-    def oval_coords(self, pos: Coord, r):  # r ~ radius
+    def oval_coords(self, pos: Coord, r) -> tuple[int, int, int, int]:  # r ~ radius
         return (pos.x - r, pos.y - r, pos.x + r, pos.y + r)
 
     def draw_text(self, node: Node, pos: Coord, r) -> dict[str, int]:
         node_txt = node.text + (
             f"\n{round(node.progress)} %" if SHOW_PERCENTAGE else ""
         )
-        textSize = self.resolution * r * TXT_SCALE
-        textSize = int(textSize**TXT_SHRINK)
+        text_size = self.resolution * r * TXT_SCALE
+        text_size = int(text_size**TXT_SHRINK)
         return {
             "r": r,
             "obj": self.draw.create_text(
@@ -554,39 +558,40 @@ class MindMap:
                     or node in self.focused.children
                     and node.parent is not None
                     and node.parent.children.index(node) == self.selected[self.layer]
-                    else self.theme.fg
-                    if r >= self.txtshowres
-                    else ""
+                    else self.theme.fg if r >= self.txtshowres else ""
                 ),
-                font=(self.font_style, textSize),
+                font=(self.font_style, text_size),
                 justify="center",
             ),
         }
 
-    def circle_fill(self, node: Node):
+    def circle_fill(self, node: Node) -> str:
         return (
             self.theme.pr
             if self.pr_style.mode == "sector" and node.progress == 100
-            else ("#202090" if self.theme == THEMES["DARK"] else "#AACCCC")
-            if node.params.get("isfile", False)
-            else self.theme.bg
+            else (
+                ("#202090" if self.theme == THEMES["DARK"] else "#AACCCC")
+                if node.params.get("isfile", False)
+                else self.theme.bg
+            )
         )
 
-    def arc_fill(self, progress):
+    def arc_fill(self, progress) -> str:
         return (
             ""
             if self.pr_style.mode == "sector" and progress == 100
             else self.pr_style.arc_fill
         )
 
-    def arc_outline(self, progress):
+    def arc_outline(self, progress) -> str:
         return (
             ""
             if self.pr_style.mode == "sector" and not 0 < progress < 100
             else self.pr_style.arc_outline
         )
 
-    def set_key_command(self, command: Callable[[tk.Event, Node, int], None]):
+    def set_key_command(self, command: Callable[[tk.Event, Node, int], None]) -> None:
+        """key: tk.Event, current_node: Node, selected: int"""
         self.key_command = command
 
 
