@@ -16,6 +16,7 @@ class ButtonCond(Enum):
     CAN_DELETE_MEETING = auto()
     CAN_CHANGE_MEETING_DATE = auto()
     CAN_SAVE = auto()
+    SCREEN_NOT_OPENED_FROM_HOME = auto()
 
     def is_ability(self) -> bool:
         return self.name.startswith("CAN_")

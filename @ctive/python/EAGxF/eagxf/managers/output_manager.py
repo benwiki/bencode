@@ -1,6 +1,6 @@
 import asyncio
 from functools import partial
-from typing import Callable, Iterable, Iterator
+from typing import Callable, Iterable, Iterator, Optional
 
 import discord
 
@@ -10,28 +10,26 @@ from eagxf.constants import (
     ADMINS,
     DEBUGGING,
     NUM_EMOJI,
-    QUESTION_NAMES,
-    SPACER,
+    QUESTION_PROPS,
     SPECIAL_DESTINATIONS,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.user_manager import UserManager
-from eagxf.message import Message
 from eagxf.recommendations import Recommendation
 from eagxf.screen import Screen
 from eagxf.screens import SCREENS
 from eagxf.status import STATUS_EMOJI
-from eagxf.typedefs import DcButton, DcView
+from eagxf.typedefs import DcButton, DcInteraction, DcView
 from eagxf.user import User
 from eagxf.util import peek, to_emojis
 
 
 class OutputManager:
-    def __init__(self, um: UserManager) -> None:
-        self.um = um
-        self.users = um.users
+    def __init__(self, user_mng: UserManager) -> None:
+        self.user_mng = user_mng
+        self.users = user_mng.users
 
         self.replace_funcs: dict[str, Callable[[User], str]] = {
             "<search_results>": self.get_short_profiles,
@@ -45,13 +43,13 @@ class OutputManager:
             "<selected_user_name>": lambda u: self.get_name_of(u.selected_user),
             "<selected_user_profile>": self.selected_user_profile,
             "<selected_user_meetings>": lambda u: self.get_meetings(
-                u, MtgTime.FUTURE, selected=True, peek=True
+                u, MtgTime.FUTURE, selected=True, full=False
             ),
             "<future_meetings_peek>": lambda u: self.get_meetings(
-                u, MtgTime.FUTURE, peek=True
+                u, MtgTime.FUTURE, full=False
             ),
             "<past_meetings_peek>": lambda u: self.get_meetings(
-                u, MtgTime.PAST, peek=True
+                u, MtgTime.PAST, full=False
             ),
             "<future_meetings>": lambda u: self.get_meetings(u, MtgTime.FUTURE),
             "<past_meetings>": lambda u: self.get_meetings(u, MtgTime.PAST),
@@ -82,22 +80,18 @@ class OutputManager:
         asyncio.create_task(self.refresh())
 
     async def send_starting_message_to(self, user: User) -> None:
-        # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
-        # await self.remove_past_messages(user)
+        await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
+        await self.remove_past_messages(user)
         # if user.id == 329635441433116674:
         #     # await user.delete_message()
         #     return
         await self.send_screen(ScreenId.HOME, user)
 
     async def remove_past_messages(self, user: User) -> None:
-        if dc_user := self.um.get_user(user.id):
+        if dc_user := self.user_mng.get_user(user.id):
             async for msg in dc_user.history(limit=None):
-                if msg.author.id != dc_user.id and not (
-                    user.dc_message and msg.id == user.dc_message.id
-                ):
+                if msg.author.id != dc_user.id and user.is_deletable(msg.id):
                     await msg.delete()
-                elif user.dc_message and msg.id == user.dc_message.id:
-                    return
 
     def init_screens(self) -> None:
         for screen_id, screen in SCREENS.items():
@@ -110,7 +104,7 @@ class OutputManager:
     def init_button_with(self, button: Button, screen: Screen) -> None:
         go_to_screen = SCREENS.get(button.takes_to)
         if go_to_screen is None and button.takes_to not in SPECIAL_DESTINATIONS:
-            print(f"(Error 4) Screen with id {button.takes_to} not found!")
+            print(f"(Error #21) Screen with id {button.takes_to} not found!")
         button.callback = self.get_callback_to_screen(  # type: ignore
             go_to_screen, button=button
         )
@@ -118,21 +112,23 @@ class OutputManager:
             button.effects += screen.after_button_effects
 
     def get_callback_to_screen(
-        self, screen: Screen | ScreenId | None, button: Button | None = None
+        self,
+        screen: Optional[Screen | ScreenId] = None,
+        button: Optional[Button] = None,
     ):
-        async def callback(interaction: discord.Interaction) -> None:
+        async def callback(interaction: DcInteraction) -> None:
             await interaction.response.defer()
 
             user = self.users[interaction.user.id]
             if button and button.effects:
                 for effect in button.effects:
-                    await user.apply_effect(effect, self.um.client)
+                    await user.apply_effect(effect, self.user_mng.client)
             if button and button.takes_to in SPECIAL_DESTINATIONS:
                 await self.send_special_screen(user, button)
             elif screen:
                 await self.send_screen(screen, user)
             else:
-                print(f"(Error 3) No screen found for the button '{button}'!")
+                print(f"(Error #22) No screen found for the button '{button}'!")
 
         return callback
 
@@ -147,14 +143,14 @@ class OutputManager:
                 last_screen = user.last_screen
                 assert (
                     last_screen is not None
-                ), "(Error 23) No screen found for the button!"
+                ), "(Error #23) No screen found for the button!"
                 await self.send_screen(last_screen, user)
 
     async def refresh(self) -> None:
         while True:
             await asyncio.sleep(30)
-            for user in self.um.users.values():
-                if user.last_screen:
+            for user in self.user_mng.users.values():
+                if user.last_screen and not user.sleeping:
                     await self.send_screen(user.last_screen, user)
 
     async def send_screen(self, screen: Screen | ScreenId, user: User) -> None:
@@ -163,9 +159,9 @@ class OutputManager:
         user.stack(screen)
         user.results = self.screen_to_data(user, screen.id)
 
-        user.set_message(await self.get_message_for(user, screen))
-        receiver_future = self.um.fetch_user(user.id)
-        await user.send_message(receiver_future=receiver_future)
+        await self.update_message_for(user, screen)
+        dc_user = self.user_mng.fetch_user(user.id)
+        await user.send_message(receiver_future=dc_user)
 
         if screen.changed_property:
             user.change = screen.changed_property
@@ -180,9 +176,9 @@ class OutputManager:
     def screen_to_data(self, user: User, screen_id: ScreenId) -> list:
         match screen_id:
             case ScreenId.SEARCH | ScreenId.SHOW_SEARCH_RESULTS:
-                return self.um.search_users_for(user)
+                return self.user_mng.search_users_for(user)
             case ScreenId.BEST_MATCHES:
-                return self.um.search_best_matches_for(user)
+                return self.user_mng.search_best_matches_for(user)
             case ScreenId.INTERESTS_SENT:
                 return user.interests_sent_not_received
             case ScreenId.INTERESTS_RECEIVED:
@@ -202,7 +198,7 @@ class OutputManager:
             case _:
                 return []
 
-    async def get_message_for(self, user: User, screen: Screen) -> Message:
+    async def update_message_for(self, user: User, screen: Screen):
         if not user.screen_conditions_apply_for(screen):
             ok_button = Button.ok()
             ok_button.callback = self.get_callback_to_screen(None, ok_button)  # type: ignore
@@ -217,8 +213,8 @@ class OutputManager:
             message = self.replace_placeholders(screen.message, user)
             user.add_reactions = True
 
-        message_text = SPACER + message if screen.spacer else message
-        return user.update_message(dc_view=dc_view, message_text=message_text)
+        # message_text = SPACER + message if screen.spacer else message
+        user.update_message(dc_view=dc_view, message_text=message)
 
     def get_dc_view(self, buttons: Iterable[Button | DcButton]) -> DcView:
         dc_view = DcView()
@@ -230,15 +226,17 @@ class OutputManager:
             dc_view.add_item(stop_btn)
         return dc_view
 
-    async def stop_callback(self, interaction: discord.Interaction) -> None:
+    async def stop_callback(self, interaction: DcInteraction) -> None:
         await interaction.response.defer()
         await self.stop_request_by(interaction.user.id)
 
     async def stop_request_by(self, user_id: int) -> None:
         if user_id not in ADMINS:
-            print(f"(Error 2) Unauthorized user (id: {user_id}) tried to stop the bot.")
+            print(
+                f"(Error #24) Unauthorized user (id: {user_id}) tried to stop the bot."
+            )
             return
-        await self.um.stop()
+        await self.user_mng.stop()
 
     def replace_placeholders(self, msg: str, user: User | None) -> str:
         if user:
@@ -251,7 +249,7 @@ class OutputManager:
     def get_formatted_results_for(
         self,
         user: User,
-        additional: Callable[[User], str] | None = None,
+        additional: Optional[Callable[[User], str]] = None,
     ) -> str:
         if not user.results:
             return "***No results to show.***"
@@ -269,23 +267,21 @@ class OutputManager:
             + "\n***------❓Questions ------***"
             + "".join(
                 f"\n- *{q['label']}:* {peek(u.questions[q_id])}"
-                for q_id, q in QUESTION_NAMES.items()
+                for q_id, q in QUESTION_PROPS.items()
             )
-            for i, u in enumerate(self.um.get_results_for(user))
+            for i, u in enumerate(self.user_mng.get_results_for(user))
         )
 
     def get_short_profiles(self, user: User) -> str:
         if not user.results:
-            return "***No interests to show.***"
+            return "***No one to show here.***"
         return "\n".join(
             f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} "
             f"{u.name} {STATUS_EMOJI[u.status]}\n- Job: {u.job}\n- Company: {u.company}\n"
-            for i, u in enumerate(self.um.get_results_for(user))
+            for i, u in enumerate(self.user_mng.get_results_for(user))
         )
 
-    def get_meetings(
-        self, user: User, time: MtgTime, selected=False, peek=False
-    ) -> str:
+    def get_meetings(self, user: User, time: MtgTime, selected=False, full=True) -> str:
         meetings = {
             MtgTime.FUTURE: sorted(user.future_meetings),
             MtgTime.PAST: sorted(user.past_meetings, reverse=True),
@@ -297,14 +293,14 @@ class OutputManager:
             return "***No meetings to show.***"
 
         dots_needed = False
-        if peek:
+        if full:
+            meetings = user.paged_list_of(meetings)
+        else:
             dots_needed = len(meetings) > 5
             meetings = meetings[:5]
-        else:
-            meetings = user.paged_list_of(meetings)
 
         return "\n".join(
-            ("- " if peek else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
+            ("- " if not full else f"{user.page_prefix(i+1)}{NUM_EMOJI[i]} ")
             + f"**{m.date}**"
             + (f" with ***{self.users[m.partner_id].name}***" if not selected else "")
             for i, m in enumerate(meetings)

@@ -1,8 +1,8 @@
 import csv
-from pprint import pprint, pformat
+from pprint import pformat, pprint
 from typing import Callable
 
-from eagxf.constants import NOT_ALPHANUMERIC, Q_MAPPING, QUESTION_NAMES
+from eagxf.constants import NOT_ALPHANUMERIC, Q_MAPPING, QUESTION_PROPS
 from eagxf.enums.property import Property
 from eagxf.questions import Questions
 from eagxf.user import User
@@ -54,9 +54,9 @@ def get_score_between(q1: Questions, q2: Questions) -> int:
             if kw in q2[q_id2].lower()
             else 0.0  # type: ignore
         )
-        for q_id1 in QUESTION_NAMES
+        for q_id1 in QUESTION_PROPS
         if q_id1 != Property.CONCERNS
-        for q_id2 in QUESTION_NAMES
+        for q_id2 in QUESTION_PROPS
         if q_id2 != Property.CONCERNS
         for kw in NOT_ALPHANUMERIC.split(q1[q_id1].lower())
         if kw not in stopwords
@@ -76,10 +76,10 @@ def get_kws_with_scores(q1: Questions, q2: Questions) -> dict:
                 for kw in NOT_ALPHANUMERIC.split(q1[q_id1].lower())
                 if kw not in stopwords and kw in q2[q_id2].lower()
             )
-            for q_id2 in QUESTION_NAMES
+            for q_id2 in QUESTION_PROPS
             if q_id2 != Property.CONCERNS
         }
-        for q_id1 in QUESTION_NAMES
+        for q_id1 in QUESTION_PROPS
         if q_id1 != Property.CONCERNS
     }
 
@@ -165,9 +165,14 @@ while True:
             if user1 is None or user2 is None:
                 print("User not found.")
             else:
-                print("=== Total score:", get_score_between(user1.questions, user2.questions))
+                print(
+                    "=== Total score:",
+                    get_score_between(user1.questions, user2.questions),
+                )
                 with open(f"{user1.id}_{user2.id}.txt", "w", encoding="utf-8") as f:
-                    kws_with_scores = get_kws_with_scores(user1.questions, user2.questions)
+                    kws_with_scores = get_kws_with_scores(
+                        user1.questions, user2.questions
+                    )
                     f.write(pformat(kws_with_scores))
                     f.write(f"\nTotal score: {user1.get_question_score(user2)}")
             print("File generated.")

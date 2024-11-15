@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 from eagxf.button import Button
 from eagxf.constants import INCOMPLETE_PROFILE_MSG, INVISIBLE_MSG
 from eagxf.enums.effect import Effect
-from eagxf.enums.screen_id import ScreenId
 from eagxf.enums.property import Property
 from eagxf.enums.screen_condition import ScreenCond
+from eagxf.enums.screen_id import ScreenId
 
 
 @dataclass
@@ -14,7 +15,7 @@ class Screen:
     message: str = field(default_factory=str)
     buttons: list[Button] = field(default_factory=list)
     reactions: list[str] = field(default_factory=list)
-    changed_property: Property | None = None
+    changed_property: Optional[Property] = None
     conditions: list[ScreenCond] = field(default_factory=list)
     # ⏬ These effects will run AFTER the button's own effects
     after_button_effects: list[Effect] = field(default_factory=list)

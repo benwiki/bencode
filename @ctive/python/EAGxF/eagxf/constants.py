@@ -7,13 +7,13 @@ from eagxf.enums.screen_id import ScreenId
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
-USERS_FOLDER_PATH = "/Users/benke/Dev"
-# TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
-# USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+# TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
+# USERS_FOLDER_PATH = "/Users/benke/Dev"
+TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
+USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
-DEBUGGING = False
+DEBUGGING = True
 
 ADMINS = (
     348976146689294336,
@@ -91,7 +91,7 @@ REACTION_PROPERTIES = [
     Property.RECOMMENDATION,
 ]
 
-QUESTION_NAMES = {
+QUESTION_PROPS = {
     Property.ABOUT_ME: {
         "label": "About me",
         "text": "About me: (general info)",
@@ -217,4 +217,34 @@ Q_MAPPING = {
     Property.NEED_HELP: Property.CAN_HELP,
     Property.CAN_HELP: Property.NEED_HELP,
     Property.CONCERNS: Property.CONCERNS,
+}
+
+NOTIFICATIONS = {
+    ScreenId.NOTI_INTEREST_RECEIVED: {
+        "text": "<interested_person> is interested in you! Check out the \"received interests\" screen!",
+        "destinations": [ScreenId.INTERESTS_RECEIVED],
+    },
+    ScreenId.NOTI_INTEREST_CONFIRMED: {
+        "text": "",
+        "destinations": [],
+    },
+    ScreenId.NOTI_MEETING_REQUEST_RECEIVED: {
+        "text": "",
+        "destinations": [],
+    },
+    ScreenId.NOTI_MEETING_REQUEST_CONFIRMED: {
+        "text": "",
+        "destinations": [],
+    },
+    ScreenId.NOTI_CALL_STARTED: {
+        "text": "",
+        "destinations": [],
+    },
+}
+
+SCREEN_BUTTON_PROPS = {
+    ScreenId.INTERESTS_RECEIVED: {
+        "text": "Received interests",
+        "emoji": "⬇️",
+    },
 }

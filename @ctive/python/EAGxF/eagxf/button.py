@@ -1,9 +1,9 @@
-from typing import Iterable
+from typing import Iterable, Optional
 
 import discord
 from discord.ui import Button as DCButton
 
-from eagxf.constants import QUESTION_NAMES, VISIBLE_SIMPLE_USER_PROPS
+from eagxf.constants import QUESTION_PROPS, VISIBLE_SIMPLE_USER_PROPS
 from eagxf.enums.button_condition import ButtonCond
 from eagxf.enums.effect import Effect
 from eagxf.enums.screen_id import ScreenId
@@ -18,8 +18,8 @@ class Button(DCButton):
         self,
         *args,
         takes_to: ScreenId = ScreenId.HOME,
-        effects: list[Effect] | None = None,
-        conditions: list[ButtonCond] | None = None,
+        effects: Optional[list[Effect]] = None,
+        conditions: Optional[list[ButtonCond]] = None,
         **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -70,35 +70,53 @@ class Button(DCButton):
                 takes_to=ScreenId.action(action, q_id.to_str),
                 row=row,
             )
-            for q_id, question in QUESTION_NAMES.items()
+            for q_id, question in QUESTION_PROPS.items()
         )
 
     @staticmethod
-    def back(row=None):
-        return Button(label="⬅️ Back", takes_to=ScreenId.BACK__, row=row)
+    def back(row=None, conds: Optional[list[ButtonCond]] = None):
+        return Button(
+            label="⬅️ Back", takes_to=ScreenId.BACK__, row=row, conditions=conds
+        )
 
     @staticmethod
-    def ok(row=None):
+    def ok(row=None, conds: Optional[list[ButtonCond]] = None):
         return Button(
             label="OK",
             style=discord.ButtonStyle.green,
             takes_to=ScreenId.BACK__,
             row=row,
+            conditions=conds,
         )
 
     @staticmethod
-    def home(row=None):
+    def home(row=None, conds: Optional[list[ButtonCond]] = None):
         return Button(
             label="🏠 Home",
             style=discord.ButtonStyle.primary,
             takes_to=ScreenId.HOME,
             row=row,
+            conditions=conds,
         )
 
     @staticmethod
-    def back_home(row=None):
-        return [Button.back(row=row), Button.home(row=row)]
+    def back_home(
+        row=None,
+        back_conds: Optional[list[ButtonCond]] = None,
+        home_conds: Optional[list[ButtonCond]] = None,
+    ):
+        return [
+            Button.back(row=row, conds=back_conds),
+            Button.home(row=row, conds=home_conds),
+        ]
 
     @staticmethod
-    def ok_home(row=None):
-        return [Button.ok(row=row), Button.home(row=row)]
+    def ok_home(
+        row=None,
+        ok_conds: Optional[list[ButtonCond]] = None,
+        home_conds: Optional[list[ButtonCond]] = None,
+    ):
+        return [
+            Button.ok(row=row, conds=ok_conds),
+            Button.home(row=row, conds=home_conds),
+        ]

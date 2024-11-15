@@ -1,4 +1,3 @@
-
 PROFILE = f"**100** 1 {30*'.'} o\n- Job: {45*'.'}\n- Company: {45*'.'}\n"
 
 BEST_MATCHES = f"""Welcome to EAGxF!
@@ -65,5 +64,5 @@ Click on the corresponding reaction to select a user!
 **(1 - 2) from total 2**"""
 
 print(len(BEST_MATCHES))
-print(len(PROFILE)*10)
+print(len(PROFILE) * 10)
 # print(BEST_MATCHES)

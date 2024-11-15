@@ -1,7 +1,7 @@
 from functools import partial
 from typing import Callable
 
-from eagxf.constants import MAX_PROP_LENGTH, QUESTION_NAMES, REACTION_PROPERTIES
+from eagxf.constants import MAX_PROP_LENGTH, QUESTION_PROPS, REACTION_PROPERTIES
 from eagxf.date import Date
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
@@ -12,9 +12,9 @@ from eagxf.util import peek
 
 
 class TextinputManager:
-    def __init__(self, opm: OutputManager) -> None:
-        self.opm = opm
-        self.users = opm.users
+    def __init__(self, output_mng: OutputManager) -> None:
+        self.output_mng = output_mng
+        self.users = output_mng.users
 
         self.message_funcs: dict[Property, Callable] = {
             Property.MEETING_REQUEST: self.handle_meeting_date,
@@ -23,11 +23,11 @@ class TextinputManager:
             ),
             **{  # ABOUT_ME, ..., CONCERNS
                 q: partial(self.handle_question_change, q_to_change=q)
-                for q in QUESTION_NAMES
+                for q in QUESTION_PROPS
             },
             **{  # SEARCH_ABOUT_ME, ..., SEARCH_CONCERNS
                 q: partial(self.handle_question_change, q_to_change=q)
-                for q in [q.to_search() for q in QUESTION_NAMES]
+                for q in [q.to_search() for q in QUESTION_PROPS]
             },
         }
 
@@ -50,7 +50,7 @@ class TextinputManager:
             return
 
         plural = prop_to_change in [Property.KEYWORDS, Property.LANGUAGES]
-        kw_needed = plural or searching and prop_to_change in QUESTION_NAMES
+        kw_needed = plural or searching and prop_to_change in QUESTION_PROPS
         new_prop_value = msg.content
 
         if kw_needed:
@@ -86,7 +86,7 @@ class TextinputManager:
             "<new_value>": "'*" + peek(to_.replace("*", r"\*")) + "*'",
             "<plus_info>": user.additional_info_with_side_effects(),
         }
-        await self.opm.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
+        await self.output_mng.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
         user.change = None
         user.save()
 
@@ -95,9 +95,9 @@ class TextinputManager:
     ) -> None:
         if not Date.valid_future_date(date_str):
             await msg.add_reaction("❌")
-            await self.opm.send_screen(ScreenId.INVALID_DATE, user)
+            await self.output_mng.send_screen(ScreenId.INVALID_DATE, user)
             return
-        assert user.selected_user, "(Error 1) No selected user for meeting!"
+        assert user.selected_user, "(Error #27) No selected user for meeting!"
         if change:
             user.cancel_meeting_with_selected()
         user.request_meeting_with_selected(Date.from_str(date_str))
@@ -112,7 +112,7 @@ class TextinputManager:
     ) -> None:
         if searching := q_to_change.is_search():
             q_to_change = q_to_change.from_search()
-        question = QUESTION_NAMES[q_to_change]
+        question = QUESTION_PROPS[q_to_change]
         changed_prop = f"changed answer to the question '**{question['label']}**'"
         if len(new_val) > MAX_PROP_LENGTH:
             await msg.add_reaction("❌")
@@ -128,7 +128,7 @@ class TextinputManager:
     ) -> None:
         change_user = user
         if searching:
-            assert user.search_filter, "(Error 5) No search filter found!"
+            assert user.search_filter, "(Error #28) No search filter found!"
             change_user = user.search_filter
         change_user.set_question(q_to_change, new_val)
 
@@ -140,4 +140,4 @@ class TextinputManager:
             "<exceeding_number>": str(len(new_val) - MAX_PROP_LENGTH),
             "<to_cut_off>": new_val[MAX_PROP_LENGTH:],
         }
-        await self.opm.send_screen(ScreenId.TOO_LONG_PROP_TEXT, user)
+        await self.output_mng.send_screen(ScreenId.TOO_LONG_PROP_TEXT, user)

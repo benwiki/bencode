@@ -63,6 +63,12 @@ class ScreenId(Enum):
     SUCCESSFUL_RECOMMENDATION = auto()
     RECOMMENDATION = auto()
     CANCEL_RECOMMENDATION_CONFIRM = auto()
+    # ==== Notifications ====
+    NOTI_INTEREST_RECEIVED = auto()
+    NOTI_INTEREST_CONFIRMED = auto()
+    NOTI_MEETING_REQUEST_RECEIVED = auto()
+    NOTI_MEETING_REQUEST_CONFIRMED = auto()
+    NOTI_CALL_STARTED = auto()
     # ==== special IDs ====
     BACK__ = auto()
     BACK_UNTIL_STOP__ = auto()

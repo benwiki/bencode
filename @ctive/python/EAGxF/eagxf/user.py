@@ -14,7 +14,7 @@ from eagxf.constants import (
     NUM_EMOJI,
     PAGE_STEP,
     PRIO_LIST_LENGTH,
-    QUESTION_NAMES,
+    QUESTION_PROPS,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.date import Date
@@ -25,11 +25,21 @@ from eagxf.enums.screen_condition import ScreenCond
 from eagxf.enums.screen_id import ScreenId
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
+from eagxf.message_bundle import MessageBundle
 from eagxf.questions import Questions
 from eagxf.recommendations import Recommendation, Recommendations
 from eagxf.screen import Screen
 from eagxf.status import STATUS_EMOJI, Status
-from eagxf.typedefs import DcButton, DcClient, DcUser, Receiver, ReceiverFuture
+from eagxf.typedefs import (
+    DcButton,
+    DcClient,
+    DcEmoji,
+    DcMessage,
+    DcUser,
+    DcView,
+    Receiver,
+    ReceiverFuture,
+)
 from eagxf.users_path import USERS_PATH
 from eagxf.util import (
     CHANNELS,
@@ -40,7 +50,6 @@ from eagxf.util import (
     peek,
     subtract,
 )
-from eagxf.message import Message
 
 T = TypeVar("T")
 
@@ -67,13 +76,13 @@ class User:
     best_match_prio_order_new: list[int] = field(default_factory=list)
     screen_stack: list[Screen] = field(default_factory=list)
     replace: dict[str, str] = field(default_factory=dict)
-    message: Message = field(default_factory=Message)
+    msg_bundle: MessageBundle = field(default_factory=MessageBundle)
     results: list[Any] = field(default_factory=list)
-    selected_recommendation: Recommendation | None = None
-    selected_meeting: Meeting | None = None
+    selected_recommendation: Optional[Recommendation] = None
+    selected_meeting: Optional[Meeting] = None
     selected_user: "User | None" = None
     search_filter: "User | None" = None
-    change: Property | None = None
+    change: Optional[Property] = None
     has_save_btn: bool = False
     add_reactions: bool = True
     feedback_message: str = ""
@@ -145,7 +154,7 @@ class User:
                     self.questions[q],
                     searcher.search_filter.questions[q],
                 )
-                for q in QUESTION_NAMES
+                for q in QUESTION_PROPS
             )
         )
 
@@ -358,7 +367,7 @@ class User:
         return str(self.selected_meeting.date)
 
     def send_interest_to_selected(self):
-        assert self.selected_user is not None, "(Error 8) No selected user"
+        assert self.selected_user is not None, "(Error #8) No selected user"
         self.send_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -368,7 +377,7 @@ class User:
         user.interests.receive_from(self.id)
 
     def cancel_interest_to_selected(self):
-        assert self.selected_user is not None, "(Error 9) No selected user"
+        assert self.selected_user is not None, "(Error #9) No selected user"
         self.cancel_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -378,7 +387,7 @@ class User:
         user.interests.unreceive_from(self.id)
 
     def request_meeting_with_selected(self, date: Date):
-        assert self.selected_user is not None, "(Error 10) No selected user"
+        assert self.selected_user is not None, "(Error #10) No selected user"
         self.meetings.request(self.selected_user.id, date)
         self.selected_user.meetings.request(self.id, date)
         self.selected_user.save()
@@ -387,7 +396,7 @@ class User:
     def cancel_meeting_with_selected(self):
         assert (
             self.selected_user and self.selected_meeting
-        ), "(Error 11) No selected user or meeting"
+        ), "(Error #11) No selected user or meeting"
         self.meetings.cancel(self.selected_user.id, self.selected_meeting)
         self.selected_user.meetings.cancel(self.id, self.selected_meeting)
         self.selected_user.save()
@@ -396,7 +405,7 @@ class User:
     async def start_video_call_with_selected(self, client: DcClient):
         """Assigns a Discord voice room to the user and the selected user
         to start a video call."""
-        assert self.selected_user is not None, "(Error 12) No selected user"
+        assert self.selected_user is not None, "(Error #12) No selected user"
         me, partner, role, channel = self.get_members_role_and_channel(client)
         if not (me and partner and role and channel):
             return
@@ -408,7 +417,7 @@ class User:
     async def cancel_video_call_with_selected(self, client: DcClient):
         """Removes the Discord voice room assigned to the user and the selected user
         to cancel a video call."""
-        assert self.selected_user is not None, "(Error 13) No selected user"
+        assert self.selected_user is not None, "(Error #13) No selected user"
         me, partner, role, _ = self.get_members_role_and_channel(client)
         if not (me and partner and role):
             return
@@ -418,7 +427,8 @@ class User:
         self.selected_user.call_channel_id = 0
 
     def cancel_selected_recommendation(self):
-        assert self.selected_user is not None, "(Error 15) No selected user"
+        assert self.selected_user is not None, "(Error #14) No selected user"
+        assert self.selected_recommendation, "(Error #15)"
         self.remove_recommendation(self.selected_recommendation)
         self.selected_user.remove_recommendation(self.selected_recommendation)
 
@@ -427,7 +437,7 @@ class User:
         self.save()
 
     def get_members_role_and_channel(self, client: DcClient):
-        assert self.selected_user is not None, "(Error 14) No selected user"
+        assert self.selected_user is not None, "(Error #16) No selected user"
         guild = get_guild(client)
         me = guild.get_member(self.id)
         partner = guild.get_member(self.selected_user.id)
@@ -534,7 +544,7 @@ class User:
             case Effect.GO_TO_NEXT_PAGE:
                 self.page += 1
             case Effect.DELETE_MESSAGE:
-                await self.message.delete()
+                await self.delete_message()
             case Effect.SAVE_BEST_MATCHES:
                 self.save_priority_order()
             case Effect.RESET_NEW_PRIO_ORDER:
@@ -593,8 +603,10 @@ class User:
             case ButtonCond.PRIO_ORDER_FULL:
                 return len(self.best_match_prio_order_new) == PRIO_LIST_LENGTH
             case ButtonCond.CAN_SAVE:
-                return self.best_match_prio_order_new
-        print(f"(Error 5) Invalid condition: {condition}")
+                return len(self.best_match_prio_order_new) != 0
+            case ButtonCond.SCREEN_NOT_OPENED_FROM_HOME:
+                return len(self.screen_stack) > 2
+        print(f"(Error #17) Invalid condition: {condition}")
         return False
 
     def replace_placeholders(self, text: str) -> str:
@@ -631,7 +643,7 @@ class User:
                 str(len(self.recommendations.received(self.id))),
             )
         )
-        prefixes: dict[str, User] = {
+        prefixes: dict[str, User | None] = {
             "": self,
             "selected_": self.selected_user,
         }
@@ -641,7 +653,7 @@ class User:
         for prefix, user in prefixes.items():
             if not user:
                 continue
-            for q in QUESTION_NAMES:
+            for q in QUESTION_PROPS:
                 subtext = user.questions[q]
                 text = text.replace(f"<{prefix}{q}_peek>", peek(subtext))
                 text = text.replace(f"<{prefix}{q}>", subtext)
@@ -682,7 +694,7 @@ class User:
 
     async def add_selection_reactions(self) -> None:
         for i in range(min(PAGE_STEP, len(self.results) - self.page * PAGE_STEP)):
-            await self.message.add_reaction(NUM_EMOJI[i])
+            await self.msg_bundle.add_reaction(NUM_EMOJI[i])
 
     def page_prefix(self, i: int) -> str:
         if i < PAGE_STEP:
@@ -704,34 +716,44 @@ class User:
         receiver_future: Optional[ReceiverFuture] = None,
         receiver: Optional[Receiver] = None,
     ) -> None:
-        await self.message.send(receiver_future=receiver_future, receiver=receiver)
+        if receiver and receiver_future:
+            receiver_future.close()
+        elif receiver_future:
+            receiver = await receiver_future
+        assert receiver, "(Error #18) receiver is None"
+
+        await self.msg_bundle.send(receiver)
 
     @property
-    def dc_message(self) -> discord.Message | None:
-        return self.message.dc_message
+    def dc_message(self) -> DcMessage | None:
+        return self.msg_bundle.body.dc_message
 
-    async def delete_message(self) -> None:
-        await self.message.delete()
+    def is_deletable(self, msg_id: int) -> bool:
+        spacer_msg = self.msg_bundle.spacer.dc_message
+        body_msg = self.msg_bundle.body.dc_message
+        if not (spacer_msg and body_msg):
+            return True
+        return msg_id not in [spacer_msg.id, body_msg.id]
+
+    async def delete_message(self, spacer_too: bool = False) -> None:
+        await self.msg_bundle.delete(spacer_too)
 
     def add_button_to_message(self, button: DcButton) -> None:
-        self.message.add_button(button)
+        self.msg_bundle.add_button(button)
 
     def remove_button_from_message(self, button: DcButton) -> None:
-        self.message.remove_button(button)
+        self.msg_bundle.remove_button(button)
 
     def update_message(
         self,
-        dc_view: discord.ui.View | None = None,
-        dc_message: discord.Message | None = None,
-        message_text: str | None = None,
-    ) -> Message:
-        return self.message.update(dc_view, dc_message, message_text)
+        dc_view: Optional[DcView] = None,
+        dc_message: Optional[DcMessage] = None,
+        message_text: Optional[str] = None,
+    ) -> None:
+        self.msg_bundle.update(dc_view, dc_message, message_text)
 
-    async def add_reaction_to_message(self, reaction: discord.Emoji | str) -> None:
-        await self.message.add_reaction(reaction)
-
-    def set_message(self, message: Message) -> None:
-        self.message = message
+    async def add_reaction_to_message(self, reaction: DcEmoji | str) -> None:
+        await self.msg_bundle.add_reaction(reaction)
 
     @property
     def future_meetings(self) -> list[Meeting]:
@@ -740,3 +762,7 @@ class User:
     @property
     def past_meetings(self) -> list[Meeting]:
         return self.meetings.past
+
+    @property
+    def sleeping(self) -> bool:
+        return self.msg_bundle.sleeping

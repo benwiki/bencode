@@ -1,7 +1,5 @@
 from typing import Callable
 
-import discord
-
 from eagxf.constants import NUM_EMOJI, PAGE_STEP, REACTION_PROPERTIES
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
@@ -9,13 +7,14 @@ from eagxf.managers.output_manager import OutputManager
 from eagxf.meetings import Meeting
 from eagxf.recommendations import Recommendation
 from eagxf.status import EMOJI_STATUS, Status
+from eagxf.typedefs import DcRawReactionEvent
 from eagxf.user import User
 
 
 class ReactionInputManager:
-    def __init__(self, opm: OutputManager) -> None:
-        self.opm = opm
-        self.users = opm.users
+    def __init__(self, output_mng: OutputManager) -> None:
+        self.output_mng = output_mng
+        self.users = output_mng.users
 
         self.reaction_func_list: list[Callable[[User, str]]] = [
             self.handle_status_change,
@@ -26,15 +25,13 @@ class ReactionInputManager:
             self.handle_recommendation,
         ]
         assert len(self.reaction_func_list) == len(REACTION_PROPERTIES), (
-            "⚠️ (Error 30):\n"
+            "⚠️ (Error #25):\n"
             f"Number of reaction functions ({len(self.reaction_func_list)}) "
             f"does not match number of reaction properties ({len(REACTION_PROPERTIES)})!"
         )
         self.reaction_funcs = dict(zip(REACTION_PROPERTIES, self.reaction_func_list))
 
-    async def handle_added_reaction(
-        self, reaction: discord.RawReactionActionEvent
-    ) -> None:
+    async def handle_added_reaction(self, reaction: DcRawReactionEvent) -> None:
         user = self.users.get(reaction.user_id)
         if not user or not user.change:
             return
@@ -46,9 +43,7 @@ class ReactionInputManager:
             if handle_reaction := self.reaction_funcs.get(prop_to_change):
                 await handle_reaction(user, reaction.emoji.name)
 
-    async def handle_removed_reaction(
-        self, reaction: discord.RawReactionActionEvent
-    ) -> None:
+    async def handle_removed_reaction(self, reaction: DcRawReactionEvent) -> None:
         user = self.users.get(reaction.user_id)
         if not user:
             return
@@ -79,7 +74,7 @@ class ReactionInputManager:
             "<new_value>": f"{emoji} (**{status.value}**)",
             "<plus_info>": "",
         }
-        await self.opm.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
+        await self.output_mng.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
         user.change = None
         user.save()
 
@@ -89,9 +84,9 @@ class ReactionInputManager:
     ) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
-        add_or_remove = (list.remove if remove else list.append)
+        add_or_remove = list.remove if remove else list.append
         add_or_remove(user.best_match_prio_order_new, num - 1)
-        await self.opm.send_screen(ScreenId.CHANGE_BEST_MATCHES_PRIORITY, user)
+        await self.output_mng.send_screen(ScreenId.CHANGE_BEST_MATCHES_PRIORITY, user)
 
     def validate_number_reaction(self, emoji_name: str, user: User) -> int | None:
         if emoji_name not in NUM_EMOJI:
@@ -108,7 +103,7 @@ class ReactionInputManager:
         selected_user_id = user.get_result_by_number(num)
         user.selected_user = self.users[selected_user_id]
         await user.delete_message()
-        await self.opm.send_screen(ScreenId.SELECTED_USER, user)
+        await self.output_mng.send_screen(ScreenId.SELECTED_USER, user)
         user.change = None
 
     # ====================================================================== #
@@ -120,14 +115,14 @@ class ReactionInputManager:
         user.selected_meeting = selected_meeting
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.delete_message()
-        await self.opm.send_screen(ScreenId.EDIT_MEETING, user)
+        await self.output_mng.send_screen(ScreenId.EDIT_MEETING, user)
         user.change = None
 
     # ====================================================================== #
     async def handle_send_recommendation(self, user: User, emoji: str) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
-        assert user.selected_user, "(Error 31): No selected user!"
+        assert user.selected_user, "(Error #26): No selected user!"
         person = user.selected_user
         selected_user_id = user.get_result_by_number(num)
         receiver = self.users[selected_user_id]
@@ -142,7 +137,7 @@ class ReactionInputManager:
             "<recommended_user_name>": person.name,
             "<connection_name>": receiver.name,
         }
-        await self.opm.send_screen(ScreenId.SUCCESSFUL_RECOMMENDATION, user)
+        await self.output_mng.send_screen(ScreenId.SUCCESSFUL_RECOMMENDATION, user)
         user.change = None
 
     # ====================================================================== #
@@ -153,5 +148,5 @@ class ReactionInputManager:
         user.selected_user = self.users[recommendation.receiver]
         user.selected_recommendation = recommendation
         await user.delete_message()
-        await self.opm.send_screen(ScreenId.RECOMMENDATION, user)
+        await self.output_mng.send_screen(ScreenId.RECOMMENDATION, user)
         user.change = None

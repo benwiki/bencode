@@ -1,18 +1,14 @@
 import os
 from typing import Callable, Iterator
 
-import discord
-
-from eagxf.constants import NUM_EMOJI
-from eagxf.enums.meeting_time import MtgTime
 from eagxf.status import Status
-from eagxf.typedefs import DcUser
+from eagxf.typedefs import DcClient, DcUser
 from eagxf.user import User
 from eagxf.users_path import USERS_PATH
 
 
 class UserManager:
-    def __init__(self, client: discord.Client) -> None:
+    def __init__(self, client: DcClient) -> None:
         self.client = client
         self.users: dict[int, User] = self.load_users()
         self.prio_functions: list[Callable[[User, User], int | Status]] = [
@@ -50,7 +46,7 @@ class UserManager:
 
     async def stop(self) -> None:
         for user in self.users.values():
-            await user.delete_message()
+            await user.delete_message(spacer_too=True)
         await self.client.close()
 
     def search_users_for(self, user_searching: User) -> list[int]:

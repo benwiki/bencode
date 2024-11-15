@@ -1,3 +1,10 @@
+"""
+Properties are there to change stuff in the user's profile.
+And that stuff may not only be just the concrete properties,
+but also meetings, redommendations, meeting date...
+So don't be surprised by the "strange properties" ;)
+"""
+
 from enum import Enum, auto
 
 

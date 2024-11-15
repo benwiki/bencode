@@ -3,9 +3,9 @@ Programming utilities.
 """
 
 from datetime import datetime
-import discord
-from eagxf.typedefs import DcClient
-from eagxf.constants import NUM_EMOJI, NUM_NAME
+
+from eagxf.constants import NUM_EMOJI
+from eagxf.typedefs import DcClient, DcGuild
 
 GUILD_ID = 1199560998328205452
 
@@ -41,19 +41,19 @@ def intersect(a: list, b: list) -> list:
 def to_emojis(number: int) -> str:
     """Converts a number to emojis. E.g. 123 -> ":one::two::three:"""
     return "".join(to_emoji(int(d)) for d in str(number))
-    
+
 
 def to_emoji(digit: int) -> str:
     """Converts a number to an emoji. E.g. 3 -> ":three:"""
-    assert 0 <= digit <= 9, "(Error 14) Number out of range!"
+    assert 0 <= digit <= 9, "(Error #19) Number out of range!"
     if digit == 0:
         return NUM_EMOJI[-1]
-    return NUM_EMOJI[digit-1]
+    return NUM_EMOJI[digit - 1]
 
 
-def get_guild(client: DcClient) -> discord.Guild:
+def get_guild(client: DcClient) -> DcGuild:
     guild = client.get_guild(GUILD_ID)
-    assert guild, "(Error 15) Guild not found!"
+    assert guild, "(Error #20) Guild not found!"
     return guild
 
 

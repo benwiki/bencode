@@ -10,9 +10,11 @@ from eagxf.constants import (
     DEFAULT_PRIO_ORDER,
     MAX_PROP_LENGTH,
     MEETINGS,
+    NOTIFICATIONS,
     NUM_EMOJI,
     PRIO_LIST_LENGTH,
-    QUESTION_NAMES,
+    QUESTION_PROPS,
+    SCREEN_BUTTON_PROPS,
     VISIBLE_SIMPLE_USER_PROPS,
 )
 from eagxf.enums.button_condition import ButtonCond
@@ -336,7 +338,9 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[
             Button(label="◀️ Past", takes_to=ScreenId.PAST_MEETINGS),
             Button(label="▶️ Future", takes_to=ScreenId.FUTURE_MEETINGS),
-            *Button.back_home(row=1),
+            *Button.back_home(
+                row=1, home_conds=[ButtonCond.SCREEN_NOT_OPENED_FROM_HOME]
+            ),
         ],
     ),
     ScreenId.EDIT_MEETING: Screen(
@@ -399,7 +403,7 @@ SCREENS: dict[ScreenId, Screen] = {
         spacer=False,
     ),
     ScreenId.DELETING_OLD_MESSAGES: Screen(
-        message="🗑️ Deleting old messages... Hang on tight!",
+        message="🗑️ Deleting my old messages. Hang on...",
         buttons=[],
         spacer=False,
     ),
@@ -430,7 +434,7 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[
             Button(label="👆 Sent", takes_to=ScreenId.RECOMMENDATIONS_SENT),
             Button(label="👇 Received", takes_to=ScreenId.RECOMMENDATIONS_RECEIVED),
-            *Button.back_home(row=1),
+            *Button.back_home(row=1, home_conds=[ButtonCond.SCREEN_NOT_OPENED_FROM_HOME]),
         ],
     ),
     ScreenId.RECOMMENDATIONS_SENT: Screen(
@@ -524,7 +528,7 @@ SCREENS: dict[ScreenId, Screen] = {
             changed_property=q_id,
             buttons=[*Button.back_home()],
         )
-        for q_id, question in QUESTION_NAMES.items()
+        for q_id, question in QUESTION_PROPS.items()
     },
     **{  # Edit simple properties
         ScreenId.edit(prop_id.to_str): Screen(
@@ -563,7 +567,7 @@ SCREENS: dict[ScreenId, Screen] = {
             changed_property=Property.search(q_id),
             buttons=[*Button.back_home()],
         )
-        for q_id, question in QUESTION_NAMES.items()
+        for q_id, question in QUESTION_PROPS.items()
     },
     **{  # See questions
         ScreenId.see(q_id.to_str): Screen(
@@ -571,6 +575,20 @@ SCREENS: dict[ScreenId, Screen] = {
             f"is:\n\n*<selected_{q_id}>*",
             buttons=[*Button.back_home()],
         )
-        for q_id, question in QUESTION_NAMES.items()
+        for q_id, question in QUESTION_PROPS.items()
+    },
+    **{
+        noti_id: Screen(
+            message=notification["text"],
+            buttons=[
+                Button(
+                    label=SCREEN_BUTTON_PROPS[dest]["text"],
+                    emoji=SCREEN_BUTTON_PROPS[dest]["emoji"],
+                    takes_to=dest,
+                )
+                for dest in notification["destinations"]
+            ],
+        )
+        for noti_id, notification in NOTIFICATIONS.items()
     },
 }

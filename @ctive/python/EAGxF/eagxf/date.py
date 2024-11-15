@@ -20,13 +20,13 @@ class Date(datetime):
         except ValueError:
             return False
         return True
-    
+
     @staticmethod
     def valid_future_date(date: str) -> bool:
         if not Date.is_valid(date):
             return False
         return Date.from_str(date).is_future()
-    
+
     @staticmethod
     def valid_past_date(date: str) -> bool:
         if not Date.is_valid(date):

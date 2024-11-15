@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Optional
 
 from eagxf.date import Date
 
@@ -43,7 +43,7 @@ class Meeting:
 class Meetings:
     future: list[Meeting] = field(default_factory=list)
     past: list[Meeting] = field(default_factory=list)
-    ongoing: Meeting | None = None
+    ongoing: Optional[Meeting] = None
 
     @property
     def all(self) -> list[Meeting]:

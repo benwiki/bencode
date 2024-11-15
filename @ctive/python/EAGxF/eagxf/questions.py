@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from eagxf.constants import NOT_ALPHANUMERIC, Q_MAPPING, QUESTION_NAMES
+from eagxf.constants import NOT_ALPHANUMERIC, Q_MAPPING, QUESTION_PROPS
 from eagxf.enums.property import Property
 
 
@@ -39,8 +39,8 @@ class Questions:
                 if kw in other[q_id2].lower()
                 else 0.0
             )
-            for q_id1 in QUESTION_NAMES
-            for q_id2 in QUESTION_NAMES
+            for q_id1 in QUESTION_PROPS
+            for q_id2 in QUESTION_PROPS
             for kw in NOT_ALPHANUMERIC.split(self[q_id1].lower())
             if kw not in stopwords
         )
