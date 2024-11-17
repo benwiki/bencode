@@ -3,6 +3,7 @@ from typing import Callable
 
 from eagxf.constants import MAX_PROP_LENGTH, QUESTION_PROPS, REACTION_PROPERTIES
 from eagxf.date import Date
+from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
@@ -63,8 +64,8 @@ class TextinputManager:
         else:
             setattr(change_user, prop_to_change.to_str, new_prop_value)
             changed_prop = f"changed {prop_to_change.to_str}"
-            await self.send_succesful_prop_change(
-                user, from_=changed_prop, to_=new_prop_value, msg=msg
+            await self.output_mng.send_succesful_prop_change(
+                user, changed_from=changed_prop, changed_to=new_prop_value, msg=msg
             )
 
     def evenly_space(self, text: str, capitalize: bool) -> str:
@@ -76,20 +77,6 @@ class TextinputManager:
             for kw in map(str.strip, text.split(","))  # type: ignore
         )
 
-    async def send_succesful_prop_change(
-        self, user: User, from_: str, to_: str, msg: DcMessage
-    ) -> None:
-        await msg.add_reaction("✅")
-        user.remove_screens_until_stop()
-        user.replace = {
-            "<changed_prop>": from_,
-            "<new_value>": "'*" + peek(to_.replace("*", r"\*")) + "*'",
-            "<plus_info>": user.additional_info_with_side_effects(),
-        }
-        await self.output_mng.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
-        user.change = None
-        user.save()
-
     async def handle_meeting_date(
         self, user: User, date_str: str, msg: DcMessage, change: bool = False
     ) -> None:
@@ -97,15 +84,19 @@ class TextinputManager:
             await msg.add_reaction("❌")
             await self.output_mng.send_screen(ScreenId.INVALID_DATE, user)
             return
-        assert user.selected_user, "(Error #27) No selected user for meeting!"
+        assert user.selected_user, "(Error #37) No selected user for meeting!"
         if change:
             user.cancel_meeting_with_selected()
         user.request_meeting_with_selected(Date.from_str(date_str))
         verb = "changed your" if change else "requested a new"
         changed_prop = f"{verb} meeting with ***{user.selected_user.name}***"
-        await self.send_succesful_prop_change(
-            user, from_=changed_prop, to_=date_str, msg=msg
+        await self.output_mng.send_succesful_prop_change(
+            user, changed_from=changed_prop, changed_to=date_str, msg=msg
         )
+        if not change:
+            assert user.selected_user, "(Error #38)"
+            notification = ScreenId.NOTI_MEETING_REQUESTED
+            await self.output_mng.send_notification(user.selected_user, notification)
 
     async def handle_question_change(
         self, user: User, new_val: str, msg: DcMessage, q_to_change: Property
@@ -118,26 +109,17 @@ class TextinputManager:
             await msg.add_reaction("❌")
             await self.too_long_question(user, changed_prop, new_val)
             return
-        self.set_new_question_val(user, q_to_change, new_val, searching)
-        await self.send_succesful_prop_change(
-            user, from_=changed_prop, to_=new_val, msg=msg
+        user.set_new_question_val(q_to_change, new_val, searching)
+        await self.output_mng.send_succesful_prop_change(
+            user, changed_from=changed_prop, changed_to=new_val, msg=msg
         )
-
-    def set_new_question_val(
-        self, user: User, q_to_change: Property, new_val: str, searching: bool
-    ) -> None:
-        change_user = user
-        if searching:
-            assert user.search_filter, "(Error #28) No search filter found!"
-            change_user = user.search_filter
-        change_user.set_question(q_to_change, new_val)
 
     async def too_long_question(
         self, user: User, changed_prop: str, new_val: str
     ) -> None:
-        user.replace = {
+        user.replace.update({
             "<changed_prop>": f"The {changed_prop}",
             "<exceeding_number>": str(len(new_val) - MAX_PROP_LENGTH),
             "<to_cut_off>": new_val[MAX_PROP_LENGTH:],
-        }
+        })
         await self.output_mng.send_screen(ScreenId.TOO_LONG_PROP_TEXT, user)

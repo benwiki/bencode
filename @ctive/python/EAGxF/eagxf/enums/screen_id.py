@@ -66,9 +66,16 @@ class ScreenId(Enum):
     # ==== Notifications ====
     NOTI_INTEREST_RECEIVED = auto()
     NOTI_INTEREST_CONFIRMED = auto()
-    NOTI_MEETING_REQUEST_RECEIVED = auto()
-    NOTI_MEETING_REQUEST_CONFIRMED = auto()
+    NOTI_INTEREST_CANCELLED = auto()
+
+    NOTI_MEETING_REQUESTED = auto()
+    NOTI_MEETING_CONFIRMED = auto()
+    NOTI_MEETING_CANCELLED = auto()
+
+    NOTI_RECOMMENDATION_RECEIVED = auto()
+
     NOTI_CALL_STARTED = auto()
+    NOTI_CALL_CANCELLED = auto()
     # ==== special IDs ====
     BACK__ = auto()
     BACK_UNTIL_STOP__ = auto()

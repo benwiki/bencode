@@ -19,12 +19,12 @@ from eagxf.constants import (
 )
 from eagxf.date import Date
 from eagxf.enums.button_condition import ButtonCond
-from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
 from eagxf.enums.screen_condition import ScreenCond
 from eagxf.enums.screen_id import ScreenId
 from eagxf.interests import Interests
 from eagxf.meetings import Meeting, Meetings
+from eagxf.message import Message
 from eagxf.message_bundle import MessageBundle
 from eagxf.questions import Questions
 from eagxf.recommendations import Recommendation, Recommendations
@@ -76,6 +76,7 @@ class User:
     best_match_prio_order_new: list[int] = field(default_factory=list)
     screen_stack: list[Screen] = field(default_factory=list)
     replace: dict[str, str] = field(default_factory=dict)
+    notification_inbox: dict[int, int] = field(default_factory=dict)
     msg_bundle: MessageBundle = field(default_factory=MessageBundle)
     results: list[Any] = field(default_factory=list)
     selected_recommendation: Optional[Recommendation] = None
@@ -88,6 +89,10 @@ class User:
     feedback_message: str = ""
     call_channel_id: int = 0
     page: int = 0
+
+    @property
+    def stack_names(self) -> str:
+        return " > ".join(str(screen.id) for screen in self.screen_stack)
 
     @staticmethod
     def search_profile() -> "User":
@@ -367,7 +372,7 @@ class User:
         return str(self.selected_meeting.date)
 
     def send_interest_to_selected(self):
-        assert self.selected_user is not None, "(Error #8) No selected user"
+        assert self.selected_user is not None, "(Error #10) No selected user"
         self.send_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -377,7 +382,7 @@ class User:
         user.interests.receive_from(self.id)
 
     def cancel_interest_to_selected(self):
-        assert self.selected_user is not None, "(Error #9) No selected user"
+        assert self.selected_user is not None, "(Error #11) No selected user"
         self.cancel_interest_to(self.selected_user)
         self.selected_user.save()
         self.save()
@@ -387,7 +392,7 @@ class User:
         user.interests.unreceive_from(self.id)
 
     def request_meeting_with_selected(self, date: Date):
-        assert self.selected_user is not None, "(Error #10) No selected user"
+        assert self.selected_user is not None, "(Error #12) No selected user"
         self.meetings.request(self.selected_user.id, date)
         self.selected_user.meetings.request(self.id, date)
         self.selected_user.save()
@@ -396,7 +401,7 @@ class User:
     def cancel_meeting_with_selected(self):
         assert (
             self.selected_user and self.selected_meeting
-        ), "(Error #11) No selected user or meeting"
+        ), "(Error #13) No selected user or meeting"
         self.meetings.cancel(self.selected_user.id, self.selected_meeting)
         self.selected_user.meetings.cancel(self.id, self.selected_meeting)
         self.selected_user.save()
@@ -405,11 +410,11 @@ class User:
     async def start_video_call_with_selected(self, client: DcClient):
         """Assigns a Discord voice room to the user and the selected user
         to start a video call."""
-        assert self.selected_user is not None, "(Error #12) No selected user"
-        me, partner, role, channel = self.get_members_role_and_channel(client)
-        if not (me and partner and role and channel):
+        assert self.selected_user is not None, "(Error #14) No selected user"
+        myself, partner, role, channel = self.get_members_role_and_channel(client)
+        if not (myself and partner and role and channel):
             return
-        await me.add_roles(role)
+        await myself.add_roles(role)
         await partner.add_roles(role)
         self.call_channel_id = channel.id
         self.selected_user.call_channel_id = channel.id
@@ -417,18 +422,18 @@ class User:
     async def cancel_video_call_with_selected(self, client: DcClient):
         """Removes the Discord voice room assigned to the user and the selected user
         to cancel a video call."""
-        assert self.selected_user is not None, "(Error #13) No selected user"
-        me, partner, role, _ = self.get_members_role_and_channel(client)
-        if not (me and partner and role):
+        assert self.selected_user is not None, "(Error #15) No selected user"
+        myself, partner, role, _ = self.get_members_role_and_channel(client)
+        if not (myself and partner and role):
             return
-        await me.remove_roles(role)
+        await myself.remove_roles(role)
         await partner.remove_roles(role)
         self.call_channel_id = 0
         self.selected_user.call_channel_id = 0
 
     def cancel_selected_recommendation(self):
-        assert self.selected_user is not None, "(Error #14) No selected user"
-        assert self.selected_recommendation, "(Error #15)"
+        assert self.selected_user is not None, "(Error #16) No selected user"
+        assert self.selected_recommendation, "(Error #17)"
         self.remove_recommendation(self.selected_recommendation)
         self.selected_user.remove_recommendation(self.selected_recommendation)
 
@@ -437,12 +442,13 @@ class User:
         self.save()
 
     def get_members_role_and_channel(self, client: DcClient):
-        assert self.selected_user is not None, "(Error #16) No selected user"
+        assert self.selected_user is not None, "(Error #18) No selected user"
         guild = get_guild(client)
-        me = guild.get_member(self.id)
+        myself = guild.get_member(self.id)
         partner = guild.get_member(self.selected_user.id)
         if not CHANNELS:
             i = 1
+            CHANNELS.append(i)
         elif len(CHANNELS) < 248:
             i = max(CHANNELS) + 1
             CHANNELS.append(i)
@@ -452,7 +458,7 @@ class User:
             return None, None, None, None
         role = discord.utils.get(guild.roles, name=f"channel-{i}-role")
         channel = discord.utils.get(guild.voice_channels, name=f"channel-{i}")
-        return me, partner, role, channel
+        return myself, partner, role, channel
 
     @property
     def interests_sent_not_received(self) -> list[int]:
@@ -537,38 +543,6 @@ class User:
             return "⬇️ This user has sent you an interest."
         return "No interest sent or received."
 
-    async def apply_effect(self, effect: Effect, client: DcClient) -> None:
-        match effect:
-            case Effect.GO_TO_PREVIOUS_PAGE:
-                self.page -= 1
-            case Effect.GO_TO_NEXT_PAGE:
-                self.page += 1
-            case Effect.DELETE_MESSAGE:
-                await self.delete_message()
-            case Effect.SAVE_BEST_MATCHES:
-                self.save_priority_order()
-            case Effect.RESET_NEW_PRIO_ORDER:
-                self.best_match_prio_order_new = []
-            case Effect.DEFAULT_BEST_MATCHES:
-                self.update_priority_order(list(range(PRIO_LIST_LENGTH)))
-            case Effect.RESET_USER_PROPERTY_CHANGE:
-                self.change = None
-            case Effect.EMPTY_RESULTS:
-                self.results = []
-                self.page = 0
-            case Effect.SEND_INTEREST:
-                self.send_interest_to_selected()
-            case Effect.CANCEL_INTEREST:
-                self.cancel_interest_to_selected()
-            case Effect.CANCEL_MEETING:
-                self.cancel_meeting_with_selected()
-            case Effect.START_CALL:
-                await self.start_video_call_with_selected(client)
-            case Effect.CANCEL_CALL:
-                await self.cancel_video_call_with_selected(client)
-            case Effect.CANCEL_RECOMMENDATION:
-                self.cancel_selected_recommendation()
-
     def button_condition_applies(self, condition: ButtonCond) -> bool:
         interest_sent = self.interest_sent_to_selected
         interest_received = self.interest_received_from_selected
@@ -606,7 +580,7 @@ class User:
                 return len(self.best_match_prio_order_new) != 0
             case ButtonCond.SCREEN_NOT_OPENED_FROM_HOME:
                 return len(self.screen_stack) > 2
-        print(f"(Error #17) Invalid condition: {condition}")
+        print(f"(Error #19) Invalid condition: {condition}")
         return False
 
     def replace_placeholders(self, text: str) -> str:
@@ -720,15 +694,15 @@ class User:
             receiver_future.close()
         elif receiver_future:
             receiver = await receiver_future
-        assert receiver, "(Error #18) receiver is None"
+        assert receiver, "(Error #20) receiver is None"
 
-        await self.msg_bundle.send(receiver)
+        await self.msg_bundle.send_to(receiver)
 
     @property
     def dc_message(self) -> DcMessage | None:
         return self.msg_bundle.body.dc_message
 
-    def is_deletable(self, msg_id: int) -> bool:
+    def can_delete(self, msg_id: int) -> bool:
         spacer_msg = self.msg_bundle.spacer.dc_message
         body_msg = self.msg_bundle.body.dc_message
         if not (spacer_msg and body_msg):
@@ -746,11 +720,21 @@ class User:
 
     def update_message(
         self,
+        message_text: str,
         dc_view: Optional[DcView] = None,
         dc_message: Optional[DcMessage] = None,
-        message_text: Optional[str] = None,
     ) -> None:
-        self.msg_bundle.update(dc_view, dc_message, message_text)
+        self.msg_bundle.update_body(message_text, dc_view, dc_message)
+
+    def add_notification(
+        self, msg_text: str, dc_view: Optional[DcView] = None
+    ) -> Message:
+        message = Message(msg_text=msg_text, dc_view=dc_view)
+        self.msg_bundle.add_notification(message)
+        return message
+
+    async def remove_notification(self, msg_id: int):
+        await self.msg_bundle.remove_notification(msg_id)
 
     async def add_reaction_to_message(self, reaction: DcEmoji | str) -> None:
         await self.msg_bundle.add_reaction(reaction)
@@ -766,3 +750,12 @@ class User:
     @property
     def sleeping(self) -> bool:
         return self.msg_bundle.sleeping
+
+    def set_new_question_val(
+        self, q_to_change: Property, new_val: str, searching: bool
+    ) -> None:
+        change_user = self
+        if searching:
+            assert self.search_filter, "(Error #21) No search filter found!"
+            change_user = self.search_filter
+        change_user.set_question(q_to_change, new_val)

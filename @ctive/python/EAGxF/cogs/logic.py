@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+from eagxf.constants import ADMINS
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
 from eagxf.managers.reaction_input_manager import ReactionInputManager
@@ -33,6 +34,12 @@ class Logic(commands.Cog):
     async def stop(self, ctx: commands.Context) -> None:
         """Stops the bot."""
         await self.output_mng.stop_request_by(ctx.author.id)
+
+    @commands.command(name="debug")
+    async def toggle_debug(self, ctx: commands.Context) -> None:
+        """Toggles debug mode."""
+        if await self.output_mng.toggle_debug(ctx.author.id):
+            await self.reset(ctx)
 
     @commands.command(name="reset")
     async def reset(self, ctx: commands.Context) -> None:

@@ -434,7 +434,9 @@ SCREENS: dict[ScreenId, Screen] = {
         buttons=[
             Button(label="👆 Sent", takes_to=ScreenId.RECOMMENDATIONS_SENT),
             Button(label="👇 Received", takes_to=ScreenId.RECOMMENDATIONS_RECEIVED),
-            *Button.back_home(row=1, home_conds=[ButtonCond.SCREEN_NOT_OPENED_FROM_HOME]),
+            *Button.back_home(
+                row=1, home_conds=[ButtonCond.SCREEN_NOT_OPENED_FROM_HOME]
+            ),
         ],
     ),
     ScreenId.RECOMMENDATIONS_SENT: Screen(
@@ -584,9 +586,20 @@ SCREENS: dict[ScreenId, Screen] = {
                 Button(
                     label=SCREEN_BUTTON_PROPS[dest]["text"],
                     emoji=SCREEN_BUTTON_PROPS[dest]["emoji"],
+                    effects=[
+                        Effect.REMOVE_NOTIFICATION,
+                        Effect.SELECT_NOTIFICATION_SENDER,
+                    ],
                     takes_to=dest,
                 )
                 for dest in notification["destinations"]
+            ]
+            + [
+                Button(
+                    label="X",
+                    style=ButtonStyle.red,
+                    effects=[Effect.REMOVE_NOTIFICATION],
+                )
             ],
         )
         for noti_id, notification in NOTIFICATIONS.items()

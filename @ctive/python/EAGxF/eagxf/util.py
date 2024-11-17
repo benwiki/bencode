@@ -45,7 +45,7 @@ def to_emojis(number: int) -> str:
 
 def to_emoji(digit: int) -> str:
     """Converts a number to an emoji. E.g. 3 -> ":three:"""
-    assert 0 <= digit <= 9, "(Error #19) Number out of range!"
+    assert 0 <= digit <= 9, "(Error #22) Number out of range!"
     if digit == 0:
         return NUM_EMOJI[-1]
     return NUM_EMOJI[digit - 1]
@@ -53,7 +53,7 @@ def to_emoji(digit: int) -> str:
 
 def get_guild(client: DcClient) -> DcGuild:
     guild = client.get_guild(GUILD_ID)
-    assert guild, "(Error #20) Guild not found!"
+    assert guild, "(Error #23) Guild not found!"
     return guild
 
 

@@ -13,8 +13,6 @@ TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
 USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
-DEBUGGING = True
-
 ADMINS = (
     348976146689294336,
     329635441433116674,
@@ -221,23 +219,39 @@ Q_MAPPING = {
 
 NOTIFICATIONS = {
     ScreenId.NOTI_INTEREST_RECEIVED: {
-        "text": "<interested_person> is interested in you! Check out the \"received interests\" screen!",
+        "text": '**<notification_sender>** is interested in you! Check out the "Received interests" page!',
         "destinations": [ScreenId.INTERESTS_RECEIVED],
     },
     ScreenId.NOTI_INTEREST_CONFIRMED: {
-        "text": "",
+        "text": '**<notification_sender>** and you are now mutually interested in each other! Check out the "Mutual interests" page!',
+        "destinations": [ScreenId.MUTUAL_INTERESTS],
+    },
+    ScreenId.NOTI_INTEREST_CANCELLED: {
+        "text": "**<notification_sender>** is not interested anymore.",
         "destinations": [],
     },
-    ScreenId.NOTI_MEETING_REQUEST_RECEIVED: {
-        "text": "",
+    ScreenId.NOTI_MEETING_REQUESTED: {
+        "text": '**<notification_sender>** requested a meeting from you! The "Meeting requests" page is in the making...',
         "destinations": [],
     },
-    ScreenId.NOTI_MEETING_REQUEST_CONFIRMED: {
-        "text": "",
+    ScreenId.NOTI_MEETING_CONFIRMED: {
+        "text": '**<notification_sender>** confirmed a meeting that you requested! Check out the "Future meetings" page!',
+        "destinations": [ScreenId.FUTURE_MEETINGS],
+    },
+    ScreenId.NOTI_MEETING_CANCELLED: {
+        "text": "**<notification_sender>** cancelled this meeting: <cancelled_meeting>",
         "destinations": [],
+    },
+    ScreenId.NOTI_RECOMMENDATION_RECEIVED: {
+        "text": '**<notification_sender>** sent you a recommendation! Check out the "Recommendations received" page!',
+        "destinations": [ScreenId.RECOMMENDATIONS_RECEIVED],
     },
     ScreenId.NOTI_CALL_STARTED: {
-        "text": "",
+        "text": "**<notification_sender>** started a call with you! Check out their page to join the call!",
+        "destinations": [ScreenId.SELECTED_USER],
+    },
+    ScreenId.NOTI_CALL_CANCELLED: {
+        "text": "**<notification_sender>** cancelled the call with you.",
         "destinations": [],
     },
 }
@@ -247,4 +261,20 @@ SCREEN_BUTTON_PROPS = {
         "text": "Received interests",
         "emoji": "⬇️",
     },
+    ScreenId.MUTUAL_INTERESTS: {
+        "text": "Mutual interests",
+        "emoji": "↕️",
+    },
+    ScreenId.FUTURE_MEETINGS: {
+        "text": "Future meetings",
+        "emoji": "▶️",
+    },
+    ScreenId.RECOMMENDATIONS_RECEIVED: {
+        "text": "Recommendations received",
+        "emoji": "👇",
+    },
+    ScreenId.SELECTED_USER: {
+        "text": "Go to caller",
+        "emoji": "👤",
+    }
 }

@@ -8,12 +8,13 @@ from eagxf.button import Button
 from eagxf.constant_functions import PROFILE
 from eagxf.constants import (
     ADMINS,
-    DEBUGGING,
     NUM_EMOJI,
+    PRIO_LIST_LENGTH,
     QUESTION_PROPS,
     SPECIAL_DESTINATIONS,
     VISIBLE_SIMPLE_USER_PROPS,
 )
+from eagxf.enums.effect import Effect
 from eagxf.enums.meeting_time import MtgTime
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.user_manager import UserManager
@@ -21,7 +22,7 @@ from eagxf.recommendations import Recommendation
 from eagxf.screen import Screen
 from eagxf.screens import SCREENS
 from eagxf.status import STATUS_EMOJI
-from eagxf.typedefs import DcButton, DcInteraction, DcView
+from eagxf.typedefs import DcButton, DcInteraction, DcMessage, DcView
 from eagxf.user import User
 from eagxf.util import peek, to_emojis
 
@@ -30,6 +31,7 @@ class OutputManager:
     def __init__(self, user_mng: UserManager) -> None:
         self.user_mng = user_mng
         self.users = user_mng.users
+        self.debugging: bool = False
 
         self.replace_funcs: dict[str, Callable[[User], str]] = {
             "<search_results>": self.get_short_profiles,
@@ -77,7 +79,7 @@ class OutputManager:
         self.init_screens()
         for user in self.users.values():
             asyncio.create_task(self.send_starting_message_to(user))
-        asyncio.create_task(self.refresh())
+        asyncio.create_task(self.refresh_loop())
 
     async def send_starting_message_to(self, user: User) -> None:
         await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
@@ -90,7 +92,7 @@ class OutputManager:
     async def remove_past_messages(self, user: User) -> None:
         if dc_user := self.user_mng.get_user(user.id):
             async for msg in dc_user.history(limit=None):
-                if msg.author.id != dc_user.id and user.is_deletable(msg.id):
+                if msg.author.id != dc_user.id and user.can_delete(msg.id):
                     await msg.delete()
 
     def init_screens(self) -> None:
@@ -102,9 +104,7 @@ class OutputManager:
                 self.init_button_with(button, screen)
 
     def init_button_with(self, button: Button, screen: Screen) -> None:
-        go_to_screen = SCREENS.get(button.takes_to)
-        if go_to_screen is None and button.takes_to not in SPECIAL_DESTINATIONS:
-            print(f"(Error #21) Screen with id {button.takes_to} not found!")
+        go_to_screen = SCREENS.get(button.takes_to) if button.takes_to else None
         button.callback = self.get_callback_to_screen(  # type: ignore
             go_to_screen, button=button
         )
@@ -119,18 +119,90 @@ class OutputManager:
         async def callback(interaction: DcInteraction) -> None:
             await interaction.response.defer()
 
-            user = self.users[interaction.user.id]
             if button and button.effects:
                 for effect in button.effects:
-                    await user.apply_effect(effect, self.user_mng.client)
+                    await self.apply_effect(effect, interaction)
+            user = self.users[interaction.user.id]
             if button and button.takes_to in SPECIAL_DESTINATIONS:
                 await self.send_special_screen(user, button)
             elif screen:
                 await self.send_screen(screen, user)
             else:
-                print(f"(Error #22) No screen found for the button '{button}'!")
+                print(f"(Error #24) No screen found for the button '{button}'!")
 
         return callback
+
+    async def apply_effect(self, effect: Effect, interaction: DcInteraction) -> None:
+        user = self.users[interaction.user.id]
+        notification = None
+        match effect:
+            case Effect.GO_TO_PREVIOUS_PAGE:
+                user.page -= 1
+            case Effect.GO_TO_NEXT_PAGE:
+                user.page += 1
+            case Effect.DELETE_MESSAGE:
+                await user.delete_message()
+            case Effect.SAVE_BEST_MATCHES:
+                user.save_priority_order()
+            case Effect.RESET_NEW_PRIO_ORDER:
+                user.best_match_prio_order_new = []
+            case Effect.DEFAULT_BEST_MATCHES:
+                user.update_priority_order(list(range(PRIO_LIST_LENGTH)))
+            case Effect.RESET_USER_PROPERTY_CHANGE:
+                user.change = None
+            case Effect.EMPTY_RESULTS:
+                user.results = []
+                user.page = 0
+            case Effect.SEND_INTEREST:
+                user.send_interest_to_selected()
+                assert user.selected_user, "(Error #25)"
+                if user.interest_received_from_selected:
+                    notification = ScreenId.NOTI_INTEREST_CONFIRMED
+                else:
+                    notification = ScreenId.NOTI_INTEREST_RECEIVED
+            case Effect.CANCEL_INTEREST:
+                user.cancel_interest_to_selected()
+                assert user.selected_user, "(Error #26)"
+                if user.interest_received_from_selected:
+                    notification = ScreenId.NOTI_INTEREST_CANCELLED
+            case Effect.CANCEL_MEETING:
+                user.cancel_meeting_with_selected()
+                notification = ScreenId.NOTI_MEETING_CANCELLED
+            case Effect.START_CALL:
+                client = self.user_mng.client
+                await user.start_video_call_with_selected(client)
+                notification = ScreenId.NOTI_CALL_STARTED
+            case Effect.CANCEL_CALL:
+                client = self.user_mng.client
+                await user.cancel_video_call_with_selected(client)
+                notification = ScreenId.NOTI_CALL_CANCELLED
+            case Effect.CANCEL_RECOMMENDATION:
+                user.cancel_selected_recommendation()
+            case Effect.REMOVE_NOTIFICATION:
+                if not interaction.message:
+                    print("(Error #27)")
+                    return
+                await user.remove_notification(interaction.message.id)
+            case Effect.SELECT_NOTIFICATION_SENDER:
+                assert (
+                    interaction.message
+                ), "(Error #28) No message found for the interaction!"
+                noti_id = interaction.message.id
+                user.selected_user = self.users[user.notification_inbox[noti_id]]
+        if notification:
+            assert user.selected_user, "(Error #29)"
+            user.selected_user.replace.update({"<notification_sender>": user.name})
+            m_id = await self.send_notification(user.selected_user, notification)
+            user.selected_user.notification_inbox[m_id] = user.id
+
+    async def send_notification(self, user: User, notification: ScreenId) -> int:
+        screen = SCREENS[notification]
+        msg, dc_view = await self.get_msg_and_dc_view(user, screen)
+        noti = user.add_notification(msg, dc_view=dc_view)
+        dc_user = await self.user_mng.client.fetch_user(user.id)
+        await noti.send_to(dc_user)
+        assert noti.dc_message, "(Error #30) No message found for the notification!"
+        return noti.dc_message.id
 
     async def send_special_screen(self, user: User, button: Button) -> None:
         match button.takes_to:
@@ -143,15 +215,18 @@ class OutputManager:
                 last_screen = user.last_screen
                 assert (
                     last_screen is not None
-                ), "(Error #23) No screen found for the button!"
+                ), "(Error #31) No screen found for the button!"
                 await self.send_screen(last_screen, user)
 
-    async def refresh(self) -> None:
+    async def refresh_loop(self) -> None:
         while True:
             await asyncio.sleep(30)
-            for user in self.user_mng.users.values():
-                if user.last_screen and not user.sleeping:
-                    await self.send_screen(user.last_screen, user)
+            await self.refresh_all()
+
+    async def refresh_all(self) -> None:
+        for user in self.user_mng.users.values():
+            if user.last_screen and not user.sleeping:
+                await self.send_screen(user.last_screen, user)
 
     async def send_screen(self, screen: Screen | ScreenId, user: User) -> None:
         if isinstance(screen, ScreenId):
@@ -159,7 +234,8 @@ class OutputManager:
         user.stack(screen)
         user.results = self.screen_to_data(user, screen.id)
 
-        await self.update_message_for(user, screen)
+        msg, dc_view = await self.get_msg_and_dc_view(user, screen)
+        user.update_message(msg, dc_view=dc_view)
         dc_user = self.user_mng.fetch_user(user.id)
         await user.send_message(receiver_future=dc_user)
 
@@ -198,29 +274,34 @@ class OutputManager:
             case _:
                 return []
 
-    async def update_message_for(self, user: User, screen: Screen):
+    async def get_msg_and_dc_view(
+        self, user: User, screen: Screen
+    ) -> tuple[str, DcView]:
         if not user.screen_conditions_apply_for(screen):
             ok_button = Button.ok()
             ok_button.callback = self.get_callback_to_screen(None, ok_button)  # type: ignore
-            dc_view = self.get_dc_view([ok_button])
+            dc_view = self.get_dc_view([ok_button], user)
             message = screen.condition_message
             user.add_reactions = False
         else:
             buttons: Iterator[Button] = filter(
                 user.btn_conditions_apply_for, screen.buttons
             )
-            dc_view = self.get_dc_view(buttons)
+            dc_view = self.get_dc_view(buttons, user)
             message = self.replace_placeholders(screen.message, user)
             user.add_reactions = True
 
         # message_text = SPACER + message if screen.spacer else message
-        user.update_message(dc_view=dc_view, message_text=message)
+        return message, dc_view
 
-    def get_dc_view(self, buttons: Iterable[Button | DcButton]) -> DcView:
+    def get_dc_view(
+        self, buttons: Iterable[Button | DcButton], user: Optional[User] = None
+    ) -> DcView:
         dc_view = DcView()
         for button in buttons:
             dc_view.add_item(button)
-        if DEBUGGING:
+        if self.debugging and (not user or user.id in ADMINS):
+            print("Adding DEBUGGING button to view.")
             stop_btn = Button(label="STOP", style=discord.ButtonStyle.red)
             stop_btn.callback = self.stop_callback  # type: ignore
             dc_view.add_item(stop_btn)
@@ -232,11 +313,19 @@ class OutputManager:
 
     async def stop_request_by(self, user_id: int) -> None:
         if user_id not in ADMINS:
-            print(
-                f"(Error #24) Unauthorized user (id: {user_id}) tried to stop the bot."
-            )
+            print("(Error #32) Unauthorized user ", end="")
+            print(f"(id: {user_id}) tried to stop the bot.")
             return
         await self.user_mng.stop()
+
+    async def toggle_debug(self, user_id: int) -> bool:
+        if user_id not in ADMINS:
+            print("(Error #33) Unauthorized user ", end="")
+            print(f"(id: {user_id}) tried to toggle debug.")
+            return False
+        self.debugging = not self.debugging
+        await self.refresh_all()
+        return True
 
     def replace_placeholders(self, msg: str, user: User | None) -> str:
         if user:
@@ -347,3 +436,19 @@ class OutputManager:
         return user.selected_user.replace_placeholders(
             PROFILE(name=self.get_name_of(user.selected_user) + "'s")
         )
+
+    async def send_succesful_prop_change(
+        self, user: User, changed_from: str, changed_to: str, msg: DcMessage
+    ) -> None:
+        await msg.add_reaction("✅")
+        user.remove_screens_until_stop()
+        user.replace.update(
+            {
+                "<changed_prop>": changed_from,
+                "<new_value>": "'*" + peek(changed_to.replace("*", r"\*")) + "*'",
+                "<plus_info>": user.additional_info_with_side_effects(),
+            }
+        )
+        await self.send_screen(ScreenId.SUCCESSFUL_PROP_CHANGE, user)
+        user.change = None
+        user.save()

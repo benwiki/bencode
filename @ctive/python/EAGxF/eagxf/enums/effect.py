@@ -16,3 +16,5 @@ class Effect(Enum):
     START_CALL = auto()
     CANCEL_CALL = auto()
     CANCEL_RECOMMENDATION = auto()
+    REMOVE_NOTIFICATION = auto()
+    SELECT_NOTIFICATION_SENDER = auto()

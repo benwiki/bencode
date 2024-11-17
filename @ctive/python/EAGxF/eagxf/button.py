@@ -10,14 +10,14 @@ from eagxf.enums.screen_id import ScreenId
 
 
 class Button(DCButton):
-    takes_to: ScreenId
+    takes_to: Optional[ScreenId]
     effects: list[Effect]
     conditions: list[ButtonCond]
 
     def __init__(
         self,
         *args,
-        takes_to: ScreenId = ScreenId.HOME,
+        takes_to: Optional[ScreenId] = None,
         effects: Optional[list[Effect]] = None,
         conditions: Optional[list[ButtonCond]] = None,
         **kwargs,
