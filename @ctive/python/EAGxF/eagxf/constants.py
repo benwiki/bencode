@@ -219,11 +219,13 @@ Q_MAPPING = {
 
 NOTIFICATIONS = {
     ScreenId.NOTI_INTEREST_RECEIVED: {
-        "text": '**<notification_sender>** is interested in you! Check out the "Received interests" page!',
+        "text": '**<notification_sender>** is interested in you! '
+        'Check out the "Received interests" page!',
         "destinations": [ScreenId.INTERESTS_RECEIVED],
     },
     ScreenId.NOTI_INTEREST_CONFIRMED: {
-        "text": '**<notification_sender>** and you are now mutually interested in each other! Check out the "Mutual interests" page!',
+        "text": '**<notification_sender>** and you are now mutually interested '
+        'in each other! Check out the "Mutual interests" page!',
         "destinations": [ScreenId.MUTUAL_INTERESTS],
     },
     ScreenId.NOTI_INTEREST_CANCELLED: {
@@ -231,11 +233,13 @@ NOTIFICATIONS = {
         "destinations": [],
     },
     ScreenId.NOTI_MEETING_REQUESTED: {
-        "text": '**<notification_sender>** requested a meeting from you! The "Meeting requests" page is in the making...',
+        "text": '**<notification_sender>** requested a meeting from you! '
+        'The "Meeting requests" page is in the making...',
         "destinations": [],
     },
     ScreenId.NOTI_MEETING_CONFIRMED: {
-        "text": '**<notification_sender>** confirmed a meeting that you requested! Check out the "Future meetings" page!',
+        "text": '**<notification_sender>** confirmed a meeting that you requested! '
+        'Check out the "Future meetings" page!',
         "destinations": [ScreenId.FUTURE_MEETINGS],
     },
     ScreenId.NOTI_MEETING_CANCELLED: {
@@ -243,11 +247,13 @@ NOTIFICATIONS = {
         "destinations": [],
     },
     ScreenId.NOTI_RECOMMENDATION_RECEIVED: {
-        "text": '**<notification_sender>** sent you a recommendation! Check out the "Recommendations received" page!',
+        "text": '**<notification_sender>** sent you a recommendation! '
+        'Check out the "Recommendations received" page!',
         "destinations": [ScreenId.RECOMMENDATIONS_RECEIVED],
     },
     ScreenId.NOTI_CALL_STARTED: {
-        "text": "**<notification_sender>** started a call with you! Check out their page to join the call!",
+        "text": "**<notification_sender>** started a call with you! "
+        "Check out their page to join the call!",
         "destinations": [ScreenId.SELECTED_USER],
     },
     ScreenId.NOTI_CALL_CANCELLED: {

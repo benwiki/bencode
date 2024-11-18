@@ -74,49 +74,71 @@ class Button(DCButton):
         )
 
     @staticmethod
-    def back(row=None, conds: Optional[list[ButtonCond]] = None):
+    def back(
+        row=None,
+        conds: Optional[list[ButtonCond]] = None,
+        effects: Optional[list[Effect]] = None,
+    ):
         return Button(
-            label="⬅️ Back", takes_to=ScreenId.BACK__, row=row, conditions=conds
+            label="⬅️ Back",
+            takes_to=ScreenId.BACK__,
+            row=row,
+            conditions=conds,
+            effects=effects,
         )
 
     @staticmethod
-    def ok(row=None, conds: Optional[list[ButtonCond]] = None):
+    def ok(
+        row=None,
+        conds: Optional[list[ButtonCond]] = None,
+        effects: Optional[list[Effect]] = None,
+    ):
         return Button(
             label="OK",
             style=discord.ButtonStyle.green,
             takes_to=ScreenId.BACK__,
             row=row,
             conditions=conds,
+            effects=effects,
         )
 
     @staticmethod
-    def home(row=None, conds: Optional[list[ButtonCond]] = None):
+    def home(
+        row=None,
+        conds: Optional[list[ButtonCond]] = None,
+        effects: Optional[list[Effect]] = None,
+    ):
         return Button(
             label="🏠 Home",
             style=discord.ButtonStyle.primary,
             takes_to=ScreenId.HOME,
             row=row,
             conditions=conds,
+            effects=effects,
         )
 
     @staticmethod
     def back_home(
         row=None,
         back_conds: Optional[list[ButtonCond]] = None,
+        back_effects: Optional[list[Effect]] = None,
         home_conds: Optional[list[ButtonCond]] = None,
+        home_effects: Optional[list[Effect]] = None,
     ):
         return [
-            Button.back(row=row, conds=back_conds),
-            Button.home(row=row, conds=home_conds),
+            Button.back(row=row, conds=back_conds, effects=back_effects),
+            Button.home(row=row, conds=home_conds, effects=home_effects),
         ]
 
     @staticmethod
     def ok_home(
         row=None,
         ok_conds: Optional[list[ButtonCond]] = None,
+        ok_effects: Optional[list[Effect]] = None,
         home_conds: Optional[list[ButtonCond]] = None,
+        home_effects: Optional[list[Effect]] = None,
     ):
         return [
-            Button.ok(row=row, conds=ok_conds),
-            Button.home(row=row, conds=home_conds),
+            Button.ok(row=row, conds=ok_conds, effects=ok_effects),
+            Button.home(row=row, conds=home_conds, effects=home_effects),
         ]

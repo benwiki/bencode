@@ -18,3 +18,4 @@ class Effect(Enum):
     CANCEL_RECOMMENDATION = auto()
     REMOVE_NOTIFICATION = auto()
     SELECT_NOTIFICATION_SENDER = auto()
+    RESET = auto()

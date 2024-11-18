@@ -82,7 +82,7 @@ class OutputManager:
         asyncio.create_task(self.refresh_loop())
 
     async def send_starting_message_to(self, user: User) -> None:
-        await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
+        # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
         await self.remove_past_messages(user)
         # if user.id == 329635441433116674:
         #     # await user.delete_message()
@@ -122,6 +122,7 @@ class OutputManager:
             if button and button.effects:
                 for effect in button.effects:
                     await self.apply_effect(effect, interaction)
+
             user = self.users[interaction.user.id]
             if button and button.takes_to in SPECIAL_DESTINATIONS:
                 await self.send_special_screen(user, button)
@@ -129,6 +130,7 @@ class OutputManager:
                 await self.send_screen(screen, user)
             else:
                 print(f"(Error #24) No screen found for the button '{button}'!")
+            await user.msg_bundle.delete_front_spacer()
 
         return callback
 
@@ -189,6 +191,10 @@ class OutputManager:
                 ), "(Error #28) No message found for the interaction!"
                 noti_id = interaction.message.id
                 user.selected_user = self.users[user.notification_inbox[noti_id]]
+            case Effect.RESET:
+                dc_user = await self.user_mng.fetch_user(user.id)
+                await user.msg_bundle.send_front_spacer(dc_user)
+                await user.delete_message(spacer_too=True)
         if notification:
             assert user.selected_user, "(Error #29)"
             user.selected_user.replace.update({"<notification_sender>": user.name})
@@ -262,9 +268,9 @@ class OutputManager:
             case ScreenId.MUTUAL_INTERESTS:
                 return user.mutual_interests
             case ScreenId.FUTURE_MEETINGS:
-                return user.future_meetings
+                return list(sorted(user.future_meetings))
             case ScreenId.PAST_MEETINGS:
-                return user.past_meetings
+                return list(sorted(user.past_meetings))
             case ScreenId.RECOMMEND_USER:
                 return user.recommendables
             case ScreenId.RECOMMENDATIONS_SENT:

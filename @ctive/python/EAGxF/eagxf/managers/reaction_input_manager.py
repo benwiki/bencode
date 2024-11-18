@@ -115,8 +115,11 @@ class ReactionInputManager:
         user.selected_meeting = selected_meeting
         user.selected_user = self.users[selected_meeting.partner_id]
         await user.delete_message()
-        await self.output_mng.send_screen(ScreenId.EDIT_MEETING, user)
-        user.change = None
+        if selected_meeting.is_future:
+            await self.output_mng.send_screen(ScreenId.EDIT_FUTURE_MEETING, user)
+        else:
+            await self.output_mng.send_screen(ScreenId.EDIT_PAST_MEETING, user)
+        # user.change = None
 
     # ====================================================================== #
     async def handle_send_recommendation(self, user: User, emoji: str) -> None:

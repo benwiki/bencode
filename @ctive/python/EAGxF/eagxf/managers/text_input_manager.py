@@ -3,13 +3,11 @@ from typing import Callable
 
 from eagxf.constants import MAX_PROP_LENGTH, QUESTION_PROPS, REACTION_PROPERTIES
 from eagxf.date import Date
-from eagxf.enums.effect import Effect
 from eagxf.enums.property import Property
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
 from eagxf.typedefs import DcMessage
 from eagxf.user import User
-from eagxf.util import peek
 
 
 class TextinputManager:

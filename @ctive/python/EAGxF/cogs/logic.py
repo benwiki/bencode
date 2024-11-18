@@ -1,6 +1,5 @@
 from discord.ext import commands
 
-from eagxf.constants import ADMINS
 from eagxf.enums.screen_id import ScreenId
 from eagxf.managers.output_manager import OutputManager
 from eagxf.managers.reaction_input_manager import ReactionInputManager

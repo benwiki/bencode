@@ -343,25 +343,44 @@ SCREENS: dict[ScreenId, Screen] = {
             ),
         ],
     ),
-    ScreenId.EDIT_MEETING: Screen(
+    ScreenId.EDIT_FUTURE_MEETING: Screen(
         message="You have selected a meeting with ***<selected_user_name>*** "
         "at **<selected_meeting_time>** !"
-        "\n\nWhat do you want to do with this meeting?",
+        "\n\nYou can cancel this meeting, change the date or visit the user's profile."
+        "\n\nIf you want to **change the date**, please specify the new date "
+        "and time in this format:"
+        "\n**dd.mm.yyyy hh:mm**"
+        "\nand send it via text message."
+        "\n\nExample: 03.11.2024 09:30",
         buttons=[
             Button(
                 label="❌ Cancel meeting",
                 takes_to=ScreenId.CANCEL_MEETING_CONFIRM,
-                conditions=[ButtonCond.CAN_CANCEL_MEETING],
+                # conditions=[ButtonCond.CAN_CANCEL_MEETING],
             ),
+            # Button(
+            #     label="📅 Change date",
+            #     takes_to=ScreenId.CHANGE_MEETING_DATE,
+            #     conditions=[ButtonCond.CAN_CHANGE_MEETING_DATE],
+            # ),
+            Button(
+                label="👤 Go to their profile",
+                takes_to=ScreenId.SELECTED_USER,
+                style=ButtonStyle.primary,
+            ),
+            *Button.back_home(row=1),
+        ],
+        changed_property=Property.CHANGE_MEETING_DATE,
+    ),
+    ScreenId.EDIT_PAST_MEETING: Screen(
+        message="You have selected a meeting with ***<selected_user_name>*** "
+        "at **<selected_meeting_time>** !"
+        "\n\nYou can delete this meeting or visit the user's profile.",
+        buttons=[
             Button(
                 label="🗑️ Delete meeting",
                 takes_to=ScreenId.DELETE_MEETING_CONFIRM,
-                conditions=[ButtonCond.CAN_DELETE_MEETING],
-            ),
-            Button(
-                label="📅 Change date",
-                takes_to=ScreenId.CHANGE_MEETING_DATE,
-                conditions=[ButtonCond.CAN_CHANGE_MEETING_DATE],
+                # conditions=[ButtonCond.CAN_DELETE_MEETING],
             ),
             Button(
                 label="👤 Go to their profile",
@@ -371,16 +390,16 @@ SCREENS: dict[ScreenId, Screen] = {
             *Button.back_home(row=1),
         ],
     ),
-    ScreenId.CHANGE_MEETING_DATE: Screen(
-        message="You want to change the meeting with ***<selected_user_name>*** "
-        "at **<selected_meeting_time>** !"
-        "\n\nPlease specify a new date and time for the meeting in this format:"
-        "\n**dd.mm.yyyy hh:mm**"
-        "\nand send it via text message."
-        "\n\nExample: 03.11.2024 09:30",
-        changed_property=Property.CHANGE_MEETING_DATE,
-        buttons=[*Button.back_home()],
-    ),
+    # ScreenId.CHANGE_MEETING_DATE: Screen(
+    #     message="You want to change the meeting with ***<selected_user_name>*** "
+    #     "at **<selected_meeting_time>** !"
+    #     "\n\nPlease specify a new date and time for the meeting in this format:"
+    #     "\n**dd.mm.yyyy hh:mm**"
+    #     "\nand send it via text message."
+    #     "\n\nExample: 03.11.2024 09:30",
+    #     changed_property=Property.CHANGE_MEETING_DATE,
+    #     buttons=[*Button.back_home()],
+    # ),
     ScreenId.INVALID_DATE: Screen(
         message="❌ Invalid date, try again!\nFormat should be: **dd.mm.yyyy hh:mm**"
         "\nAnd it should be in the future!",
@@ -399,7 +418,9 @@ SCREENS: dict[ScreenId, Screen] = {
     ),
     ScreenId.SUCCESSFUL_PROP_CHANGE: Screen(
         message="✅ Successfully <changed_prop> to <new_value>!<plus_info>",
-        buttons=[*Button.ok_home()],
+        buttons=[
+            *Button.ok_home(ok_effects=[Effect.RESET], home_effects=[Effect.RESET]),
+        ],
         spacer=False,
     ),
     ScreenId.DELETING_OLD_MESSAGES: Screen(
