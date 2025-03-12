@@ -1,3 +1,5 @@
+# pylint: disable=broad-exception-caught
+
 import asyncio
 from functools import partial
 from typing import Callable, Iterable, Iterator, Optional
@@ -82,7 +84,7 @@ class OutputManager:
         asyncio.create_task(self.refresh_loop())
 
     async def send_starting_message_to(self, user: User) -> None:
-        # await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
+        await self.send_screen(ScreenId.DELETING_OLD_MESSAGES, user)
         await self.remove_past_messages(user)
         # if user.id == 329635441433116674:
         #     # await user.delete_message()
@@ -232,11 +234,18 @@ class OutputManager:
     async def refresh_all(self) -> None:
         for user in self.user_mng.users.values():
             if user.last_screen and not user.sleeping:
-                await self.send_screen(user.last_screen, user)
+                await self.try_refreshing(user)
+
+    async def try_refreshing(self, user: User) -> None:
+        try:
+            await self.send_screen(user.last_screen, user)
+        except Exception as e:
+            print(f"Error while refreshing {user.name}: {e}")
 
     async def send_screen(self, screen: Screen | ScreenId, user: User) -> None:
         if isinstance(screen, ScreenId):
             screen = SCREENS[screen]
+        just_refreshed = user.last_screen == screen
         user.stack(screen)
         user.results = self.screen_to_data(user, screen.id)
 
@@ -248,7 +257,7 @@ class OutputManager:
         if screen.changed_property:
             user.change = screen.changed_property
 
-        if user.add_reactions:
+        if user.add_reactions and not just_refreshed:
             if screen.reactions:
                 for emoji in screen.reactions:
                     await user.add_reaction_to_message(emoji)

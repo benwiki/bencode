@@ -25,7 +25,7 @@ class ReactionInputManager:
             self.handle_recommendation,
         ]
         assert len(self.reaction_func_list) == len(REACTION_PROPERTIES), (
-            "⚠️ (Error #34):\n"
+            "⚠️ (Error #35):\n"
             f"Number of reaction functions ({len(self.reaction_func_list)}) "
             f"does not match number of reaction properties ({len(REACTION_PROPERTIES)})!"
         )
@@ -125,7 +125,7 @@ class ReactionInputManager:
     async def handle_send_recommendation(self, user: User, emoji: str) -> None:
         if not (num := self.validate_number_reaction(emoji, user)):
             return
-        assert user.selected_user, "(Error #35): No selected user!"
+        assert user.selected_user, "(Error #36): No selected user!"
         person = user.selected_user
         selected_user_id = user.get_result_by_number(num)
         receiver = self.users[selected_user_id]
@@ -141,11 +141,12 @@ class ReactionInputManager:
             "<connection_name>": receiver.name,
         }
         await self.output_mng.send_screen(ScreenId.SUCCESSFUL_RECOMMENDATION, user)
-        user.change = None
-
-        assert user.selected_user, "(Error #36)"
+        # user.change = None
+        receiver.replace.update({
+            "<notification_sender>": user.name,
+        })
         notification = ScreenId.NOTI_RECOMMENDATION_RECEIVED
-        await self.output_mng.send_notification(user.selected_user, notification)
+        await self.output_mng.send_notification(receiver, notification)
 
     # ====================================================================== #
     async def handle_recommendation(self, user: User, emoji: str) -> None:
@@ -156,4 +157,4 @@ class ReactionInputManager:
         user.selected_recommendation = recommendation
         await user.delete_message()
         await self.output_mng.send_screen(ScreenId.RECOMMENDATION, user)
-        user.change = None
+        # user.change = None

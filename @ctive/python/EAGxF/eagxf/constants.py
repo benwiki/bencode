@@ -7,10 +7,10 @@ from eagxf.enums.screen_id import ScreenId
 APP_NAME = "EAGxF"
 
 # ========== PATHS =====================================
-# TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
-# USERS_FOLDER_PATH = "/Users/benke/Dev"
-TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
-USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
+TOKEN_PATH = "/Users/benke/Downloads/eagxf.txt"
+USERS_FOLDER_PATH = "/Users/benke/Dev"
+# TOKEN_PATH = "C:/Users/b.hargitai/prog/tokens/eagxf.txt"
+# USERS_FOLDER_PATH = "C:/Users/b.hargitai/prog"
 # ======================================================
 
 ADMINS = (

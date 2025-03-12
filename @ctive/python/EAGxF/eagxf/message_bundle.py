@@ -57,7 +57,7 @@ class MessageBundle:
                 await noti.delete()
                 self.notifications.remove(noti)
                 return
-        raise RuntimeError(f"(Error #9) No notification '{msg_id}' found")
+        raise RuntimeError(f"(Error #1) No notification '{msg_id}' found")
 
     @property
     def sleeping(self) -> bool:

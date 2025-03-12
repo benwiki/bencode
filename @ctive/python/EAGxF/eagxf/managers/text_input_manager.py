@@ -82,7 +82,7 @@ class TextinputManager:
             await msg.add_reaction("❌")
             await self.output_mng.send_screen(ScreenId.INVALID_DATE, user)
             return
-        assert user.selected_user, "(Error #37) No selected user for meeting!"
+        assert user.selected_user, "(Error #34) No selected user for meeting!"
         if change:
             user.cancel_meeting_with_selected()
         user.request_meeting_with_selected(Date.from_str(date_str))
@@ -92,7 +92,9 @@ class TextinputManager:
             user, changed_from=changed_prop, changed_to=date_str, msg=msg
         )
         if not change:
-            assert user.selected_user, "(Error #38)"
+            user.selected_user.replace.update({
+                "<notification_sender>": user.name,
+            })
             notification = ScreenId.NOTI_MEETING_REQUESTED
             await self.output_mng.send_notification(user.selected_user, notification)
 
