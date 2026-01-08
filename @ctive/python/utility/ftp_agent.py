@@ -1,6 +1,7 @@
 import ftplib
 import os
 import time
+import json
 from datetime import datetime
 
 
@@ -43,17 +44,29 @@ def check_and_upload_files(ftp, file_dict):
         print(f"[{timestamp}] Uploaded: {local_path} as {ftp_path} because {reason}")
 
 
-def main():
-    host = "wh23.rackhost.hu"
-    username = "c25631Benke"
-    password = "@SvrabcNB8kLVzn"
+def load_credentials(path: str):
+    """Load FTP credentials from JSON file.
 
-    local_upload_dir = "/Users/benke/Downloads/sziamuhely_wp/"
+    Expected schema:
+      {"host": "...", "username": "...", "password": "..."}
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data["host"], data["username"], data["password"]
+
+
+def main():
+    creds_path = os.environ.get("WGH_FTP_CRED_PATH")
+    if not creds_path:
+        raise RuntimeError("WGH_FTP_CRED_PATH is not set.")
+    host, username, password = load_credentials(creds_path)
+
+    local_upload_dir = "C:/Users/Admin/Downloads/sziamuhely_wp/"
     ftp_upload_dir = "/"
 
     file_dict = {
-        "/wp-includes/html-api/class-wp-html-processor.php": "/Users/benke/Downloads/sziamuhely_wp/wp-includes/html-api/class-wp-html-processor.php",
-        "/wp-includes/html-api/class-wp-html-doctype-info.php": "/Users/benke/Downloads/sziamuhely_wp/wp-includes/html-api/class-wp-html-doctype-info.php",
+        "/wp-includes/html-api/class-wp-html-processor.php": "C:/Users/Admin/Downloads/sziamuhely_wp/wp-includes/html-api/class-wp-html-processor.php",
+        "/wp-includes/html-api/class-wp-html-doctype-info.php": "C:/Users/Admin/Downloads/sziamuhely_wp/wp-includes/html-api/class-wp-html-doctype-info.php",
         **{
             f"{ftp_upload_dir}{filename}": f"{local_upload_dir}{filename}"
             for filename in files_in(local_upload_dir)
