@@ -1,0 +1,48 @@
+szo:ich ; pont:0 | szo:ego ; pont:0
+szo:er, sie, es sagte (eingeschoben) ; pont:0 | szo:inquit ; pont:0
+szo:verbrennen ; pont:0 | szo:cremâre ; pont:0
+szo:Vaterland ; pont:0 | szo:patria ; pont:0 ; genitive:ae ; gender:f
+szo:Vaterstadt ; pont:0 | szo:patria ; pont:0 ; genitive:ae ; gender:f
+szo:Ort ; pont:0 | szo:locus ; pont:0 ; genitive:î ; gender:m
+szo:Platz ; pont:0 | szo:locus ; pont:0 ; genitive:î ; gender:m
+szo:Stelle ; pont:0 | szo:locus ; pont:0 ; genitive:î ; gender:m
+szo:Gebiet ; pont:0 | szo:loca ; pont:0 ; genitive:ôrum ; gender:n
+szo:Gelände ; pont:0 | szo:loca ; pont:0 ; genitive:ôrum ; gender:n
+szo:wohnen ; pont:0 | szo:habitâre ; pont:0
+szo:bewohnen ; pont:0 | szo:habitâre ; pont:0
+szo:geeignet ; pont:0 | szo:idôneus ; pont:0 ; (f):idônea ; (n):idôneum
+szo:(eifrig) suchen ; pont:0 | szo:quaeritâre ; pont:0
+szo:Mann ; pont:0 | szo:vir ; pont:0 ; genitive:î ; gender:m
+szo:Krieg ; pont:0 | szo:bellum ; pont:0 ; genitive:î ; gender:n
+szo:erprobt ; pont:0 | szo:probâtus ; pont:0 ; (f):probâta ; (n):probâtum
+szo:geben ; pont:0 | szo:dare ; pont:0 ; <type>:verb (inf) ; (present):dô ; (perfect):dedî ; (PPP):datum
+szo:rechts ; pont:0 | szo:dexter ; pont:0 ; (f):dextra ; (n):dextrum
+szo:die rechte Hand ; pont:0 | szo:dextra ; pont:0 ; genitive:ae ; gender:f
+szo:Freundschaft ; pont:0 | szo:amîcitia ; pont:0 ; genitive:ae ; gender:f
+szo:befestigen ; pont:0 | szo:firmâre ; pont:0
+szo:Tochter ; pont:0 | szo:filia ; pont:0 ; genitive:ae ; gender:f
+szo:Ehe ; pont:0 | szo:mâtrimônium ; pont:0 ; genitive:î ; gender:n
+szo:neu ; pont:0 | szo:novus ; pont:0 ; (f):nova ; (n):novum
+szo:Sohn ; pont:0 | szo:fîlius ; pont:0 ; genitive:î ; gender:m
+szo:nennen ; pont:0 | szo:nominâre ; pont:0
+szo:welcher ; pont:0 | szo:quî ; pont:0
+szo:welche ; pont:0 | szo:quae ; pont:0
+szo:welches ; pont:0 | szo:quod ; pont:0
+szo:anreden ; pont:0 | szo:appellâre ; pont:0
+szo:nennen ; pont:0 | szo:appellâre ; pont:0
+szo:Buch ; pont:0 | szo:liber ; pont:0 ; genitive:librî ; gender:m
+szo:Geschenk ; pont:0 | szo:dônum ; pont:0 ; genitive:î ; gender:n
+szo:Buche ; pont:0 | szo:fâgus ; pont:0 ; genitive:î ; gender:f
+szo:hoch ; pont:0 | szo:altus ; pont:0 ; (f):alta ; (n):altum
+szo:tief ; pont:0 | szo:altus ; pont:0 ; (f):alta ; (n):altum
+szo:Dichter ; pont:0 | szo:poêta ; pont:0 ; genitive:ae ; gender:m
+szo:gelehrt ; pont:0 | szo:doctus ; pont:0 ; (f):docta ; (n):doctum
+szo:heilig ; pont:0 | szo:sacer ; pont:0 ; (f):sacra ; (n):sacrum
+szo:geweiht ; pont:0 | szo:sacer ; pont:0 ; (f):sacra ; (n):sacrum
+szo:verflucht ; pont:0 | szo:sacer ; pont:0 ; (f):sacra ; (n):sacrum
+szo:krank ; pont:0 | szo:aeger ; pont:0 ; (f):aegra ; (n):aegrum
+szo:bekümmert ; pont:0 | szo:aeger ; pont:0 ; (f):aegra ; (n):aegrum
+szo:traurig ; pont:0 | szo:aeger ; pont:0 ; (f):aegra ; (n):aegrum
+szo:elend ; pont:0 | szo:miser ; pont:0 ; (f):misera ; (n):miserum
+szo:unglücklich ; pont:0 | szo:miser ; pont:0 ; (f):misera ; (n):miserum
+szo:ärmlich ; pont:0 | szo:miser ; pont:0 ; (f):misera ; (n):miserum

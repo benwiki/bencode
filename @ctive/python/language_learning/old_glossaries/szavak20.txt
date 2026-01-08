@@ -1,0 +1,41 @@
+szo:riaszt ; pont:0 | szo:alarmieren ; pont:0 ; präteritum:alarmierte ; pp_időbeli_segédige:hat ; pp:alarmiert
+szo:megszólít ; pont:0 | szo:ansprechen ; pont:0 ; präteritum:sprach an ; pp_időbeli_segédige:hat ; pp:angesprochen
+szo:feltűnik ; pont:0 | szo:auffallen ; pont:0 ; präteritum:fiel auf ; pp_időbeli_segédige:ist ; pp:aufgefallen
+szo:felébred ; pont:0 | szo:aufwachen ; pont:0 ; präteritum:wachte auf ; pp_időbeli_segédige:ist ; pp:aufgewacht
+szo:kirabol ; pont:0 | szo:ausrauben ; pont:0 ; präteritum:raubte aus ; pp_időbeli_segédige:hat ; pp:ausgeraubt
+szo:bankfiók ; pont:0 | szo:Bankfiliale ; pont:0 ; névelő:die ; tbsz:die Bankfilialen ; gyenge:
+szo:bankrabló ; pont:0 | szo:Bankräuber ; pont:0 ; névelő:der ; tbsz:die Bankräuber ; gyenge:
+szo:zsákmány ; pont:0 | szo:Beute ; pont:0 ; névelő:die ; tbsz:die Beuten ; gyenge:
+szo:lopás ; pont:0 | szo:Diebstahl ; pont:0 ; névelő:der ; tbsz:die Diebstähle ; gyenge:
+szo:drog ; pont:0 | szo:Droge ; pont:0 ; névelő:die ; tbsz:die Drogen ; gyenge:
+szo:áldozat ; pont:0 | szo:Opfer ; pont:0 ; névelő:das ; tbsz:die Opfer ; gyenge:
+szo:gyöngysor ; pont:0 | szo:Perlenkette ; pont:0 ; névelő:die ; tbsz:die Perlenketten ; gyenge:
+szo:rendőrség ; pont:0 | szo:Polizei ; pont:0 ; névelő:die ; tbsz:die Polizeien ; gyenge:
+szo:rendőr ; pont:0 | szo:Polizist ; pont:0 ; névelő:der ; tbsz:die Polizisten ; gyenge:den Polizisten
+szo:kábítószer ; pont:0 | szo:Rauschgift ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:redőny ; pont:0 | szo:Rollläde ; pont:0 ; névelő:die ; tbsz:die Rollläden ; gyenge:
+szo:lefoglal ; pont:0 | szo:sicherstellen ; pont:0 ; präteritum:stellte sicher ; pp_időbeli_segédige:hat ; pp:sichergestellt
+szo:biztonsági technika ; pont:0 | szo:Sicherheitstechnik ; pont:0 ; névelő:die ; tbsz:die Sicherheitstechniken ; gyenge:
+szo:biztosít ; pont:0 | szo:sichern ; pont:0 ; präteritum:sicherte ; pp_időbeli_segédige:hat ; pp:gesichert
+szo:betörő ; pont:0 | szo:Einbrecher ; pont:0 ; névelő:der ; tbsz:die Einbrecher ; gyenge:
+szo:betör ; pont:0 | szo:einbrechen ; pont:0 ; präteritum:brach ein ; pp_időbeli_segédige:hat ; pp:eingebrochen
+szo:szökés ; pont:0 | szo:Flucht ; pont:0 ; névelő:die ; tbsz:die Fluchten ; gyenge:
+szo:szökik ; pont:0 | szo:flüchten ; pont:0 ; präteritum:flüchtete ; pp_időbeli_segédige:ist ; pp:geflüchtet
+szo:börtön ; pont:0 | szo:Gefängnis ; pont:0 ; névelő:das ; tbsz:die Gefängnisse ; gyenge:
+szo:börtönbüntetés ; pont:0 | szo:Gefängnisstrafe ; pont:0 ; névelő:die ; tbsz:die Gefängnisstrafen ; gyenge:
+szo:bíróság ; pont:0 | szo:Gericht ; pont:0 ; névelő:das ; tbsz:die Gerichte ; gyenge:
+szo:védett ; pont:0 | szo:geschützt ; pont:0
+szo:bevall ; pont:0 | szo:gestehen ; pont:0 ; präteritum:gestand ; pp_időbeli_segédige:hat ; pp:gestanden
+szo:bűnözés ; pont:0 | szo:Kriminalität ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:kiürít ; pont:0 | szo:leeren ; pont:0 ; präteritum:leerte ; pp_időbeli_segédige:hat ; pp:geleert
+szo:tagad ; pont:0 | szo:leugnen ; pont:0 ; präteritum:leugnete ; pp_időbeli_segédige:hat ; pp:geleugnet
+szo:lop ; pont:0 | szo:stehlen ; pont:0 ; präteritum:stahl ; pp_időbeli_segédige:hat ; pp:gestohlen
+szo:tettes ; pont:0 | szo:Täter ; pont:0 ; névelő:der ; tbsz:die Täter ; gyenge:
+szo:legyűr, legyőz ; pont:0 | szo:überwältigen ; pont:0 ; präteritum:überwältigte ; pp_időbeli_segédige:hat ; pp:überwältigt
+szo:segítségért kiált ; pont:0 | szo:um Hilfe rufen ; pont:0 ; präteritum:rief um Hilfe ; pp_időbeli_segédige:hat ; pp:um Hilfe gerufen
+szo:bűnöző ; pont:0 | szo:Verbrecher ; pont:0 ; névelő:der ; tbsz:die Verbrecher ; gyenge:
+szo:megerőszakol ; pont:0 | szo:vergewaltigen ; pont:0 ; präteritum:vergewaltigte ; pp_időbeli_segédige:hat ; pp:vergewaltigt
+szo:megakadályoz ; pont:0 | szo:verhindern ; pont:0 ; präteritum:verhinderte ; pp_időbeli_segédige:hat ; pp:verhindert
+szo:elítél ; pont:0 | szo:verurteilen ; pont:0 ; präteritum:verurteilte ; pp_időbeli_segédige:hat ; pp:verurteilt
+szo:biztonsági őr ; pont:0 | szo:Wachmann ; pont:0 ; névelő:der ; tbsz:die Wachmänner ; gyenge:
+szo:hatni ; pont:0 | szo:wirken ; pont:0 ; präteritum:wirkte ; pp_időbeli_segédige:hat ; pp:gewirkt

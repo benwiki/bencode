@@ -1,0 +1,46 @@
+szo:végzős ; pont:0 | szo:Absolvent ; pont:17 ; névelő:der ; tbsz:die Absolventen ; gyenge:igen
+szo:munkavállaló ; pont:0 | szo:Arbeitnehmer ; pont:16 ; névelő:der ; tbsz:die Arbeitnehmer ; gyenge:
+szo:asszisztensnő ; pont:0 | szo:Arzthelferin ; pont:18 ; névelő:die ; tbsz:die Arzthelferinnen ; gyenge:
+szo:kifejezés ; pont:0 | szo:Ausdruck ; pont:16 ; névelő:der ; tbsz:die Ausdrücke ; gyenge:
+szo:előléptet ; pont:0 | szo:befördern zu+D ; pont:16 ; präteritum:beförderte ; pp_időbeli_segédige:hat ; pp:befördert
+szo:viselkedés ; pont:0 | szo:Benehmen ; pont:17 ; névelő:das ; tbsz:die Benehmen ; gyenge:
+szo:viselkedés ; pont:0 | szo:Verhalten ; pont:15 ; névelő:das ; tbsz:die Verhalten ; gyenge:
+szo:tanáccsal ellát (vkit) valamihez ; pont:0 | szo:beraten bei/in+D ; pont:17 ; präteritum:beriet ; pp_időbeli_segédige:hat ; pp:beraten
+szo:kész vmire ; pont:0 | szo:bereit zu+D ; pont:15
+szo:szakmai képzés ; pont:0 | szo:Berufsausbildung ; pont:15 ; névelő:die ; tbsz:die Berufsausbildungen ; gyenge:
+szo:biztos állás ; pont:0 | szo:ein fester Job ; pont:15
+szo:elbocsát ; pont:0 | szo:entlassen ; pont:17 ; präteritum:entließ ; pp_időbeli_segédige:hat ; pp:entlassen
+szo:elmúlt ; pont:0 | szo:es ist vorbei ; pont:15
+szo:várat magára ; pont:0 | szo:es lässt auf sich warten ; pont:15
+szo:képesség ; pont:0 | szo:Fähigkeit ; pont:18 ; névelő:die ; tbsz:die Fähigkeiten ; gyenge:
+szo:gépjármű ; pont:0 | szo:Fahrzeug ; pont:16 ; névelő:das ; tbsz:die Fahrzeuge ; gyenge:
+szo:anyagi ; pont:0 | szo:finanziell ; pont:15
+szo:kézügyesség ; pont:0 | szo:Fingerfertigkeit ; pont:18 ; névelő:die ; tbsz:die Fingerfertigkeiten ; gyenge:
+szo:ügyvezető ; pont:0 | szo:Geschäftsführer ; pont:18 ; névelő:der ; tbsz:die Geschäftsführer ; gyenge:
+szo:egyenjogúság ; pont:0 | szo:Gleichberechtigung ; pont:18 ; névelő:die ; tbsz: ; gyenge:
+szo:háttér ; pont:0 | szo:Hintergrund ; pont:18 ; névelő:der ; tbsz:die Hintergründe ; gyenge:
+szo:szóba kerül ; pont:0 | szo:in Frage kommen ; pont:15
+szo:csődbe jut ; pont:0 | szo:in Konkurs gehen ; pont:15
+szo:gépjárműszerelő ; pont:0 | szo:Kraftfahrzeugmechaniker ; pont:16 ; névelő:der ; tbsz:die Kraftfahrzeugmechaniker ; gyenge:
+szo:vezető ; pont:0 | szo:Leiter ; pont:16 ; névelő:der ; tbsz:die Leiter ; gyenge:
+szo:hiányszakma ; pont:0 | szo:Mangelberuf ; pont:15 ; névelő:der ; tbsz:die Mangelberufe ; gyenge:
+szo:anyagi ; pont:0 | szo:materiell ; pont:15
+szo:tervező/szerkesztő ; pont:0 | szo:Gestalter ; pont:18 ; névelő:der ; tbsz:die Gestalter ; gyenge:
+szo:divat ; pont:0 | szo:Mode ; pont:16 ; névelő:die ; tbsz:die Moden ; gyenge:
+szo:szükséges ; pont:0 | szo:nötig ; pont:15
+szo:dohányzik ; pont:0 | szo:rauchen ; pont:16 ; präteritum:rauchte ; pp_időbeli_segédige:hat ; pp:geraucht
+szo:személyes ; pont:0 | szo:persönlich ; pont:15
+szo:gyakornok ; pont:0 | szo:Praktikant ; pont:15 ; névelő:der ; tbsz:die Praktikanten ; gyenge:igen
+szo:gyakorlati fázis ; pont:0 | szo:Praxisphase ; pont:16 ; névelő:die ; tbsz:die Praxisphasen ; gyenge:
+szo:tiltani ; pont:0 | szo:verbieten ; pont:16 ; präteritum:verbot ; pp_időbeli_segédige:hat ; pp:verboten
+szo:szabály ; pont:0 | szo:Regel ; pont:16 ; névelő:die ; tbsz:die Regeln ; gyenge:
+szo:nyugdíjas ; pont:0 | szo:Rentner ; pont:16 ; névelő:der ; tbsz:die Rentner ; gyenge:
+szo:robotol ; pont:0 | szo:schuften ; pont:18 ; präteritum:schuftete ; pp_időbeli_segédige:hat ; pp:geschuftet
+szo:csökken ; pont:0 | szo:sinken ; pont:17 ; präteritum:sank ; pp_időbeli_segédige:ist ; pp:gesunken
+szo:értelem ; pont:0 | szo:Sinn ; pont:18 ; névelő:der ; tbsz:die Sinne ; gyenge:
+szo:köteles ; pont:0 | szo:verpflichtet ; pont:15
+szo:egy szerződést kötni ; pont:0 | szo:einen Vertrag abschließen ; pont:15 ; präteritum:schloss ab ; pp_időbeli_segédige:hat ; pp:abgeschlossen
+szo:váltakozik, cserél ; pont:0 | szo:wechseln ; pont:16 ; präteritum:wechselte ; pp_időbeli_segédige:hat ; pp:gewechselt
+szo:továbbra is ; pont:0 | szo:weiterhin ; pont:15
+szo:célratörő ; pont:0 | szo:zielstrebig ; pont:15
+szo:magáncélra ; pont:0 | szo:zu privaten Zwecken ; pont:15

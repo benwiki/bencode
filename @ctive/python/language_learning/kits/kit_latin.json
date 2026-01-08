@@ -1,0 +1,135 @@
+{
+    "<mode>": "apart",
+    "german": {
+        "<type>": "mothertongue"
+    },
+    "latin": {
+        "<type>": "learninglang",
+        "<mode>": "and",
+        "word type": {
+            "<mode>": "or",
+            "noun": {
+                "<mode>": "and",
+                "genitive": null,
+                "gender": null
+            },
+            "verb (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(present)": null,
+                "(perfect)": null,
+                "(PPP)": null
+            },
+            "verb [ind/pres] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [ind/impf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [ind/fut1] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [ind/perf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [ind/plpf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [ind/fut2] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [kon/pres] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [kon/impf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [kon/perf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "verb [kon/plpf] (inf)": {
+                "<mode>": "and",
+                "<showtype>": true,
+                "(1/sg)": null,
+                "(2/sg)": null,
+                "(3/sg)": null,
+                "(1/pl)": null,
+                "(2/pl)": null,
+                "(3/pl)": null
+            },
+            "preposition": {
+                "<mode>": "and",
+                "case(s)": null
+            },
+            "adjective (m)": {
+                "<mode>": "and",
+                "(f)": null,
+                "(n)": null
+            },
+            "other": null
+        }
+    }
+}

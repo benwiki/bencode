@@ -1,0 +1,49 @@
+szo:kiad, odaad, megbocsát ; pont:0 | szo:vergeben ; pont:15 ; präteritum:vergab ; pp_időbeli_segédige:hat ; pp:vergeben
+szo:elhibáz, eltéveszt ; pont:0 | szo:verfehlen ; pont:18 ; präteritum:verfehlte ; pp_időbeli_segédige:hat ; pp:verfehlt
+szo:tárgyal, taglal, fejteget, megvitat ; pont:0 | szo:erörtern ; pont:16 ; präteritum:erörterte ; pp_időbeli_segédige:hat ; pp:erörtert
+szo:mintegy, kb., talán, netán ; pont:0 | szo:etwa ; pont:15
+szo:szó van vmiről! ; pont:0 | szo:es handelt sich um+A ; pont:15 ; präteritum:es handelte sich um+A ; pp_időbeli_segédige:es hat ; pp:sich um+A gehandelt
+szo:szó van vmiről! ; pont:0 | szo:es geht um+A ; pont:15 ; präteritum:es ging um+A ; pp_időbeli_segédige:es ist ; pp:um+A gegangen
+szo:skicc, minta, tervrajz, vázlat, sematikus ábra ; pont:0 | szo:Schemata ; pont:16 ; névelő:das ; tbsz:die Schemata ; gyenge:
+szo:megnyilvánul ; pont:0 | szo:äußern ; pont:16 ; präteritum:äußerte ; pp_időbeli_segédige:hat ; pp:geäußert
+szo:tényállás ; pont:0 | szo:Sachverhalt ; pont:18 ; névelő:der ; tbsz:die Sachverhalte ; gyenge:
+szo:súlyozott ; pont:0 | szo:gewichtet ; pont:15
+szo:súly ; pont:0 | szo:Gewicht ; pont:15 ; névelő:das ; tbsz:die Gewichte ; gyenge:
+szo:növel, fokoz, erősít ; pont:0 | szo:steigern ; pont:15 ; präteritum:steigerte ; pp_időbeli_segédige:hat ; pp:gesteigert
+szo:kihangsúlyoz ; pont:0 | szo:betonen ; pont:15 ; präteritum:betonte ; pp_időbeli_segédige:hat ; pp:betont
+szo:ki-/feldolgoz ; pont:0 | szo:verarbeiten ; pont:15 ; präteritum:verarbeitete ; pp_időbeli_segédige:hat ; pp:verarbeitet
+szo:vastagon szedett betűtípus ; pont:0 | szo:Fettdruck ; pont:18 ; névelő:der ; tbsz:die Fettdrücke ; gyenge:
+szo:önálló, független ; pont:0 | szo:selbständig ; pont:15
+szo:igényes ; pont:0 | szo:anspruchsvoll ; pont:15
+szo:már, máris ; pont:0 | szo:bereits ; pont:15
+szo:kiesik, kihullik (vizsgáról) ; pont:0 | szo:entfallen ; pont:15 ; präteritum:entfiel ; pp_időbeli_segédige:ist ; pp:entfallen
+szo:elkészít, megcsinál ; pont:0 | szo:anfertigen ; pont:17 ; präteritum:fertigte an ; pp_időbeli_segédige:hat ; pp:angefertigt
+szo:előírás, norma, irányelv ; pont:0 | szo:Vorgabe ; pont:18 ; névelő:die ; tbsz:die Vorgaben ; gyenge:
+szo:tud, ural ; pont:0 | szo:beherrschen ; pont:17 ; präteritum:beherrschte ; pp_időbeli_segédige:hat ; pp:beherrscht
+szo:gondolatmenet ; pont:0 | szo:Gedankengang ; pont:15 ; névelő:der ; tbsz:die Gedankengänge ; gyenge:
+szo:(meg) érint, meghat ; pont:0 | szo:berühren ; pont:18 ; präteritum:berührte ; pp_időbeli_segédige:hat ; pp:berührt
+szo:törés, töredék ; pont:0 | szo:Bruch ; pont:17 ; névelő:der ; tbsz:die Brüche ; gyenge:
+szo:felszerelés, berendezés, (intézmény) ; pont:0 | szo:Einrichtung ; pont:17 ; névelő:die ; tbsz:die Einrichtungen ; gyenge:
+szo:késedelem, késés ; pont:0 | szo:Verzögerung ; pont:17 ; névelő:die ; tbsz:die Verzögerungen ; gyenge:
+szo:azonban, pedig, ámde, mindig is ; pont:0 | szo:jedoch ; pont:15
+szo:időbeli lefutás, lefolyás, kimenetel ; pont:0 | szo:Ablauf ; pont:15 ; névelő:der ; tbsz:die Abläufe ; gyenge:
+szo:szabálysértés ; pont:0 | szo:Regelverstoß ; pont:16 ; névelő:der ; tbsz:die Regelverstöße ; gyenge:
+szo:alapos(an), mélyreható(an) ; pont:0 | szo:gründlich ; pont:15
+szo:szakterület ; pont:0 | szo:Fachgebiet ; pont:16 ; névelő:das ; tbsz:die Fachgebiete ; gyenge:
+szo:fogalom ; pont:0 | szo:Begriff ; pont:16 ; névelő:der ; tbsz:die Begriffe ; gyenge:
+szo:egyes ; pont:0 | szo:einzelne ; pont:15
+szo:gyengeség, hiba ; pont:0 | szo:Schwäche ; pont:18 ; névelő:die ; tbsz:die Schwächen ; gyenge:
+szo:ugyanaz ; pont:0 | szo:demselben ; pont:15
+szo:folyamatos, általános, átható ; pont:0 | szo:durchgängig ; pont:15
+szo:egyértelmű(en) ; pont:0 | szo:eindeutig ; pont:15
+szo:minta, mintázat ; pont:0 | szo:Muster ; pont:16 ; névelő:das ; tbsz:die Muster ; gyenge:
+szo:görbe, szabálytalan ; pont:0 | szo:krumm ; pont:15
+szo:kiadó ; pont:0 | szo:Verlag ; pont:18 ; névelő:der ; tbsz:die Verlage ; gyenge:
+szo:leküzd, elsajátít ; pont:0 | szo:meistern ; pont:18 ; präteritum:meisterte ; pp_időbeli_segédige:hat ; pp:gemeistert
+szo:formaképzés ; pont:0 | szo:Morphologie ; pont:17 ; névelő:die ; tbsz:die Morphologien ; gyenge:
+szo:kötelező ; pont:0 | szo:verbindlich ; pont:15
+szo:sorrend ; pont:0 | szo:Reihenfolge ; pont:15 ; névelő:die ; tbsz:die Reihenfolgen ; gyenge:
+szo:alapul vesz vmit ; pont:0 | szo:etwas zugrunde legen ; pont:15 ; präteritum:legte etwas zugrunde ; pp_időbeli_segédige:hat ; pp:etwas zugrunde gelegt
+szo:aszerint, hogy ; pont:0 | szo:je nach ; pont:15
+szo:bebizonyít ; pont:0 | szo:unter Beweis stellen ; pont:18 ; präteritum:stellte unter Beweis ; pp_időbeli_segédige:hat ; pp:unter Beweis gestellt
+szo:példának okáért ; pont:0 | szo:beispielsweise ; pont:15

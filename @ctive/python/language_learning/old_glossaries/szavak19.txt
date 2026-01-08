@@ -1,0 +1,44 @@
+szo:hulladék ; pont:0 | szo:Abfall ; pont:0 ; névelő:der ; tbsz:die Abfälle ; gyenge:
+szo:atomerőmű ; pont:0 | szo:Atomkraftwerk ; pont:0 ; névelő:das ; tbsz:die Atomkraftwerke ; gyenge:
+szo:tudatos ; pont:0 | szo:bewusst ; pont:0
+szo:vödör ; pont:0 | szo:Eimer ; pont:0 ; névelő:der ; tbsz:die Eimer ; gyenge:
+szo:egyszer használatos flakon, üveg ; pont:0 | szo:Einwegflasche ; pont:0 ; névelő:die ; tbsz:die Einwegflaschen ; gyenge:
+szo:jegesmedve ; pont:0 | szo:Eisbär ; pont:0 ; névelő:der ; tbsz:die Eisbären ; gyenge:igen
+szo:elektromos készülék ; pont:0 | szo:Elektrogerät ; pont:0 ; névelő:das ; tbsz:die Elektrogeräte ; gyenge:
+szo:energiamegtakarítás ; pont:0 | szo:Energiesparen ; pont:0 ; névelő:das ; tbsz: ; gyenge:
+szo:energiafelhasználás ; pont:0 | szo:Energieverbrauch ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:kivág(fát) ; pont:0 | szo:fällen ; pont:0 ; präteritum:fällte ; pp_időbeli_segédige:hat ; pp:gefällt
+szo:jut, kerül valahova ; pont:0 | szo:gelangen ; pont:0 ; präteritum:gelangte ; pp_időbeli_segédige:ist ; pp:gelangt
+szo:vegyes ; pont:0 | szo:gemischt ; pont:0
+szo:szelektív, külön gyűjtött ; pont:0 | szo:getrennt ; pont:0
+szo:izzó ; pont:0 | szo:Glühbirne ; pont:0 ; névelő:die ; tbsz:die Glühbirnen ; gyenge:
+szo:zöldhulladék ; pont:0 | szo:Grünabfall ; pont:0 ; névelő:der ; tbsz:die Grünabfälle ; gyenge:
+szo:bőrrák ; pont:0 | szo:Hautkrebs ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:kivisz ; pont:0 | szo:hinausbringen ; pont:0 ; präteritum:brachte hinaus ; pp_időbeli_segédige:hat ; pp:hinausgebracht
+szo:üzemmód ; pont:0 | szo:Betrieb ; pont:0 ; névelő:der ; tbsz:die Betriebe ; gyenge:
+szo:állatkölyök ; pont:0 | szo:Junge ; pont:0 ; névelő:der ; tbsz:die Jungen ; gyenge:igen
+szo:élettartam ; pont:0 | szo:Lebensdauer ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:visszaváltható flakon, üveg ; pont:0 | szo:Mehrwegflasche ; pont:0 ; névelő:die ; tbsz:die Mehrwegflaschen ; gyenge:
+szo:fém ; pont:0 | szo:Metall ; pont:0 ; névelő:das ; tbsz:die Metalle ; gyenge:
+szo:kuka ; pont:0 | szo:Mülltonne ; pont:0 ; névelő:die ; tbsz:die Mülltonnen ; gyenge:
+szo:szelektív hulladékközpont ; pont:0 | szo:Mülltrenncenter ; pont:0 ; névelő:das ; tbsz:die Mülltrenncenter ; gyenge:
+szo:utántölt ; pont:0 | szo:nachfüllen ; pont:0 ; präteritum:füllte nach ; pp_időbeli_segédige:hat ; pp:nachgefüllt
+szo:ózonréteg ; pont:0 | szo:Ozonschicht ; pont:0 ; névelő:die ; tbsz: ; gyenge:
+szo:papír ; pont:0 | szo:Papier ; pont:0 ; névelő:das ; tbsz:die Papiere ; gyenge:
+szo:maradék szemét ; pont:0 | szo:Restmüll ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:fóka ; pont:0 | szo:Robbe ; pont:0 ; névelő:die ; tbsz:die Robben ; gyenge:
+szo:oxigén ; pont:0 | szo:Sauerstoff ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:réteg ; pont:0 | szo:Schicht ; pont:0 ; névelő:die ; tbsz:die Schichten ; gyenge:
+szo:véd ; pont:0 | szo:schützen ; pont:0 ; präteritum:schützte ; pp_időbeli_segédige:hat ; pp:geschützt
+szo:ültet ; pont:0 | szo:setzen ; pont:0 ; präteritum:setzte ; pp_időbeli_segédige:hat ; pp:gesetzt
+szo:takarékos ; pont:0 | szo:sparsam ; pont:0
+szo:sugár ; pont:0 | szo:Strahl ; pont:0 ; névelő:der ; tbsz:die Strahlen ; gyenge:
+szo:üvegházhatás ; pont:0 | szo:Treibhauseffekt ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:túlél ; pont:0 | szo:überleben ; pont:0 ; präteritum:überlebte ; pp_időbeli_segédige:hat ; pp:überlebt
+szo:feltartóztathatatlan ; pont:0 | szo:unaufhaltsam ; pont:0
+szo:nem tudatos ; pont:0 | szo:unbewusst ; pont:0
+szo:eléget ; pont:0 | szo:verbrennen ; pont:0 ; präteritum:verbrennte ; pp_időbeli_segédige:hat ; pp:verbrennt
+szo:szennyez ; pont:0 | szo:verschmutzen ; pont:0 ; präteritum:verschmutzte ; pp_időbeli_segédige:hat ; pp:verschmutzt
+szo:dob, kidob ; pont:0 | szo:werfen ; pont:0 ; präteritum:warf ; pp_időbeli_segédige:hat ; pp:geworfen
+szo:újrahasznosít ; pont:0 | szo:viederverwerten ; pont:0 ; präteritum:wiederverwerete ; pp_időbeli_segédige:hat ; pp:wiederverwertet
+szo:szélkerék ; pont:0 | szo:Windrad ; pont:0 ; névelő:das ; tbsz:die Windräder ; gyenge:

@@ -1,0 +1,22 @@
+szo:végzettség ; pont:0 | szo:Abschluss ; pont:16 ; névelő:der ; tbsz:die Abschlüsse ; gyenge:
+szo:panaszkodik vmire! ; pont:0 | szo:beklagen sich über+A ; pont:16 ; präteritum:beklagte ; pp_időbeli_segédige:hat ; pp:beklagt
+szo:szakképző felsőiskola ; pont:0 | szo:Berufsakademie ; pont:17 ; névelő:die ; tbsz:die Berufsakademien ; gyenge:
+szo:pályaválasztás ; pont:0 | szo:Berufswahl ; pont:16 ; névelő:die ; tbsz: ; gyenge:
+szo:hangsúlyoz ; pont:0 | szo:betonen ; pont:18 ; präteritum:betonte ; pp_időbeli_segédige:hat ; pp:betont
+szo:értékelés ; pont:0 | szo:Bewertung ; pont:16 ; névelő:die ; tbsz:die Bewertungen ; gyenge:
+szo:szokás ; pont:0 | szo:Brauch ; pont:17 ; névelő:der ; tbsz:die Bräuche ; gyenge:
+szo:megbukik vizsgán ; pont:0 | szo:durchfallen ; pont:16 ; präteritum:fiel durch ; pp_időbeli_segédige:ist ; pp:durchgefallen
+szo:bevezet ; pont:0 | szo:einführen ; pont:15 ; präteritum:führte ein ; pp_időbeli_segédige:hat ; pp:eingeführt
+szo:igazságos ; pont:0 | szo:gerecht ; pont:15
+szo:német 5-9 osztályos iskola ; pont:0 | szo:Hauptschule ; pont:16 ; névelő:die ; tbsz:die Hauptschulen ; gyenge:
+szo:plüssállatka ; pont:0 | szo:Kuscheltier ; pont:16 ; névelő:das ; tbsz:die Kuscheltiere ; gyenge:
+szo:térkép ; pont:0 | szo:Landkarte ; pont:15 ; névelő:die ; tbsz:die Landkarten ; gyenge:
+szo:puskázik ; pont:0 | szo:pfuschen ; pont:16 ; präteritum:pfuschte ; pp_időbeli_segédige:hat ; pp:gepfuscht
+szo:letenni (vizsgát) ; pont:0 | szo:ablegen ; pont:15 ; präteritum:legte ab ; pp_időbeli_segédige:hat ; pp:abgelegt
+szo:német 5-10 osztályos iskola ; pont:0 | szo:Realschule ; pont:16 ; névelő:die ; tbsz:die Realschulen ; gyenge:
+szo:ékszer ; pont:0 | szo:Schmuck ; pont:15 ; névelő:der ; tbsz:die Schmucke ; gyenge:
+szo:megbukik (évfolyamot) ; pont:0 | szo:sitzenbleiben ; pont:16 ; präteritum:blieb sitzen ; pp_időbeli_segédige:ist ; pp:sitzengeblieben
+szo:nyelvterület ; pont:0 | szo:Sprachraum ; pont:16 ; névelő:der ; tbsz:die Sprachräume ; gyenge:
+szo:megbújik, található ; pont:0 | szo:stecken ; pont:16 ; präteritum:steckte ; pp_időbeli_segédige:hat ; pp:gesteckt
+szo:okoz ; pont:0 | szo:verursachen ; pont:18 ; präteritum:verursachte ; pp_időbeli_segédige:hat ; pp:verursacht
+szo:korszerű ; pont:0 | szo:zeitgemäß ; pont:15

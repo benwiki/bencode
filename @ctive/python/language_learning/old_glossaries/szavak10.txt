@@ -1,0 +1,28 @@
+szo:részletet befizet ; pont:0 | szo:abzahlen ; pont:18 ; präteritum:zahlte ab ; pp_időbeli_segédige:hat ; pp:abgezahlt
+szo:sorra kerül ; pont:0 | szo:an die Reihe kommen ; pont:15
+szo:rész(letre) ; pont:0 | szo:Anteil an+D ; pont:18 ; névelő:der ; tbsz:die Anteile ; gyenge:
+szo:részletre vásárol ; pont:0 | szo:auf Teilzahlung kaufen ; pont:15 ; präteritum:kaufte auf Teilzahlung ; pp_időbeli_segédige:hat ; pp:auf Teilzahlung gekauft
+szo:felirat ; pont:0 | szo:Aufschrift ; pont:16 ; névelő:die ; tbsz:die Aufschriften ; gyenge:
+szo:kiad (pénzt) ; pont:0 | szo:ausgeben ; pont:16 ; präteritum:gab aus ; pp_időbeli_segédige:hat ; pp:ausgegeben
+szo:körte ; pont:0 | szo:Birne ; pont:16 ; névelő:die ; tbsz:die Birnen ; gyenge:
+szo:fordulatszám ; pont:0 | szo:Drehzahl ; pont:16 ; névelő:die ; tbsz:die Drehzahlen ; gyenge:
+szo:tusfürdő ; pont:0 | szo:Duschbad ; pont:16 ; névelő:das ; tbsz:die Duschbäder ; gyenge:
+szo:érzékel ; pont:0 | szo:empfinden ; pont:18 ; präteritum:empfand ; pp_időbeli_segédige:hat ; pp:empfunden
+szo:borsó ; pont:0 | szo:Erbse ; pont:16 ; névelő:die ; tbsz:die Erbsen ; gyenge:
+szo:alkuszik ; pont:0 | szo:feilschen ; pont:17 ; präteritum:feilschte ; pp_időbeli_segédige:hat ; pp:gefeilscht
+szo:bolhapiac ; pont:0 | szo:Flohmarkt ; pont:16 ; névelő:der ; tbsz:die Flohmärkte ; gyenge:
+szo:használati utasítás ; pont:0 | szo:Gebrauchsanweisung ; pont:15 ; névelő:die ; tbsz:die Gebrauchsanweisungen ; gyenge:
+szo:gazda ; pont:0 | szo:Landwirt ; pont:15 ; névelő:der ; tbsz:die Landwirte ; gyenge:
+szo:szállít ; pont:0 | szo:liefern ; pont:18 ; präteritum:lieferte ; pp_időbeli_segédige:hat ; pp:geliefert
+szo:kimért, nem csomagolt ; pont:0 | szo:lose ; pont:15
+szo:kedvező árú ; pont:0 | szo:preisgünstig ; pont:15
+szo:részlet ; pont:0 | szo:Rate ; pont:18 ; névelő:die ; tbsz:die Raten ; gyenge:
+szo:maradék ; pont:0 | szo:Rest ; pont:17 ; névelő:der ; tbsz:die Reste ; gyenge:
+szo:centrifuga ; pont:0 | szo:Schleuder ; pont:18 ; névelő:die ; tbsz:die Schleudern ; gyenge:
+szo:mosogat ; pont:0 | szo:spülen ; pont:16 ; präteritum:spülte ; pp_időbeli_segédige:hat ; pp:gespült
+szo:kiszolgálópult ; pont:0 | szo:Theke ; pont:16 ; névelő:die ; tbsz:die Theken ; gyenge:
+szo:tápszer (állatnak) ; pont:0 | szo:Tierfutter ; pont:16 ; névelő:das ; tbsz: ; gyenge:
+szo:szőlő ; pont:0 | szo:Traube ; pont:16 ; névelő:die ; tbsz:die Trauben ; gyenge:
+szo:megromlik ; pont:0 | szo:verderben ; pont:16 ; präteritum:verdarb ; pp_időbeli_segédige:ist ; pp:verdorben
+szo:kézbe vesz ; pont:0 | szo:in die Hand nehmen ; pont:15
+szo:kamat ; pont:0 | szo:Zins ; pont:18 ; névelő:der ; tbsz:die Zinsen ; gyenge:

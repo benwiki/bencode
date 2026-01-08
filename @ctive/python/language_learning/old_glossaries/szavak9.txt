@@ -1,0 +1,38 @@
+szo:fogyókúra ; pont:0 | szo:Abmagerungskur ; pont:18 ; névelő:die ; tbsz:die Abmagerungskuren ; gyenge:
+szo:hasonlít valakire ; pont:0 | szo:ähneln D ; pont:15 ; präteritum:ähnelte ; pp_időbeli_segédige:hat ; pp:geähnelt
+szo:támadó ; pont:0 | szo:Angreifer ; pont:18 ; névelő:der ; tbsz:die Angreifer ; gyenge:
+szo:nézet, vélemény ; pont:0 | szo:Ansicht ; pont:16 ; névelő:die ; tbsz:die Ansichten ; gyenge:
+szo:hirdetőújság ; pont:0 | szo:Anzeigenblatt ; pont:17 ; névelő:das ; tbsz:die Anzeigenblätter ; gyenge:
+szo:kiismeri magát ; pont:0 | szo:auskennen sich ; pont:15 ; präteritum:kannte aus ; pp_időbeli_segédige:hat ; pp:ausgekannt
+szo:befolyásol ; pont:0 | szo:beeinflussen ; pont:15 ; präteritum:beeinflusste ; pp_időbeli_segédige:hat ; pp:beeinflusst
+szo:(fel)használó ; pont:0 | szo:Benutzer ; pont:16 ; névelő:der ; tbsz:die Benutzer ; gyenge:
+szo:meghatároz ; pont:0 | szo:bestimmen ; pont:15 ; präteritum:bestimmte ; pp_időbeli_segédige:hat ; pp:bestimmt
+szo:tudósítás ; pont:0 | szo:Bericht ; pont:18 ; névelő:der ; tbsz:die Berichte ; gyenge:
+szo:lakosság ; pont:0 | szo:Bevölkerung ; pont:15 ; névelő:die ; tbsz:die Bevölkerungen ; gyenge:
+szo:gazdasági fellendülés ; pont:0 | szo:Boom ; pont:15 ; névelő:der ; tbsz:die Booms ; gyenge:
+szo:szolgál valamire ; pont:0 | szo:dienen D/zu+D ; pont:15 ; präteritum:diente ; pp_időbeli_segédige:hat ; pp:gedient
+szo:elájul ; pont:0 | szo:in Ohnmacht fallen ; pont:17 ; präteritum:fiel in Ohnmacht ; pp_időbeli_segédige:ist ; pp:in Ohnmacht gefallen
+szo:életvitel ; pont:0 | szo:Lebensführung ; pont:17 ; névelő:die ; tbsz:die Lebensführungen ; gyenge:
+szo:média ; pont:0 | szo:Medium ; pont:18 ; névelő:das ; tbsz:die Medien ; gyenge:
+szo:sajtó ; pont:0 | szo:Presse ; pont:16 ; névelő:die ; tbsz:die Pressen ; gyenge:
+szo:gyűjtőfogalom ; pont:0 | szo:Sammelbegriff ; pont:16 ; névelő:der ; tbsz:die Sammelbegriffe ; gyenge:
+szo:káros ; pont:0 | szo:schädlich ; pont:15
+szo:üt, ver vkit! ; pont:0 | szo:einschlagen auf+A ; pont:17 ; präteritum:schlug ein ; pp_időbeli_segédige:hat ; pp:eingeschlagen
+szo:fejlődés ; pont:0 | szo:Entwicklung ; pont:17 ; névelő:die ; tbsz:die Entwicklungen ; gyenge:
+szo:örvendetes ; pont:0 | szo:erfreulich ; pont:15
+szo:helyettesít ; pont:0 | szo:ersetzen ; pont:15 ; präteritum:ersetzte ; pp_időbeli_segédige:hat ; pp:ersetzt
+szo:táplálkozási zavar ; pont:0 | szo:Essstörung ; pont:16 ; névelő:die ; tbsz:die Essstörungen ; gyenge:
+szo:elfog ; pont:0 | szo:festnehmen ; pont:15 ; präteritum:nahm fest ; pp_időbeli_segédige:hat ; pp:festgenommen
+szo:vezet valamire! ; pont:0 | szo:führen zu+D ; pont:15 ; präteritum:führte ; pp_időbeli_segédige:hat ; pp:geführt
+szo:veszélyeztet ; pont:0 | szo:gefährden ; pont:16 ; präteritum:gefährdete ; pp_időbeli_segédige:hat ; pp:gefährdet
+szo:erőszak ; pont:0 | szo:Gewalt ; pont:18 ; névelő:die ; tbsz: ; gyenge:
+szo:tart vminek, vmilyennek! ; pont:0 | szo:halten für+A ; pont:16 ; präteritum:hielt ; pp_időbeli_segédige:hat ; pp:gehalten
+szo:(áru)forgalom ; pont:0 | szo:Umsatz ; pont:15 ; névelő:der ; tbsz:die Umsätze ; gyenge:
+szo:fogyasztó ; pont:0 | szo:Verbraucher ; pont:15 ; névelő:der ; tbsz:die Verbraucher ; gyenge:
+szo:terjeszt ; pont:0 | szo:verbreiten ; pont:16 ; präteritum:verbreitete ; pp_időbeli_segédige:hat ; pp:verbreitet
+szo:közvetít ; pont:0 | szo:vermitteln ; pont:15 ; präteritum:vermittelte ; pp_időbeli_segédige:hat ; pp:vermittelt
+szo:lemond vmiről! ; pont:0 | szo:verzichten auf+A ; pont:16 ; präteritum:verzichtete ; pp_időbeli_segédige:hat ; pp:verzichtet
+szo:teljesen ; pont:0 | szo:völlig ; pont:15
+szo:megelőz vmit! ; pont:0 | szo:vorbeugen D ; pont:15 ; präteritum:vorbeugte ; pp_időbeli_segédige:hat ; pp:vorbeugt
+szo:nyom (súlyt) ; pont:0 | szo:wiegen ; pont:16 ; präteritum:wog ; pp_időbeli_segédige:hat ; pp:gewogen
+szo:gazdaság ; pont:0 | szo:Wirtschaft ; pont:18 ; névelő:die ; tbsz:die Wirtschaften ; gyenge:

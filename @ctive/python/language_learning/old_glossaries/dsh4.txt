@@ -1,0 +1,27 @@
+szo:vonatkozik vmire! ; pont:0 | szo:beziehen sich auf+A ; pont:0 ; präteritum:bezog sich ; pp_időbeli_segédige:hat ; pp:sich bezogen
+szo:rés, hézag, lyuk ; pont:0 | szo:Lücke ; pont:0 ; névelő:die ; tbsz:die Lücken ; gyenge:
+szo:kiegészítendő mondat/szöveg ; pont:0 | szo:Lückentext ; pont:0 ; névelő:der ; tbsz:die Lückentexten ; gyenge:
+szo:összefoglalás, összegzés, áttekintés ; pont:0 | szo:Resümee ; pont:0 ; névelő:das ; tbsz:die Resümees ; gyenge:
+szo:szükséges, megkívánt ; pont:0 | szo:erforderlich ; pont:0
+szo:számjegy, szám ; pont:0 | szo:Ziffer ; pont:0 ; névelő:die ; tbsz:die Ziffern ; gyenge:
+szo:alkalmas, megfelelő ; pont:0 | szo:gut geeignet ; pont:0
+szo:cikk, tanulmány, adalék ; pont:0 | szo:Beitrag ; pont:0 ; névelő:der ; tbsz:die Beiträge ; gyenge:
+szo:mindenesetre, azonban, valóban, persze ; pont:0 | szo:allerdings ; pont:1
+szo:tartalomjegyzék ; pont:0 | szo:Inhaltsübersicht ; pont:0 ; névelő:die ; tbsz:die Inhaltsübersichten ; gyenge:
+szo:tagolódik ; pont:0 | szo:gliedern sich ; pont:0 ; präteritum:gliederte sich ; pp_időbeli_segédige:hat ; pp:sich gegliedert
+szo:vajon ; pont:0 | szo:wohl ; pont:0
+szo:ízület, csukló ; pont:0 | szo:Gelenk ; pont:0 ; névelő:das ; tbsz:die Gelenke ; gyenge:
+szo:ideg, ín, húr ; pont:0 | szo:Sehne ; pont:0 ; névelő:die ; tbsz:die Sehnen ; gyenge:
+szo:kéreg ; pont:0 | szo:Rinde ; pont:0 ; névelő:die ; tbsz:die Rinden ; gyenge:
+szo:fűzfa, legelő ; pont:0 | szo:Weide ; pont:0 ; névelő:die ; tbsz:die Weiden ; gyenge:
+szo:vmi előtt ; pont:0 | szo:Vorfeld ; pont:0 ; névelő:das ; tbsz:die Vorfelder ; gyenge:
+szo:azután, végezetül ; pont:0 | szo:anschließend ; pont:0
+szo:terjedelmes ; pont:0 | szo:umfangreich ; pont:0
+szo:segítségével, alapján !! ; pont:0 | szo:anhand +G ; pont:0
+szo:jelen lenni ; pont:0 | szo:anwesend sein ; pont:0 ; präteritum:war anwesend ; pp_időbeli_segédige:ist ; pp:anwesend gewesen
+szo:emelkedett, választékos ; pont:0 | szo:gehoben ; pont:0
+szo:szófajváltás ; pont:0 | szo:Nominalisierung ; pont:0 ; névelő:die ; tbsz:die Nominalisierungen ; gyenge:
+szo:gesztus, gesztikulálás ; pont:0 | szo:Geste ; pont:0 ; névelő:die ; tbsz:die Gesten ; gyenge:
+szo:fellépő probléma ; pont:0 | szo:auftauchende Problem ; pont:0 ; névelő:das ; tbsz:die auftauchenden Probleme ; gyenge:
+szo:megemlít, szóba hoz ; pont:0 | szo:ansprechen ; pont:0 ; präteritum:sprach an ; pp_időbeli_segédige:hat ; pp:angesprochen
+szo:időnként, néha-néha ; pont:0 | szo:mitunter ; pont:0

@@ -1,0 +1,38 @@
+szo:hitelkártyáról levesz ; pont:0 | szo:abziehen ; pont:4 ; präteritum:zog ab ; pp_időbeli_segédige:hat ; pp:abgezogen
+szo:magához csalogat ; pont:0 | szo:anlocken ; pont:8 ; präteritum:lockte an ; pp_időbeli_segédige:hat ; pp:angelockt
+szo:pamut ; pont:0 | szo:Baumwolle ; pont:7 ; névelő:die ; tbsz:die Baumwollen ; gyenge:
+szo:becsap ; pont:0 | szo:betrügen ; pont:11 ; präteritum:betrog ; pp_időbeli_segédige:hat ; pp:betrogen
+szo:könyvesbolt ; pont:0 | szo:Buchhandlung ; pont:10 ; névelő:die ; tbsz:die Buchhandlungen ; gyenge:
+szo:kószál, csatangol ; pont:0 | szo:bummeln ; pont:2 ; präteritum:bummelte ; pp_időbeli_segédige:ist ; pp:gebummelt
+szo:tucat ; pont:0 | szo:Dutzend ; pont:16 ; névelő:das ; tbsz:die Dutzende ; gyenge:
+szo:vmiről van szó ; pont:0 | szo:es geht um+A ; pont:4 ; präteritum:ging ; pp_időbeli_segédige:ist ; pp:gegangen
+szo:vele van ; pont:0 | szo:mithaben ; pont:15 ; präteritum:hatte mit ; pp_időbeli_segédige:hat ; pp:mitgehabt
+szo:bútor ; pont:0 | szo:Möbel ; pont:14 ; névelő:das ; tbsz:die Möbel ; gyenge:
+szo:lánc, füzér ; pont:0 | szo:Kette ; pont:12 ; névelő:die ; tbsz:die Ketten ; gyenge:
+szo:minta ; pont:0 | szo:Muster ; pont:10 ; névelő:das ; tbsz:die Muster ; gyenge:
+szo:rendelni ; pont:0 | szo:bestellen ; pont:11 ; präteritum:bestellte ; pp_időbeli_segédige:hat ; pp:bestellt
+szo:bemutat ; pont:0 | szo:präsentieren ; pont:6 ; präteritum:präsentierte ; pp_időbeli_segédige:hat ; pp:präsentiert
+szo:körömcipő ; pont:0 | szo:Pumps ; pont:15 ; névelő:der ; tbsz:die Pumps ; gyenge:
+szo:árengedmény ; pont:0 | szo:Rabatt ; pont:7 ; névelő:der ; tbsz:die Rabatte ; gyenge:
+szo:forradalmi ; pont:0 | szo:revolutionär ; pont:2
+szo:rizikós ; pont:0 | szo:riskant ; pont:3
+szo:visszatérít ; pont:0 | szo:rückerstatten ; pont:15 ; präteritum:erstattete rück ; pp_időbeli_segédige:hat ; pp:rückerstattet
+szo:hibás ; pont:0 | szo:fehlerhaft ; pont:3
+szo:(bolt) tart/árul valamit ; pont:0 | szo:führen ; pont:7 ; präteritum:führte ; pp_időbeli_segédige:hat ; pp:geführt
+szo:mintás ; pont:0 | szo:gemustert ; pont:0
+szo:ízlés ; pont:0 | szo:Geschmack ; pont:6 ; névelő:der ; tbsz:die Geschmäcke ; gyenge:
+szo:mustrál, gusztál ; pont:0 | szo:gustieren ; pont:12 ; präteritum:gustierte ; pp_időbeli_segédige:hat ; pp:gustiert
+szo:maximum ; pont:0 | szo:höchstens ; pont:3
+szo:nem gyűrődő ; pont:0 | szo:knitterfrei ; pont:2
+szo:gyűr ; pont:0 | szo:knittern ; pont:8 ; präteritum:knitterte ; pp_időbeli_segédige:hat ; pp:geknittert
+szo:bőr ; pont:0 | szo:Leder ; pont:3 ; névelő:das ; tbsz:die Leder ; gyenge:
+szo:kerül ; pont:0 | szo:meiden ; pont:5 ; präteritum:mied ; pp_időbeli_segédige:hat ; pp:gemieden
+szo:kirakat ; pont:0 | szo:Schaufenster ; pont:9 ; névelő:das ; tbsz:die Schaufenster ; gyenge:
+szo:baba ; pont:0 | szo:Puppe ; pont:12 ; névelő:die ; tbsz:die Puppen ; gyenge:
+szo:ferde ; pont:0 | szo:schräg ; pont:4
+szo:próbafülke ; pont:0 | szo:Umkleidekabine ; pont:9 ; névelő:die ; tbsz:die Umkleidekabinen ; gyenge:
+szo:óvatos ; pont:0 | szo:vorsichtig ; pont:2
+szo:további ; pont:0 | szo:weitere ; pont:2
+szo:gyűrött ; pont:0 | szo:zerknittert ; pont:3
+szo:alkalom ; pont:0 | szo:Anlass ; pont:8 ; névelő:der ; tbsz:die Anlässe ; gyenge:
+szo:félretesz ; pont:0 | szo:zurücklegen ; pont:10 ; präteritum:legte zurück ; pp_időbeli_segédige:hat ; pp:zurückgelegt

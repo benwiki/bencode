@@ -1,0 +1,46 @@
+szo:belgyógyászat ; pont:0 | szo:Abteilung für innere Erkrankungen ; pont:-1
+szo:fertőző betegség ; pont:0 | szo:absteckende Krankheit ; pont:0
+szo:ázsiai ; pont:0 | szo:asiatisch ; pont:0
+szo:Ázsia ; pont:0 | szo:Asien ; pont:1
+szo:lélegzik ; pont:0 | szo:atmen ; pont:0 ; präteritum:atmete ; pp_időbeli_segédige:hat ; pp:geatmet
+szo:szemészet ; pont:0 | szo:Augenabteilung ; pont:0 ; névelő:die ; tbsz:die Augenabteilungen ; gyenge:
+szo:nyomja az ágyat ; pont:0 | szo:das Bett hüten ; pont:4 ; präteritum:hütete das Bett ; pp_időbeli_segédige:hat ; pp:das Bett gehütet
+szo:vérnyomás ; pont:0 | szo:Blutdruck ; pont:2 ; névelő:der ; tbsz:die Blutdrucke ; gyenge:
+szo:sápadt ; pont:0 | szo:blass ; pont:0
+szo:hány(ik) ; pont:0 | szo:brechen ; pont:4 ; präteritum:brach ; pp_időbeli_segédige:hat ; pp:gebrochen
+szo:gyulladás ; pont:0 | szo:Entzündung ; pont:-1 ; névelő:die ; tbsz:die Entzündungen ; gyenge:
+szo:járvány ; pont:0 | szo:Epidemie ; pont:0 ; névelő:die ; tbsz:die Epidemien ; gyenge:
+szo:megfázik ; pont:0 | szo:erkälten sich ; pont:0 ; präteritum:erkältete sich ; pp_időbeli_segédige:hat ; pp:sich erkältet
+szo:megbetegszik vmiben! ; pont:0 | szo:erkranken an+D ; pont:0 ; präteritum:erkrankte ; pp_időbeli_segédige:ist ; pp:erkrankt
+szo:kitesz vmennyit! ; pont:0 | szo:es liegt bei+D ; pont:0 ; präteritum:es lag ; pp_időbeli_segédige:es hat ; pp:gelegen
+szo:szakorvos ; pont:0 | szo:Facharzt ; pont:0 ; névelő:der ; tbsz:die Fachärzte ; gyenge:
+szo:tényező ; pont:0 | szo:Faktor ; pont:-1 ; névelő:der ; tbsz:die Faktoren ; gyenge:
+szo:gipszbe rak ; pont:0 | szo:in Gips legen ; pont:0 ; präteritum:legte in Gips ; pp_időbeli_segédige:hat ; pp:in Gips gelegt
+szo:fertőzés ; pont:0 | szo:Infektion ; pont:0 ; névelő:die ; tbsz:die Infektionen ; gyenge:
+szo:fertőző betegség ; pont:0 | szo:Infektionskrankheit ; pont:0 ; névelő:die ; tbsz:die Infektionskrankheiten ; gyenge:
+szo:térd ; pont:0 | szo:Knie ; pont:2 ; névelő:das ; tbsz:die Knien ; gyenge:
+szo:fogyaszt ; pont:0 | szo:konsumieren ; pont:0 ; präteritum:konsumierte ; pp_időbeli_segédige:hat ; pp:konsumiert
+szo:rák ; pont:0 | szo:Krebs ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:keringési rendellenesség ; pont:0 | szo:Kreislauferkrankung ; pont:0 ; névelő:die ; tbsz:die Kreislauferkrankungen ; gyenge:
+szo:hangzik, szól, cseng ; pont:0 | szo:lauten ; pont:0 ; präteritum:lautete ; pp_időbeli_segédige:hat ; pp:gelautet
+szo:tüdő ; pont:0 | szo:Lunge ; pont:0 ; névelő:die ; tbsz:die Lungen ; gyenge:
+szo:gyomorfájás ; pont:0 | szo:Magenschmerz ; pont:-1 ; névelő:der ; tbsz:die Magenschmerzen ; gyenge:
+szo:elrontja a gyomrát ; pont:0 | szo:den Magen verderben sichD ; pont:0 ; präteritum:verdarb sichD den Magen ; pp_időbeli_segédige:hat ; pp:sich den Magen verdorben
+szo:alkoholmentes italok ; pont:0 | szo:nichtalkoholische Getränke ; pont:0
+szo:korai felismerés ; pont:0 | szo:Früherkennung ; pont:0 ; névelő:die ; tbsz:die Früherkennungen ; gyenge:
+szo:törvényes ; pont:0 | szo:gesetzlich ; pont:0
+szo:egészségügyi vizsgálat ; pont:0 | szo:Gesundheitsuntersuchung ; pont:0
+szo:állapot ; pont:0 | szo:Zustand ; pont:0 ; névelő:der ; tbsz:die Zustände ; gyenge:
+szo:influenzaoltás ; pont:0 | szo:Grippeimpfung ; pont:-1 ; névelő:die ; tbsz:die Grippeimpfungen ; gyenge:
+szo:(meg)gyógyít ; pont:0 | szo:heilen ; pont:0 ; präteritum:heilte ; pp_időbeli_segédige:hat ; pp:geheilt
+szo:fül-orr-gégészet ; pont:0 | szo:HNO-Abteilung ; pont:0
+szo:beolt ; pont:0 | szo:impfen ; pont:0 ; präteritum:impfte ; pp_időbeli_segédige:hat ; pp:geimpft
+szo:védőoltás ; pont:0 | szo:Schutzimpfung ; pont:0 ; névelő:die ; tbsz:die Schutzimpfungen ; gyenge:
+szo:injekció ; pont:0 | szo:Spritze ; pont:0 ; névelő:die ; tbsz:die Spritzen ; gyenge:
+szo:tünet ; pont:0 | szo:Symptom ; pont:0 ; névelő:das ; tbsz:die Symptome ; gyenge:
+szo:dohányfüst ; pont:0 | szo:Tabakrauch ; pont:0 ; névelő:der ; tbsz: ; gyenge:
+szo:lemegy a lépcsőn ; pont:0 | szo:die Treppe hinuntergehen ; pont:0 ; präteritum:ging die Treppe hinunter ; pp_időbeli_segédige:ist ; pp:die Treppe hinuntergegangen
+szo:átvisz, terjeszt ; pont:0 | szo:übertragen ; pont:0 ; präteritum:trug über ; pp_időbeli_segédige:hat ; pp:übergetragen
+szo:javul ; pont:0 | szo:verbessern sich ; pont:0 ; präteritum:verbesserte sich ; pp_időbeli_segédige:hat ; pp:sich verbessert
+szo:tetőtől talpig ; pont:0 | szo:von Kopf bis Fuß ; pont:0
+szo:előre gondoskodik ; pont:0 | szo:vorsorgen ; pont:0 ; präteritum:sorgte vor ; pp_időbeli_segédige:hat ; pp:vorgesorgt
