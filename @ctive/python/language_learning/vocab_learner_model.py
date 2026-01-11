@@ -168,7 +168,7 @@ def collect_prompt_data(nodes: Iterable[PromptNode], *, selections: Dict[str, st
 # Core model
 
 
-class NyelvModel:
+class VocabLearnerModel:
     lower_boundary = 0
     upper_boundary = 5
     dead_pt = 15
@@ -303,7 +303,20 @@ class NyelvModel:
                 out.append(w if prop is None else w[lang].get(prop))
         return out
 
-    def similarity(self, given: str, correct: str) -> float:
+    def similarity(self, s1: str, s2: str, start1: int = 0, start2: int = 0) -> float:
+        """Calculate a friendly similarity score between two strings."""
+        if start1 >= len(s1) or start2 >= len(s2):
+            return 0
+
+        if s1[start1] == s2[start2]:
+            return 1 + self.similarity(s1, s2, start1 + 1, start2 + 1)
+
+        skip_s1 = self.similarity(s1, s2, start1 + 1, start2)
+        skip_s2 = self.similarity(s1, s2, start1, start2 + 1)
+
+        return max(skip_s1, skip_s2)
+
+    def similarity_legacy(self, given: str, correct: str) -> float:
         glen, clen = len(given), len(correct)
         if glen == 0 and clen > 0:
             return 0
@@ -349,15 +362,15 @@ class NyelvModel:
                     break
         return score
 
-    def similar(self, given: str, correct: str) -> bool:
-        glen, clen = len(given), len(correct)
-        if (glen == 0 and clen > 0) or (clen == 0 and glen > 0):
-            return False
-        if clen == 0 and glen == 0:
+    def similar(self, s1: str, s2: str) -> bool:
+        len1, len2 = len(s1), len(s2)
+        if len2 == 0 and len1 == 0:
             return True
-        score = self.similarity(given, correct)
-        result = (score / clen + score / glen) / 2
-        return result > 0.8
+        if len1 == 0 or len2 == 0:
+            return False
+        score = self.similarity(s1, s2)
+        print(f"Similarity score: {score} (given length: {len1}, correct length: {len2})")
+        return max(len2 - score, len1 - score) <= 2
 
     def get_questionlang(self, answer_lang: str) -> str:
         return self.mlang if answer_lang == self.learnlang else self.learnlang
@@ -406,7 +419,7 @@ class PracticeSession:
     UI drives it by calling `current_prompt()` and `submit(text)`.
     """
 
-    def __init__(self, model: NyelvModel, *, gloss: str, answer_lang: str):
+    def __init__(self, model: VocabLearnerModel, *, gloss: str, answer_lang: str):
         self.model = model
         self.gloss = gloss
         self.answer_lang = answer_lang
@@ -428,15 +441,56 @@ class PracticeSession:
         self.detail_i = 0
         self.to_change: Optional[Dict[str, Any]] = None
 
+        # feedback / OK gating
+        self.awaiting_ok = False
+        self.ok_text = ""
+        self._ok_action: Optional[str] = None  # 'next_word' | 'next_detail'
+
+        # Per-word history for UI
+        # Each item: {"label": str, "given": str, "expected": str, "correct": bool}
+        self.history_items: List[Dict[str, Any]] = []
+        # Total history across the whole session (words + details)
+        self.total_history_items: List[Dict[str, Any]] = []
+        self.last_word_given: Optional[str] = None
+
         self.done = False
+        self.ended_by_user = False
         self.message = ""
 
         self._advance_to_next_word()
+
+    def _append_total_history(self, *, label: str, given: str, expected: str, correct: bool) -> None:
+        self.total_history_items.append(
+            {"label": label, "given": given, "expected": expected, "correct": bool(correct)}
+        )
+
+    def total_history_markup(self) -> str:
+        """Returns Kivy markup for the session-wide history."""
+
+        if not self.total_history_items:
+            return ""
+        lines: List[str] = []
+        for item in self.total_history_items:
+            ok = bool(item.get("correct"))
+            mark = "[color=2E7D32]OK[/color]" if ok else "[color=C62828]NO[/color]"
+            label = str(item.get("label", ""))
+            given = str(item.get("given", ""))
+            expected = str(item.get("expected", ""))
+            if ok:
+                lines.append(f"{mark} {label}: {given}")
+            else:
+                lines.append(f"{mark} {label}: {given}  [color=888888](Correct: {expected})[/color]")
+        return "\n".join(lines)
 
     def _advance_to_next_word(self) -> None:
         self.to_change = None
         self.detail_items = []
         self.detail_i = 0
+        self.awaiting_ok = False
+        self.ok_text = ""
+        self._ok_action = None
+        self.history_items = []
+        self.last_word_given = None
 
         while self.index < len(self.practice_words):
             w = self.practice_words[self.index]
@@ -478,6 +532,36 @@ class PracticeSession:
             q = f"{t}\n{q}"
         return ("word", q)
 
+    def current_type(self) -> str:
+        if not self.cur_word:
+            return ""
+        return str(self.cur_word[self.answer_lang].get("<type>") or "")
+
+    def needs_ok(self) -> bool:
+        return self.awaiting_ok and bool(self.ok_text)
+
+    def acknowledge_ok(self) -> None:
+        """Call after showing ok_text to the user and they tapped OK."""
+        if not self.awaiting_ok:
+            return
+        action = self._ok_action
+        self.awaiting_ok = False
+        self.ok_text = ""
+        self._ok_action = None
+
+        if action == "next_word":
+            self._advance_to_next_word()
+        elif action == "next_detail":
+            # Advance within the detail prompts
+            if self.detail_items and self.to_change is not None:
+                if self.detail_i + 1 < len(self.detail_items):
+                    self.detail_i += 1
+                else:
+                    self.detail_items = []
+                    self.detail_i = 0
+                    self.to_change = None
+                    self._advance_to_next_word()
+
     def summary(self) -> str:
         total = self.correct_pt + self.incorrect_pt
         if total == 0:
@@ -505,10 +589,15 @@ class PracticeSession:
 
     def stop(self) -> None:
         self.done = True
+        self.ended_by_user = True
         self.message = "Stopped."
 
     def submit(self, text: str) -> None:
         if self.done or not self.cur_word:
+            return
+
+        if self.awaiting_ok:
+            # UI must call acknowledge_ok()
             return
 
         text = (text or "").strip()
@@ -526,22 +615,50 @@ class PracticeSession:
 
         # Detail stage
         if self.detail_items and self.to_change is not None:
-            _, detail_solution = self.detail_items[self.detail_i]
+            detail_key, detail_solution = self.detail_items[self.detail_i]
+            ctx_q = self.cur_word[self.question_lang].get("szo", "")
+            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            ctx_prefix = f"{ctx_t} {ctx_q}".strip()
+            detail_label = f"{ctx_prefix} · {detail_key}" if ctx_prefix else str(detail_key)
 
             if text == detail_solution:
                 self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
                 self.correct_pt += 1
                 self.model.save_glossary(self.gloss)
                 self.message = "Correct detail."
+                self.history_items.append(
+                    {
+                        "label": detail_key,
+                        "given": text,
+                        "expected": detail_solution,
+                        "correct": True,
+                    }
+                )
+                self._append_total_history(
+                    label=detail_label,
+                    given=text,
+                    expected=str(detail_solution),
+                    correct=True,
+                )
             else:
-                # close but wrong
-                if self.model.similar(text, str(detail_solution)):
-                    self.message = "Close, but wrong."
-                    return
                 self.to_change["pont"] = int(self.to_change.get("pont", 0)) - 1
                 self.incorrect_pt += 1
                 self.model.save_glossary(self.gloss)
-                self.message = f"Incorrect. Correct: {detail_solution}"
+                self.message = "Incorrect detail."
+                self.history_items.append(
+                    {
+                        "label": detail_key,
+                        "given": text,
+                        "expected": detail_solution,
+                        "correct": False,
+                    }
+                )
+                self._append_total_history(
+                    label=detail_label,
+                    given=text,
+                    expected=str(detail_solution),
+                    correct=False,
+                )
 
             # next detail or next word
             if self.detail_i + 1 < len(self.detail_items):
@@ -568,13 +685,57 @@ class PracticeSession:
                         break
 
             if match is None:
-                self.message = "Correct word (type mismatch)."
+                # Treat as incorrect (type mismatch) and move on.
+                for sol in self.solutions:
+                    sol[self.answer_lang]["pont"] = int(sol[self.answer_lang].get("pont", 0)) - 1
+                self.incorrect_pt += 1
+                self.model.save_glossary(self.gloss)
+                self.message = "Incorrect word (type mismatch)."
+
+                ctx_q = self.cur_word[self.question_lang].get("szo", "")
+                ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+                word_label = f"{ctx_t} {ctx_q}".strip()
+                word_label = (
+                    f"{word_label} → {self.answer_lang}"
+                    if word_label
+                    else f"{ctx_q} → {self.answer_lang}"
+                )
+                self._append_total_history(
+                    label=word_label,
+                    given=text,
+                    expected=", ".join(self.solution_words),
+                    correct=False,
+                )
+
+                self._advance_to_next_word()
                 return
 
             self.to_change = match[self.answer_lang]
             self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
             self.correct_pt += 1
             self.model.save_glossary(self.gloss)
+
+            self.last_word_given = text
+            self.history_items = [
+                {
+                    "label": f"{self.cur_word[self.question_lang]['szo']} → {self.answer_lang}",
+                    "given": text,
+                    "expected": text,
+                    "correct": True,
+                }
+            ]
+
+            ctx_q = self.cur_word[self.question_lang].get("szo", "")
+            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            word_label = f"{ctx_t} {ctx_q}".strip()
+            word_label = f"{word_label} – {self.answer_lang}" if word_label else f"{ctx_q} – {self.answer_lang}"
+
+            self._append_total_history(
+                label=word_label,
+                given=text,
+                expected=text,
+                correct=True,
+            )
 
             # Prepare detail prompts
             self.detail_items = [
@@ -590,15 +751,24 @@ class PracticeSession:
                 self.message = "Correct. Enter details."
             return
 
-        # close but wrong word
-        if any(self.model.similar(text, m) for m in self.solution_words):
-            self.message = "Close, but wrong."
-            return
-
-        # wrong word
+        # wrong (or close-but-wrong) word
         for sol in self.solutions:
             sol[self.answer_lang]["pont"] = int(sol[self.answer_lang].get("pont", 0)) - 1
         self.incorrect_pt += 1
         self.model.save_glossary(self.gloss)
-        self.message = f"Incorrect. Correct: {', '.join(self.solution_words)}"
+        self.message = "Incorrect word."
+
+        ctx_q = self.cur_word[self.question_lang].get("szo", "")
+        ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+        word_label = f"{ctx_t} {ctx_q}".strip()
+        word_label = f"{word_label} – {self.answer_lang}" if word_label else f"{ctx_q} – {self.answer_lang}"
+
+        self._append_total_history(
+            label=word_label,
+            given=text,
+            expected=", ".join(self.solution_words),
+            correct=False,
+        )
+
+        # Immediately move on (history shows the correct solution).
         self._advance_to_next_word()
