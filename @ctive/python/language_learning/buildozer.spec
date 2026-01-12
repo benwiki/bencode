@@ -3,6 +3,9 @@
 # (str) Title of your application
 title = Vocab Learner
 
+# (str) Version of the app
+version = 1.0.0
+
 # (str) Package name
 package.name = vocab_learner
 
@@ -37,8 +40,8 @@ source.include_exts = py,kv,json,txt
 # (list) Files or directories to exclude
 source.exclude_dirs = __pycache__,.git,.venv
 
-# (str) Supported orientation (portrait, landscape, all)
-orientation = all
+# (str) Supported orientation (portrait, landscape)
+orientation = portrait, landscape
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
