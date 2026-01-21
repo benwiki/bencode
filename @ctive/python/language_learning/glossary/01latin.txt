@@ -5,7 +5,7 @@ word:anfangs, zuerst ; score:2 | word:prîmô ; score:15
 word:nach (Wohin?) ; score:6 | word:in ; score:15 ; case(s):acc
 word:Makedonien ; score:5 | word:Macedonia ; score:19 ; genitive:ae ; gender:f
 word:von dort, von da ; score:4 | word:inde ; score:15
-word:Sizilien ; score:7 | word:Sicilia ; score:18 ; genitive:ae ; gender:f
+word:Sizilien ; score:7 | word:Sicilia ; score:21 ; genitive:ae ; gender:f
 word:Insel ; score:6 | word:însula ; score:23 ; genitive:ae ; gender:f
 word:von (Woher?) ; score:4 | word:â, ab ; score:15 ; case(s):abl
 word:Italien ; score:5 | word:Italia ; score:22 ; genitive:ae ; gender:f
@@ -14,48 +14,48 @@ word:trojanisch ; score:0 | word:trôiânus ; score:22 ; (f):trôiâna ; (n):tr�
 word:der Trojaner ; score:-1 | word:Trôiânus ; score:20 ; genitive:î ; gender:m
 word:nichts ; score:0 | word:nihil ; score:15
 word:außer ; score:-1 | word:praeter ; score:15 ; case(s):acc
-word:Waffen ; score:1 | word:arma ; score:13 ; genitive:ôrum ; gender:n
+word:Waffen ; score:1 | word:arma ; score:16 ; genitive:ôrum ; gender:n pl.
 word:und ; score:0 | word:et ; score:18
-word:Schiff ; score:0 | word:nâvigium ; score:17 ; genitive:î ; gender:n
+word:Schiff ; score:0 | word:nâvigium ; score:20 ; genitive:î ; gender:n
 word:sein ; score:2 | word:esse ; score:43 ; <type>:verb [ind/pres] (inf) ; (1/sg):sum ; (2/sg):es ; (3/sg):est ; (1/pl):sumus ; (2/pl):estis ; (3/pl):sunt
 word:sein ; score:0 | word:esse ; score:40 ; <type>:verb [ind/impf] (inf) ; (1/sg):eram ; (2/sg):erâs ; (3/sg):erat ; (1/pl):erâmus ; (2/pl):erâtis ; (3/pl):erant
 word:sein ; score:0 | word:esse ; score:23 ; <type>:verb [ind/fut1] (inf) ; (1/sg):erô ; (2/sg):eris ; (3/sg):erit ; (1/pl):erimus ; (2/pl):eritis ; (3/pl):erunt
-word:sein ; score:0 | word:esse ; score:38 ; <type>:verb [ind/perf] (inf) ; (1/sg):fuî ; (2/sg):fuistî ; (3/sg):fuit ; (1/pl):fuimus ; (2/pl):fuistis ; (3/pl):fuêrunt
+word:sein ; score:0 | word:esse ; score:45 ; <type>:verb [ind/perf] (inf) ; (1/sg):fuî ; (2/sg):fuistî ; (3/sg):fuit ; (1/pl):fuimus ; (2/pl):fuistis ; (3/pl):fuêrunt
 word:sein ; score:0 | word:esse ; score:5 ; <type>:verb [ind/plpf] (inf) ; (1/sg):fueram ; (2/sg):fuerâs ; (3/sg):fuerat ; (1/pl):fuerâmus ; (2/pl):fuerâtis ; (3/pl):fuerant
-word:sein ; score:0 | word:esse ; score:19 ; <type>:verb [ind/fut2] (inf) ; (1/sg):fuerô ; (2/sg):fueris ; (3/sg):fuerit ; (1/pl):fuerimus ; (2/pl):fueritis ; (3/pl):fuerint
+word:sein ; score:0 | word:esse ; score:26 ; <type>:verb [ind/fut2] (inf) ; (1/sg):fuerô ; (2/sg):fueris ; (3/sg):fuerit ; (1/pl):fuerimus ; (2/pl):fueritis ; (3/pl):fuerint
 word:sein ; score:0 | word:esse ; score:5 ; <type>:verb [kon/pres] (inf) ; (1/sg):sim ; (2/sg):sîs ; (3/sg):sit ; (1/pl):sîmus ; (2/pl):sîtis ; (3/pl):sint
 word:sein ; score:0 | word:esse ; score:23 ; <type>:verb [kon/impf] (inf) ; (1/sg):essem ; (2/sg):essês ; (3/sg):esset ; (1/pl):essêmus ; (2/pl):essêtis ; (3/pl):essent
 word:sein ; score:0 | word:esse ; score:11 ; <type>:verb [kon/perf] (inf) ; (1/sg):fuerim ; (2/sg):fueris ; (3/sg):fuerit ; (1/pl):fuerimus ; (2/pl):fueritis ; (3/pl):fuerint
 word:sein ; score:0 | word:esse ; score:13 ; <type>:verb [kon/plpf] (inf) ; (1/sg):fuissem ; (2/sg):fuissês ; (3/sg):fuisset ; (1/pl):fuissêmus ; (2/pl):fuissêtis ; (3/pl):fuissent
 word:übrig sein ; score:0 | word:superesse ; score:1
-word:dann, darauf ; score:0 | word:tum ; score:-4
+word:dann, darauf ; score:0 | word:tum ; score:-3
 word:Getreide ; score:0 | word:frûmentum ; score:2 ; genitive:î ; gender:n
 word:aus ; score:0 | word:ex, ê ; score:11 ; case(s):abl
 word:Acker, Feld ; score:0 | word:ager ; score:6 ; genitive:agrî ; gender:m
 word:Einwohner ; score:0 | word:incola ; score:4 ; genitive:ae ; gender:m
 word:rauben, fortschleppen ; score:0 | word:raptâre ; score:4
-word:daher, deshalb ; score:0 | word:itaque ; score:-2
+word:daher, deshalb ; score:0 | word:itaque ; score:-1
 word:Latinus ; score:0 | word:Latînus ; score:9 ; genitive:î ; gender:m
 word:Herr ; score:0 | word:dominus ; score:10 ; genitive:î ; gender:m
 word:mit ; score:0 | word:cum ; score:6 ; case(s):abl
-word:bewaffnet ; score:0 | word:armâtus ; score:6 ; (f):armâta ; (n):armâtum
+word:bewaffnet ; score:0 | word:armâtus ; score:9 ; (f):armâta ; (n):armâtum
 word:der Bewaffnete ; score:0 | word:armâtus ; score:5 ; genitive:î ; gender:m
-word:sich nähern ; score:0 | word:appropinquâre ; score:1
+word:sich nähern ; score:0 | word:appropinquâre ; score:2
 word:dass, damit, so dass ; score:0 | word:ut ; score:4 ; case(s):konj
 word:Fremder, Ankömmling ; score:0 | word:advena ; score:3 ; genitive:ae ; gender:m
-word:vertreiben ; score:0 | word:prôpulsare ; score:-3
+word:vertreiben ; score:0 | word:prôpulsare ; score:-6
 word:dieser, er ; score:0 | word:is ; score:2
 word:diese, sie ; score:0 | word:ea ; score:3
-word:dieses, es ; score:0 | word:id ; score:3
+word:dieses, es ; score:0 | word:id ; score:4
 word:vor (temporal), vor (lokal) ; score:0 | word:ante ; score:1 ; case(s):acc
 word:Kampf ; score:0 | word:pûgna ; score:5 ; genitive:ae ; gender:f
-word:zu, bei, an ; score:0 | word:ad ; score:3 ; case(s):acc
-word:Unterredung, Gespräch ; score:0 | word:colloquium ; score:2 ; genitive:î ; gender:n
+word:zu, bei, an ; score:0 | word:ad ; score:5 ; case(s):acc
+word:Unterredung, Gespräch ; score:0 | word:colloquium ; score:1 ; genitive:î ; gender:n
 word:und ; score:0 | word:atque ; score:0
-word:rufen ; score:0 | word:vocâre ; score:-2
+word:rufen ; score:0 | word:vocâre ; score:-1
 word:fragen ; score:0 | word:interrogâre ; score:0
 word:wer? ; score:0 | word:quis? ; score:1
-word:woher? ; score:0 | word:unde? ; score:1
+word:woher? ; score:0 | word:unde? ; score:2
 word:wandern ; score:0 | word:migrâre ; score:-1
 word:was? ; score:0 | word:quid? ; score:1
 word:wünschen ; score:0 | word:optâre ; score:1
@@ -63,8 +63,8 @@ word:Mädchen ; score:0 | word:puella ; score:5 ; genitive:ae ; gender:f
 word:Freund ; score:0 | word:amîcus ; score:8 ; genitive:î ; gender:m
 word:Junge ; score:0 | word:puer ; score:9 ; genitive:î ; gender:m
 word:Stadt ; score:0 | word:oppidum ; score:10 ; genitive:î ; gender:n
-word:lieben ; score:0 | word:amâre ; score:2
-word:Jahr ; score:0 | word:annus ; score:5 ; genitive:î ; gender:m
+word:lieben ; score:0 | word:amâre ; score:3
+word:Jahr ; score:0 | word:annus ; score:8 ; genitive:î ; gender:m
 word:Rom ; score:0 | word:Rôma ; score:3 ; genitive:ae ; gender:f
 word:Heimat, Vaterland, Vaterstadt ; score:0 | word:patria ; score:4 ; genitive:ae ; gender:f
 word:weshalb? ; score:0 | word:cûr? ; score:3

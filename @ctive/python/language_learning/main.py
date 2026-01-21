@@ -27,6 +27,7 @@ from kivy.uix.textinput import TextInput
 from langtext import Lang, LangText
 
 from vocab_learner_model import (
+    WORD_PREFIX,
     ChoiceNode,
     GroupNode,
     InputNode,
@@ -302,9 +303,7 @@ class KitForm(BoxLayout):
     """Renders kit-driven extra properties and collects values."""
 
     def __init__(self, **kwargs):
-        super().__init__(
-            orientation="vertical", spacing=dp(6), **kwargs
-        )
+        super().__init__(orientation="vertical", spacing=dp(6), **kwargs)
         self._nodes: Tuple[PromptNode, ...] = tuple()
         self.selections: Dict[str, str] = {}
         self.inputs: Dict[str, str] = {}
@@ -465,10 +464,27 @@ class PracticeScreen(Screen):
     status = StringProperty("")
     summary = StringProperty("")
 
+    is_landscape = BooleanProperty(False)
+
     menu_open = BooleanProperty(False)
     ended = BooleanProperty(False)
 
     session: Optional[PracticeSession] = None
+
+    def on_kv_post(self, base_widget) -> None:  # type: ignore[override]
+        super().on_kv_post(base_widget)
+
+        def update(*_args) -> None:
+            try:
+                self.is_landscape = bool(Window.width >= Window.height)
+            except Exception:
+                self.is_landscape = False
+
+        update()
+        try:
+            Window.bind(size=update)
+        except Exception:
+            pass
 
     def go_menu(self) -> None:
         # Keep session for resume (unless user ended with '#')
@@ -615,7 +631,11 @@ class VocabLearnerApp(App):
 
         box.add_widget(
             PeachButton(
-                text="Practice", size_hint_y=None, height=dp(48), on_release=go_practice
+                text="[b]Practice[/b]",
+                markup=True,
+                size_hint_y=None,
+                height=dp(48),
+                on_release=go_practice,
             )
         )
         box.add_widget(
@@ -683,7 +703,9 @@ class VocabLearnerApp(App):
             self.practice_session.text = self.text
         self._save_ui_lang(lang)
 
-    def _build_settings(self, root: VocabLearnerRoot, screen: SettingsScreen) -> BoxLayout:
+    def _build_settings(
+        self, root: VocabLearnerRoot, screen: SettingsScreen
+    ) -> BoxLayout:
         outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
 
         outer.add_widget(
@@ -713,7 +735,9 @@ class VocabLearnerApp(App):
             "Hungarian": Lang.HUNGARIAN,
         }
         lang_to_display: Dict[Lang, str] = {v: k for k, v in display_to_lang.items()}
-        selected_display = lang_to_display.get(getattr(self, "lang", Lang.ENGLISH), "English")
+        selected_display = lang_to_display.get(
+            getattr(self, "lang", Lang.ENGLISH), "English"
+        )
 
         def on_select(value: str) -> None:
             lang = display_to_lang.get(value, Lang.ENGLISH)
@@ -727,7 +751,9 @@ class VocabLearnerApp(App):
         outer.add_widget(opts)
 
         # Data directory (where glossaries/ and kits/ live)
-        data_dir = str(getattr(self, "data_dir", "") or getattr(self.model, "base_dir", ""))
+        data_dir = str(
+            getattr(self, "data_dir", "") or getattr(self.model, "base_dir", "")
+        )
         outer.add_widget(
             Label(
                 text="Data folder",
@@ -808,7 +834,9 @@ class VocabLearnerApp(App):
         outer.add_widget(btns)
         return outer
 
-    def _build_add_word(self, root: VocabLearnerRoot, screen: AddWordScreen) -> BoxLayout:
+    def _build_add_word(
+        self, root: VocabLearnerRoot, screen: AddWordScreen
+    ) -> BoxLayout:
         outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
 
         # App bar
@@ -1188,7 +1216,7 @@ class VocabLearnerApp(App):
         t = screen.session.current_type()
         screen.ids.type_lbl.text = t  # type: ignore[attr-defined]
         screen.ids.word_lbl.text = (
-            screen.session.cur_word[screen.session.question_lang]["szo"]
+            screen.session.cur_word[screen.session.question_lang][WORD_PREFIX]
             if screen.session.cur_word
             else ""
         )  # type: ignore[attr-defined]

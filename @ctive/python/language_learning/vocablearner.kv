@@ -20,11 +20,12 @@
         padding: dp(12)
         spacing: dp(10)
 
-        # Top bar: Return to menu
-        BoxLayout:
+        BoxLayout:  # Portrait top bar (full-width)
             orientation: "horizontal"
             size_hint_y: None
-            height: dp(48)
+            height: (dp(48) if not root.is_landscape else 0)
+            opacity: (1 if not root.is_landscape else 0)
+            disabled: root.is_landscape
             spacing: 0
 
             BackArrowSquare:
@@ -36,19 +37,15 @@
                 text: "Return to menu"
                 on_release: root.go_menu()
 
-        # Middle content.
-        # NOTE: This used to be a ScrollView, but nesting ScrollViews prevented
-        # the history area from scrolling reliably.
-        BoxLayout:
-            orientation: "vertical"
+        BoxLayout:  # Main area: portrait stacks (history grows), landscape splits 50/50 (history left, everything else right).
+            orientation: ("horizontal" if root.is_landscape else "vertical")
             size_hint_y: 1
             spacing: dp(10)
 
-            # History card
-            BoxLayout:
+            BoxLayout:  # History card: in portrait it expands to fill remaining space.
                 orientation: "vertical"
-                size_hint_y: None
-                height: dp(220)
+                size_hint_x: (0.5 if root.is_landscape else 1)
+                size_hint_y: 1
                 spacing: dp(6)
                 canvas.before:
                     Color:
@@ -78,141 +75,164 @@
                             text_size: self.width, None
                             height: self.texture_size[1]
 
-            # Separator line
-            BoxLayout:
-                size_hint_y: None
-                height: dp(1)
-                canvas.before:
-                    Color:
-                        rgba: TEXT_MUTED
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-
-            # Ended panel (score summary)
-            BoxLayout:
-                id: ended_panel
+            BoxLayout:  # Controls panel: in landscape fills the right half; in portrait uses minimum height.
                 orientation: "vertical"
-                size_hint_y: None
-                height: (self.minimum_height if root.ended else 0)
-                opacity: (1 if root.ended else 0)
-                disabled: (not root.ended)
-                spacing: dp(6)
+                size_hint_x: (0.5 if root.is_landscape else 1)
+                size_hint_y: (1 if root.is_landscape else None)
+                height: (0 if root.is_landscape else self.minimum_height)
+                spacing: dp(8)
 
-                Label:
-                    id: summary_lbl
-                    text: ""
+                BoxLayout:  # Landscape top bar (right half only)
+                    orientation: "horizontal"
                     size_hint_y: None
-                    halign: "left"
-                    valign: "top"
-                    color: TEXT_DARK
-                    text_size: self.width, None
-                    height: max(self.texture_size[1], 0)
+                    height: (dp(48) if root.is_landscape else 0)
+                    opacity: (1 if root.is_landscape else 0)
+                    disabled: (not root.is_landscape)
+                    spacing: 0
 
-            # Active panel (normal practice UI) - excludes bottom controls.
-            BoxLayout:
-                id: active_panel
-                orientation: "vertical"
-                size_hint_y: None
-                height: (0 if root.ended else self.minimum_height)
-                opacity: (0 if root.ended else 1)
-                disabled: root.ended
-                spacing: dp(10)
+                    BackArrowSquare:
+                        size_hint_x: None
+                        width: dp(52)
+                        on_release: root.go_menu()
 
-                Label:
-                    id: status_lbl
-                    text: ""
+                    PeachButton:
+                        text: "Return to menu"
+                        on_release: root.go_menu()
+
+                # Push the (ended/active) labels + input toward the bottom.
+                # In portrait, this collapses to ~0 because this panel uses minimum_height.
+                # In landscape, it absorbs the extra space.
+                Widget:
+                    size_hint_y: 1
+
+                BoxLayout:  # Ended panel (score summary)
+                    id: ended_panel
+                    orientation: "vertical"
                     size_hint_y: None
-                    height: dp(24)
-                    halign: "left"
-                    valign: "middle"
-                    color: TEXT_DARK
-                    text_size: self.size
+                    height: (self.minimum_height if root.ended else 0)
+                    opacity: (1 if root.ended else 0)
+                    disabled: (not root.ended)
+                    spacing: dp(6)
 
-                Label:
-                    id: type_lbl
-                    text: ""
+                    Label:
+                        id: summary_lbl
+                        text: ""
+                        size_hint_y: None
+                        halign: "left"
+                        valign: "top"
+                        color: TEXT_DARK
+                        text_size: self.width, None
+                        height: max(self.texture_size[1], 0)
+
+                BoxLayout:  # Active panel (normal practice UI) - excludes bottom controls.
+                    id: active_panel
+                    orientation: "vertical"
                     size_hint_y: None
-                    height: dp(22)
-                    halign: "left"
-                    valign: "middle"
-                    color: TEXT_MUTED
-                    text_size: self.size
+                    height: (0 if root.ended else self.minimum_height)
+                    opacity: (0 if root.ended else 1)
+                    disabled: root.ended
+                    spacing: dp(6)
 
-                Label:
-                    id: word_lbl
-                    text: ""
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(48)
+                        spacing: dp(10)
+
+                        Label:
+                            id: word_lbl
+                            text: ""
+                            size_hint_y: None
+                            height: dp(48)
+                            halign: "left"
+                            valign: "middle"
+                            color: TEXT_DARK
+                            font_size: "22sp"
+                            text_size: self.size
+
+                        Label:
+                            id: type_lbl
+                            text: ""
+                            size_hint: None, None
+                            height: dp(48)
+                            width: (self.texture_size[0] + dp(12) if self.text else 0)
+                            opacity: (1 if self.text else 0)
+                            halign: "left"
+                            valign: "middle"
+                            color: TEXT_MUTED
+                            font_size: "16sp"
+                            text_size: None, None
+
+                    Label:
+                        id: prompt_lbl
+                        text: ""
+                        size_hint_y: None
+                        height: dp(26)
+                        halign: "left"
+                        valign: "middle"
+                        color: TEXT_DARK
+                        font_size: "16sp"
+                        text_size: self.size
+
+                    Label:
+                        id: status_lbl
+                        text: ""
+                        size_hint_y: None
+                        height: dp(22)
+                        halign: "left"
+                        valign: "middle"
+                        color: TEXT_DARK
+                        text_size: self.size
+
+                    TextInput:
+                        id: answer_input
+                        multiline: False
+                        size_hint_y: None
+                        height: dp(44)
+                        on_text_validate: root.next_action()
+
+                BoxLayout:  # Bottom controls (inside the controls panel for both orientations).
+                    orientation: "vertical"
                     size_hint_y: None
-                    height: dp(48)
-                    halign: "left"
-                    valign: "middle"
-                    color: TEXT_DARK
-                    font_size: "22sp"
-                    text_size: self.size
+                    height: (0 if root.ended else (BAR_H + (MENU_H + MENU_GAP if root.menu_open else 0)))
+                    spacing: (MENU_GAP if root.menu_open else 0)
+                    opacity: (0 if root.ended else 1)
+                    disabled: root.ended
 
-                Label:
-                    id: prompt_lbl
-                    text: ""
-                    size_hint_y: None
-                    height: dp(30)
-                    halign: "left"
-                    valign: "middle"
-                    color: TEXT_DARK
-                    font_size: "16sp"
-                    text_size: self.size
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: (MENU_H if root.menu_open else 0)
+                        spacing: dp(6)
+                        opacity: (1 if root.menu_open else 0)
+                        disabled: (not root.menu_open)
 
-                TextInput:
-                    id: answer_input
-                    multiline: False
-                    size_hint_y: None
-                    height: dp(44)
-                    on_text_validate: root.next_action()
+                        PeachButton:
+                            text: "learned"
+                            on_release: root.do_learned()
 
-        # Bottom controls: hamburger + NEXT, with a drop-up menu (kept fixed).
-        BoxLayout:
-            id: bottom_controls
-            orientation: "vertical"
-            size_hint_y: None
-            height: (0 if root.ended else (BAR_H + (MENU_H + MENU_GAP if root.menu_open else 0)))
-            spacing: (MENU_GAP if root.menu_open else 0)
-            opacity: (0 if root.ended else 1)
-            disabled: root.ended
+                        PeachButton:
+                            text: "hard"
+                            on_release: root.do_hard()
 
-            BoxLayout:
-                id: menu_box
-                orientation: "horizontal"
-                size_hint_y: None
-                height: (MENU_H if root.menu_open else 0)
-                spacing: dp(6)
-                opacity: (1 if root.menu_open else 0)
-                disabled: (not root.menu_open)
+                        PeachButton:
+                            text: "stop"
+                            on_release: root.do_stop()
 
-                PeachButton:
-                    text: "learned"
-                    on_release: root.do_learned()
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: BAR_H
+                        spacing: MENU_GAP
 
-                PeachButton:
-                    text: "hard"
-                    on_release: root.do_hard()
+                        HamburgerSquare:
+                            size_hint: None, None
+                            width: dp(52)
+                            height: BAR_H
+                            on_release: root.toggle_menu()
 
-                PeachButton:
-                    text: "stop"
-                    on_release: root.do_stop()
-
-            BoxLayout:
-                orientation: "horizontal"
-                size_hint_y: None
-                height: BAR_H
-                spacing: MENU_GAP
-
-                HamburgerSquare:
-                    size_hint: None, None
-                    width: dp(52)
-                    height: BAR_H
-                    on_release: root.toggle_menu()
-
-                PeachButton:
-                    text: "NEXT"
-                    size_hint_y: None
-                    height: BAR_H
-                    on_release: root.next_action()
+                        PeachButton:
+                            text: "NEXT"
+                            size_hint_y: None
+                            height: BAR_H
+                            on_release: root.next_action()
