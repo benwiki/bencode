@@ -174,7 +174,7 @@ class NyelvTanulas:
                             line_parts.append(" ; ".join(prop_strs))
                         else:
                             # Handle case where word might be missing a language (shouldn't happen in strict mode)
-                            line_parts.append("szo:MISSING;pont:0")
+                            line_parts.append("word:MISSING ; score:0")
                     
                     file.write(" | ".join(line_parts) + "\n")
         except Exception as e:

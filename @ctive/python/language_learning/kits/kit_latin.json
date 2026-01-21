@@ -129,6 +129,12 @@
                 "(f)": null,
                 "(n)": null
             },
+            "adjective (+ case) (m)": {
+                "<mode>": "and",
+                "(f)": null,
+                "(n)": null,
+                "case(s)": null
+            },
             "other": null
         }
     }

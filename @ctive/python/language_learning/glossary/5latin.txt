@@ -1,55 +1,48 @@
-cum
-+ Konj. obwohl (konzess.)
-nôndum noch nicht
-imperium, î n. Befehl, Herrschaft; Reich
-matûrus, a, um (
-+ dat.) reif (für etw.)
-tamen trotzdem, dennoch
-post
-+ acc. nach, hinter
-mors, mortis f. Tod
-pater, patris m. Vater
-rêgnum, î n. Königsherrschaft; Königreich
-avîtus, a, um großväterlich
-paternus, a, um väterlich
-tûtêla, ae f. Schutz
-mâter, mâtris f. Mutter
-stâre, stô, stetî, statum stehen, verbleiben
-alius, alia, aliud ein anderer, eine andere, ein anderes
-movêre, eô, môvi, môtum bewegen, hier: erheben
-audêre, eô, ausus sum wagen
-post (
-adv.) später
-saeculum, î n. Jahrhundert, Zeitalter
-frâter, frâtris m. Bruder
-lêgâre verfügen; hinterlassen
-dêmovêre entfernen, vertreiben
-stirps, stirpis f. Stamm, Spross, Nachkomme
-virîlis, e (3. Dekl.) männlich
-Vestâlis, is f. Vestalin
-enim denn
-ille, illa, illud jener, jene, jenes
-sacerdôs, dôtis m. / f. Priester; Priesterin
-innûptus, a, um unverheiratet
-imâgô, inis f. Bild
-leô, ônis m. Löwe
-ômen, inis n. Vorzeichen
-apud +
-acc. bei
-honôr, ôris m. Ehre
-circum
-+ acc. um ... herum
-sanguis, sanguinis m. Blut
-vulnus, vulneris n. Wunde
-victôria, ae f Sieg
-Poenus, î m. Punier
-stâre, stô, stetî stehen; hier: kosten
-semper stets, immer
-Stadt urbs, is f.
-erobern expugnâre
-Göttin dea, ae f.
-bestrafen multâre
-indem cum
-+ Ind.
-lebendig vîvus, a, um
-begraben humâre
+word:obwohl (konzess.) ; score:0 | word:cum ; score:0 ; case(s):konj
+word:noch nicht ; score:0 | word:nôndum ; score:0
+word:Befehl, Herrschaft, Reich ; score:0 | word:imperium ; score:0 ; genitive:î ; gender:n
+word:reif (für etw.) ; score:0 | word:matûrus ; score:0 ; (f):matûra ; (n):matûrum ; case(s):dat
+word:trotzdem, dennoch ; score:0 | word:tamen ; score:0
+word:nach, hinter ; score:0 | word:post ; score:0 ; case(s):acc
+word:Tod ; score:0 | word:mors ; score:0 ; genitive:mortis ; gender:f
+word:Vater ; score:0 | word:pater ; score:0 ; genitive:patris ; gender:m
+word:Königsherrschaft; Königreich ; score:0 | word:rêgnum ; score:0 ; genitive:î ; gender:n
+word:großväterlich ; score:0 | word:avîtus ; score:0 ; (f):avîta ; (n):avîtum
+word:väterlich ; score:0 | word:paternus ; score:0 ; (f):paterna ; (n):paternum
+word:Schutz ; score:0 | word:tûtêla ; score:0 ; genitive:ae ; gender:f
+word:Mutter ; score:0 | word:mâter ; score:0 ; genitive:mâtris ; gender:f
+word:stehen, verbleiben ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
+word:ein anderer, eine andere, ein anderes ; score:0 | word:alius ; score:0 ; (f):alia ; (n):aliud
+word:bewegen, hier: erheben ; score:0 | word:movêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):môvi ; (PPP):môtum
+word:wagen ; score:0 | word:audêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):ausus sum ; (PPP):ausum
+word:später ; score:0 | word:post ; score:0
+word:Jahrhundert, Zeitalter ; score:0 | word:saeculum ; score:0 ; genitive:î ; gender:n
+word:Bruder ; score:0 | word:frâter ; score:0 ; genitive:frâtris ; gender:m
+word:verfügen; hinterlassen ; score:0 | word:lêgâre ; score:0
+word:entfernen, vertreiben ; score:0 | word:dêmovêre ; score:0
+word:Stamm, Spross, Nachkomme ; score:0 | word:stirps ; score:0 ; genitive:stirpis ; gender:f
+word:männlich ; score:0 | word:virîlis ; score:0
+word:Vestalin ; score:0 | word:Vestâlis ; score:0 ; genitive:is ; gender:f
+word:denn ; score:0 | word:enim ; score:0
+word:jener, jene, jenes ; score:0 | word:ille ; score:0 ; (f):illa ; (n):illud
+word:Priester; Priesterin ; score:0 | word:sacerdôs ; score:0 ; genitive:dôtis ; gender:m/f
+word:unverheiratet ; score:0 | word:innûptus ; score:0 ; (f):innûpta ; (n):innûptum
+word:Bild ; score:0 | word:imâgô ; score:0 ; genitive:inis ; gender:f
+word:Löwe ; score:0 | word:leô ; score:0 ; genitive:ônis ; gender:m
+word:Vorzeichen ; score:0 | word:ômen ; score:0 ; genitive:inis ; gender:n
+word:bei ; score:0 | word:apud ; score:0 ; case(s):acc
+word:Ehre ; score:0 | word:honôr ; score:0 ; genitive:ôris ; gender:m
+word:um ... herum ; score:0 | word:circum ; score:0 ; case(s):acc
+word:Blut ; score:0 | word:sanguis ; score:0 ; genitive:sanguinis ; gender:m
+word:Wunde ; score:0 | word:vulnus ; score:0 ; genitive:vulneris ; gender:n
+word:Sieg ; score:0 | word:victôria ; score:0 ; genitive:ae ; gender:f
+word:Punier ; score:0 | word:Poenus ; score:0 ; genitive:î ; gender:m
+word:stehen; hier: kosten ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
+word:stets, immer ; score:0 | word:semper ; score:0
+word:Stadt ; score:0 | word:urbs ; score:0 ; genitive:is ; gender:f
+word:erobern ; score:0 | word:expugnâre ; score:0
+word:Göttin ; score:0 | word:dea ; score:0 ; genitive:ae ; gender:f
+word:bestrafen ; score:0 | word:multâre ; score:0
+word:indem ; score:0 | word:cum ; score:0 ; case(s):ind
+word:lebendig ; score:0 | word:vîvus ; score:0 ; (f):vîva ; (n):vîvum
+word:begraben ; score:0 | word:humâre ; score:0

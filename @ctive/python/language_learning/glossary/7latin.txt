@@ -1,58 +1,52 @@
-frâter, tris m. Bruder
-paulâtim (
-adv.) allmählich
-corpus, oris n. Körper
-adultus, a, um herangewachsen, erwachsen
-etiam (
-adv.) auch
-sôlum (
-adv.) nur
-nôn sôlum - sed etiam nicht nur - sondern auch
-fera, ae f. wildes Tier
-vênâri jagen
-praedô, ônis m. Räuber
-praeda, ae f. Beute
-onustus, a, um beladen, belastet
-petere, ô, petîvî, petîtum zu erreichen suchen, angreifen
-aequâlis, e gleichaltrig
-iocâri scherzen, Scherz treiben
-cum
-+ Konj. als, nachdem, während
-quôndam (
-adv.) einst
-tâlis, e so beschaffen
-quâlis, e wie beschaffen
-iocus, î m. Scherz
-dêditus, a, um ergeben
-latrô, ônis m. Räuber
-îra, ae f. Zorn
-âmittere, ô, âmîsî, âmissum verlieren
-înflammâtus, a, um entbrannt; entzündet
-însidiae, ârum f. pl. Hinterhalt, Falle
-parâre erwerben, bereiten, schaffen
-effugere, iô, fûgî entfliehen
-capere, iô, cêpi, captum nehmen, fassen
-trâdere, ô, didî, ditum übergeben; überliefern
-canere, ô, cecinî, (cantâtum) singen
-flûmen inis n. Fluss
-trahere, ô, traxî, tractum ziehen, schleppen
-adiuvâre, iûvî, iûtum unterstützen, fördern, helfen
-hûmânitâs, tâtis f. Menschlichkeit, Bildung, Anstand
-omnis, e jeder, ganz; pl. alle, alles
-plênus, a, um voll
-varius, a, um verschieden, bunt
-Aegaeus, a, um Adjektiv zu: Ägäis
-malus, a, um schlecht
-gaudium, î n. Freude
-nauta, ae m. Seemann
-memôrâre erinnern, erzählen
-quotannîs (
-adv.) jährlich, jedes Jahr
-cônsul, is m. Consul
-praetor, ôris m. Praetor
-aedîlis, is m. Aedil
-quaestor, ôris m. Quaestor
-creâre hier: wählen
-ôra, ae f. Küste, Gegend, Rand
-unda, ae f. Woge, Welle
-lîtus, oris n. Küste
+word:Bruder ; score:0 | word:frâter ; score:0 ; genitive:tris ; gender:m
+word:allmählich ; score:0 | word:paulâtim ; score:0
+word:Körper ; score:0 | word:corpus ; score:0 ; genitive:oris ; gender:n
+word:herangewachsen, erwachsen ; score:0 | word:adultus ; score:0 ; (f):adulta ; (n):adultum
+word:auch ; score:0 | word:etiam ; score:0
+word:nur ; score:0 | word:sôlum ; score:0
+word:nicht nur - sondern auch ; score:0 | word:nôn sôlum - sed etiam ; score:0
+word:wildes Tier ; score:0 | word:fera ; score:0 ; genitive:ae ; gender:f
+word:jagen ; score:0 | word:vênâri ; score:0
+word:Räuber ; score:0 | word:praedô ; score:0 ; genitive:ônis ; gender:m
+word:Beute ; score:0 | word:praeda ; score:0 ; genitive:ae ; gender:f
+word:beladen, belastet ; score:0 | word:onustus ; score:0 ; (f):onusta ; (n):onustum
+word:zu erreichen suchen, angreifen ; score:0 | word:petere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):petîvî ; (PPP):petîtum
+word:gleichaltrig ; score:0 | word:aequâlis ; score:0
+word:scherzen, Scherz treiben ; score:0 | word:iocâri ; score:0
+word:als, nachdem, während ; score:0 | word:cum ; score:0 ; case(s):konj
+word:einst ; score:0 | word:quôndam ; score:0
+word:so beschaffen ; score:0 | word:tâlis ; score:0
+word:wie beschaffen ; score:0 | word:quâlis ; score:0
+word:Scherz ; score:0 | word:iocus ; score:0 ; genitive:î ; gender:m
+word:ergeben ; score:0 | word:dêditus ; score:0 ; (f):dêdita ; (n):dêditum
+word:Räuber ; score:0 | word:latrô ; score:0 ; genitive:ônis ; gender:m
+word:Zorn ; score:0 | word:îra ; score:0 ; genitive:ae ; gender:f
+word:verlieren ; score:0 | word:âmittere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):âmîsî ; (PPP):âmissum
+word:entbrannt; entzündet ; score:0 | word:înflammâtus ; score:0 ; (f):înflammâta ; (n):înflammâtum
+word:Hinterhalt, Falle ; score:0 | word:însidiae ; score:0 ; genitive:ârum ; gender:f pl.
+word:erwerben, bereiten, schaffen ; score:0 | word:parâre ; score:0
+word:entfliehen ; score:0 | word:effugere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):fûgî ; (PPP):effugitum
+word:nehmen, fassen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):cêpi ; (PPP):captum
+word:übergeben; überliefern ; score:0 | word:trâdere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):didî ; (PPP):ditum
+word:singen ; score:0 | word:canere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):cecinî ; (PPP):cantâtum
+word:Fluss ; score:0 | word:flûmen ; score:0 ; genitive:inis ; gender:n
+word:ziehen, schleppen ; score:0 | word:trahere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):traxî ; (PPP):tractum
+word:unterstützen, fördern, helfen ; score:0 | word:adiuvâre ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):iûvî ; (PPP):iûtum
+word:Menschlichkeit, Bildung, Anstand ; score:0 | word:hûmânitâs ; score:0 ; genitive:tâtis ; gender:f
+word:jeder, ganz; pl. alle, alles ; score:0 | word:omnis ; score:0
+word:voll ; score:0 | word:plênus ; score:0 ; (f):plêna ; (n):plênum
+word:verschieden, bunt ; score:0 | word:varius ; score:0 ; (f):varia ; (n):varium
+word:Adjektiv zu: Ägäis ; score:0 | word:Aegaeus ; score:0 ; (f):Aegaea ; (n):Aegaeum
+word:schlecht ; score:0 | word:malus ; score:0 ; (f):mala ; (n):malum
+word:Freude ; score:0 | word:gaudium ; score:0 ; genitive:î ; gender:n
+word:Seemann ; score:0 | word:nauta ; score:0 ; genitive:ae ; gender:m
+word:erinnern, erzählen ; score:0 | word:memôrâre ; score:0
+word:jährlich, jedes Jahr ; score:0 | word:quotannîs ; score:0
+word:Consul ; score:0 | word:cônsul ; score:0 ; genitive:is ; gender:m
+word:Praetor ; score:0 | word:praetor ; score:0 ; genitive:ôris ; gender:m
+word:Aedil ; score:0 | word:aedîlis ; score:0 ; genitive:is ; gender:m
+word:Quaestor ; score:0 | word:quaestor ; score:0 ; genitive:ôris ; gender:m
+word:hier: wählen ; score:0 | word:creâre ; score:0
+word:Küste, Gegend, Rand ; score:0 | word:ôra ; score:0 ; genitive:ae ; gender:f
+word:Woge, Welle ; score:0 | word:unda ; score:0 ; genitive:ae ; gender:f
+word:Küste ; score:0 | word:lîtus ; score:0 ; genitive:oris ; gender:n

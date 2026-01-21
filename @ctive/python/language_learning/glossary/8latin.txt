@@ -1,38 +1,33 @@
-apud
-+ Akk. bei
-accusâre anklagen
-quod (
-Subj.) hier: dass
-vâstâre verwüsten
-hostis, is m. Feind
-hostîlis, e feindlich
-modus, î m. Art und Weise
-agere, ô, êgî, actum tun, handeln; hier: forttreiben
-itaque daher, deshalb
-supplicium, î n. Strafe, Bestrafung;
-occ. Hinrichtung
-habêre, eô, uî, itum haben; hier: halten
-servîlis, e sklavisch, knechtisch
-indolês, is f. Anlage, Begabung
-admîrâri bewundern
-intellegere, ô, lêxî, lectum erkennen
-pâstor, ôris m. Hirte
-initium, î n. Anfang, Beginn
-suspicâri vermuten
-nâvis, is f. Schiff
-caecus, a, um blind
-cônstat
-+ AcI es steht fest, dass
-vincere, ô, vîcî, victum (be)siegen
-oportet
-+ Inf. / AcI es ist nötig
-frûstrâ (adv.) vergeblich
-imperâtor, ôris m. Feldherr
-tam so
-facilis, e leicht
-mirârî sich wundern
-spêrâre hoffen
-lêgâtus, î m. Gesandte
-impetrâre (durch Bitten) erreichen
-mûtâre (ver) ändern
-spectâculum, î n. Schauspiel
+word:bei ; score:0 | word:apud ; score:0 ; case(s):acc
+word:anklagen ; score:0 | word:accusâre ; score:0
+word:hier: dass ; score:0 | word:quod ; score:0 ; case(s):subj
+word:verwüsten ; score:0 | word:vâstâre ; score:0
+word:Feind ; score:0 | word:hostis ; score:0 ; genitive:is ; gender:m
+word:feindlich ; score:0 | word:hostîlis ; score:0
+word:Art und Weise ; score:0 | word:modus ; score:0 ; genitive:î ; gender:m
+word:tun, handeln; hier: forttreiben ; score:0 | word:agere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):êgî ; (PPP):actum
+word:daher, deshalb ; score:0 | word:itaque ; score:0
+word:Strafe, Bestrafung; occ. Hinrichtung ; score:0 | word:supplicium ; score:0 ; genitive:î ; gender:n
+word:haben; hier: halten ; score:0 | word:habêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):itum
+word:sklavisch, knechtisch ; score:0 | word:servîlis ; score:0
+word:Anlage, Begabung ; score:0 | word:indolês ; score:0 ; genitive:is ; gender:f
+word:bewundern ; score:0 | word:admîrâri ; score:0
+word:erkennen ; score:0 | word:intellegere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):lêxî ; (PPP):lectum
+word:Hirte ; score:0 | word:pâstor ; score:0 ; genitive:ôris ; gender:m
+word:Anfang, Beginn ; score:0 | word:initium ; score:0 ; genitive:î ; gender:n
+word:vermuten ; score:0 | word:suspicâri ; score:0
+word:Schiff ; score:0 | word:nâvis ; score:0 ; genitive:is ; gender:f
+word:blind ; score:0 | word:caecus ; score:0 ; (f):caeca ; (n):caecum
+word:es steht fest, dass ; score:0 | word:cônstat ; score:0 ; case(s):aci
+word:(be)siegen ; score:0 | word:vincere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):vîcî ; (PPP):victum
+word:es ist nötig ; score:0 | word:oportet ; score:0 ; case(s):inf/aci
+word:vergeblich ; score:0 | word:frûstrâ ; score:0
+word:Feldherr ; score:0 | word:imperâtor ; score:0 ; genitive:ôris ; gender:m
+word:so ; score:0 | word:tam ; score:0
+word:leicht ; score:0 | word:facilis ; score:0
+word:sich wundern ; score:0 | word:mirârî ; score:0
+word:hoffen ; score:0 | word:spêrâre ; score:0
+word:Gesandte ; score:0 | word:lêgâtus ; score:0 ; genitive:î ; gender:m
+word:(durch Bitten) erreichen ; score:0 | word:impetrâre ; score:0
+word:(ver) ändern ; score:0 | word:mûtâre ; score:0
+word:Schauspiel ; score:0 | word:spectâculum ; score:0 ; genitive:î ; gender:n

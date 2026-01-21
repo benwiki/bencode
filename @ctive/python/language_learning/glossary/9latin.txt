@@ -1,38 +1,37 @@
-nepôs, nepôtis m. Enkel
-spoliâre berauben
-cônstituere, ô, uî, stitûtum mit Inf.: beschließen
-certus, a, um bestimmt, festgesetzt, sicher, gewiß
-iter, itineris n. Weg, Reise
-rêgia, ae f. Königsburg; hier: Königspalast
-festînâre eilen
-autem (adv.) aber
-simulâre vortäuschen, heucheln
-urbs, is f. Stadt
-invâdere, ô, vâsî, vâsum eindringen
-comes, itis m. Begleiter, Gefolgsmann
-arx, cis f. Burg
-âvocâre ablenken, abziehen
-inopînâns, tis ahnungslos
-obtruncâre töten, enthaupten
-rîpa, ae f. Ufer
-aedis, is f. sg. Gemach/Tempel (als Gebäude) / pl.
-Haus/Gotteshaus
-aedificâre bauen
-orîgô, inis f. Ursprung
-incertus, a, um unsicher
-caput, capitis n. Haupt, Hauptstadt
-Capitôlium, î n. Capitol (einer der 7 Hügel Roms)
-forum, î n. Markt
-rôstrum, î n. (Schiffs)schnabel
-nâvis, is f. Schiff
-expûgnâre erobern, einnehmen
-ornâre schmücken
-âter, tra, trum dunkel
-nûbês, is f. Wolke
-obscûrâre verdunkeln
-venire, iô, vênî, ventum kommen
-relinquere, ô, lîquî, lictum ver-, zurücklassen
-dîcere, ô, xî, dictum sagen
-spês, ei f. Hoffnung
-fuga, ae f. Flucht
-sê recûsâre sich weigern
+word:Enkel ; score:0 | word:nepôs ; score:0 ; genitive:nepôtis ; gender:m
+word:berauben ; score:0 | word:spoliâre ; score:0
+word:mit Inf.: beschließen ; score:0 | word:cônstituere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):uî ; (PPP):stitûtum
+word:bestimmt, festgesetzt, sicher, gewiß ; score:0 | word:certus ; score:0 ; (f):certa ; (n):certum
+word:Weg, Reise ; score:0 | word:iter ; score:0 ; genitive:itineris ; gender:n
+word:Königsburg; hier: Königspalast ; score:0 | word:rêgia ; score:0 ; genitive:ae ; gender:f
+word:eilen ; score:0 | word:festînâre ; score:0
+word:aber ; score:0 | word:autem ; score:0
+word:vortäuschen, heucheln ; score:0 | word:simulâre ; score:0
+word:Stadt ; score:0 | word:urbs ; score:0 ; genitive:is ; gender:f
+word:eindringen ; score:0 | word:invâdere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):vâsî ; (PPP):vâsum
+word:Begleiter, Gefolgsmann ; score:0 | word:comes ; score:0 ; genitive:itis ; gender:m
+word:Burg ; score:0 | word:arx ; score:0 ; genitive:cis ; gender:f
+word:ablenken, abziehen ; score:0 | word:âvocâre ; score:0
+word:ahnungslos ; score:0 | word:inopînâns ; score:0
+word:töten, enthaupten ; score:0 | word:obtruncâre ; score:0
+word:Ufer ; score:0 | word:rîpa ; score:0 ; genitive:ae ; gender:f
+word:Gemach/Tempel (als Gebäude) / Haus/Gotteshaus ; score:0 | word:aedis ; score:0 ; genitive:is ; gender:f
+word:bauen ; score:0 | word:aedificâre ; score:0
+word:Ursprung ; score:0 | word:orîgô ; score:0 ; genitive:inis ; gender:f
+word:unsicher ; score:0 | word:incertus ; score:0 ; (f):incerta ; (n):incertum
+word:Haupt, Hauptstadt ; score:0 | word:caput ; score:0 ; genitive:capitis ; gender:n
+word:Capitol (einer der 7 Hügel Roms) ; score:0 | word:Capitôlium ; score:0 ; genitive:î ; gender:n
+word:Markt ; score:0 | word:forum ; score:0 ; genitive:î ; gender:n
+word:(Schiffs)schnabel ; score:0 | word:rôstrum ; score:0 ; genitive:î ; gender:n
+word:Schiff ; score:0 | word:nâvis ; score:0 ; genitive:is ; gender:f
+word:erobern, einnehmen ; score:0 | word:expûgnâre ; score:0
+word:schmücken ; score:0 | word:ornâre ; score:0
+word:dunkel ; score:0 | word:âter ; score:0 ; (f):âtra ; (n):âtrum
+word:Wolke ; score:0 | word:nûbês ; score:0 ; genitive:is ; gender:f
+word:verdunkeln ; score:0 | word:obscûrâre ; score:0
+word:kommen ; score:0 | word:venire ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):vênî ; (PPP):ventum
+word:ver-, zurücklassen ; score:0 | word:relinquere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):lîquî ; (PPP):lictum
+word:sagen ; score:0 | word:dîcere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):xî ; (PPP):dictum
+word:Hoffnung ; score:0 | word:spês ; score:0 ; genitive:ei ; gender:f
+word:Flucht ; score:0 | word:fuga ; score:0 ; genitive:ae ; gender:f
+word:sich weigern ; score:0 | word:sê recûsâre ; score:0

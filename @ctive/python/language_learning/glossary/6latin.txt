@@ -1,59 +1,57 @@
-Mars, Martis m. Kriegsgott Mars
-deus, î m. Gott
-ut wie
-fâma, ae f. Sage, Kunde, Gerücht
-dê
-+ abl. von ... herab; über; hier: mit
-procreâre hervorbringen, zeugen
-puer, î m. Junge, Knabe
-geminus, î m. Zwilling
-rêx, rêgis m. König
-îrâtus, a, um erzürnt, wütend
-custôdia, ae f. Wache, Hut, Gefängnis
-servus, î m. Sklave, Diener
-imperâre befehlen; herrschen
-aqua, ae f. Wasser
-Tiberis, is m. Tiber
-amnis, is m. Fluss
-mittere, ô, mîsî, missum schicken; aussetzen
-at aber
-alveus, î m. Wanne, Trog; Kahn
-exponere, o, exposui, expositum aussetzen
-ficus, î f. Feigenbaum
-Rûminâlis, e der Rumina (Göttin der Säugenden)
-gehörig; ruminalisch
-siccus, a, um trocken
-stâre, stô, stetî, stâtûrum hier: stehen bleiben, stecken bleiben
-flêns, flentis weinend
-lupa, ae f. Wölfin
-mamma, ae f. Brust, Zitze
-praebêre, eô, buî, bitum reichen, gewähren, geben
-magister, trî m. hier: Aufseher
-armentum, î n. Pflugtier, Herde
-rêgius, a, um königlich
-servâre retten, bewahren
-uxor, uxôris f. Gattin, Ehefrau
-êducâre erziehen
-animal, âlis n. Lebewesen; Tier
-rârus, a, um selten
-pûmilus, î m. Zwerg
-fortis, e tapfer
-furêns, ntis rasend
-tempus, oris n. Zeit
-môs, môris m. Sitte
-genus, generis n. Geschlecht; Gattung; Abstammung
-nâtus, a, um geboren
-pês, pedis m. Fuß
-îra, ae f. Zorn, Erbitterung, Wut
-nômen, inis n. Namen
-dônec solange (als)
-sôspes, itis wohlbehalten, unversehrt
-numerâre zählen
-erschaffen prôcreâre
-Welt mundus, î m.
-Mensch, Mann homô, inis m.
-glücklich beâtus, a, um
-kühn audax, âcis
-Perser Persa, ae m.
-schon iam
-retten servâre
+word:Kriegsgott Mars ; score:0 | word:Mars ; score:0 ; genitive:Martis ; gender:m
+word:Gott ; score:0 | word:deus ; score:0 ; genitive:î ; gender:m
+word:wie ; score:0 | word:ut ; score:0
+word:Sage, Kunde, Gerücht ; score:0 | word:fâma ; score:0 ; genitive:ae ; gender:f
+word:von ... herab; über; hier: mit ; score:0 | word:dê ; score:0 ; case(s):abl
+word:hervorbringen, zeugen ; score:0 | word:procreâre ; score:0
+word:Junge, Knabe ; score:0 | word:puer ; score:0 ; genitive:î ; gender:m
+word:Zwilling ; score:0 | word:geminus ; score:0 ; genitive:î ; gender:m
+word:König ; score:0 | word:rêx ; score:0 ; genitive:rêgis ; gender:m
+word:erzürnt, wütend ; score:0 | word:îrâtus ; score:0 ; (f):îrâta ; (n):îrâtum
+word:Wache, Hut, Gefängnis ; score:0 | word:custôdia ; score:0 ; genitive:ae ; gender:f
+word:Sklave, Diener ; score:0 | word:servus ; score:0 ; genitive:î ; gender:m
+word:befehlen; herrschen ; score:0 | word:imperâre ; score:0
+word:Wasser ; score:0 | word:aqua ; score:0 ; genitive:ae ; gender:f
+word:Tiber ; score:0 | word:Tiberis ; score:0 ; genitive:is ; gender:m
+word:Fluss ; score:0 | word:amnis ; score:0 ; genitive:is ; gender:m
+word:schicken; aussetzen ; score:0 | word:mittere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):mîsî ; (PPP):missum
+word:aber ; score:0 | word:at ; score:0
+word:Wanne, Trog; Kahn ; score:0 | word:alveus ; score:0 ; genitive:î ; gender:m
+word:aussetzen ; score:0 | word:exponere ; score:0 ; <type>:verb (inf) ; (present):o ; (perfect):exposui ; (PPP):expositum
+word:Feigenbaum ; score:0 | word:ficus ; score:0 ; genitive:î ; gender:f
+word:der Rumina (Göttin der Säugenden) gehörig; ruminalisch ; score:0 | word:Rûminâlis ; score:0
+word:trocken ; score:0 | word:siccus ; score:0 ; (f):sicca ; (n):siccum
+word:hier: stehen bleiben, stecken bleiben ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):stâtûrum
+word:weinend ; score:0 | word:flêns ; score:0
+word:Wölfin ; score:0 | word:lupa ; score:0 ; genitive:ae ; gender:f
+word:Brust, Zitze ; score:0 | word:mamma ; score:0 ; genitive:ae ; gender:f
+word:reichen, gewähren, geben ; score:0 | word:praebêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):buî ; (PPP):bitum
+word:hier: Aufseher ; score:0 | word:magister ; score:0 ; genitive:trî ; gender:m
+word:Pflugtier, Herde ; score:0 | word:armentum ; score:0 ; genitive:î ; gender:n
+word:königlich ; score:0 | word:rêgius ; score:0 ; (f):rêgia ; (n):rêgium
+word:retten, bewahren ; score:0 | word:servâre ; score:0
+word:Gattin, Ehefrau ; score:0 | word:uxor ; score:0 ; genitive:uxôris ; gender:f
+word:erziehen ; score:0 | word:êducâre ; score:0
+word:Lebewesen; Tier ; score:0 | word:animal ; score:0 ; genitive:âlis ; gender:n
+word:selten ; score:0 | word:rârus ; score:0 ; (f):râra ; (n):rârum
+word:Zwerg ; score:0 | word:pûmilus ; score:0 ; genitive:î ; gender:m
+word:tapfer ; score:0 | word:fortis ; score:0
+word:rasend ; score:0 | word:furêns ; score:0
+word:Zeit ; score:0 | word:tempus ; score:0 ; genitive:oris ; gender:n
+word:Sitte ; score:0 | word:môs ; score:0 ; genitive:môris ; gender:m
+word:Geschlecht; Gattung; Abstammung ; score:0 | word:genus ; score:0 ; genitive:generis ; gender:n
+word:geboren ; score:0 | word:nâtus ; score:0 ; (f):nâta ; (n):nâtum
+word:Fuß ; score:0 | word:pês ; score:0 ; genitive:pedis ; gender:m
+word:Zorn, Erbitterung, Wut ; score:0 | word:îra ; score:0 ; genitive:ae ; gender:f
+word:Namen ; score:0 | word:nômen ; score:0 ; genitive:inis ; gender:n
+word:solange (als) ; score:0 | word:dônec ; score:0
+word:wohlbehalten, unversehrt ; score:0 | word:sôspes ; score:0
+word:zählen ; score:0 | word:numerâre ; score:0
+word:erschaffen ; score:0 | word:prôcreâre ; score:0
+word:Welt ; score:0 | word:mundus ; score:0 ; genitive:î ; gender:m
+word:Mensch, Mann ; score:0 | word:homô ; score:0 ; genitive:inis ; gender:m
+word:glücklich ; score:0 | word:beâtus ; score:0 ; (f):beâta ; (n):beâtum
+word:kühn ; score:0 | word:audax ; score:0
+word:Perser ; score:0 | word:Persa ; score:0 ; genitive:ae ; gender:m
+word:schon ; score:0 | word:iam ; score:0
+word:retten ; score:0 | word:servâre ; score:0

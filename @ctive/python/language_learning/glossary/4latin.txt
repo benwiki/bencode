@@ -1,34 +1,28 @@
-adversus
-+ acc. gegen, wider, gegenüber
-tantus, a, um so groß
-animus, î m. Sinn, Geist, Mut, Herz
-orbâre berauben
-sibi (
-dat.) sich
-conciliâre gewinnen
-uterque, utraque, utrumque jeder (von zweien); beide
-tôtus, a, um ganz
-implêre, eô, plêvî, plêtum anfüllen, erfüllen
-posse, possum, potuî können
-proelium, î n. Kampf
-dêcertâre um die Entscheidung kämpfen
-secundus, a, um folgend, günstig; zweiter
-ultimus, a, um letzter
-populus, î m. Volk
-pôpulus, î f. Pappel
-numquam (
-adv.) niemals
-anteâ vorher; zuvor
-magnus, a, um groß
-Ulixês, is Odysseus
-Rômânus, a, um römisch
-Rômânus, î m. Römer
-adversârius, î m. Gegner, Feind
-nach Hause domum (
-adv.)
-angreifen oppûgnâre
-da, weil, obwohl cum
-+ Konj.
-niemand nêmô (
-nom. sg.)
-wie groß quantus, a, um
+word:gegen, wider, gegenüber ; score:0 | word:adversus ; score:0 ; case(s):acc
+word:so groß ; score:0 | word:tantus ; score:0 ; (f):tanta ; (n):tantum
+word:Sinn, Geist, Mut, Herz ; score:0 | word:animus ; score:0 ; genitive:î ; gender:m
+word:berauben ; score:0 | word:orbâre ; score:0
+word:sich ; score:0 | word:sibi ; score:0 ; case(s):dat
+word:gewinnen ; score:0 | word:conciliâre ; score:0
+word:jeder (von zweien), beide ; score:0 | word:uterque ; score:0 ; (f):utraque ; (n):utrumque
+word:ganz ; score:0 | word:tôtus ; score:0 ; (f):tôta ; (n):tôtum
+word:anfüllen, erfüllen ; score:0 | word:implêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):plêvî ; (PPP):plêtum
+word:können ; score:0 | word:posse ; score:0 ; <type>:verb (inf) ; (present):possum ; (perfect):potuî ; (PPP):itum
+word:Kampf ; score:0 | word:proelium ; score:0 ; genitive:î ; gender:n
+word:um die Entscheidung kämpfen ; score:0 | word:dêcertâre ; score:0
+word:folgend, günstig; zweiter ; score:0 | word:secundus ; score:0 ; (f):secunda ; (n):secundum
+word:letzter ; score:0 | word:ultimus ; score:0 ; (f):ultima ; (n):ultimum
+word:Volk ; score:0 | word:populus ; score:0 ; genitive:î ; gender:m
+word:Pappel ; score:0 | word:pôpulus ; score:0 ; genitive:î ; gender:f
+word:niemals ; score:0 | word:numquam ; score:0
+word:vorher; zuvor ; score:0 | word:anteâ ; score:0
+word:groß ; score:0 | word:magnus ; score:0 ; (f):magna ; (n):magnum
+word:Odysseus ; score:0 | word:Ulixês ; score:0 ; genitive:is ; gender:m
+word:römisch ; score:0 | word:Rômânus ; score:0 ; (f):Rômâna ; (n):Rômânum
+word:Römer ; score:0 | word:Rômânus ; score:0 ; genitive:î ; gender:m
+word:Gegner, Feind ; score:0 | word:adversârius ; score:0 ; genitive:î ; gender:m
+word:nach Hause ; score:0 | word:domum ; score:0
+word:angreifen ; score:0 | word:oppûgnâre ; score:0
+word:da, weil, obwohl ; score:0 | word:cum ; score:0 ; case(s):konj
+word:niemand ; score:0 | word:nêmô ; score:0 ; case(s):nom
+word:wie groß ; score:0 | word:quantus ; score:0 ; (f):quanta ; (n):quantum

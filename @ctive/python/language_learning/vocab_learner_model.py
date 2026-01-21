@@ -16,6 +16,11 @@ import unicodedata
 from langtext import LangText
 
 
+WORD_PREFIX = "word"
+SCORE_PREFIX = "score"
+TYPE_PREFIX = "<type>"
+
+
 class Kit(Enum):
     """Defines the available language kit configurations."""
 
@@ -132,10 +137,10 @@ def build_prompt_tree(
     if mode == "and":
         children: List[PromptNode] = []
 
-        # If <showtype> is set, the selected type from the parent choice is stored in "<type>"
+        # If <showtype> is set, the selected type from the parent choice is stored in <type>.
         if kit.get("<showtype>") and showtype:
             # Hidden output; no UI field needed. We'll store it when collecting.
-            children.append(GroupNode(label="<type>", children=tuple()))
+            children.append(GroupNode(label=TYPE_PREFIX, children=tuple()))
 
         for key, val in kit.items():
             if _is_meta_key(key):
@@ -196,8 +201,8 @@ def collect_prompt_data(
             if node.key in inputs:
                 data[node.key] = inputs[node.key]
         elif isinstance(node, GroupNode):
-            if node.label == "<type>" and showtype:
-                data["<type>"] = showtype
+            if node.label == TYPE_PREFIX and showtype:
+                data[TYPE_PREFIX] = showtype
             else:
                 data.update(
                     collect_prompt_data(
@@ -211,7 +216,7 @@ def collect_prompt_data(
             sel = selections.get(node.label, node.default)
             # If this choice node itself stores <type>
             if node.showtype_here:
-                data["<type>"] = sel
+                data[TYPE_PREFIX] = sel
             data.update(
                 collect_prompt_data(
                     node.option_children.get(sel, tuple()),
@@ -268,7 +273,7 @@ class VocabLearnerModel:
         for lang, props in self.kit.items():
             if lang == "<mode>":
                 continue
-            if isinstance(props, dict) and props.get("<type>") == langtype:
+            if isinstance(props, dict) and props.get(TYPE_PREFIX) == langtype:
                 return lang
         raise ValueError(f"No language with <type>={langtype} in kit")
 
@@ -379,8 +384,8 @@ class VocabLearnerModel:
                 # Ensure required keys exist
                 for lang_name in self.languages[:2]:
                     entry.setdefault(lang_name, {})
-                    entry[lang_name].setdefault("szo", "")
-                    entry[lang_name].setdefault("pont", 0)
+                    entry[lang_name].setdefault(WORD_PREFIX, "")
+                    entry[lang_name].setdefault(SCORE_PREFIX, 0)
 
                 result.append(entry)
 
@@ -435,7 +440,7 @@ class VocabLearnerModel:
         source = self.words[gloss] if gloss is not None else self.all_words
         out = []
         for w in source:
-            if w.get(lang, {}).get("szo") == word:
+            if w.get(lang, {}).get(WORD_PREFIX) == word:
                 out.append(w if prop is None else w[lang].get(prop))
         return out
 
@@ -520,7 +525,7 @@ class VocabLearnerModel:
     ) -> List[Dict[str, Dict[str, Any]]]:
         practice_words = list(self.words[gloss])
         for word in self.words[gloss]:
-            wordscore = int(word[answer_lang].get("pont", 0))
+            wordscore = int(word[answer_lang].get(SCORE_PREFIX, 0))
             if wordscore < self.lower_boundary:
                 for _ in range(abs(wordscore - self.lower_boundary)):
                     practice_words.append(word)
@@ -543,8 +548,8 @@ class VocabLearnerModel:
 
         self.words[gloss].append(
             {
-                self.mlang: {"szo": mword, "pont": 0, **mprops},
-                self.learnlang: {"szo": lword, "pont": 0, **lprops},
+                self.mlang: {WORD_PREFIX: mword, SCORE_PREFIX: 0, **mprops},
+                self.learnlang: {WORD_PREFIX: lword, SCORE_PREFIX: 0, **lprops},
             }
         )
         self.save_glossary(gloss)
@@ -659,11 +664,11 @@ class PracticeSession:
             w = self.practice_words[self.index]
             self.index += 1
 
-            # compute effective score like CLI (pont divided by detail count)
+            # compute effective score like CLI (score divided by detail count)
             len_detail = len(
-                [k for k in w[self.answer_lang] if k not in ("szo", "pont", "<type>")]
+                [k for k in w[self.answer_lang] if k not in (WORD_PREFIX, SCORE_PREFIX, TYPE_PREFIX)]
             )
-            wordscore = int(w[self.answer_lang].get("pont", 0)) // max(1, len_detail)
+            wordscore = int(w[self.answer_lang].get(SCORE_PREFIX, 0)) // max(1, len_detail)
 
             if wordscore >= self.model.dead_pt:
                 continue
@@ -675,9 +680,9 @@ class PracticeSession:
 
             self.cur_word = w
             self.solutions = self.model.find(
-                w[self.question_lang]["szo"], self.question_lang, self.gloss
+                w[self.question_lang][WORD_PREFIX], self.question_lang, self.gloss
             )
-            self.solution_words = [s[self.answer_lang]["szo"] for s in self.solutions]
+            self.solution_words = [s[self.answer_lang][WORD_PREFIX] for s in self.solutions]
             self.message = ""
             return
 
@@ -694,8 +699,8 @@ class PracticeSession:
             detail_key, _ = self.detail_items[self.detail_i]
             return ("detail", detail_key)
 
-        q = self.cur_word[self.question_lang]["szo"]
-        t = self.cur_word[self.answer_lang].get("<type>")
+        q = self.cur_word[self.question_lang][WORD_PREFIX]
+        t = self.cur_word[self.answer_lang].get(TYPE_PREFIX)
         if t:
             q = f"{t}\n{q}"
         return ("word", q)
@@ -703,7 +708,7 @@ class PracticeSession:
     def current_type(self) -> str:
         if not self.cur_word:
             return ""
-        return str(self.cur_word[self.answer_lang].get("<type>") or "")
+        return str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
 
     def needs_ok(self) -> bool:
         return self.awaiting_ok and bool(self.ok_text)
@@ -741,7 +746,7 @@ class PracticeSession:
         if not self.solutions:
             return
         for w in self.solutions:
-            w[self.answer_lang]["pont"] = self.model.dead_pt
+            w[self.answer_lang][SCORE_PREFIX] = self.model.dead_pt
         self.model.save_glossary(self.gloss)
         self.message = "Set max points."
         self._advance_to_next_word()
@@ -750,7 +755,7 @@ class PracticeSession:
         if not self.solutions:
             return
         for w in self.solutions:
-            w[self.answer_lang]["pont"] = self.model.boost_pt
+            w[self.answer_lang][SCORE_PREFIX] = self.model.boost_pt
         self.model.save_glossary(self.gloss)
         self.message = f"Boosted to {self.model.boost_pt}."
         self.done = True
@@ -814,8 +819,8 @@ class PracticeSession:
         # Detail stage
         if self.detail_items and self.to_change is not None:
             detail_key, detail_solution = self.detail_items[self.detail_i]
-            ctx_q = self.cur_word[self.question_lang].get("szo", "")
-            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
+            ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
             ctx_prefix = f"{ctx_t} {ctx_q}".strip()
             detail_label = (
                 f"{ctx_prefix} · {detail_key}" if ctx_prefix else str(detail_key)
@@ -823,7 +828,7 @@ class PracticeSession:
 
             expected_str = str(detail_solution)
             if given_norm in _variants(expected_str):
-                self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
+                self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) + 1
                 self.correct_pt += 1
                 self.model.save_glossary(self.gloss)
                 self.message = "Correct detail."
@@ -849,7 +854,7 @@ class PracticeSession:
                         self.message = self.text.close_but_wrong
                         self.last_was_close = True
                         return
-                self.to_change["pont"] = int(self.to_change.get("pont", 0)) - 1
+                self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) - 1
                 self.incorrect_pt += 1
                 self.model.save_glossary(self.gloss)
                 self.message = "Incorrect detail."
@@ -871,7 +876,7 @@ class PracticeSession:
                 # If this word comes from a <showtype>: true branch (stored as <type>),
                 # then failing the FIRST detail should immediately skip the rest.
                 if self.detail_i == 0 and self.cur_word and (
-                    "<type>" in self.cur_word.get(self.answer_lang, {})
+                    TYPE_PREFIX in self.cur_word.get(self.answer_lang, {})
                 ):
                     self.detail_items = []
                     self.detail_i = 0
@@ -897,35 +902,35 @@ class PracticeSession:
         match = None
         type_mismatch = False
         for sol in self.solutions:
-            expected_word = str(sol[self.answer_lang].get("szo", ""))
+            expected_word = str(sol[self.answer_lang].get(WORD_PREFIX, ""))
             if given_norm not in _variants(expected_word):
                 continue
             # type matching like CLI
-            cur_type = self.cur_word[self.answer_lang].get("<type>")
-            sol_type = sol[self.answer_lang].get("<type>")
-            if ("<type>" not in sol[self.answer_lang]) or (sol_type == cur_type):
+            cur_type = self.cur_word[self.answer_lang].get(TYPE_PREFIX)
+            sol_type = sol[self.answer_lang].get(TYPE_PREFIX)
+            if (TYPE_PREFIX not in sol[self.answer_lang]) or (sol_type == cur_type):
                 match = sol
                 break
             type_mismatch = True
 
         if match is not None:
             self.to_change = match[self.answer_lang]
-            self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
+            self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) + 1
             self.correct_pt += 1
             self.model.save_glossary(self.gloss)
 
             self.last_word_given = text
             self.history_items = [
                 {
-                    "label": f"{self.cur_word[self.question_lang]['szo']} → {self.answer_lang}",
+                    "label": f'{self.cur_word[self.question_lang][WORD_PREFIX]} → {self.answer_lang}',
                     "given": text,
                     "expected": text,
                     "correct": True,
                 }
             ]
 
-            ctx_q = self.cur_word[self.question_lang].get("szo", "")
-            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
+            ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
             word_label = f"{ctx_t} {ctx_q}".strip()
             word_label = (
                 f"{word_label} – {self.answer_lang}"
@@ -944,7 +949,7 @@ class PracticeSession:
             self.detail_items = [
                 (k, v)
                 for k, v in self.to_change.items()
-                if k not in ("pont", "szo", "<type>")
+                if k not in (SCORE_PREFIX, WORD_PREFIX, TYPE_PREFIX)
             ]
             self.detail_i = 0
 
@@ -956,7 +961,7 @@ class PracticeSession:
 
         # Close-but-wrong word: don't penalize, don't advance.
         for sol in self.solutions:
-            expected_word = str(sol[self.answer_lang].get("szo", ""))
+            expected_word = str(sol[self.answer_lang].get(WORD_PREFIX, ""))
             for expected_norm in _variants(expected_word):
                 if self.model.similar(given_norm, expected_norm):
                     self.message = self.text.close_but_wrong
@@ -966,15 +971,15 @@ class PracticeSession:
         if type_mismatch:
             # Treat as incorrect (type mismatch) and move on.
             for sol in self.solutions:
-                sol[self.answer_lang]["pont"] = (
-                    int(sol[self.answer_lang].get("pont", 0)) - 1
+                sol[self.answer_lang][SCORE_PREFIX] = (
+                    int(sol[self.answer_lang].get(SCORE_PREFIX, 0)) - 1
                 )
             self.incorrect_pt += 1
             self.model.save_glossary(self.gloss)
             self.message = "Incorrect word (type mismatch)."
 
-            ctx_q = self.cur_word[self.question_lang].get("szo", "")
-            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
+            ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
             word_label = f"{ctx_t} {ctx_q}".strip()
             word_label = (
                 f"{word_label} → {self.answer_lang}"
@@ -993,15 +998,15 @@ class PracticeSession:
 
         # wrong (or close-but-wrong) word
         for sol in self.solutions:
-            sol[self.answer_lang]["pont"] = (
-                int(sol[self.answer_lang].get("pont", 0)) - 1
+            sol[self.answer_lang][SCORE_PREFIX] = (
+                int(sol[self.answer_lang].get(SCORE_PREFIX, 0)) - 1
             )
         self.incorrect_pt += 1
         self.model.save_glossary(self.gloss)
         self.message = "Incorrect word."
 
-        ctx_q = self.cur_word[self.question_lang].get("szo", "")
-        ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+        ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
+        ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
         word_label = f"{ctx_t} {ctx_q}".strip()
         word_label = (
             f"{word_label} – {self.answer_lang}"
