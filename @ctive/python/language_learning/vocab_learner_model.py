@@ -4,11 +4,16 @@ from dataclasses import dataclass
 from enum import Enum
 from functools import reduce
 from random import random, shuffle
+import shutil
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import json
 import os
+import re
 import sys
+import unicodedata
+
+from langtext import LangText
 
 
 class Kit(Enum):
@@ -16,22 +21,60 @@ class Kit(Enum):
 
     LATIN = "kits/kit_latin.json"
 
-    def load_config(self) -> dict:
-        try:
-            with open(self.value, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print(
-                f"ERROR: Kit file {self.value} not found. Using empty kit.",
-                file=sys.stderr,
-            )
-            return {}
-        except json.JSONDecodeError:
-            print(
-                f"ERROR: Kit file {self.value} has invalid JSON. Using empty kit.",
-                file=sys.stderr,
-            )
-            return {}
+    def load_config(
+        self,
+        *,
+        base_dir: Optional[str] = None,
+        fallback_dir: Optional[str] = None,
+        copy_to_base_dir: bool = True,
+    ) -> dict:
+        """Load kit configuration.
+
+        Preference order:
+        1) base_dir/<kit path> (user-editable)
+        2) fallback_dir/<kit path> (bundled with the app)
+
+        If we end up using the bundled copy and copy_to_base_dir is True, we try
+        to copy it into base_dir so users can edit it.
+        """
+
+        def _try_load(path: str) -> Optional[dict]:
+            if not path or not os.path.exists(path):
+                return None
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                print(
+                    f"ERROR: Kit file {path} has invalid JSON.",
+                    file=sys.stderr,
+                )
+                return None
+
+        base_path = os.path.join(base_dir, self.value) if base_dir else ""
+        fb_path = os.path.join(fallback_dir, self.value) if fallback_dir else ""
+
+        cfg = _try_load(base_path)
+        if cfg is not None:
+            return cfg
+
+        cfg = _try_load(fb_path)
+        if cfg is not None:
+            if copy_to_base_dir and base_dir and fb_path and os.path.exists(fb_path):
+                try:
+                    os.makedirs(os.path.dirname(base_path), exist_ok=True)
+                    if base_path and not os.path.exists(base_path):
+                        shutil.copy2(fb_path, base_path)
+                except Exception:
+                    # Best-effort only.
+                    pass
+            return cfg
+
+        print(
+            f"ERROR: Kit file {self.value} not found. Using empty kit.",
+            file=sys.stderr,
+        )
+        return {}
 
 
 # ----------------------
@@ -66,7 +109,9 @@ def _is_meta_key(key: str) -> bool:
     return key.startswith("<") and key.endswith(">")
 
 
-def build_prompt_tree(kit: Any, *, label: Optional[str] = None, showtype: Optional[str] = None) -> Tuple[PromptNode, ...]:
+def build_prompt_tree(
+    kit: Any, *, label: Optional[str] = None, showtype: Optional[str] = None
+) -> Tuple[PromptNode, ...]:
     """Builds a UI-friendly prompt tree from the kit definition.
 
     The returned nodes describe either:
@@ -115,7 +160,9 @@ def build_prompt_tree(kit: Any, *, label: Optional[str] = None, showtype: Option
             if opt_val is None:
                 option_children[opt] = tuple()
             else:
-                option_children[opt] = build_prompt_tree(opt_val, label=opt, showtype=opt)
+                option_children[opt] = build_prompt_tree(
+                    opt_val, label=opt, showtype=opt
+                )
 
         node = ChoiceNode(
             label=label or "choose",
@@ -133,7 +180,13 @@ def build_prompt_tree(kit: Any, *, label: Optional[str] = None, showtype: Option
     return tuple()
 
 
-def collect_prompt_data(nodes: Iterable[PromptNode], *, selections: Dict[str, str], inputs: Dict[str, str], showtype: Optional[str] = None) -> Dict[str, Any]:
+def collect_prompt_data(
+    nodes: Iterable[PromptNode],
+    *,
+    selections: Dict[str, str],
+    inputs: Dict[str, str],
+    showtype: Optional[str] = None,
+) -> Dict[str, Any]:
     """Collects user entries into the flat dict format used by word entries."""
 
     data: Dict[str, Any] = {}
@@ -146,7 +199,14 @@ def collect_prompt_data(nodes: Iterable[PromptNode], *, selections: Dict[str, st
             if node.label == "<type>" and showtype:
                 data["<type>"] = showtype
             else:
-                data.update(collect_prompt_data(node.children, selections=selections, inputs=inputs, showtype=showtype))
+                data.update(
+                    collect_prompt_data(
+                        node.children,
+                        selections=selections,
+                        inputs=inputs,
+                        showtype=showtype,
+                    )
+                )
         elif isinstance(node, ChoiceNode):
             sel = selections.get(node.label, node.default)
             # If this choice node itself stores <type>
@@ -174,10 +234,25 @@ class VocabLearnerModel:
     dead_pt = 15
     boost_pt = -10
 
-    def __init__(self, kit: Kit, *, base_dir: Optional[str] = None):
+    def __init__(
+        self,
+        kit: Kit,
+        *,
+        base_dir: Optional[str] = None,
+        app_dir: Optional[str] = None,
+    ):
+        # base_dir: where user data lives (glossaries, kit copy, settings, ...)
+        # app_dir: bundled/read-only application directory (fallback resources)
         self.base_dir = base_dir or os.getcwd()
+        self.app_dir = app_dir or os.getcwd()
 
-        self.kit = kit.load_config()
+        os.makedirs(self.base_dir, exist_ok=True)
+        self.glossary_dir = os.path.join(self.base_dir, "glossary")
+        os.makedirs(self.glossary_dir, exist_ok=True)
+
+        self._bootstrap_user_data()
+
+        self.kit = kit.load_config(base_dir=self.base_dir, fallback_dir=self.app_dir)
         self.mlang = self.get_lang("mothertongue")
         self.learnlang = self.get_lang("learninglang")
         self.languages = [self.mlang, self.learnlang]
@@ -200,20 +275,72 @@ class VocabLearnerModel:
     def _path(self, filename: str) -> str:
         return os.path.join(self.base_dir, filename)
 
+    def _glossary_path(self, gloss: str) -> str:
+        return os.path.join(self.glossary_dir, gloss + ".txt")
+
+    def _bootstrap_user_data(self) -> None:
+        """Best-effort: populate user data dir from bundled resources."""
+
+        try:
+            # Copy glossary/*.txt if the user folder is empty.
+            try:
+                has_user_gloss = any(
+                    name.lower().endswith(".txt")
+                    and os.path.isfile(os.path.join(self.glossary_dir, name))
+                    for name in os.listdir(self.glossary_dir)
+                )
+            except Exception:
+                has_user_gloss = False
+
+            bundled_gloss_dir = os.path.join(self.app_dir, "glossary")
+            if (
+                (not has_user_gloss)
+                and os.path.isdir(bundled_gloss_dir)
+                and os.path.isdir(self.glossary_dir)
+            ):
+                for name in os.listdir(bundled_gloss_dir):
+                    if not name.lower().endswith(".txt"):
+                        continue
+                    src = os.path.join(bundled_gloss_dir, name)
+                    dst = os.path.join(self.glossary_dir, name)
+                    if os.path.isfile(src) and not os.path.exists(dst):
+                        try:
+                            shutil.copy2(src, dst)
+                        except Exception:
+                            pass
+
+            # Ensure kits folder exists in user data (Kit.load_config will copy on demand).
+            os.makedirs(os.path.join(self.base_dir, "kits"), exist_ok=True)
+        except Exception:
+            # Best-effort only.
+            pass
+
     def load_all(self) -> None:
         self.load_glossaries()
         self.load_words()
 
     def load_glossaries(self) -> None:
-        path = self._path("glossaries.txt")
-        if not os.path.exists(path):
-            with open(path, "w", encoding="utf-8"):
-                pass
-        with open(path, "r", encoding="utf-8") as f:
-            self.glossaries = [line.strip() for line in f if line.strip()]
+        os.makedirs(self.glossary_dir, exist_ok=True)
+        names: List[str] = []
+        try:
+            for fname in os.listdir(self.glossary_dir):
+                if not fname.lower().endswith(".txt"):
+                    continue
+                full = os.path.join(self.glossary_dir, fname)
+                if not os.path.isfile(full):
+                    continue
+                stem, _ = os.path.splitext(fname)
+                stem = stem.strip()
+                if stem:
+                    names.append(stem)
+        except Exception:
+            names = []
+
+        names.sort(key=lambda s: s.casefold())
+        self.glossaries = names
 
     def _parse_word_file(self, gloss: str) -> List[Dict[str, Dict[str, Any]]]:
-        file_path = self._path(gloss + ".txt")
+        file_path = self._glossary_path(gloss)
         if not os.path.exists(file_path):
             with open(file_path, "w", encoding="utf-8"):
                 pass
@@ -241,7 +368,9 @@ class VocabLearnerModel:
                             continue
                         key, raw = kv[0], kv[1]
                         # numeric conversion similar to CLI behavior
-                        if raw.isnumeric() or (raw.startswith("-") and raw[1:].isnumeric()):
+                        if raw.isnumeric() or (
+                            raw.startswith("-") and raw[1:].isnumeric()
+                        ):
                             items[key] = int(raw)
                         else:
                             items[key] = raw
@@ -269,7 +398,7 @@ class VocabLearnerModel:
         self.all_words = reduce(lambda a, b: a + b, self.words.values(), [])
 
     def save_glossary(self, gloss: str) -> None:
-        file_path = self._path(gloss + ".txt")
+        file_path = self._glossary_path(gloss)
         with open(file_path, "w", encoding="utf-8") as f:
             for word in self.words.get(gloss, []):
                 f.write(
@@ -284,18 +413,25 @@ class VocabLearnerModel:
         gloss = gloss.strip()
         if not gloss:
             raise ValueError("Glossary name empty")
+        if any(sep in gloss for sep in ("/", "\\")):
+            raise ValueError("Invalid glossary name")
         if gloss in self.glossaries:
             raise ValueError("Glossary already exists")
 
-        with open(self._path("glossaries.txt"), "a", encoding="utf-8") as f:
-            f.write(gloss + "\n")
-        with open(self._path(gloss + ".txt"), "w", encoding="utf-8"):
+        os.makedirs(self.glossary_dir, exist_ok=True)
+        with open(self._glossary_path(gloss), "w", encoding="utf-8"):
             pass
         self.glossaries.append(gloss)
         self.words[gloss] = []
         self.all_words = reduce(lambda a, b: a + b, self.words.values(), [])
 
-    def find(self, word: str, lang: str, gloss: Optional[str] = None, prop: Optional[str] = None):
+    def find(
+        self,
+        word: str,
+        lang: str,
+        gloss: Optional[str] = None,
+        prop: Optional[str] = None,
+    ):
         source = self.words[gloss] if gloss is not None else self.all_words
         out = []
         for w in source:
@@ -362,20 +498,26 @@ class VocabLearnerModel:
                     break
         return score
 
-    def similar(self, s1: str, s2: str) -> bool:
-        len1, len2 = len(s1), len(s2)
-        if len2 == 0 and len1 == 0:
+    def similar(self, given: str, correct: str) -> bool:
+        len_given, len_correct = len(given), len(correct)
+        if len_given == 0 and len_correct == 0:
             return True
-        if len1 == 0 or len2 == 0:
+        if len_given == 0 or len_correct == 0:
             return False
-        score = self.similarity(s1, s2)
-        print(f"Similarity score: {score} (given length: {len1}, correct length: {len2})")
-        return max(len2 - score, len1 - score) <= 2
+        score = self.similarity(given, correct)
+        tolerance = 2
+        if len_correct == 1:
+            return len_given <= 2 and score == 1
+        if len_correct <= tolerance + 1:
+            return len_given <= len_correct + 1 and score >= len_correct - 1
+        return max(len_correct - score, len_given - score) <= tolerance
 
     def get_questionlang(self, answer_lang: str) -> str:
         return self.mlang if answer_lang == self.learnlang else self.learnlang
 
-    def get_practice_words(self, answer_lang: str, gloss: str) -> List[Dict[str, Dict[str, Any]]]:
+    def get_practice_words(
+        self, answer_lang: str, gloss: str
+    ) -> List[Dict[str, Dict[str, Any]]]:
         practice_words = list(self.words[gloss])
         for word in self.words[gloss]:
             wordscore = int(word[answer_lang].get("pont", 0))
@@ -385,7 +527,15 @@ class VocabLearnerModel:
         shuffle(practice_words)
         return practice_words
 
-    def add_word(self, gloss: str, mword: str, lword: str, *, mprops: Optional[Dict[str, Any]] = None, lprops: Optional[Dict[str, Any]] = None) -> None:
+    def add_word(
+        self,
+        gloss: str,
+        mword: str,
+        lword: str,
+        *,
+        mprops: Optional[Dict[str, Any]] = None,
+        lprops: Optional[Dict[str, Any]] = None,
+    ) -> None:
         if gloss not in self.words:
             raise ValueError("Unknown glossary")
         mprops = mprops or {}
@@ -419,11 +569,14 @@ class PracticeSession:
     UI drives it by calling `current_prompt()` and `submit(text)`.
     """
 
-    def __init__(self, model: VocabLearnerModel, *, gloss: str, answer_lang: str):
+    def __init__(
+        self, model: VocabLearnerModel, *, gloss: str, answer_lang: str, text: LangText
+    ):
         self.model = model
         self.gloss = gloss
         self.answer_lang = answer_lang
         self.question_lang = model.get_questionlang(answer_lang)
+        self.text: LangText = text
 
         self.practice_words = model.get_practice_words(answer_lang, gloss)
         self.index = 0
@@ -452,6 +605,7 @@ class PracticeSession:
         # Total history across the whole session (words + details)
         self.total_history_items: List[Dict[str, Any]] = []
         self.last_word_given: Optional[str] = None
+        self.last_was_close = False
 
         self.done = False
         self.ended_by_user = False
@@ -459,9 +613,16 @@ class PracticeSession:
 
         self._advance_to_next_word()
 
-    def _append_total_history(self, *, label: str, given: str, expected: str, correct: bool) -> None:
+    def _append_total_history(
+        self, *, label: str, given: str, expected: str, correct: bool
+    ) -> None:
         self.total_history_items.append(
-            {"label": label, "given": given, "expected": expected, "correct": bool(correct)}
+            {
+                "label": label,
+                "given": given,
+                "expected": expected,
+                "correct": bool(correct),
+            }
         )
 
     def total_history_markup(self) -> str:
@@ -479,7 +640,9 @@ class PracticeSession:
             if ok:
                 lines.append(f"{mark} {label}: {given}")
             else:
-                lines.append(f"{mark} {label}: {given}  [color=888888](Correct: {expected})[/color]")
+                lines.append(
+                    f"{mark} {label}: {given}  [color=888888](Correct: {expected})[/color]"
+                )
         return "\n".join(lines)
 
     def _advance_to_next_word(self) -> None:
@@ -497,18 +660,23 @@ class PracticeSession:
             self.index += 1
 
             # compute effective score like CLI (pont divided by detail count)
-            len_detail = len([k for k in w[self.answer_lang] if k not in ("szo", "pont", "<type>")])
+            len_detail = len(
+                [k for k in w[self.answer_lang] if k not in ("szo", "pont", "<type>")]
+            )
             wordscore = int(w[self.answer_lang].get("pont", 0)) // max(1, len_detail)
 
             if wordscore >= self.model.dead_pt:
                 continue
             if wordscore > self.model.upper_boundary and random() < (
-                (wordscore - self.model.upper_boundary) / (self.model.dead_pt - self.model.upper_boundary)
+                (wordscore - self.model.upper_boundary)
+                / (self.model.dead_pt - self.model.upper_boundary)
             ):
                 continue
 
             self.cur_word = w
-            self.solutions = self.model.find(w[self.question_lang]["szo"], self.question_lang, self.gloss)
+            self.solutions = self.model.find(
+                w[self.question_lang]["szo"], self.question_lang, self.gloss
+            )
             self.solution_words = [s[self.answer_lang]["szo"] for s in self.solutions]
             self.message = ""
             return
@@ -601,6 +769,36 @@ class PracticeSession:
             return
 
         text = (text or "").strip()
+        self.last_was_close = False
+
+        def _normalize_for_compare(s: str) -> str:
+            # Prevent false negatives from NFC/NFD differences (common on mobile keyboards)
+            # and from spacing around separators like commas.
+            s = unicodedata.normalize("NFC", s)
+            s = s.casefold()
+            s = re.sub(r"\s+", " ", s).strip()
+            s = re.sub(r"\s*([,;/])\s*", r"\1", s)
+            return s
+
+        def _variants(answer: str) -> List[str]:
+            ans = str(answer or "")
+            norm_full = _normalize_for_compare(ans)
+            out: List[str] = [norm_full]
+            # If the stored answer contains multiple alternatives separated by comma/;/,
+            # accept any individual alternative as correct.
+            parts = [p.strip() for p in re.split(r"[,;/]", ans) if p.strip()]
+            if len(parts) > 1:
+                out.extend(_normalize_for_compare(p) for p in parts)
+            # Deduplicate while preserving order
+            seen = set()
+            uniq: List[str] = []
+            for v in out:
+                if v not in seen:
+                    seen.add(v)
+                    uniq.append(v)
+            return uniq
+
+        given_norm = _normalize_for_compare(text)
 
         # handle special commands from UI if user typed them
         if text == "#":
@@ -619,9 +817,12 @@ class PracticeSession:
             ctx_q = self.cur_word[self.question_lang].get("szo", "")
             ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
             ctx_prefix = f"{ctx_t} {ctx_q}".strip()
-            detail_label = f"{ctx_prefix} · {detail_key}" if ctx_prefix else str(detail_key)
+            detail_label = (
+                f"{ctx_prefix} · {detail_key}" if ctx_prefix else str(detail_key)
+            )
 
-            if text == detail_solution:
+            expected_str = str(detail_solution)
+            if given_norm in _variants(expected_str):
                 self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
                 self.correct_pt += 1
                 self.model.save_glossary(self.gloss)
@@ -630,17 +831,24 @@ class PracticeSession:
                     {
                         "label": detail_key,
                         "given": text,
-                        "expected": detail_solution,
+                        "expected": expected_str,
                         "correct": True,
                     }
                 )
                 self._append_total_history(
                     label=detail_label,
                     given=text,
-                    expected=str(detail_solution),
+                    expected=expected_str,
                     correct=True,
                 )
             else:
+                # Close-but-wrong: don't penalize, let the user try again.
+                # This matches the legacy CLI behavior.
+                for expected_norm in _variants(expected_str):
+                    if self.model.similar(given_norm, expected_norm):
+                        self.message = self.text.close_but_wrong
+                        self.last_was_close = True
+                        return
                 self.to_change["pont"] = int(self.to_change.get("pont", 0)) - 1
                 self.incorrect_pt += 1
                 self.model.save_glossary(self.gloss)
@@ -649,16 +857,30 @@ class PracticeSession:
                     {
                         "label": detail_key,
                         "given": text,
-                        "expected": detail_solution,
+                        "expected": expected_str,
                         "correct": False,
                     }
                 )
                 self._append_total_history(
                     label=detail_label,
                     given=text,
-                    expected=str(detail_solution),
+                    expected=expected_str,
                     correct=False,
                 )
+
+                # If this word comes from a <showtype>: true branch (stored as <type>),
+                # then failing the FIRST detail should immediately skip the rest.
+                if self.detail_i == 0 and self.cur_word and (
+                    "<type>" in self.cur_word.get(self.answer_lang, {})
+                ):
+                    self.detail_items = []
+                    self.detail_i = 0
+                    self.to_change = None
+                    preserve = self.message
+                    self._advance_to_next_word()
+                    if not self.done:
+                        self.message = preserve
+                    return
 
             # next detail or next word
             if self.detail_i + 1 < len(self.detail_items):
@@ -672,44 +894,21 @@ class PracticeSession:
             return
 
         # Word stage
-        if text in self.solution_words:
-            # Find the exact solution entry to modify
-            match = None
-            for sol in self.solutions:
-                if sol[self.answer_lang]["szo"] == text:
-                    # type matching like CLI
-                    cur_type = self.cur_word[self.answer_lang].get("<type>")
-                    sol_type = sol[self.answer_lang].get("<type>")
-                    if ("<type>" not in sol[self.answer_lang]) or (sol_type == cur_type):
-                        match = sol
-                        break
+        match = None
+        type_mismatch = False
+        for sol in self.solutions:
+            expected_word = str(sol[self.answer_lang].get("szo", ""))
+            if given_norm not in _variants(expected_word):
+                continue
+            # type matching like CLI
+            cur_type = self.cur_word[self.answer_lang].get("<type>")
+            sol_type = sol[self.answer_lang].get("<type>")
+            if ("<type>" not in sol[self.answer_lang]) or (sol_type == cur_type):
+                match = sol
+                break
+            type_mismatch = True
 
-            if match is None:
-                # Treat as incorrect (type mismatch) and move on.
-                for sol in self.solutions:
-                    sol[self.answer_lang]["pont"] = int(sol[self.answer_lang].get("pont", 0)) - 1
-                self.incorrect_pt += 1
-                self.model.save_glossary(self.gloss)
-                self.message = "Incorrect word (type mismatch)."
-
-                ctx_q = self.cur_word[self.question_lang].get("szo", "")
-                ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
-                word_label = f"{ctx_t} {ctx_q}".strip()
-                word_label = (
-                    f"{word_label} → {self.answer_lang}"
-                    if word_label
-                    else f"{ctx_q} → {self.answer_lang}"
-                )
-                self._append_total_history(
-                    label=word_label,
-                    given=text,
-                    expected=", ".join(self.solution_words),
-                    correct=False,
-                )
-
-                self._advance_to_next_word()
-                return
-
+        if match is not None:
             self.to_change = match[self.answer_lang]
             self.to_change["pont"] = int(self.to_change.get("pont", 0)) + 1
             self.correct_pt += 1
@@ -728,7 +927,11 @@ class PracticeSession:
             ctx_q = self.cur_word[self.question_lang].get("szo", "")
             ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
             word_label = f"{ctx_t} {ctx_q}".strip()
-            word_label = f"{word_label} – {self.answer_lang}" if word_label else f"{ctx_q} – {self.answer_lang}"
+            word_label = (
+                f"{word_label} – {self.answer_lang}"
+                if word_label
+                else f"{ctx_q} – {self.answer_lang}"
+            )
 
             self._append_total_history(
                 label=word_label,
@@ -751,9 +954,48 @@ class PracticeSession:
                 self.message = "Correct. Enter details."
             return
 
+        # Close-but-wrong word: don't penalize, don't advance.
+        for sol in self.solutions:
+            expected_word = str(sol[self.answer_lang].get("szo", ""))
+            for expected_norm in _variants(expected_word):
+                if self.model.similar(given_norm, expected_norm):
+                    self.message = self.text.close_but_wrong
+                    self.last_was_close = True
+                    return
+
+        if type_mismatch:
+            # Treat as incorrect (type mismatch) and move on.
+            for sol in self.solutions:
+                sol[self.answer_lang]["pont"] = (
+                    int(sol[self.answer_lang].get("pont", 0)) - 1
+                )
+            self.incorrect_pt += 1
+            self.model.save_glossary(self.gloss)
+            self.message = "Incorrect word (type mismatch)."
+
+            ctx_q = self.cur_word[self.question_lang].get("szo", "")
+            ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
+            word_label = f"{ctx_t} {ctx_q}".strip()
+            word_label = (
+                f"{word_label} → {self.answer_lang}"
+                if word_label
+                else f"{ctx_q} → {self.answer_lang}"
+            )
+            self._append_total_history(
+                label=word_label,
+                given=text,
+                expected=", ".join(self.solution_words),
+                correct=False,
+            )
+
+            self._advance_to_next_word()
+            return
+
         # wrong (or close-but-wrong) word
         for sol in self.solutions:
-            sol[self.answer_lang]["pont"] = int(sol[self.answer_lang].get("pont", 0)) - 1
+            sol[self.answer_lang]["pont"] = (
+                int(sol[self.answer_lang].get("pont", 0)) - 1
+            )
         self.incorrect_pt += 1
         self.model.save_glossary(self.gloss)
         self.message = "Incorrect word."
@@ -761,7 +1003,11 @@ class PracticeSession:
         ctx_q = self.cur_word[self.question_lang].get("szo", "")
         ctx_t = str(self.cur_word[self.answer_lang].get("<type>") or "")
         word_label = f"{ctx_t} {ctx_q}".strip()
-        word_label = f"{word_label} – {self.answer_lang}" if word_label else f"{ctx_q} – {self.answer_lang}"
+        word_label = (
+            f"{word_label} – {self.answer_lang}"
+            if word_label
+            else f"{ctx_q} – {self.answer_lang}"
+        )
 
         self._append_total_history(
             label=word_label,

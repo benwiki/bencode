@@ -1,0 +1,70 @@
+szo:Aeneas ; pont:5 | szo:Aenêâs ; pont:22 ; genitive:ae ; gender:m
+szo:Troja ; pont:4 | szo:Trôia ; pont:20 ; genitive:ae ; gender:f
+szo:der Flüchtling ; pont:4 | szo:profugus ; pont:20 ; genitive:î ; gender:m
+szo:anfangs, zuerst ; pont:2 | szo:prîmô ; pont:15
+szo:nach (Wohin?) ; pont:6 | szo:in ; pont:15 ; eset:acc
+szo:Makedonien ; pont:5 | szo:Macedonia ; pont:19 ; genitive:ae ; gender:f
+szo:von dort, von da ; pont:4 | szo:inde ; pont:15 ; eset:
+szo:Sizilien ; pont:7 | szo:Sicilia ; pont:18 ; genitive:ae ; gender:f
+szo:Insel ; pont:6 | szo:însula ; pont:23 ; genitive:ae ; gender:f
+szo:von (Woher?) ; pont:4 | szo:â, ab ; pont:15 ; eset:abl
+szo:Italien ; pont:5 | szo:Italia ; pont:22 ; genitive:ae ; gender:f
+szo:segeln, fahren ; pont:5 | szo:nâvigâre ; pont:15
+szo:trojanisch ; pont:0 | szo:trôiânus ; pont:22 ; (f):trôiâna ; (n):trôiânum
+szo:der Trojaner ; pont:-1 | szo:Trôiânus ; pont:20 ; genitive:î ; gender:m
+szo:nichts ; pont:0 | szo:nihil ; pont:15
+szo:außer ; pont:-1 | szo:praeter ; pont:15 ; case(s):acc
+szo:Waffen ; pont:1 | szo:arma ; pont:13 ; genitive:ôrum ; gender:n
+szo:und ; pont:0 | szo:et ; pont:18
+szo:Schiff ; pont:0 | szo:nâvigium ; pont:17 ; genitive:î ; gender:n
+szo:sein ; pont:2 | szo:esse ; pont:43 ; <type>:verb [ind/pres] (inf) ; (1/sg):sum ; (2/sg):es ; (3/sg):est ; (1/pl):sumus ; (2/pl):estis ; (3/pl):sunt
+szo:sein ; pont:0 | szo:esse ; pont:40 ; <type>:verb [ind/impf] (inf) ; (1/sg):eram ; (2/sg):erâs ; (3/sg):erat ; (1/pl):erâmus ; (2/pl):erâtis ; (3/pl):erant
+szo:sein ; pont:0 | szo:esse ; pont:23 ; <type>:verb [ind/fut1] (inf) ; (1/sg):erô ; (2/sg):eris ; (3/sg):erit ; (1/pl):erimus ; (2/pl):eritis ; (3/pl):erunt
+szo:sein ; pont:0 | szo:esse ; pont:38 ; <type>:verb [ind/perf] (inf) ; (1/sg):fuî ; (2/sg):fuistî ; (3/sg):fuit ; (1/pl):fuimus ; (2/pl):fuistis ; (3/pl):fuêrunt
+szo:sein ; pont:0 | szo:esse ; pont:5 ; <type>:verb [ind/plpf] (inf) ; (1/sg):fueram ; (2/sg):fuerâs ; (3/sg):fuerat ; (1/pl):fuerâmus ; (2/pl):fuerâtis ; (3/pl):fuerant
+szo:sein ; pont:0 | szo:esse ; pont:19 ; <type>:verb [ind/fut2] (inf) ; (1/sg):fuerô ; (2/sg):fueris ; (3/sg):fuerit ; (1/pl):fuerimus ; (2/pl):fueritis ; (3/pl):fuerint
+szo:sein ; pont:0 | szo:esse ; pont:5 ; <type>:verb [kon/pres] (inf) ; (1/sg):sim ; (2/sg):sîs ; (3/sg):sit ; (1/pl):sîmus ; (2/pl):sîtis ; (3/pl):sint
+szo:sein ; pont:0 | szo:esse ; pont:23 ; <type>:verb [kon/impf] (inf) ; (1/sg):essem ; (2/sg):essês ; (3/sg):esset ; (1/pl):essêmus ; (2/pl):essêtis ; (3/pl):essent
+szo:sein ; pont:0 | szo:esse ; pont:11 ; <type>:verb [kon/perf] (inf) ; (1/sg):fuerim ; (2/sg):fueris ; (3/sg):fuerit ; (1/pl):fuerimus ; (2/pl):fueritis ; (3/pl):fuerint
+szo:sein ; pont:0 | szo:esse ; pont:13 ; <type>:verb [kon/plpf] (inf) ; (1/sg):fuissem ; (2/sg):fuissês ; (3/sg):fuisset ; (1/pl):fuissêmus ; (2/pl):fuissêtis ; (3/pl):fuissent
+szo:übrig sein ; pont:0 | szo:superesse ; pont:1
+szo:dann, darauf ; pont:0 | szo:tum ; pont:-4
+szo:Getreide ; pont:0 | szo:frûmentum ; pont:2 ; genitive:î ; gender:n
+szo:aus ; pont:0 | szo:ex, ê ; pont:11 ; case(s):abl
+szo:Acker, Feld ; pont:0 | szo:ager ; pont:6 ; genitive:agrî ; gender:m
+szo:Einwohner ; pont:0 | szo:incola ; pont:4 ; genitive:ae ; gender:m
+szo:rauben, fortschleppen ; pont:0 | szo:raptâre ; pont:4
+szo:daher, deshalb ; pont:0 | szo:itaque ; pont:-2
+szo:Latinus ; pont:0 | szo:Latînus ; pont:9 ; genitive:î ; gender:m
+szo:Herr ; pont:0 | szo:dominus ; pont:10 ; genitive:î ; gender:m
+szo:mit ; pont:0 | szo:cum ; pont:6 ; case(s):abl
+szo:bewaffnet ; pont:0 | szo:armâtus ; pont:6 ; (f):armâta ; (n):armâtum
+szo:der Bewaffnete ; pont:0 | szo:armâtus ; pont:5 ; genitive:î ; gender:m
+szo:sich nähern ; pont:0 | szo:appropinquâre ; pont:1
+szo:dass, damit, so dass ; pont:0 | szo:ut ; pont:4 ; case(s):konj
+szo:Fremder, Ankömmling ; pont:0 | szo:advena ; pont:3 ; genitive:ae ; gender:m
+szo:vertreiben ; pont:0 | szo:prôpulsare ; pont:-3
+szo:dieser, er ; pont:0 | szo:is ; pont:2
+szo:diese, sie ; pont:0 | szo:ea ; pont:3
+szo:dieses, es ; pont:0 | szo:id ; pont:3
+szo:vor (temporal), vor (lokal) ; pont:0 | szo:ante ; pont:1 ; case(s):acc
+szo:Kampf ; pont:0 | szo:pûgna ; pont:5 ; genitive:ae ; gender:f
+szo:zu, bei, an ; pont:0 | szo:ad ; pont:3 ; case(s):acc
+szo:Unterredung, Gespräch ; pont:0 | szo:colloquium ; pont:2 ; genitive:î ; gender:n
+szo:und ; pont:0 | szo:atque ; pont:0
+szo:rufen ; pont:0 | szo:vocâre ; pont:-2
+szo:fragen ; pont:0 | szo:interrogâre ; pont:0
+szo:wer? ; pont:0 | szo:quis? ; pont:1
+szo:woher? ; pont:0 | szo:unde? ; pont:1
+szo:wandern ; pont:0 | szo:migrâre ; pont:-1
+szo:was? ; pont:0 | szo:quid? ; pont:1
+szo:wünschen ; pont:0 | szo:optâre ; pont:1
+szo:Mädchen ; pont:0 | szo:puella ; pont:5 ; genitive:ae ; gender:f
+szo:Freund ; pont:0 | szo:amîcus ; pont:8 ; genitive:î ; gender:m
+szo:Junge ; pont:0 | szo:puer ; pont:9 ; genitive:î ; gender:m
+szo:Stadt ; pont:0 | szo:oppidum ; pont:10 ; genitive:î ; gender:n
+szo:lieben ; pont:0 | szo:amâre ; pont:2
+szo:Jahr ; pont:0 | szo:annus ; pont:5 ; genitive:î ; gender:m
+szo:Rom ; pont:0 | szo:Rôma ; pont:3 ; genitive:ae ; gender:f
+szo:Heimat, Vaterland, Vaterstadt ; pont:0 | szo:patria ; pont:4 ; genitive:ae ; gender:f
+szo:weshalb? ; pont:0 | szo:cûr? ; pont:3

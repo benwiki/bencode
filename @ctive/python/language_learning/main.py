@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import os
+from kivy.utils import platform as kivy_platform
 from typing import Any, Dict, Optional, Tuple
+
+import json
 
 # Workaround: On some Windows setups Kivy's wm_pen input provider can spam
 # "Exception ignored on calling ctypes callback function". Disabling it avoids
@@ -12,16 +15,16 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
-from kivy.properties import ObjectProperty, StringProperty  # type: ignore
+from kivy.properties import BooleanProperty, ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
-from kivy.graphics import Color, Line, Rectangle, RoundedRectangle
+from kivy.graphics import Color, Line, Rectangle, RoundedRectangle, Canvas
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
-from kivy.uix.widget import Widget
+
+from langtext import Lang, LangText
 
 from vocab_learner_model import (
     ChoiceNode,
@@ -48,6 +51,47 @@ TEXT_DARK = (0.25, 0.18, 0.16, 1)
 TEXT_MUTED = (0.55, 0.52, 0.50, 1)
 
 Window.clearcolor = PEACH_BG
+
+
+def _resolve_data_dir(*, app_dir: str) -> str:
+    """Return the directory to store user-editable data.
+
+    Desktop: use app_dir (current behavior).
+    Android: prefer external app-specific storage so users can see/edit files:
+      /storage/emulated/0/Android/data/<package>/files/language_learning
+
+    Override with env var VOCAB_DATA_DIR.
+    """
+
+    override = os.environ.get("VOCAB_DATA_DIR")
+    if override:
+        try:
+            os.makedirs(override, exist_ok=True)
+        except Exception:
+            pass
+        return override
+
+    if kivy_platform == "android":
+        try:
+            from jnius import autoclass  # type: ignore
+
+            PythonActivity = autoclass("org.kivy.android.PythonActivity")
+            # This returns something like:
+            #   /storage/emulated/0/Android/data/<package>/files
+            # and is the most reliable way to locate app-specific external storage.
+            ext_dir = PythonActivity.mActivity.getExternalFilesDir(None)
+            if ext_dir is None:
+                return app_dir
+
+            external_files = str(ext_dir.getAbsolutePath())
+            data_dir = os.path.join(external_files, "language_learning")
+            os.makedirs(data_dir, exist_ok=True)
+            return data_dir
+        except Exception:
+            # Fall back to app_dir / internal user_data_dir behavior.
+            return app_dir
+
+    return app_dir
 
 
 class RoundedButton(Button):
@@ -128,9 +172,13 @@ class OptionList(BoxLayout):
         **kwargs,
     ):
         super().__init__(orientation="vertical", spacing=dp(6), **kwargs)
+        # If a fixed height is provided, keep it. Otherwise, let the list expand
+        # to fill the remaining available space in its parent layout.
         if height:
             self.size_hint_y = None
             self.height = height
+        else:
+            self.size_hint_y = 1
         self.on_select = on_select
         self.selected = selected
 
@@ -255,9 +303,8 @@ class KitForm(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(
-            orientation="vertical", spacing=dp(6), size_hint_y=None, **kwargs
+            orientation="vertical", spacing=dp(6), **kwargs
         )
-        self.bind(minimum_height=self.setter("height"))
         self._nodes: Tuple[PromptNode, ...] = tuple()
         self.selections: Dict[str, str] = {}
         self.inputs: Dict[str, str] = {}
@@ -326,8 +373,9 @@ class KitForm(BoxLayout):
             return
 
         if isinstance(node, ChoiceNode):
-            block = BoxLayout(orientation="vertical", size_hint_y=None, spacing=dp(6))
-            block.bind(minimum_height=block.setter("height"))
+            # Let the choice block take remaining space when possible.
+            is_word_type = node.label.strip().lower() == "word type"
+            block = BoxLayout(orientation="vertical", spacing=dp(6))
 
             if node.label.strip().lower() != "word type":
                 lbl = Label(
@@ -364,14 +412,25 @@ class KitForm(BoxLayout):
             opt_list = OptionList(
                 list(node.options),
                 selected=self.selections[node.label],
-                height=dp(44) * 3,
                 on_select=on_select,
             )
-            block.add_widget(opt_list)
+            # For Word type selection: split the available space 50/50 between
+            # the option list and the dependent detail inputs (scrollable).
+            if is_word_type:
+                opt_list.size_hint_y = 1
+                children_scroll = ScrollView(do_scroll_x=False, size_hint_y=1)
+                children_scroll.add_widget(children_box)
+                block.add_widget(opt_list)
 
-            # Initial render
-            rebuild_children(self.selections[node.label])
-            block.add_widget(children_box)
+                # Initial render
+                rebuild_children(self.selections[node.label])
+                block.add_widget(children_scroll)
+            else:
+                block.add_widget(opt_list)
+
+                # Initial render
+                rebuild_children(self.selections[node.label])
+                block.add_widget(children_box)
             container.add_widget(block)
             return
 
@@ -397,12 +456,82 @@ class PracticeSetupScreen(Screen):
     error = StringProperty("")
 
 
+class SettingsScreen(Screen):
+    error = StringProperty("")
+
+
 class PracticeScreen(Screen):
     prompt = StringProperty("")
     status = StringProperty("")
     summary = StringProperty("")
 
+    menu_open = BooleanProperty(False)
+    ended = BooleanProperty(False)
+
     session: Optional[PracticeSession] = None
+
+    def go_menu(self) -> None:
+        # Keep session for resume (unless user ended with '#')
+        app = App.get_running_app()
+        try:
+            app.practice_session = self.session
+        except Exception:
+            pass
+        if self.manager is not None:
+            self.manager.current = "menu"
+
+    def toggle_menu(self) -> None:
+        self.menu_open = not self.menu_open
+
+    def _focus_input(self) -> None:
+        try:
+            Clock.schedule_once(lambda _dt: setattr(self.ids.answer_input, "focus", True), 0)  # type: ignore[attr-defined]
+        except Exception:
+            pass
+
+    def next_action(self) -> None:
+        if not self.session:
+            return
+        if self.menu_open:
+            self.menu_open = False
+
+        app = App.get_running_app()
+        ti = self.ids.answer_input  # type: ignore[attr-defined]
+        if self.session.needs_ok():
+            self.session.acknowledge_ok()
+            app._update_practice_screen(self)
+            self._focus_input()
+            return
+
+        self.session.submit(ti.text)
+        if not bool(getattr(self.session, "last_was_close", False)):
+            ti.text = ""
+        app._update_practice_screen(self)
+        self._focus_input()
+
+    def do_learned(self) -> None:
+        self.menu_open = False
+        if not self.session:
+            return
+        self.session.command_max_points()
+        App.get_running_app()._update_practice_screen(self)
+        self._focus_input()
+
+    def do_hard(self) -> None:
+        self.menu_open = False
+        if not self.session:
+            return
+        self.session.command_boost()
+        App.get_running_app()._update_practice_screen(self)
+        self._focus_input()
+
+    def do_stop(self) -> None:
+        self.menu_open = False
+        if not self.session:
+            return
+        self.session.stop()
+        App.get_running_app()._update_practice_screen(self)
+        self._focus_input()
 
 
 class VocabLearnerRoot(ScreenManager):
@@ -411,8 +540,14 @@ class VocabLearnerRoot(ScreenManager):
 
 class VocabLearnerApp(App):
     def build(self):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.model = VocabLearnerModel(Kit.LATIN, base_dir=base_dir)
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        data_dir = _resolve_data_dir(app_dir=app_dir)
+        self.data_dir = data_dir
+        self.model = VocabLearnerModel(Kit.LATIN, base_dir=data_dir, app_dir=app_dir)
+
+        self._ui_settings_path = os.path.join(data_dir, "ui_settings.json")
+        self.lang: Lang = self._load_ui_lang()
+        self.text: LangText = self.lang.text()
         self.practice_session: Optional[PracticeSession] = None
 
         root = VocabLearnerRoot()
@@ -438,9 +573,13 @@ class VocabLearnerApp(App):
         ps.add_widget(self._build_practice_setup(root, ps))
         root.add_widget(ps)
 
+        # -------- Settings
+        st = SettingsScreen(name="settings")
+        st.add_widget(self._build_settings(root, st))
+        root.add_widget(st)
+
         # -------- Practice
         pr = PracticeScreen(name="practice")
-        pr.add_widget(self._build_practice(root, pr))
         root.add_widget(pr)
 
         return root
@@ -496,6 +635,14 @@ class VocabLearnerApp(App):
             )
         )
         box.add_widget(
+            PeachButton(
+                text="Settings",
+                size_hint_y=None,
+                height=dp(48),
+                on_release=lambda *_: nav("settings"),
+            )
+        )
+        box.add_widget(
             PeachSecondaryButton(
                 text="Quit",
                 size_hint_y=None,
@@ -511,6 +658,110 @@ class VocabLearnerApp(App):
             )
         )
         return box
+
+    def _load_ui_lang(self) -> Lang:
+        try:
+            if os.path.exists(self._ui_settings_path):
+                with open(self._ui_settings_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                raw = str(data.get("lang", "")).strip()
+                if raw in Lang.__members__:
+                    return Lang[raw]
+        except Exception:
+            pass
+        return Lang.ENGLISH
+
+    def _save_ui_lang(self, lang: Lang) -> None:
+        data = {"lang": lang.name}
+        with open(self._ui_settings_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def set_ui_language(self, lang: Lang) -> None:
+        self.lang = lang
+        self.text = lang.text()
+        if self.practice_session is not None:
+            self.practice_session.text = self.text
+        self._save_ui_lang(lang)
+
+    def _build_settings(self, root: VocabLearnerRoot, screen: SettingsScreen) -> BoxLayout:
+        outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
+
+        outer.add_widget(
+            Label(
+                text="Settings",
+                size_hint_y=None,
+                height=dp(40),
+                color=TEXT_DARK,
+                font_size="22sp",
+            )
+        )
+
+        outer.add_widget(
+            Label(
+                text="UI language",
+                size_hint_y=None,
+                height=dp(22),
+                halign="left",
+                valign="middle",
+                color=TEXT_DARK,
+            )
+        )
+
+        display_to_lang: Dict[str, Lang] = {
+            "English": Lang.ENGLISH,
+            "German": Lang.GERMAN,
+            "Hungarian": Lang.HUNGARIAN,
+        }
+        lang_to_display: Dict[Lang, str] = {v: k for k, v in display_to_lang.items()}
+        selected_display = lang_to_display.get(getattr(self, "lang", Lang.ENGLISH), "English")
+
+        def on_select(value: str) -> None:
+            lang = display_to_lang.get(value, Lang.ENGLISH)
+            self.set_ui_language(lang)
+
+        opts = OptionList(
+            list(display_to_lang.keys()),
+            selected=selected_display,
+            on_select=on_select,
+        )
+        outer.add_widget(opts)
+
+        # Data directory (where glossaries/ and kits/ live)
+        data_dir = str(getattr(self, "data_dir", "") or getattr(self.model, "base_dir", ""))
+        outer.add_widget(
+            Label(
+                text="Data folder",
+                size_hint_y=None,
+                height=dp(22),
+                halign="left",
+                valign="middle",
+                color=TEXT_DARK,
+            )
+        )
+        data_ti = TextInput(
+            text=data_dir,
+            readonly=True,
+            multiline=True,
+            size_hint_y=None,
+            height=dp(48),
+            cursor_blink=False,
+            background_normal="",
+            background_active="",
+            background_color=PEACH_CARD,
+            foreground_color=TEXT_DARK,
+        )
+        outer.add_widget(data_ti)
+
+        btns = BoxLayout(
+            orientation="horizontal", size_hint_y=None, height=dp(48), spacing=dp(10)
+        )
+        btns.add_widget(
+            PeachSecondaryButton(
+                text="Back", on_release=lambda *_: setattr(root, "current", "menu")
+            )
+        )
+        outer.add_widget(btns)
+        return outer
 
     def _build_add_glossary(
         self, root: VocabLearnerRoot, screen: AddGlossaryScreen
@@ -598,7 +849,6 @@ class VocabLearnerApp(App):
         gloss_options = OptionList(
             list(self.model.glossaries),
             selected=selected_glossary,
-            height=dp(44) * 3,
             on_select=on_glossary_select,
         )
 
@@ -639,39 +889,57 @@ class VocabLearnerApp(App):
         )
         word_type_label.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
 
-        # Kit-driven fields (scrollable): includes the word type selector and its dependent fields
-        kit_scroll = ScrollView()
+        # Kit-driven fields: the OptionList widgets inside are already scrollable,
+        # so avoid wrapping the whole form in another ScrollView.
         kit_form = KitForm()
         kit_form.set_nodes(self.model.learninglang_prompt_tree())
-        kit_scroll.add_widget(kit_form)
 
         right.add_widget(word_type_label)
-        right.add_widget(kit_scroll)
+        right.add_widget(kit_form)
+
+        def _apply_responsive_layout(*_):
+            # During orientation changes, Android can fire multiple rapid size events.
+            # Guard against transient widget-tree states and avoid hard-crashing.
+            try:
+                # When rebuilding, left/right may still be attached to an old container
+                # that was removed from `main`. Detach them first to avoid
+                # "Widget already has a parent" and leaving `main` empty.
+                for w in (left, right):
+                    try:
+                        if w.parent is not None:
+                            w.parent.remove_widget(w)
+                    except Exception:
+                        pass
+
+                is_landscape = Window.width > Window.height
+                main.clear_widgets()
+                if is_landscape:
+                    row = BoxLayout(orientation="horizontal", spacing=dp(10))
+                    left.size_hint = (0.55, 1)
+                    right.size_hint = (0.45, 1)
+                    row.add_widget(left)
+                    row.add_widget(right)
+                    main.add_widget(row)
+                else:
+                    col = BoxLayout(orientation="vertical", spacing=dp(10))
+                    left.size_hint = (1, 0.50)
+                    right.size_hint = (1, 0.50)
+                    col.add_widget(left)
+                    col.add_widget(right)
+                    main.add_widget(col)
+            except Exception:
+                return
+
+        _layout_trigger = Clock.create_trigger(_apply_responsive_layout, 0)
 
         def rebuild_layout(*_):
-            # Landscape if width > height
-            is_landscape = Window.width > Window.height
-            main.clear_widgets()
-            if is_landscape:
-                row = BoxLayout(orientation="horizontal", spacing=dp(10))
-                left.size_hint = (0.55, 1)
-                right.size_hint = (0.45, 1)
-                row.add_widget(left)
-                row.add_widget(right)
-                main.add_widget(row)
-            else:
-                col = BoxLayout(orientation="vertical", spacing=dp(10))
-                left.size_hint = (1, 0.55)
-                right.size_hint = (1, 0.45)
-                col.add_widget(left)
-                col.add_widget(right)
-                main.add_widget(col)
+            _layout_trigger()
 
         try:
             Window.bind(size=rebuild_layout)
         except Exception:
             pass
-        rebuild_layout()
+        _layout_trigger()
 
         status = Label(text="", size_hint_y=None, height=dp(24), color=TEXT_DARK)
         outer.add_widget(status)
@@ -773,13 +1041,11 @@ class VocabLearnerApp(App):
         gloss_options = OptionList(
             list(self.model.glossaries),
             selected=selected_glossary,
-            height=dp(44) * 3,
             on_select=on_glossary_select,
         )
         lang_options = OptionList(
             [self.model.mlang, self.model.learnlang],
             selected=selected_lang,
-            height=dp(44) * 2,
             on_select=on_lang_select,
         )
 
@@ -811,50 +1077,50 @@ class VocabLearnerApp(App):
         lang_col.add_widget(lang_label)
         lang_col.add_widget(lang_options)
 
-        sep_h = Widget(size_hint_y=None, height=dp(1))
-        sep_v = Widget(size_hint_x=None, width=dp(1))
-
-        def _sep_bg(widget: Widget):
-            def _draw(_inst, _val):
-                widget.canvas.before.clear()
-                with widget.canvas.before:
-                    Color(*TEXT_MUTED)
-                    Rectangle(pos=widget.pos, size=widget.size)
-
-            widget.bind(pos=_draw, size=_draw)
-            _draw(None, None)
-
-        _sep_bg(sep_h)
-        _sep_bg(sep_v)
-
         selectors = BoxLayout(orientation="vertical", spacing=dp(8))
         top.add_widget(selectors)
 
+        def _apply_responsive_selectors(*_):
+            try:
+                # Same reparenting issue as Add Word: detach before moving between
+                # the portrait/landscape containers.
+                for w in (gloss_col, lang_col):
+                    try:
+                        if w.parent is not None:
+                            w.parent.remove_widget(w)
+                    except Exception:
+                        pass
+
+                is_landscape = Window.width > Window.height
+                selectors.clear_widgets()
+                if is_landscape:
+                    row = BoxLayout(orientation="horizontal", spacing=dp(10))
+                    gloss_col.size_hint = (0.6, 1)
+                    lang_col.size_hint = (0.4, 1)
+                    row.add_widget(gloss_col)
+                    row.add_widget(lang_col)
+                    selectors.add_widget(row)
+                else:
+                    col = BoxLayout(orientation="vertical", spacing=dp(10))
+                    # In portrait, let option lists expand to take remaining space.
+                    gloss_col.size_hint = (1, 0.6)
+                    lang_col.size_hint = (1, 0.4)
+                    col.add_widget(gloss_col)
+                    col.add_widget(lang_col)
+                    selectors.add_widget(col)
+            except Exception:
+                return
+
+        _selectors_trigger = Clock.create_trigger(_apply_responsive_selectors, 0)
+
         def rebuild_selectors(*_):
-            is_landscape = Window.width > Window.height
-            selectors.clear_widgets()
-            if is_landscape:
-                row = BoxLayout(orientation="horizontal", spacing=dp(10))
-                gloss_col.size_hint = (0.55, 1)
-                lang_col.size_hint = (0.45, 1)
-                row.add_widget(gloss_col)
-                row.add_widget(sep_v)
-                row.add_widget(lang_col)
-                selectors.add_widget(row)
-            else:
-                col = BoxLayout(orientation="vertical", spacing=dp(10))
-                gloss_col.size_hint = (1, None)
-                lang_col.size_hint = (1, None)
-                col.add_widget(gloss_col)
-                col.add_widget(sep_h)
-                col.add_widget(lang_col)
-                selectors.add_widget(col)
+            _selectors_trigger()
 
         try:
             Window.bind(size=rebuild_selectors)
         except Exception:
             pass
-        rebuild_selectors()
+        _selectors_trigger()
         outer.add_widget(top)
 
         status = Label(text="", size_hint_y=None, height=dp(24), color=TEXT_DARK)
@@ -896,7 +1162,7 @@ class VocabLearnerApp(App):
 
             pr_screen: PracticeScreen = root.get_screen("practice")  # type: ignore
             self.practice_session = PracticeSession(
-                self.model, gloss=gloss, answer_lang=answer_lang
+                self.model, gloss=gloss, answer_lang=answer_lang, text=self.text
             )
             pr_screen.session = self.practice_session
             self._update_practice_screen(pr_screen)
@@ -912,236 +1178,6 @@ class VocabLearnerApp(App):
 
         return outer
 
-    def _build_practice(self, root: VocabLearnerRoot, screen: PracticeScreen) -> BoxLayout:
-        outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
-
-        # Top bar: Return to menu
-        topbar = BoxLayout(
-            orientation="horizontal", size_hint_y=None, height=dp(48), spacing=dp(0)
-        )
-        back_icon = BackArrowSquare(size_hint_x=None, width=dp(52))
-        back_btn = PeachButton(text="Return to menu", size_hint_x=1)
-        topbar.add_widget(back_icon)
-        topbar.add_widget(back_btn)
-        outer.add_widget(topbar)
-
-        # Upper half: total history (at the bottom) on PEACH_CARD background
-        upper = BoxLayout(orientation="vertical", size_hint_y=0.50, spacing=dp(6))
-
-        def _upper_bg(_inst, _val):
-            upper.canvas.before.clear()
-            with upper.canvas.before:
-                Color(*PEACH_CARD)
-                Rectangle(pos=upper.pos, size=upper.size)
-
-        upper.bind(pos=_upper_bg, size=_upper_bg)
-        _upper_bg(None, None)
-
-        upper.add_widget(Widget(size_hint_y=0.25))
-
-        total_history_scroll = ScrollView(size_hint_y=0.75)
-        total_history = Label(
-            text="",
-            markup=True,
-            size_hint_y=None,
-            halign="left",
-            valign="top",
-            color=TEXT_DARK,
-        )
-        total_history.bind(size=lambda inst, _: setattr(inst, "text_size", (inst.width, None)))
-        total_history.bind(texture_size=lambda inst, val: setattr(inst, "height", max(val[1], dp(10))))
-        total_history_scroll.add_widget(total_history)
-        upper.add_widget(total_history_scroll)
-        outer.add_widget(upper)
-
-        # Separator line between halves
-        sep = BoxLayout(size_hint_y=None, height=dp(1))
-
-        def _sep_bg(_inst, _val):
-            sep.canvas.before.clear()
-            with sep.canvas.before:
-                Color(*TEXT_MUTED)
-                Rectangle(pos=sep.pos, size=sep.size)
-
-        sep.bind(pos=_sep_bg, size=_sep_bg)
-        _sep_bg(None, None)
-        outer.add_widget(sep)
-
-        # Lower half: status/summary + type/word/prompt/input (directly above buttons) + controls
-        status_lbl = Label(
-            text="",
-            size_hint_y=None,
-            height=dp(24),
-            halign="left",
-            valign="middle",
-            color=TEXT_DARK,
-        )
-        status_lbl.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
-        summary_lbl = Label(
-            text="",
-            size_hint_y=None,
-            height=dp(24),
-            halign="left",
-            valign="top",
-            color=TEXT_DARK,
-        )
-        summary_lbl.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
-        summary_lbl.bind(texture_size=lambda inst, val: setattr(inst, "height", max(val[1], 0)))
-        outer.add_widget(status_lbl)
-        outer.add_widget(summary_lbl)
-
-        type_lbl = Label(
-            text="",
-            size_hint_y=None,
-            height=dp(22),
-            halign="left",
-            valign="middle",
-            color=TEXT_MUTED,
-        )
-        type_lbl.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
-
-        word_lbl = Label(
-            text="",
-            size_hint_y=None,
-            height=dp(48),
-            halign="left",
-            valign="middle",
-            color=TEXT_DARK,
-            font_size="22sp",
-        )
-        word_lbl.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
-
-        prompt_lbl = Label(
-            text="",
-            size_hint_y=None,
-            height=dp(30),
-            halign="left",
-            valign="middle",
-            color=TEXT_DARK,
-            font_size="16sp",
-        )
-        prompt_lbl.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
-
-        ti = TextInput(multiline=False, size_hint_y=None, height=dp(44))
-
-        outer.add_widget(type_lbl)
-        outer.add_widget(word_lbl)
-        outer.add_widget(prompt_lbl)
-        outer.add_widget(ti)
-
-        # Bottom controls: hamburger + NEXT, with a drop-up menu overlay
-        menu_open = {"open": False}
-
-        bar_h = dp(52)
-        menu_h = dp(44)
-        menu_gap = dp(6)
-
-        bottom = BoxLayout(orientation="vertical", size_hint_y=None, height=bar_h, spacing=0)
-
-        bar = BoxLayout(orientation="horizontal", size_hint_y=None, height=bar_h, spacing=menu_gap)
-        menu_btn = HamburgerSquare(size_hint=(None, None), width=dp(52), height=bar_h)
-        next_btn = PeachButton(text="NEXT", size_hint_y=None, height=bar_h)
-        bar.add_widget(menu_btn)
-        bar.add_widget(next_btn)
-
-        menu_box = BoxLayout(
-            orientation="horizontal",
-            size_hint=(1, None),
-            height=0,
-            spacing=dp(6),
-            opacity=0,
-            disabled=True,
-        )
-
-        learned_btn = PeachButton(text="learned")
-        hard_btn = PeachButton(text="hard")
-        stop_btn = PeachButton(text="stop")
-        menu_box.add_widget(learned_btn)
-        menu_box.add_widget(hard_btn)
-        menu_box.add_widget(stop_btn)
-        bottom.add_widget(menu_box)
-
-        bottom.add_widget(bar)
-
-        def set_menu(open_: bool) -> None:
-            menu_open["open"] = open_
-            menu_box.opacity = 1 if open_ else 0
-            menu_box.disabled = not open_
-            menu_box.height = menu_h if open_ else 0
-            bottom.spacing = menu_gap if open_ else 0
-            bottom.height = (bar_h + menu_gap + menu_h) if open_ else bar_h
-
-        def toggle_menu(_):
-            set_menu(not menu_open["open"])
-
-        def go_menu(_):
-            # Keep session for resume (unless user ended with '#')
-            self.practice_session = screen.session
-            root.current = "menu"
-
-        def next_action(_):
-            if not screen.session:
-                return
-            if menu_open["open"]:
-                set_menu(False)
-            if screen.session.needs_ok():
-                screen.session.acknowledge_ok()
-                self._update_practice_screen(screen)
-                Clock.schedule_once(lambda _dt: setattr(ti, "focus", True), 0)
-                return
-            screen.session.submit(ti.text)
-            ti.text = ""
-            self._update_practice_screen(screen)
-            Clock.schedule_once(lambda _dt: setattr(ti, "focus", True), 0)
-
-        def do_learned(_):
-            set_menu(False)
-            if not screen.session:
-                return
-            screen.session.command_max_points()
-            self._update_practice_screen(screen)
-            Clock.schedule_once(lambda _dt: setattr(ti, "focus", True), 0)
-
-        def do_hard(_):
-            set_menu(False)
-            if not screen.session:
-                return
-            screen.session.command_boost()
-            self._update_practice_screen(screen)
-            Clock.schedule_once(lambda _dt: setattr(ti, "focus", True), 0)
-
-        def do_stop(_):
-            set_menu(False)
-            if not screen.session:
-                return
-            screen.session.stop()
-            self._update_practice_screen(screen)
-            Clock.schedule_once(lambda _dt: setattr(ti, "focus", True), 0)
-
-        back_icon.bind(on_release=go_menu)
-        back_btn.bind(on_release=go_menu)
-        next_btn.bind(on_release=next_action)
-        menu_btn.bind(on_release=toggle_menu)
-        learned_btn.bind(on_release=do_learned)
-        hard_btn.bind(on_release=do_hard)
-        stop_btn.bind(on_release=do_stop)
-
-        outer.add_widget(bottom)
-
-        # Keep references for updating
-        screen._type_lbl = type_lbl  # type: ignore[attr-defined]
-        screen._word_lbl = word_lbl  # type: ignore[attr-defined]
-        screen._prompt_lbl = prompt_lbl  # type: ignore[attr-defined]
-        screen._status_lbl = status_lbl  # type: ignore[attr-defined]
-        screen._summary_lbl = summary_lbl  # type: ignore[attr-defined]
-        screen._history_lbl = total_history  # type: ignore[attr-defined]
-        screen._ti = ti  # type: ignore[attr-defined]
-        screen._bottom = bottom  # type: ignore[attr-defined]
-
-        # Enter triggers NEXT
-        ti.bind(on_text_validate=next_action)
-        return outer
-
     def _update_practice_screen(self, screen: PracticeScreen) -> None:
         if not screen.session:
             return
@@ -1150,89 +1186,63 @@ class VocabLearnerApp(App):
 
         # Keep type + main word visible even during details
         t = screen.session.current_type()
-        screen._type_lbl.text = t  # type: ignore[attr-defined]
-        screen._word_lbl.text = screen.session.cur_word[screen.session.question_lang]["szo"] if screen.session.cur_word else ""  # type: ignore[attr-defined]
+        screen.ids.type_lbl.text = t  # type: ignore[attr-defined]
+        screen.ids.word_lbl.text = (
+            screen.session.cur_word[screen.session.question_lang]["szo"]
+            if screen.session.cur_word
+            else ""
+        )  # type: ignore[attr-defined]
 
         # Prompt label (what are we entering right now?)
         if kind == "word":
-            screen._prompt_lbl.text = f"Enter {screen.session.answer_lang} translation"  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = f"Enter {screen.session.answer_lang} translation"  # type: ignore[attr-defined]
         elif kind == "detail":
-            screen._prompt_lbl.text = f"{text}"  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = f"{text}"  # type: ignore[attr-defined]
         else:
-            screen._prompt_lbl.text = text  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = text  # type: ignore[attr-defined]
 
         # Total history (session-wide) for the upper half
         hist = screen.session.total_history_markup()
-        screen._history_lbl.text = hist  # type: ignore[attr-defined]
-
-        # Default: hide score line during normal practice.
-        screen._summary_lbl.text = ""  # type: ignore[attr-defined]
-        screen._summary_lbl.opacity = 0  # type: ignore[attr-defined]
-        screen._summary_lbl.height = 0  # type: ignore[attr-defined]
-
-        # If user stopped practice: hide lower controls and show only the score.
-        if getattr(screen.session, "ended_by_user", False):
-            total = int(screen.session.correct_pt + screen.session.incorrect_pt)
-            pct = 0.0 if total == 0 else (screen.session.correct_pt / total) * 100.0
-
-            screen._status_lbl.text = ""  # type: ignore[attr-defined]
-            screen._status_lbl.opacity = 0  # type: ignore[attr-defined]
-            screen._status_lbl.height = 0  # type: ignore[attr-defined]
-
-            screen._type_lbl.text = ""  # type: ignore[attr-defined]
-            screen._type_lbl.opacity = 0  # type: ignore[attr-defined]
-            screen._type_lbl.height = 0  # type: ignore[attr-defined]
-
-            screen._word_lbl.text = ""  # type: ignore[attr-defined]
-            screen._word_lbl.opacity = 0  # type: ignore[attr-defined]
-            screen._word_lbl.height = 0  # type: ignore[attr-defined]
-
-            screen._prompt_lbl.text = ""  # type: ignore[attr-defined]
-            screen._prompt_lbl.opacity = 0  # type: ignore[attr-defined]
-            screen._prompt_lbl.height = 0  # type: ignore[attr-defined]
-
-            screen._ti.text = ""  # type: ignore[attr-defined]
-            screen._ti.disabled = True  # type: ignore[attr-defined]
-            screen._ti.opacity = 0  # type: ignore[attr-defined]
-            screen._ti.height = 0  # type: ignore[attr-defined]
-
+        # If the user hasn't scrolled up, keep the view anchored to the bottom
+        # so the latest entry is always visible.
+        keep_bottom = True
+        try:
+            keep_bottom = float(screen.ids.history_scroll.scroll_y) <= 0.02  # type: ignore[attr-defined]
+        except Exception:
+            keep_bottom = True
+        screen.ids.history_lbl.text = hist  # type: ignore[attr-defined]
+        if keep_bottom:
             try:
-                screen._bottom.disabled = True  # type: ignore[attr-defined]
-                screen._bottom.opacity = 0  # type: ignore[attr-defined]
-                screen._bottom.height = 0  # type: ignore[attr-defined]
+                Clock.schedule_once(
+                    lambda _dt: setattr(screen.ids.history_scroll, "scroll_y", 0), 0  # type: ignore[attr-defined]
+                )
             except Exception:
                 pass
 
-            screen._summary_lbl.text = (
+        ended = bool(getattr(screen.session, "ended_by_user", False))
+        screen.ended = ended
+
+        # If user stopped practice: show only the score panel.
+        if ended:
+            screen.menu_open = False
+            total = int(screen.session.correct_pt + screen.session.incorrect_pt)
+            pct = 0.0 if total == 0 else (screen.session.correct_pt / total) * 100.0
+
+            screen.ids.summary_lbl.text = (
                 f"Correct: {screen.session.correct_pt}\n"
                 f"Incorrect: {screen.session.incorrect_pt}\n"
                 f"{pct:.2f}%"
             )  # type: ignore[attr-defined]
-            screen._summary_lbl.opacity = 1  # type: ignore[attr-defined]
-            # height will auto-adjust via texture_size binding
             return
 
         # Normal status display
-        screen._ti.disabled = False  # type: ignore[attr-defined]
-        screen._ti.opacity = 1  # type: ignore[attr-defined]
-        if float(getattr(screen._ti, "height", 0)) == 0:
-            screen._ti.height = dp(44)  # type: ignore[attr-defined]
+        screen.ids.status_lbl.text = screen.session.message  # type: ignore[attr-defined]
 
-        try:
-            screen._bottom.disabled = False  # type: ignore[attr-defined]
-            screen._bottom.opacity = 1  # type: ignore[attr-defined]
-            if float(getattr(screen._bottom, "height", 0)) == 0:
-                screen._bottom.height = dp(52)  # type: ignore[attr-defined]
-        except Exception:
-            pass
-
-        screen._status_lbl.text = screen.session.message  # type: ignore[attr-defined]
-        screen._status_lbl.opacity = 1  # type: ignore[attr-defined]
-        if float(getattr(screen._status_lbl, "height", 0)) == 0:
-            screen._status_lbl.height = dp(24)  # type: ignore[attr-defined]
         # Auto-focus input whenever we render a prompt
         try:
-            Clock.schedule_once(lambda _dt: setattr(screen._ti, "focus", True), 0)  # type: ignore[attr-defined]
+            Clock.schedule_once(
+                lambda _dt: setattr(screen.ids.answer_input, "focus", True), 0  # type: ignore[attr-defined]
+            )
         except Exception:
             pass
 

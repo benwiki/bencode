@@ -1,0 +1,446 @@
+building 'kivy.core.window._window_sdl2' extension
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf -I/usr/include/SDL2 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/opus -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/libinstpatch-2 -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/Include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build -c /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/window/_window_sdl2.c -o build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/window/_window_sdl2.o
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/window/_window_sdl2.c:19:
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include/Python.h:23:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/local/include/stdlib.h:31:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:32:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/alloca.h:36:
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:64:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:78:10: error: function-like macro '__GNUC_PREREQ' is not defined
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
+         ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:84:31: error: function-like macro '__GNUC_PREREQ' is not defined
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+                              ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:101:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 3) || __glibc_has_attribute (__cold__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:153:34: error: function-like macro '__glibc_clang_prereq' is not defined
+#if __USE_FORTIFY_LEVEL == 3 && (__glibc_clang_prereq (9, 0)                  \
+                                 ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:211:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:297:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:305:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:314:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:324:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:331:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:337:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,7) || __glibc_has_attribute (__unused__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:346:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,1) || __glibc_has_attribute (__used__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:355:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:364:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/graphics/boxshadow.o -o build/lib.linux-x86_64-3.11/kivy/graphics/boxshadow.cpython-311-x86_64-linux-gnu.so -lm
+20 errors generated.
+building 'kivy.core.image._img_sdl2' extension
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf -I/usr/include/SDL2 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/opus -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/libinstpatch-2 -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/Include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build -c /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/image/_img_sdl2.c -o build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/image/_img_sdl2.o
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/image/_img_sdl2.c:19:
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include/Python.h:23:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/local/include/stdlib.h:31:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:32:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/alloca.h:36:
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:64:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:78:10: error: function-like macro '__GNUC_PREREQ' is not defined
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
+         ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:84:31: error: function-like macro '__GNUC_PREREQ' is not defined
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+                              ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:101:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 3) || __glibc_has_attribute (__cold__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:153:34: error: function-like macro '__glibc_clang_prereq' is not defined
+#if __USE_FORTIFY_LEVEL == 3 && (__glibc_clang_prereq (9, 0)                  \
+                                 ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:211:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:297:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:305:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:314:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:324:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:331:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:337:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,7) || __glibc_has_attribute (__unused__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:346:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,1) || __glibc_has_attribute (__used__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:355:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:364:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+building 'kivy.core.text._text_sdl2' extension
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf -I/usr/include/SDL2 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/opus -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/libinstpatch-2 -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/Include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build -c /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/text/_text_sdl2.c -o build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/text/_text_sdl2.o
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/text/_text_sdl2.c:19:
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include/Python.h:23:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/local/include/stdlib.h:31:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:32:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/alloca.h:36:
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:64:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:78:10: error: function-like macro '__GNUC_PREREQ' is not defined
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
+         ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:84:31: error: function-like macro '__GNUC_PREREQ' is not defined
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+                              ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:101:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 3) || __glibc_has_attribute (__cold__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:153:34: error: function-like macro '__glibc_clang_prereq' is not defined
+#if __USE_FORTIFY_LEVEL == 3 && (__glibc_clang_prereq (9, 0)                  \
+                                 ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:211:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:297:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:305:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:314:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:324:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:331:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:337:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,7) || __glibc_has_attribute (__unused__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:346:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,1) || __glibc_has_attribute (__used__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:355:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:364:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+building 'kivy.core.audio.audio_sdl2' extension
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf -I/usr/include/SDL2 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/opus -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/libinstpatch-2 -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/Include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build -c /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/audio/audio_sdl2.c -o build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/audio/audio_sdl2.o
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/audio/audio_sdl2.c:19:
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include/Python.h:23:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/local/include/stdlib.h:31:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:32:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/alloca.h:36:
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:64:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:78:10: error: function-like macro '__GNUC_PREREQ' is not defined
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
+         ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:84:31: error: function-like macro '__GNUC_PREREQ' is not defined
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+                              ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:101:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 3) || __glibc_has_attribute (__cold__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:153:34: error: function-like macro '__glibc_clang_prereq' is not defined
+#if __USE_FORTIFY_LEVEL == 3 && (__glibc_clang_prereq (9, 0)                  \
+                                 ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:211:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:297:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:305:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:314:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:324:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:331:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:337:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,7) || __glibc_has_attribute (__unused__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:346:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,1) || __glibc_has_attribute (__used__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:355:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:364:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+building 'kivy.core.clipboard._clipboard_sdl2' extension
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf -I/usr/include/SDL2 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/opus -I/usr/include/pipewire-0.3 -I/usr/include/spa-0.2 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -I/usr/include/libinstpatch-2 -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/Include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build -c /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/clipboard/_clipboard_sdl2.c -o build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/clipboard/_clipboard_sdl2.o
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/core/clipboard/_clipboard_sdl2.c:19:
+In file included from /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include/Python.h:23:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/../sysroot/usr/local/include/stdlib.h:31:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/stdlib.h:32:
+In file included from /home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include/alloca.h:36:
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:64:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 6) && !defined _LIBC
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:78:10: error: function-like macro '__GNUC_PREREQ' is not defined
+     && (__GNUC_PREREQ (3, 4) || __glibc_has_attribute (__nothrow__))
+         ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:84:31: error: function-like macro '__GNUC_PREREQ' is not defined
+#  if defined __cplusplus && (__GNUC_PREREQ (2,8) || __clang_major__ >= 4)
+                              ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:101:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 3) || __glibc_has_attribute (__cold__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:153:34: error: function-like macro '__glibc_clang_prereq' is not defined
+#if __USE_FORTIFY_LEVEL == 3 && (__glibc_clang_prereq (9, 0)                  \
+                                 ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:211:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:297:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__malloc__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:305:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 3)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:314:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__alloc_align__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:324:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,96) || __glibc_has_attribute (__pure__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:331:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,5) || __glibc_has_attribute (__const__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:337:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,7) || __glibc_has_attribute (__unused__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:346:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,1) || __glibc_has_attribute (__used__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:355:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (3,2) || __glibc_has_attribute (__deprecated__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:364:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+20 errors generated.
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/graphics/vertex_instructions.o -o build/lib.linux-x86_64-3.11/kivy/graphics/vertex_instructions.cpython-311-x86_64-linux-gnu.so -lm
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/graphics/svg.o -o build/lib.linux-x86_64-3.11/kivy/graphics/svg.cpython-311-x86_64-linux-gnu.so -lm 
+ error: command '/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang' failed with exit code 1
+
+
+  STDERR:
+
+[INFO]:    STDOUT (last 20 lines of 565):
+        #if __GNUC_PREREQ (4,5) \
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:378:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,8) || __glibc_has_attribute (__format_arg__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:388:5: error: function-like macro '__GNUC_PREREQ' is not defined
+#if __GNUC_PREREQ (2,97) || __glibc_has_attribute (__format__)
+    ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:400:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (3,3) || __glibc_has_attribute (__nonnull__)
+     ^
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:413:6: error: function-like macro '__GNUC_PREREQ' is not defined
+# if __GNUC_PREREQ (4, 9) || __glibc_has_attribute (__returns_nonnull__)
+     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+20 errors generated.
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/graphics/vertex_instructions.o -o build/lib.linux-x86_64-3.11/kivy/graphics/vertex_instructions.cpython-311-x86_64-linux-gnu.so -lm
+/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include -DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1 build/temp.linux-x86_64-3.11/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy/kivy/graphics/svg.o -o build/lib.linux-x86_64-3.11/kivy/graphics/svg.cpython-311-x86_64-linux-gnu.so -lm 
+ error: command '/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang' failed with exit code 1
+[INFO]:    STDERR:
+
+[INFO]:    ENV:
+export HOME='/home/benkehargitai'
+export CFLAGS='-target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/Include'
+export CXXFLAGS='-target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC'
+export CPPFLAGS='-DANDROID -I/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include -I/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/python-installs/vocab_learner/armeabi-v7a/include/python3.1'
+export LDFLAGS='  -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/python3/armeabi-v7a__ndk_target_21/python3/android-build -lpython3.11 -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner/armeabi-v7a -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/libs_collections/vocab_learner  -L/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/obj/local/armeabi-v7a '
+export LDLIBS='-lm'
+export PATH='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin:/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b:/home/benkehargitai/.buildozer/android/platform/android-sdk/tools:/home/benkehargitai/.buildozer/android/platform/apache-ant-1.9.4/bin:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/BenkeHargitai/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand:/mnt/c/Users/BenkeHargitai/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/BenkeHargitai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/BenkeHargitai/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/BenkeHargitai/AppData/Local/Python/bin:/mnt/c/Users/BenkeHargitai/software/flutter/bin:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/batch:/mnt/c/Users/BenkeHargitai/AppData/Local/PowerToys/DSCModules/:/snap/bin:/home/benkehargitai/.local/bin'   
+export CC='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC'
+export CXX='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC'
+export AR='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
+export RANLIB='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib'
+export STRIP='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-unneeded'
+export READELF='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf'
+export OBJCOPY='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy'
+export MAKE='make -j12'
+export ARCH='armeabi-v7a'
+export NDK_API='android-21'
+export LDSHARED='/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -target armv7a-linux-androideabi21 -fomit-frame-pointer -march=armv7-a -mfloat-abi=softfp -mfpu=vfp -mthumb -fPIC -shared'
+export BUILDLIB_PATH='/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/build/lib.linux-x86_64-3.11'
+export PYTHONNOUSERSITE='1'
+export LANG='en_GB.UTF-8'
+export PYTHONPATH='/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/Lib:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/Lib/site-packages:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/build/lib.linux-x86_64-3.11:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/build/scripts-3.11:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/build/temp.linux-x86_64-3.11'
+export LIBLINK='NOTNONE'
+export COPYLIBS='1'
+export LIBLINK_PATH='/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/objects_kivy'
+export NDKPLATFORM='NOTNONE'
+export USE_SDL2='1'
+export KIVY_SPLIT_EXAMPLES='1'
+export KIVY_SDL2_PATH='/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL/include:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_image/include:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_mixer/include:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/bootstrap_builds/sdl2/jni/SDL2_ttf'
+
+[INFO]:    COMMAND:
+cd /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/kivy/armeabi-v7a__ndk_target_21/kivy && /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/python3 setup.py build_ext -v
+
+[WARNING]: ERROR: /mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a/build/other_builds/hostpython3/desktop/hostpython3/native-build/python3 failed!
+
+
+
+# Command failed: ['/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.venv/bin/python3.12', '-m', 'pythonforandroid.toolchain', 'create', '--dist_name=vocab_learner', '--bootstrap=sdl2', '--requirements=python3,kivy', '--arch=arm64-v8a', '--arch=armeabi-v7a', '--copy-libs', '--color=always', '--storage-dir=/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.buildozer/android/platform/build-arm64-v8a_armeabi-v7a', '--ndk-api=21', '--ignore-setup-py', '--debug']
+# ENVIRONMENT:
+#     SHELL = '/bin/bash'
+#     WSL2_GUI_APPS_ENABLED = '1'
+#     WSL_DISTRO_NAME = 'Ubuntu'
+#     NAME = 'AMNB44'
+#     PWD = '/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning'
+#     LOGNAME = 'benkehargitai'
+#     MOTD_SHOWN = 'update-motd'
+#     HOME = '/home/benkehargitai'
+#     LANG = 'C.UTF-8'
+#     WSL_INTEROP = '/run/WSL/344_interop'
+#     LS_COLORS = 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:'
+#     VIRTUAL_ENV = '/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.venv'  
+#     WAYLAND_DISPLAY = 'wayland-0'
+#     LESSCLOSE = '/usr/bin/lesspipe %s %s'
+#     TERM = 'xterm-256color'
+#     LESSOPEN = '| /usr/bin/lesspipe %s'
+#     USER = 'benkehargitai'
+#     DISPLAY = ':0'
+#     SHLVL = '1'
+#     VIRTUAL_ENV_PROMPT = '(.venv) '
+#     XDG_RUNTIME_DIR = '/run/user/1000/'
+#     PS1 = ('(.venv) \\[\\e]0;\\u@\\h: '
+ '\\w\\a\\]${debian_chroot:+($debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ ')
+#     WSLENV = ''
+#     XDG_DATA_DIRS = '/usr/local/share:/usr/share:/var/lib/snapd/desktop'
+#     PATH = ('/home/benkehargitai/.buildozer/android/platform/apache-ant-1.9.4/bin:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/BenkeHargitai/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand:/mnt/c/Users/BenkeHargitai/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program '
+ 'Files/Git/cmd:/mnt/c/Users/BenkeHargitai/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/BenkeHargitai/AppData/Local/Programs/Microsoft '
+ 'VS '
+ 'Code/bin:/mnt/c/Users/BenkeHargitai/AppData/Local/Python/bin:/mnt/c/Users/BenkeHargitai/software/flutter/bin:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/batch:/mnt/c/Users/BenkeHargitai/AppData/Local/PowerToys/DSCModules/:/snap/bin:/home/benkehargitai/.local/bin')
+#     DBUS_SESSION_BUS_ADDRESS = 'unix:path=/run/user/1000/bus'
+#     HOSTTYPE = 'x86_64'
+#     PULSE_SERVER = 'unix:/mnt/wslg/PulseServer'
+#     _ = '/home/benkehargitai/.local/bin/buildozer'
+#     PACKAGES_PATH = '/home/benkehargitai/.buildozer/android/packages'
+#     ANDROIDSDK = '/home/benkehargitai/.buildozer/android/platform/android-sdk'
+#     ANDROIDNDK = '/home/benkehargitai/.buildozer/android/platform/android-ndk-r25b'
+#     ANDROIDAPI = '33'
+#     ANDROIDMINAPI = '21'
+#
+# Buildozer failed to execute the last command
+# The error might be hidden in the log above this error
+# Please read the full log, and search for it before
+# raising an issue with buildozer itself.
+# In case of a bug report, please add a full log with log_level = 2
+(.venv) benkehargitai@AMNB44:/mnt/c/Users/BenkeHargitai/prog/bencode/@ctive/python/language_learning$

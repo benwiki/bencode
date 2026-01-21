@@ -1,0 +1,54 @@
+szo:ich ; pont:0 | szo:ego ; pont:0
+szo:er, sie, es sagte (eingeschoben) ; pont:0 | szo:inquit ; pont:0
+szo:verbrennen ; pont:0 | szo:cremâre ; pont:0
+szo:Ort, Platz, Stelle ; pont:0 | szo:locus ; pont:0 ; genitive:î ; gender:m
+szo:Gebiet, Gelände ; pont:0 | szo:loca ; pont:0 ; genitive:ôrum ; gender:n pl.
+szo:wohnen, bewohnen ; pont:0 | szo:habitâre ; pont:0
+szo:geeignet ; pont:0 | szo:idôneus ; pont:0 ; (f):idônea ; (n):idôneum
+szo:(eifrig) suchen ; pont:0 | szo:quaeritâre ; pont:0
+szo:Mann ; pont:0 | szo:vir ; pont:0 ; genitive:î ; gender:m
+szo:Krieg ; pont:0 | szo:bellum ; pont:0 ; genitive:î ; gender:n
+szo:erprobt ; pont:0 | szo:probâtus ; pont:0 ; (f):probâta ; (n):probâtum
+szo:geben ; pont:0 | szo:dare ; pont:0 ; <type>:verb (inf) ; (present):dô ; (perfect):dedî ; (PPP):datum
+szo:rechts ; pont:0 | szo:dexter ; pont:0 ; (f):dextra ; (n):dextrum
+szo:die rechte Hand ; pont:0 | szo:dextra ; pont:0 ; genitive:ae ; gender:f
+szo:Freundschaft ; pont:0 | szo:amîcitia ; pont:0 ; genitive:ae ; gender:f
+szo:befestigen ; pont:0 | szo:firmâre ; pont:0
+szo:Tochter ; pont:0 | szo:filia ; pont:0 ; genitive:ae ; gender:f
+szo:Ehe ; pont:0 | szo:mâtrimônium ; pont:0 ; genitive:î ; gender:n
+szo:neu ; pont:0 | szo:novus ; pont:0 ; (f):nova ; (n):novum
+szo:Sohn ; pont:0 | szo:fîlius ; pont:0 ; genitive:î ; gender:m
+szo:nennen ; pont:0 | szo:nominâre ; pont:0
+szo:welcher ; pont:0 | szo:quî ; pont:0
+szo:welche ; pont:0 | szo:quae ; pont:0
+szo:welches ; pont:0 | szo:quod ; pont:0
+szo:anreden, nennen ; pont:0 | szo:appellâre ; pont:0
+szo:Buch ; pont:0 | szo:liber ; pont:0 ; genitive:librî ; gender:m
+szo:Geschenk ; pont:0 | szo:dônum ; pont:0 ; genitive:î ; gender:n
+szo:Buche ; pont:0 | szo:fâgus ; pont:0 ; genitive:î ; gender:f
+szo:hoch, tief ; pont:0 | szo:altus ; pont:0 ; (f):alta ; (n):altum
+szo:Dichter ; pont:0 | szo:poêta ; pont:0 ; genitive:ae ; gender:m
+szo:gelehrt ; pont:0 | szo:doctus ; pont:0 ; (f):docta ; (n):doctum
+szo:heilig, geweiht, verflucht ; pont:0 | szo:sacer ; pont:0 ; (f):sacra ; (n):sacrum
+szo:krank, bekümmert, traurig ; pont:0 | szo:aeger ; pont:0 ; (f):aegra ; (n):aegrum
+szo:elend, unglücklich, ärmlich ; pont:0 | szo:miser ; pont:0 ; (f):misera ; (n):miserum
+szo:schauen, anschauen, betrachten ; pont:0 | szo:spectâre ; pont:0
+szo:fest, stark, zuverlässig ; pont:0 | szo:firmus ; pont:0 ; (f):firma ; (n):firmum
+szo:Schwiegervater ; pont:0 | szo:socer ; pont:0 ; genitive:î ; gender:m
+szo:griechisch ; pont:0 | szo:Graecus ; pont:0 ; (f):Graeca ; (n):Graecum
+szo:Grieche ; pont:0 | szo:Graecus ; pont:0 ; genitive:î ; gender:m
+szo:durch ; pont:0 | szo:per ; pont:0 ; case(s):acc
+szo:rauh, hart, grob ; pont:0 | szo:asper ; pont:0 ; (f):aspera ; (n):asperum
+szo:Stern ; pont:0 | szo:astrum ; pont:0 ; genitive:î ; gender:n
+szo:Boden ; pont:0 | szo:solum ; pont:0 ; genitive:î ; gender:n
+szo:Himmel ; pont:0 | szo:caelum ; pont:0 ; genitive:î ; gender:n
+szo:die Unterirdischen, Unterwelt ; pont:0 | szo:înferî ; pont:0 ; genitive:ôrum ; gender:m pl.
+szo:Zweifel ; pont:0 | szo:dubium ; pont:0 ; genitive:î ; gender:n
+szo:für ; pont:0 | szo:prô ; pont:0 ; case(s):abl
+szo:Angeklagter ; pont:0 | szo:reus ; pont:0 ; genitive:î ; gender:m
+szo:Homer ; pont:0 | szo:Homêrus ; pont:0 ; genitive:î ; gender:m
+szo:groß ; pont:0 | szo:magnus ; pont:0 ; (f):magna ; (n):magnum
+szo:gegen ; pont:0 | szo:contra ; pont:0 ; case(s):acc
+szo:(be)singen ; pont:0 | szo:cantâre ; pont:0
+szo:zwischen ; pont:0 | szo:inter ; pont:0 ; case(s):acc
+szo:viel ; pont:0 | szo:multus ; pont:0 ; (f):multa ; (n):multum

@@ -1,0 +1,28 @@
+szo:dann, darauf ; pont:0 | szo:deinde ; pont:0
+szo:Turnus ; pont:0 | szo:Turnus ; pont:0 ; genitive:î ; gender:m
+szo:die Rutuler (Völkerschaft in Latium) ; pont:0 | szo:Rutulî ; pont:0 ; genitive:ôrum ; gender:m pl.
+szo:kämpfen ; pont:0 | szo:pûgnâre ; pont:0
+szo:müssen, verdanken, schulden ; pont:0 | szo:dêbêre ; pont:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):itum
+szo:denn, nämlich ; pont:0 | szo:nam ; pont:0
+szo:befestigt, verabredet, verlobt ; pont:0 | szo:pâctus ; pont:0 ; (f):pâcta ; (n):pâctum
+szo:aber, sondern ; pont:0 | szo:sed ; pont:0
+szo:weder ... noch ; pont:0 | szo:neque ... neque ; pont:0
+szo:froh, erfreut ; pont:0 | szo:laetus ; pont:0 ; (f):laeta ; (n):laetum
+szo:überwinden, besiegen ; pont:0 | szo:superâre ; pont:0
+szo:töten, erschlagen ; pont:0 | szo:necâre ; pont:0
+szo:Hilfe, Beistand ; pont:0 | szo:auxilium ; pont:0 ; genitive:î ; gender:n
+szo:am wenigsten, keineswegs ; pont:0 | szo:minimê ; pont:0
+szo:fürchten ; pont:0 | szo:timêre ; pont:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):itum
+szo:dass nicht, damit nicht ; pont:0 | szo:nê ; pont:0 ; case(s):konj
+szo:Ansiedler, Anwohner ; pont:0 | szo:accola ; pont:0 ; genitive:ae ; gender:m
+szo:zu sehr ; pont:0 | szo:nimis ; pont:0
+szo:vermehren, vergrößern ; pont:0 | szo:augêre ; pont:0 ; <type>:verb (inf) ; (present):eô ; (perfect):auxî ; (PPP):auctum
+szo:Ruhm ; pont:0 | szo:glôria ; pont:0 ; genitive:ae ; gender:f
+szo:nicht ; pont:0 | szo:nôn ; pont:0
+szo:Gefahr ; pont:0 | szo:perîculum ; pont:0 ; genitive:î ; gender:n
+szo:reden, beten, bitten ; pont:0 | szo:orâre ; pont:0
+szo:arbeiten ; pont:0 | szo:labôrâre ; pont:0
+szo:irren ; pont:0 | szo:errâre ; pont:0
+szo:menschlich ; pont:0 | szo:humânus ; pont:0 ; (f):humâna ; (n):humânum
+szo:wem? ; pont:0 | szo:cui? ; pont:0
+szo:oft ; pont:0 | szo:saepe ; pont:0

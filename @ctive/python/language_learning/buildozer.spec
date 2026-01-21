@@ -4,13 +4,13 @@
 title = Vocab Learner
 
 # (str) Version of the app
-version = 1.0.0
+version = 1.0.3
 
 # (str) Package name
 package.name = vocab_learner
 
 # (str) Package domain (needed for Android package ID)
-package.domain = org.example
+package.domain = org.benkex
 
 # (str) Source code where the main.py lives
 source.dir = .
@@ -19,8 +19,8 @@ source.dir = .
 # source.include_exts = py,png,jpg,kv,atlas,json,txt
 
 # (str) The entry point; Buildozer expects main.py by default.
-# We'll point it at your vocab_learner_kivy.py
-entrypoint = vocab_learner_kivy.py
+# Use main.py for this project.
+entrypoint = main.py
 
 # (list) Application requirements
 # Kivy is required; add any other deps you import.
@@ -47,7 +47,7 @@ orientation = portrait, landscape
 fullscreen = 0
 
 # (str) Icon (optional)
-# icon.filename = 
+# icon.filename = ./assets/images/icon.png
 
 # (str) Presplash (optional)
 # presplash.filename = 
@@ -67,4 +67,4 @@ log_level = 2
 build_dir = .buildozer
 
 # (str) Buildozer default command
-# defaultcommand = android debug
+defaultcommand = android debug
