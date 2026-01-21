@@ -458,6 +458,88 @@ class PracticeSetupScreen(Screen):
 class SettingsScreen(Screen):
     error = StringProperty("")
 
+    data_dir = StringProperty("")
+    selected_lang = StringProperty("English")
+
+    _lang_opts: Optional[OptionList] = None
+
+    def on_kv_post(self, base_widget) -> None:  # type: ignore[override]
+        super().on_kv_post(base_widget)
+        self._ensure_lang_option_list()
+
+    def on_pre_enter(self, *_args) -> None:
+        self.sync_from_app()
+        self._ensure_lang_option_list()
+
+    def sync_from_app(self) -> None:
+        app = App.get_running_app()
+        try:
+            self.data_dir = str(getattr(app, "data_dir", "") or "")
+        except Exception:
+            self.data_dir = ""
+
+        try:
+            lang = getattr(app, "lang", None)
+            name = getattr(lang, "name", "") if lang is not None else ""
+            self.selected_lang = {
+                "ENGLISH": "English",
+                "GERMAN": "German",
+                "HUNGARIAN": "Hungarian",
+            }.get(str(name), "English")
+        except Exception:
+            self.selected_lang = "English"
+
+        # Keep the OptionList selection in sync.
+        try:
+            if self._lang_opts is not None:
+                self._lang_opts.set_options(
+                    ["English", "German", "Hungarian"],
+                    selected=self.selected_lang,
+                )
+        except Exception:
+            pass
+
+    def _ensure_lang_option_list(self) -> None:
+        try:
+            host = self.ids.get("lang_options_host")  # type: ignore[attr-defined]
+        except Exception:
+            host = None
+        if host is None:
+            return
+
+        if self._lang_opts is None:
+            self._lang_opts = OptionList(
+                ["English", "German", "Hungarian"],
+                selected=self.selected_lang,
+                on_select=lambda v: self.set_lang(v),
+            )
+            host.clear_widgets()
+            host.add_widget(self._lang_opts)
+        else:
+            # Re-attach if KV reloaded / host replaced.
+            try:
+                if self._lang_opts.parent is not host:
+                    host.clear_widgets()
+                    host.add_widget(self._lang_opts)
+            except Exception:
+                pass
+
+    def set_lang(self, display: str) -> None:
+        self.selected_lang = str(display)
+        try:
+            App.get_running_app().set_ui_language_by_display(str(display))
+        except Exception:
+            pass
+
+        try:
+            if self._lang_opts is not None:
+                self._lang_opts.set_options(
+                    ["English", "German", "Hungarian"],
+                    selected=self.selected_lang,
+                )
+        except Exception:
+            pass
+
 
 class PracticeScreen(Screen):
     prompt = StringProperty("")
@@ -591,7 +673,6 @@ class VocabLearnerApp(App):
 
         # -------- Settings
         st = SettingsScreen(name="settings")
-        st.add_widget(self._build_settings(root, st))
         root.add_widget(st)
 
         # -------- Practice
@@ -599,6 +680,14 @@ class VocabLearnerApp(App):
         root.add_widget(pr)
 
         return root
+
+    def set_ui_language_by_display(self, display: str) -> None:
+        display_to_lang: Dict[str, Lang] = {
+            "English": Lang.ENGLISH,
+            "German": Lang.GERMAN,
+            "Hungarian": Lang.HUNGARIAN,
+        }
+        self.set_ui_language(display_to_lang.get(str(display), Lang.ENGLISH))
 
     # ---------------- UI builders
 
@@ -703,92 +792,6 @@ class VocabLearnerApp(App):
             self.practice_session.text = self.text
         self._save_ui_lang(lang)
 
-    def _build_settings(
-        self, root: VocabLearnerRoot, screen: SettingsScreen
-    ) -> BoxLayout:
-        outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
-
-        outer.add_widget(
-            Label(
-                text="Settings",
-                size_hint_y=None,
-                height=dp(40),
-                color=TEXT_DARK,
-                font_size="22sp",
-            )
-        )
-
-        outer.add_widget(
-            Label(
-                text="UI language",
-                size_hint_y=None,
-                height=dp(22),
-                halign="left",
-                valign="middle",
-                color=TEXT_DARK,
-            )
-        )
-
-        display_to_lang: Dict[str, Lang] = {
-            "English": Lang.ENGLISH,
-            "German": Lang.GERMAN,
-            "Hungarian": Lang.HUNGARIAN,
-        }
-        lang_to_display: Dict[Lang, str] = {v: k for k, v in display_to_lang.items()}
-        selected_display = lang_to_display.get(
-            getattr(self, "lang", Lang.ENGLISH), "English"
-        )
-
-        def on_select(value: str) -> None:
-            lang = display_to_lang.get(value, Lang.ENGLISH)
-            self.set_ui_language(lang)
-
-        opts = OptionList(
-            list(display_to_lang.keys()),
-            selected=selected_display,
-            on_select=on_select,
-        )
-        outer.add_widget(opts)
-
-        # Data directory (where glossaries/ and kits/ live)
-        data_dir = str(
-            getattr(self, "data_dir", "") or getattr(self.model, "base_dir", "")
-        )
-        outer.add_widget(
-            Label(
-                text="Data folder",
-                size_hint_y=None,
-                height=dp(22),
-                halign="left",
-                valign="middle",
-                color=TEXT_DARK,
-            )
-        )
-        data_ti = TextInput(
-            text=data_dir,
-            readonly=True,
-            multiline=True,
-            size_hint_y=None,
-            height=dp(48),
-            cursor_blink=False,
-            background_normal="",
-            background_active="",
-            background_color=PEACH_CARD,
-            foreground_color=TEXT_DARK,
-        )
-        outer.add_widget(data_ti)
-
-        btns = BoxLayout(
-            orientation="horizontal", size_hint_y=None, height=dp(48), spacing=dp(10)
-        )
-        btns.add_widget(
-            PeachSecondaryButton(
-                text="Back", on_release=lambda *_: setattr(root, "current", "menu")
-            )
-        )
-        outer.add_widget(btns)
-        return outer
-
     def _build_add_glossary(
         self, root: VocabLearnerRoot, screen: AddGlossaryScreen
     ) -> BoxLayout:
@@ -838,28 +841,6 @@ class VocabLearnerApp(App):
         self, root: VocabLearnerRoot, screen: AddWordScreen
     ) -> BoxLayout:
         outer = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
-
-        # App bar
-        appbar = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(56))
-
-        def _appbar_bg(_inst, _val):
-            appbar.canvas.before.clear()
-            with appbar.canvas.before:
-                Color(*PEACH_CARD)
-                Rectangle(pos=appbar.pos, size=appbar.size)
-
-        appbar.bind(pos=_appbar_bg, size=_appbar_bg)
-        _appbar_bg(None, None)
-        appbar.add_widget(
-            Label(
-                text="Add word",
-                color=TEXT_DARK,
-                font_size="22sp",
-                halign="left",
-                valign="middle",
-            )
-        )
-        outer.add_widget(appbar)
 
         # Responsive content area (portrait: stacked, landscape: side-by-side)
         main = BoxLayout(orientation="vertical", size_hint_y=1, spacing=dp(10))

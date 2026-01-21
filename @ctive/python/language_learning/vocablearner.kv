@@ -236,3 +236,91 @@
                             size_hint_y: None
                             height: BAR_H
                             on_release: root.next_action()
+
+
+<SettingsScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(12)
+        spacing: dp(10)
+
+        # App bar
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(10)
+
+            BackArrowSquare:
+                size_hint: None, None
+                width: dp(48)
+                height: dp(48)
+                on_release: setattr(app.root, "current", "menu")
+
+            Label:
+                text: "Settings"
+                size_hint_y: None
+                height: dp(48)
+                halign: "center"
+                valign: "middle"
+                color: TEXT_DARK
+                font_size: "22sp"
+                text_size: self.size
+
+            Widget:
+                size_hint_x: None
+                width: dp(48)
+
+        # Body: portrait stacks; landscape splits 50/50.
+        BoxLayout:
+            orientation: ("horizontal" if Window.width > Window.height else "vertical")
+            size_hint_y: 1
+            spacing: dp(10)
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: (0.5 if Window.width > Window.height else 1)
+                size_hint_y: 1
+                spacing: dp(10)
+
+                Label:
+                    text: "UI language"
+                    size_hint_y: None
+                    height: dp(22)
+                    halign: "left"
+                    valign: "middle"
+                    color: TEXT_DARK
+                    text_size: self.size
+
+                BoxLayout:
+                    id: lang_options_host
+                    orientation: "vertical"
+                    size_hint_y: 1
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: (0.5 if Window.width > Window.height else 1)
+                size_hint_y: (1 if Window.width > Window.height else None)
+                height: (self.minimum_height if Window.width <= Window.height else 0)
+                spacing: dp(10)
+
+                Label:
+                    text: "Data folder"
+                    size_hint_y: None
+                    height: dp(22)
+                    halign: "left"
+                    valign: "middle"
+                    color: TEXT_DARK
+                    text_size: self.size
+
+                TextInput:
+                    text: root.data_dir
+                    readonly: True
+                    multiline: True
+                    size_hint_y: None
+                    height: dp(58)
+                    cursor_blink: False
+                    background_normal: ""
+                    background_active: ""
+                    background_color: PEACH_CARD
+                    foreground_color: TEXT_DARK
