@@ -440,7 +440,24 @@ class KitForm(BoxLayout):
 
 
 class MenuScreen(Screen):
-    pass
+    def go_practice(self) -> None:
+        app = App.get_running_app()
+        mgr = self.manager
+        if mgr is None:
+            return
+
+        try:
+            session = getattr(app, "practice_session", None)
+            if session is not None and not session.ended_by_user:
+                pr_screen: PracticeScreen = mgr.get_screen("practice")  # type: ignore
+                pr_screen.session = session
+                app._update_practice_screen(pr_screen)
+                mgr.current = "practice"
+                return
+        except Exception:
+            pass
+
+        mgr.current = "practice_setup"
 
 
 class AddGlossaryScreen(Screen):
@@ -460,6 +477,7 @@ class SettingsScreen(Screen):
 
     data_dir = StringProperty("")
     selected_lang = StringProperty("English")
+    auto_continue = BooleanProperty(False)
 
     _lang_opts: Optional[OptionList] = None
 
@@ -477,6 +495,11 @@ class SettingsScreen(Screen):
             self.data_dir = str(getattr(app, "data_dir", "") or "")
         except Exception:
             self.data_dir = ""
+
+        try:
+            self.auto_continue = bool(getattr(app, "auto_continue", False))
+        except Exception:
+            self.auto_continue = False
 
         try:
             lang = getattr(app, "lang", None)
@@ -537,6 +560,13 @@ class SettingsScreen(Screen):
                     ["English", "German", "Hungarian"],
                     selected=self.selected_lang,
                 )
+        except Exception:
+            pass
+
+    def set_auto_continue(self, enabled: bool) -> None:
+        self.auto_continue = bool(enabled)
+        try:
+            App.get_running_app().set_auto_continue(bool(enabled))
         except Exception:
             pass
 
@@ -644,7 +674,9 @@ class VocabLearnerApp(App):
         self.model = VocabLearnerModel(Kit.LATIN, base_dir=data_dir, app_dir=app_dir)
 
         self._ui_settings_path = os.path.join(data_dir, "ui_settings.json")
-        self.lang: Lang = self._load_ui_lang()
+        settings = self._load_ui_settings()
+        self.lang = settings["lang"]
+        self.auto_continue = bool(settings.get("auto_continue", False))
         self.text: LangText = self.lang.text()
         self.practice_session: Optional[PracticeSession] = None
 
@@ -653,7 +685,6 @@ class VocabLearnerApp(App):
 
         # -------- Menu
         menu = MenuScreen(name="menu")
-        menu.add_widget(self._build_menu(root))
         root.add_widget(menu)
 
         # -------- Add Glossary
@@ -691,97 +722,30 @@ class VocabLearnerApp(App):
 
     # ---------------- UI builders
 
-    def _build_menu(self, root: VocabLearnerRoot) -> BoxLayout:
-        box = BoxLayout(orientation="vertical", padding=dp(12), spacing=dp(10))
-        box.add_widget(
-            Label(
-                text="Vocab Learner",
-                size_hint_y=None,
-                height=dp(40),
-                color=TEXT_DARK,
-                font_size="22sp",
-            )
-        )
-
-        def nav(name: str):
-            root.current = name
-
-        def go_practice(_):
-            if (
-                self.practice_session is not None
-                and not self.practice_session.ended_by_user
-            ):
-                pr_screen: PracticeScreen = root.get_screen("practice")  # type: ignore
-                pr_screen.session = self.practice_session
-                self._update_practice_screen(pr_screen)
-                root.current = "practice"
-            else:
-                root.current = "practice_setup"
-
-        box.add_widget(
-            PeachButton(
-                text="[b]Practice[/b]",
-                markup=True,
-                size_hint_y=None,
-                height=dp(48),
-                on_release=go_practice,
-            )
-        )
-        box.add_widget(
-            PeachButton(
-                text="Add word",
-                size_hint_y=None,
-                height=dp(48),
-                on_release=lambda *_: nav("add_word"),
-            )
-        )
-        box.add_widget(
-            PeachButton(
-                text="Add glossary",
-                size_hint_y=None,
-                height=dp(48),
-                on_release=lambda *_: nav("add_glossary"),
-            )
-        )
-        box.add_widget(
-            PeachButton(
-                text="Settings",
-                size_hint_y=None,
-                height=dp(48),
-                on_release=lambda *_: nav("settings"),
-            )
-        )
-        box.add_widget(
-            PeachSecondaryButton(
-                text="Quit",
-                size_hint_y=None,
-                height=dp(48),
-                on_release=lambda *_: App.get_running_app().stop(),
-            )
-        )
-
-        box.add_widget(
-            Label(
-                text=f"Languages: {self.model.mlang} / {self.model.learnlang}",
-                color=TEXT_DARK,
-            )
-        )
-        return box
-
-    def _load_ui_lang(self) -> Lang:
+    def _load_ui_settings(self) -> Dict[str, Any]:
+        data: Dict[str, Any] = {}
         try:
             if os.path.exists(self._ui_settings_path):
                 with open(self._ui_settings_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                raw = str(data.get("lang", "")).strip()
-                if raw in Lang.__members__:
-                    return Lang[raw]
+                    data = dict(json.load(f) or {})
         except Exception:
-            pass
-        return Lang.ENGLISH
+            data = {}
 
-    def _save_ui_lang(self, lang: Lang) -> None:
-        data = {"lang": lang.name}
+        raw_lang = str(data.get("lang", "")).strip()
+        lang = Lang.ENGLISH
+        if raw_lang in Lang.__members__:
+            lang = Lang[raw_lang]
+
+        return {
+            "lang": lang,
+            "auto_continue": bool(data.get("auto_continue", False)),
+        }
+
+    def _save_ui_settings(self) -> None:
+        data = {
+            "lang": getattr(self, "lang", Lang.ENGLISH).name,
+            "auto_continue": bool(getattr(self, "auto_continue", False)),
+        }
         with open(self._ui_settings_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -790,7 +754,11 @@ class VocabLearnerApp(App):
         self.text = lang.text()
         if self.practice_session is not None:
             self.practice_session.text = self.text
-        self._save_ui_lang(lang)
+        self._save_ui_settings()
+
+    def set_auto_continue(self, enabled: bool) -> None:
+        self.auto_continue = bool(enabled)
+        self._save_ui_settings()
 
     def _build_add_glossary(
         self, root: VocabLearnerRoot, screen: AddGlossaryScreen
@@ -1171,7 +1139,12 @@ class VocabLearnerApp(App):
 
             pr_screen: PracticeScreen = root.get_screen("practice")  # type: ignore
             self.practice_session = PracticeSession(
-                self.model, gloss=gloss, answer_lang=answer_lang, text=self.text
+                self.model,
+                gloss=gloss,
+                answer_lang=answer_lang,
+                text=self.text,
+                shared_total_history_items=[],
+                shared_stats={"words_practiced": 0},
             )
             pr_screen.session = self.practice_session
             self._update_practice_screen(pr_screen)
@@ -1190,6 +1163,40 @@ class VocabLearnerApp(App):
     def _update_practice_screen(self, screen: PracticeScreen) -> None:
         if not screen.session:
             return
+
+        # Auto-continue: start a new session when one finishes, until all words
+        # are dead or the user stops.
+        try:
+            max_rollovers = 25
+            rollovers = 0
+            while (
+                bool(getattr(self, "auto_continue", False))
+                and bool(getattr(screen.session, "done", False))
+                and (not bool(getattr(screen.session, "ended_by_user", False)))
+                and (not self.model.all_words_dead(gloss=screen.session.gloss, answer_lang=screen.session.answer_lang))
+                and rollovers < max_rollovers
+            ):
+                rollovers += 1
+                prev = screen.session
+                shared_hist = None
+                shared_stats = None
+                try:
+                    shared_hist = getattr(prev, "total_history_items", None)
+                    shared_stats = prev.shared_stats()  # type: ignore[attr-defined]
+                except Exception:
+                    shared_hist = None
+                    shared_stats = None
+                screen.session = PracticeSession(
+                    self.model,
+                    gloss=screen.session.gloss,
+                    answer_lang=screen.session.answer_lang,
+                    text=self.text,
+                    shared_total_history_items=shared_hist,
+                    shared_stats=shared_stats,
+                )
+                self.practice_session = screen.session
+        except Exception:
+            pass
 
         kind, text = screen.session.current_prompt()
 
@@ -1228,16 +1235,26 @@ class VocabLearnerApp(App):
             except Exception:
                 pass
 
-        ended = bool(getattr(screen.session, "ended_by_user", False))
+        # Session end panel (either finished or stopped).
+        ended = bool(getattr(screen.session, "done", False))
+        stopped = bool(getattr(screen.session, "ended_by_user", False))
         screen.ended = ended
 
-        # If user stopped practice: show only the score panel.
         if ended:
             screen.menu_open = False
             total = int(screen.session.correct_pt + screen.session.incorrect_pt)
             pct = 0.0 if total == 0 else (screen.session.correct_pt / total) * 100.0
 
+            heading = "Stopped." if stopped else "Practice finished."
+            n_words = 0
+            try:
+                n_words = int(getattr(screen.session, "words_practiced", 0))
+            except Exception:
+                n_words = 0
+
             screen.ids.summary_lbl.text = (
+                f"{heading}\n"
+                f"#words: {n_words}\n"
                 f"Correct: {screen.session.correct_pt}\n"
                 f"Incorrect: {screen.session.incorrect_pt}\n"
                 f"{pct:.2f}%"

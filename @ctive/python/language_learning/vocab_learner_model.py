@@ -532,6 +532,33 @@ class VocabLearnerModel:
         shuffle(practice_words)
         return practice_words
 
+    def all_words_dead(self, *, gloss: str, answer_lang: str) -> bool:
+        """Return True if every word in the glossary is 'dead' for answer_lang.
+
+        Uses the same effective-score logic as PracticeSession:
+        score is divided by the number of detail fields (excluding word/score/type).
+        """
+
+        if gloss not in self.words:
+            return True
+
+        for w in self.words.get(gloss, []):
+            try:
+                details = [
+                    k
+                    for k in w.get(answer_lang, {})
+                    if k not in (WORD_PREFIX, SCORE_PREFIX, TYPE_PREFIX)
+                ]
+                effective = int(w[answer_lang].get(SCORE_PREFIX, 0)) // max(1, len(details))
+                if effective < self.dead_pt:
+                    return False
+            except Exception:
+                # If anything is malformed, treat it as not-dead so we don't
+                # prematurely stop auto-continue.
+                return False
+
+        return True
+
     def add_word(
         self,
         gloss: str,
@@ -575,7 +602,14 @@ class PracticeSession:
     """
 
     def __init__(
-        self, model: VocabLearnerModel, *, gloss: str, answer_lang: str, text: LangText
+        self,
+        model: VocabLearnerModel,
+        *,
+        gloss: str,
+        answer_lang: str,
+        text: LangText,
+        shared_total_history_items: Optional[List[Dict[str, Any]]] = None,
+        shared_stats: Optional[Dict[str, int]] = None,
     ):
         self.model = model
         self.gloss = gloss
@@ -607,8 +641,16 @@ class PracticeSession:
         # Per-word history for UI
         # Each item: {"label": str, "given": str, "expected": str, "correct": bool}
         self.history_items: List[Dict[str, Any]] = []
-        # Total history across the whole session (words + details)
-        self.total_history_items: List[Dict[str, Any]] = []
+        # Total history across the whole session (words + details). When auto-continue
+        # is enabled we share this list across sessions.
+        self.total_history_items: List[Dict[str, Any]] = (
+            shared_total_history_items if shared_total_history_items is not None else []
+        )
+
+        # Mutable stats shared across sessions when auto-continue is enabled.
+        # Currently: words_practiced counts word-stage attempts only (not details).
+        self._stats: Dict[str, int] = shared_stats if shared_stats is not None else {}
+        self._stats.setdefault("words_practiced", 0)
         self.last_word_given: Optional[str] = None
         self.last_was_close = False
 
@@ -617,6 +659,16 @@ class PracticeSession:
         self.message = ""
 
         self._advance_to_next_word()
+
+    @property
+    def words_practiced(self) -> int:
+        try:
+            return int(self._stats.get("words_practiced", 0))
+        except Exception:
+            return 0
+
+    def shared_stats(self) -> Dict[str, int]:
+        return self._stats
 
     def _append_total_history(
         self, *, label: str, given: str, expected: str, correct: bool
@@ -914,6 +966,10 @@ class PracticeSession:
             type_mismatch = True
 
         if match is not None:
+            try:
+                self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+            except Exception:
+                pass
             self.to_change = match[self.answer_lang]
             self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) + 1
             self.correct_pt += 1
@@ -969,6 +1025,10 @@ class PracticeSession:
                     return
 
         if type_mismatch:
+            try:
+                self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+            except Exception:
+                pass
             # Treat as incorrect (type mismatch) and move on.
             for sol in self.solutions:
                 sol[self.answer_lang][SCORE_PREFIX] = (
@@ -997,6 +1057,10 @@ class PracticeSession:
             return
 
         # wrong (or close-but-wrong) word
+        try:
+            self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+        except Exception:
+            pass
         for sol in self.solutions:
             sol[self.answer_lang][SCORE_PREFIX] = (
                 int(sol[self.answer_lang].get(SCORE_PREFIX, 0)) - 1
