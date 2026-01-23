@@ -1,23 +1,23 @@
 word:bekannt, verbreitet ; score:0 | word:vulgâtus ; score:-1 ; (f):vulgâta ; (n):vulgâtum
-word:verspotten ; score:0 | word:illûdere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):lûsî ; (PPP):lûsum
+word:verspotten ; score:0 | word:illûdere ; score:0 ; <type>:verb (inf) ; (present):illûdô ; (perfect):illûsî ; (PPP):illûsum
 word:Mauer ; score:0 | word:mûrus ; score:-1 ; genitive:î ; gender:m
 word:überspringen ; score:0 | word:trânsilîre ; score:-1
 word:grausam hinschlachten, töten ; score:0 | word:trucîdâre ; score:-1
-word:hinzufügen ; score:0 | word:adicere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):iêcî ; (PPP):iectum
-word:widerfahren, zustoßen ; score:0 | word:accidere ; score:-1 ; (present):ô ; (perfect):cidî ; case(s):dat
+word:hinzufügen ; score:0 | word:adicere ; score:0 ; <type>:verb (inf) ; (present):adiciô ; (perfect):adiêcî ; (PPP):adiectum
+word:widerfahren, zustoßen ; score:0 | word:accidere ; score:-1 ; (present):accidô ; (perfect):accidî ; case(s):dat
 word:jeder, der; wer auch immer ; score:0 | word:quîcumque ; score:0 ; (f):quaecumque ; (n):quodcumque
 word:so ; score:0 | word:ita ; score:-1
 word:allein ; score:0 | word:sôlus ; score:0 ; (f):sôla ; (n):sôlum
 word:sich bemächtigen ; score:0 | word:potîrî ; score:-1 ; (present):potior ; (perfect):potîtus sum
 word:Gründer ; score:0 | word:conditôr ; score:-1 ; genitive:ôris ; gender:m
 word:Amtsgewalt, Befugnis ; score:0 | word:potestâs ; score:0 ; genitive:âtis ; gender:f
-word:tragen, ausführen, (ein Amt) bekleiden ; score:0 | word:gerere ; score:-1 ; <type>:verb (inf) ; (present):ô ; (perfect):gessî ; (PPP):gestum
+word:tragen, ausführen, (ein Amt) bekleiden ; score:0 | word:gerere ; score:-1 ; <type>:verb (inf) ; (present):gerô ; (perfect):gessî ; (PPP):gestum
 word:Furcht, Angst ; score:0 | word:metus ; score:-1 ; genitive:ûs ; gender:m
-word:lehren ; score:0 | word:docêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):doctum
+word:lehren ; score:0 | word:docêre ; score:0 ; <type>:verb (inf) ; (present):doceô ; (perfect):docuî ; (PPP):doctum
 word:Freiheit ; score:0 | word:lîbertâs ; score:-1 ; genitive:âtis ; gender:f
 word:Amtsdiener, Liktor ; score:0 | word:lîctor ; score:-1 ; genitive:ôris ; gender:m
 word:Soldat ; score:0 | word:mîles ; score:-1 ; genitive:itis ; gender:m
-word:lernen ; score:0 | word:discere ; score:-1 ; (present):ô ; (perfect):didicî
+word:lernen ; score:0 | word:discere ; score:-1 ; (present):discô ; (perfect):didicî
 word:Verträge ; score:0 | word:pacta ; score:0 ; genitive:ôrum ; gender:n pl.
 word:keiner ; score:0 | word:nullus ; score:0 ; (f):nulla ; (n):nullum
 word:Möglichkeit ; score:0 | word:facultâs ; score:0 ; genitive:âtis ; gender:f
@@ -32,7 +32,7 @@ word:2. Ps. Sg. Imp. Fut. von esse ; score:0 | word:estô ; score:0
 word:gehen ; score:0 | word:îre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):iî ; (PPP):itum
 word:Wort ; score:0 | word:verbum ; score:-1 ; genitive:î ; gender:n
 word:besänftigen ; score:0 | word:placâre ; score:-1
-word:bebauen, bewohnen, verehren, pflegen ; score:0 | word:colere ; score:-1 ; <type>:verb (inf) ; (present):ô ; (perfect):coluî ; (PPP):cultum
+word:bebauen, bewohnen, verehren, pflegen ; score:0 | word:colere ; score:-1 ; <type>:verb (inf) ; (present):colô ; (perfect):coluî ; (PPP):cultum
 word:zögern, zaudern ; score:0 | word:cunctâri ; score:-1
 word:Brücke ; score:0 | word:pôns ; score:-1 ; genitive:tis ; gender:m
-word:machen, tun ; score:0 | word:facere ; score:-1 ; <type>:verb (inf) ; (present):iô ; (perfect):fêcî ; (PPP):factum
+word:machen, tun ; score:0 | word:facere ; score:-1 ; <type>:verb (inf) ; (present):faciô ; (perfect):fêcî ; (PPP):factum

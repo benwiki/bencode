@@ -10,7 +10,7 @@ word:jagen ; score:0 | word:vênâri ; score:0
 word:Räuber ; score:0 | word:praedô ; score:0 ; genitive:ônis ; gender:m
 word:Beute ; score:0 | word:praeda ; score:0 ; genitive:ae ; gender:f
 word:beladen, belastet ; score:0 | word:onustus ; score:0 ; (f):onusta ; (n):onustum
-word:zu erreichen suchen, angreifen ; score:0 | word:petere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):petîvî ; (PPP):petîtum
+word:zu erreichen suchen, angreifen ; score:0 | word:petere ; score:0 ; <type>:verb (inf) ; (present):petô ; (perfect):petîvî ; (PPP):petîtum
 word:gleichaltrig ; score:0 | word:aequâlis ; score:0
 word:scherzen, Scherz treiben ; score:0 | word:iocâri ; score:0
 word:als, nachdem, während ; score:0 | word:cum ; score:0 ; case(s):konj
@@ -21,17 +21,17 @@ word:Scherz ; score:0 | word:iocus ; score:0 ; genitive:î ; gender:m
 word:ergeben ; score:0 | word:dêditus ; score:0 ; (f):dêdita ; (n):dêditum
 word:Räuber ; score:0 | word:latrô ; score:0 ; genitive:ônis ; gender:m
 word:Zorn ; score:0 | word:îra ; score:0 ; genitive:ae ; gender:f
-word:verlieren ; score:0 | word:âmittere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):âmîsî ; (PPP):âmissum
+word:verlieren ; score:0 | word:âmittere ; score:0 ; <type>:verb (inf) ; (present):âmittô ; (perfect):âmîsî ; (PPP):âmissum
 word:entbrannt; entzündet ; score:0 | word:înflammâtus ; score:0 ; (f):înflammâta ; (n):înflammâtum
 word:Hinterhalt, Falle ; score:0 | word:însidiae ; score:0 ; genitive:ârum ; gender:f pl.
 word:erwerben, bereiten, schaffen ; score:0 | word:parâre ; score:0
-word:entfliehen ; score:0 | word:effugere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):fûgî ; (PPP):effugitum
-word:nehmen, fassen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):cêpi ; (PPP):captum
-word:übergeben; überliefern ; score:0 | word:trâdere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):didî ; (PPP):ditum
-word:singen ; score:0 | word:canere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):cecinî ; (PPP):cantâtum
+word:entfliehen ; score:0 | word:effugere ; score:0 ; <type>:verb (inf) ; (present):effugiô ; (perfect):effûgî ; (PPP):effugitum
+word:nehmen, fassen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):capiô ; (perfect):cêpi ; (PPP):captum
+word:übergeben; überliefern ; score:0 | word:trâdere ; score:0 ; <type>:verb (inf) ; (present):trâdô ; (perfect):trâdidî ; (PPP):trâditum
+word:singen ; score:0 | word:canere ; score:0 ; <type>:verb (inf) ; (present):canô ; (perfect):cecinî ; (PPP):cantâtum
 word:Fluss ; score:0 | word:flûmen ; score:0 ; genitive:inis ; gender:n
-word:ziehen, schleppen ; score:0 | word:trahere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):traxî ; (PPP):tractum
-word:unterstützen, fördern, helfen ; score:0 | word:adiuvâre ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):iûvî ; (PPP):iûtum
+word:ziehen, schleppen ; score:0 | word:trahere ; score:0 ; <type>:verb (inf) ; (present):trahô ; (perfect):traxî ; (PPP):tractum
+word:unterstützen, fördern, helfen ; score:0 | word:adiuvâre ; score:0 ; <type>:verb (inf) ; (present):adiuvô ; (perfect):adiûvî ; (PPP):adiûtum
 word:Menschlichkeit, Bildung, Anstand ; score:0 | word:hûmânitâs ; score:0 ; genitive:tâtis ; gender:f
 word:jeder, ganz; pl. alle, alles ; score:0 | word:omnis ; score:0
 word:voll ; score:0 | word:plênus ; score:0 ; (f):plêna ; (n):plênum

@@ -13,8 +13,8 @@ word:Schutz ; score:0 | word:tûtêla ; score:0 ; genitive:ae ; gender:f
 word:Mutter ; score:0 | word:mâter ; score:0 ; genitive:mâtris ; gender:f
 word:stehen, verbleiben ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
 word:ein anderer, eine andere, ein anderes ; score:0 | word:alius ; score:0 ; (f):alia ; (n):aliud
-word:bewegen, hier: erheben ; score:0 | word:movêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):môvi ; (PPP):môtum
-word:wagen ; score:0 | word:audêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):ausus sum ; (PPP):ausum
+word:bewegen, hier: erheben ; score:0 | word:movêre ; score:0 ; <type>:verb (inf) ; (present):moveô ; (perfect):môvi ; (PPP):môtum
+word:wagen ; score:0 | word:audêre ; score:0 ; <type>:verb (inf) ; (present):audeô ; (perfect):ausus sum ; (PPP):ausum
 word:später ; score:0 | word:post ; score:0
 word:Jahrhundert, Zeitalter ; score:0 | word:saeculum ; score:0 ; genitive:î ; gender:n
 word:Bruder ; score:0 | word:frâter ; score:0 ; genitive:frâtris ; gender:m

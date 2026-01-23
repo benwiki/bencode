@@ -1,18 +1,18 @@
 word:Versammlung ; score:0 | word:concilium ; score:0 ; genitive:î ; gender:n
 word:herbeirufen, einberufen ; score:0 | word:advocâre ; score:0
 word:Frevel, Verbrechen ; score:0 | word:scelus ; score:0 ; genitive:eris ; gender:n
-word:zeigen, darlegen ; score:0 | word:ostendere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):tendi ; (PPP):tentum
-word:Jüngling, junger Mann ; score:0 | word:iuvenis ; score:0 ; genitive:is ; gender:m
+word:zeigen, darlegen ; score:0 | word:ostendere ; score:0 ; <type>:verb (inf) ; (present):ostendeô ; (perfect):ostendî ; (PPP):ostentum
+word:Jüngling, junger Mann ; score:0 | word:iuvenis ; score:0 ; genitive:is ; gender:m ; gen. pl.:iuvenum
 word:Menge ; score:0 | word:multitûdô ; score:0 ; genitive:inis ; gender:f
 word:Geschrei, Rufen ; score:0 | word:clamôr ; score:0 ; genitive:ôris ; gender:m
 word:billigen, bestätigen ; score:0 | word:approbâre ; score:0
 word:nachdem ; score:0 | word:postquam ; score:0 ; case(s):ind/perf
-word:wiederherstellen, wieder einsetzen ; score:0 | word:restituere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):stituî ; (PPP):stitûtum
+word:wiederherstellen, wieder einsetzen ; score:0 | word:restituere ; score:0 ; <type>:verb (inf) ; (present):restituô ; (perfect):restituî ; (PPP):restitûtum
 word:Plan ; score:0 | word:cônsilium ; score:0 ; genitive:î ; gender:n
-word:nehmen, fassen, (er)greifen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):cêpî ; (PPP):captum
-word:aussetzen; darlegen, erklären ; score:0 | word:expônere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):pôsuî ; (PPP):positum
-word:gründen ; score:0 | word:condere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):didî ; (PPP):ditum
-word:finden ; score:0 | word:invenire ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):vênî ; (PPP):ventum
+word:nehmen, fassen, (er)greifen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):capiô ; (perfect):cêpî ; (PPP):captum
+word:aussetzen; darlegen, erklären ; score:0 | word:expônere ; score:0 ; <type>:verb (inf) ; (present):expônô ; (perfect):expôsuî ; (PPP):expositum
+word:gründen ; score:0 | word:condere ; score:0 ; <type>:verb (inf) ; (present):condô ; (perfect):condidî ; (PPP):conditum
+word:finden ; score:0 | word:invenire ; score:0 ; <type>:verb (inf) ; (present):inveniô ; (perfect):invênî ; (PPP):inventum
 word:Odysseus ; score:0 | word:Ulixês ; score:0 ; genitive:Ulixis ; gender:m
 word:vorsichtig ; score:0 | word:cautus ; score:0 ; (f):cauta ; (n):cautum
 word:vermeiden ; score:0 | word:vitâre ; score:0
@@ -25,10 +25,10 @@ word:grausam ; score:0 | word:crûdêlis ; score:0
 word:Legion ; score:0 | word:legiô ; score:0 ; genitive:ônis ; gender:f
 word:beständig, ausdauernd ; score:0 | word:cônstans ; score:0
 word:träge, feige ; score:0 | word:îgnâvus ; score:0 ; (f):îgnâva ; (n):îgnâvum
-word:fürchten ; score:0 | word:metuere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):uî ; (PPP):metûtum
+word:fürchten ; score:0 | word:metuere ; score:0 ; <type>:verb (inf) ; (present):metuô ; (perfect):metuî ; (PPP):metûtum
 word:nicht ; score:0 | word:haud ; score:0
 word:ein gewisser ; score:0 | word:quidam ; score:0 ; (f):quaedam ; (n):quoddam
-word:herbeilaufen ; score:0 | word:accurrere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):accurrî ; (PPP):accursum
+word:herbeilaufen ; score:0 | word:accurrere ; score:0 ; <type>:verb (inf) ; (present):accurrô ; (perfect):accurrî ; (PPP):accursum
 word:begrüßen ; score:0 | word:salûtâre ; score:0
 word:beide ; score:0 | word:ambô ; score:0 ; (f):ambae ; (n):ambô
 word:wenn, falls ; score:0 | word:si ; score:0 ; case(s):subj
@@ -41,6 +41,6 @@ word:Eltern ; score:0 | word:parêntês ; score:0 ; genitive:um ; gender:m pl.
 word:unwillig ; score:0 | word:invîtus ; score:0 ; (f):invîta ; (n):invîtum
 word:Rede ; score:0 | word:ôrâtiô ; score:0 ; genitive:ônis ; gender:f
 word:Zeichen ; score:0 | word:sîgnum ; score:0 ; genitive:î ; gender:n
-word:schweigen ; score:0 | word:tacêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):tacitum
+word:schweigen ; score:0 | word:tacêre ; score:0 ; <type>:verb (inf) ; (present):taceô ; (perfect):tacuî ; (PPP):tacitum
 word:Verschwörung ; score:0 | word:coniûrâtiô ; score:0 ; genitive:ônis ; gender:f
-word:hier: ans Licht bringen ; score:0 | word:patefacere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):fêcî ; (PPP):factum
+word:hier: ans Licht bringen ; score:0 | word:patefacere ; score:0 ; <type>:verb (inf) ; (present):patefaciô ; (perfect):patefêcî ; (PPP):patefactum

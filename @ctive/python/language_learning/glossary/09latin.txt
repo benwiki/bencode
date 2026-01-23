@@ -1,6 +1,6 @@
 word:Enkel ; score:0 | word:nepôs ; score:0 ; genitive:nepôtis ; gender:m
 word:berauben ; score:0 | word:spoliâre ; score:0
-word:mit Inf.: beschließen ; score:0 | word:cônstituere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):uî ; (PPP):stitûtum
+word:mit Inf.: beschließen ; score:0 | word:cônstituere ; score:0 ; <type>:verb (inf) ; (present):cônstituô ; (perfect):cônstituî ; (PPP):cônstitûtum
 word:bestimmt, festgesetzt, sicher, gewiß ; score:0 | word:certus ; score:0 ; (f):certa ; (n):certum
 word:Weg, Reise ; score:0 | word:iter ; score:0 ; genitive:itineris ; gender:n
 word:Königsburg; hier: Königspalast ; score:0 | word:rêgia ; score:0 ; genitive:ae ; gender:f
@@ -8,7 +8,7 @@ word:eilen ; score:0 | word:festînâre ; score:0
 word:aber ; score:0 | word:autem ; score:0
 word:vortäuschen, heucheln ; score:0 | word:simulâre ; score:0
 word:Stadt ; score:0 | word:urbs ; score:0 ; genitive:is ; gender:f
-word:eindringen ; score:0 | word:invâdere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):vâsî ; (PPP):vâsum
+word:eindringen ; score:0 | word:invâdere ; score:0 ; <type>:verb (inf) ; (present):invâdô ; (perfect):invâsî ; (PPP):invâsum
 word:Begleiter, Gefolgsmann ; score:0 | word:comes ; score:0 ; genitive:itis ; gender:m
 word:Burg ; score:0 | word:arx ; score:0 ; genitive:cis ; gender:f
 word:ablenken, abziehen ; score:0 | word:âvocâre ; score:0
@@ -29,9 +29,9 @@ word:schmücken ; score:0 | word:ornâre ; score:0
 word:dunkel ; score:0 | word:âter ; score:0 ; (f):âtra ; (n):âtrum
 word:Wolke ; score:0 | word:nûbês ; score:0 ; genitive:is ; gender:f
 word:verdunkeln ; score:0 | word:obscûrâre ; score:0
-word:kommen ; score:0 | word:venire ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):vênî ; (PPP):ventum
-word:ver-, zurücklassen ; score:0 | word:relinquere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):lîquî ; (PPP):lictum
-word:sagen ; score:0 | word:dîcere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):xî ; (PPP):dictum
+word:kommen ; score:0 | word:venire ; score:0 ; <type>:verb (inf) ; (present):veniô ; (perfect):vênî ; (PPP):ventum
+word:ver-, zurücklassen ; score:0 | word:relinquere ; score:0 ; <type>:verb (inf) ; (present):relinquô ; (perfect):relîquî ; (PPP):relictum
+word:sagen ; score:0 | word:dîcere ; score:0 ; <type>:verb (inf) ; (present):dîcô ; (perfect):dîxî ; (PPP):dictum
 word:Hoffnung ; score:0 | word:spês ; score:0 ; genitive:ei ; gender:f
 word:Flucht ; score:0 | word:fuga ; score:0 ; genitive:ae ; gender:f
 word:sich weigern ; score:0 | word:sê recûsâre ; score:0

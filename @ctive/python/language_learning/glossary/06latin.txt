@@ -14,10 +14,10 @@ word:befehlen; herrschen ; score:0 | word:imperâre ; score:0
 word:Wasser ; score:0 | word:aqua ; score:0 ; genitive:ae ; gender:f
 word:Tiber ; score:0 | word:Tiberis ; score:0 ; genitive:is ; gender:m
 word:Fluss ; score:0 | word:amnis ; score:0 ; genitive:is ; gender:m
-word:schicken; aussetzen ; score:0 | word:mittere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):mîsî ; (PPP):missum
+word:schicken; aussetzen ; score:0 | word:mittere ; score:0 ; <type>:verb (inf) ; (present):mittô ; (perfect):mîsî ; (PPP):missum
 word:aber ; score:0 | word:at ; score:0
 word:Wanne, Trog; Kahn ; score:0 | word:alveus ; score:0 ; genitive:î ; gender:m
-word:aussetzen ; score:0 | word:exponere ; score:0 ; <type>:verb (inf) ; (present):o ; (perfect):exposui ; (PPP):expositum
+word:aussetzen ; score:0 | word:exponere ; score:0 ; <type>:verb (inf) ; (present):expono ; (perfect):exposui ; (PPP):expositum
 word:Feigenbaum ; score:0 | word:ficus ; score:0 ; genitive:î ; gender:f
 word:der Rumina (Göttin der Säugenden) gehörig; ruminalisch ; score:0 | word:Rûminâlis ; score:0
 word:trocken ; score:0 | word:siccus ; score:0 ; (f):sicca ; (n):siccum
@@ -25,7 +25,7 @@ word:hier: stehen bleiben, stecken bleiben ; score:0 | word:stâre ; score:0 ; <
 word:weinend ; score:0 | word:flêns ; score:0
 word:Wölfin ; score:0 | word:lupa ; score:0 ; genitive:ae ; gender:f
 word:Brust, Zitze ; score:0 | word:mamma ; score:0 ; genitive:ae ; gender:f
-word:reichen, gewähren, geben ; score:0 | word:praebêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):buî ; (PPP):bitum
+word:reichen, gewähren, geben ; score:0 | word:praebêre ; score:0 ; <type>:verb (inf) ; (present):praebeô ; (perfect):praebuî ; (PPP):praebitum
 word:hier: Aufseher ; score:0 | word:magister ; score:0 ; genitive:trî ; gender:m
 word:Pflugtier, Herde ; score:0 | word:armentum ; score:0 ; genitive:î ; gender:n
 word:königlich ; score:0 | word:rêgius ; score:0 ; (f):rêgia ; (n):rêgium

@@ -1,12 +1,12 @@
 word:streiten, wetteifern ; score:0 | word:certâre ; score:0
 word:aber ; score:0 | word:autem ; score:0
 word:wer (von zweien)? ; score:0 | word:uter ; score:0 ; (f):utra ; (n):utrum
-word:lenken, leiten ; score:0 | word:regere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):rêxî ; (PPP):rêctum
+word:lenken, leiten ; score:0 | word:regere ; score:0 ; <type>:verb (inf) ; (present):regô ; (perfect):rêxî ; (PPP):rêctum
 word:endlich, zuletzt ; score:0 | word:postrêmô ; score:0
 word:Vorzeichen; Augurium ; score:0 | word:augurium ; score:0 ; genitive:î ; gender:n
-word:gefallen ; score:0 | word:placêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):cuî ; (PPP):placitum
+word:gefallen ; score:0 | word:placêre ; score:0 ; <type>:verb (inf) ; (present):placeô ; (perfect):placuî ; (PPP):placitum
 word:der Senat beschlie◊t ; score:0 | word:senatuî placet ; score:0
-word:erscheinen ; score:0 | word:apparêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):uî ; (PPP):apparitum
+word:erscheinen ; score:0 | word:apparêre ; score:0 ; <type>:verb (inf) ; (present):appareô ; (perfect):apparuî ; (PPP):apparitum
 word:Platz, Sitz ; score:0 | word:sêdês ; score:0 ; genitive:is ; gender:f
 word:Aventin (einer der sieben Hügel Roms) ; score:0 | word:Aventînus ; score:0 ; genitive:î ; gender:m
 word:Geier ; score:0 | word:vultur ; score:0 ; genitive:is ; gender:m
@@ -16,21 +16,21 @@ word:da, als (plötzlich) ; score:0 | word:cum ; score:0 ; case(s):ind
 word:doppelt ; score:0 | word:duplex ; score:0 ; genitive:plicis
 word:Anzahl, Zahl ; score:0 | word:numerus ; score:0 ; genitive:î ; gender:m
 word:Palatin (einer der sieben Hügel Roms) ; score:0 | word:Palâtium ; score:0 ; genitive:î ; gender:n
-word:sitzen ; score:0 | word:sedêre ; score:0 ; <type>:verb (inf) ; (present):eô ; (perfect):sêdî ; (PPP):sessum
+word:sitzen ; score:0 | word:sedêre ; score:0 ; <type>:verb (inf) ; (present):sedeô ; (perfect):sêdî ; (PPP):sessum
 word:hier: Anhängerschaft ; score:0 | word:multitûdô ; score:0 ; genitive:inis ; gender:f
 word:der eine (von zweien) ; score:0 | word:alter ; score:0 ; (f):altera ; (n):alterum
 word:Sache, Dinge, Angelegenheit ; score:0 | word:rês ; score:0 ; genitive:reî ; gender:f
-word:entscheiden ; score:0 | word:dêcernere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):crêvî ; (PPP):crêtum
-word:streiten, behaupten ; score:0 | word:contendere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):tendî ; (PPP):tentum
+word:entscheiden ; score:0 | word:dêcernere ; score:0 ; <type>:verb (inf) ; (present):dêcernô ; (perfect):dêcrêvî ; (PPP):dêcrêtum
+word:streiten, behaupten ; score:0 | word:contendere ; score:0 ; <type>:verb (inf) ; (present):contendô ; (perfect):contendî ; (PPP):contentum
 word:Vogel ; score:0 | word:avis ; score:0 ; genitive:is ; gender:f
 word:Wortwechsel ; score:0 | word:altercâtiô ; score:0 ; genitive:ônis ; gender:f
 word:Töten, Mord, Gemetzel ; score:0 | word:caedes ; score:0 ; genitive:is ; gender:f
-word:rauben; hier pass.: sich hinrei◊en lassen ; score:0 | word:rapere ; score:0 ; <type>:verb (inf) ; (present):iô ; (perfect):rapuî ; (PPP):raptum
+word:rauben; hier pass.: sich hinrei◊en lassen ; score:0 | word:rapere ; score:0 ; <type>:verb (inf) ; (present):rapiô ; (perfect):rapuî ; (PPP):raptum
 word:Verwirrung, Schar, Haufe ; score:0 | word:turba ; score:0 ; genitive:ae ; gender:f
 word:getroffen ; score:0 | word:îctus ; score:0 ; (f):îcta ; (n):îctum
-word:fallen, umkommen ; score:0 | word:cadere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):cecidî ; (PPP):câsûrum
-word:an-, entzünden ; score:0 | word:incendere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):incendî ; (PPP):incensum
-word:hier: übersetzen ; score:0 | word:trânsgredî ; score:0 ; <type>:verb (inf) ; (present):ior ; (perfect):gressus sum ; (PPP):transgressum
+word:fallen, umkommen ; score:0 | word:cadere ; score:0 ; <type>:verb (inf) ; (present):cadô ; (perfect):cecidî ; (PPP):câsûrum
+word:an-, entzünden ; score:0 | word:incendere ; score:0 ; <type>:verb (inf) ; (present):incendô ; (perfect):incendî ; (PPP):incensum
+word:hier: übersetzen ; score:0 | word:trânsgredî ; score:0 ; <type>:verb (inf) ; (present):trânsgredior ; (perfect):trânsgressus sum ; (PPP):transgressum
 word:Philosoph aus Milet, einer der 7 Weisen ; score:0 | word:Thâles ; score:0 ; genitive:is ; gender:m
 word:milesisch, aus Milet ; score:0 | word:Mîlêsius ; score:0 ; (f):Mîlêsia ; (n):Mîlêsium
 word:Abnahme, Abfall; Finsternis ; score:0 | word:dêfectiô ; score:0 ; genitive:ônis ; gender:f
@@ -40,6 +40,6 @@ word:Erfolg ; score:0 | word:êventus ; score:0 ; genitive:ûs ; gender:m
 word:berichten, erzählen ; score:0 | word:narrâre ; score:0
 word:Buchstabe ; score:0 | word:lit(t)era ; score:0 ; genitive:ae ; gender:f
 word:Brief, Wissenschaft ; score:0 | word:lit(t)erae ; score:0 ; genitive:ârum ; gender:f pl.
-word:schreiben ; score:0 | word:scribere ; score:0 ; <type>:verb (inf) ; (present):ô ; (perfect):scrîpsî ; (PPP):scrîptum
+word:schreiben ; score:0 | word:scribere ; score:0 ; <type>:verb (inf) ; (present):scribô ; (perfect):scrîpsî ; (PPP):scrîptum
 word:Hand, Schar ; score:0 | word:manus ; score:0 ; genitive:ûs ; gender:f
 word:eigen, eigentümlich ; score:0 | word:proprius ; score:0 ; (f):propria ; (n):proprium
