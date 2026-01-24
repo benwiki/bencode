@@ -439,7 +439,25 @@ class KitForm(BoxLayout):
         )
 
 
-class MenuScreen(Screen):
+class LandscapeAwareScreen(Screen):
+    is_landscape = BooleanProperty(False)
+
+    def on_kv_post(self, base_widget) -> None:  # type: ignore[override]
+        super().on_kv_post(base_widget)
+        self._update_orientation()
+        try:
+            Window.bind(size=self._update_orientation)
+        except Exception:
+            pass
+
+    def _update_orientation(self, *_args) -> None:
+        try:
+            self.is_landscape = bool(Window.width >= Window.height)
+        except Exception:
+            self.is_landscape = False
+
+
+class MenuScreen(LandscapeAwareScreen):
     def go_practice(self) -> None:
         app = App.get_running_app()
         mgr = self.manager
@@ -472,7 +490,7 @@ class PracticeSetupScreen(Screen):
     error = StringProperty("")
 
 
-class SettingsScreen(Screen):
+class SettingsScreen(LandscapeAwareScreen):
     error = StringProperty("")
 
     data_dir = StringProperty("")
@@ -571,32 +589,15 @@ class SettingsScreen(Screen):
             pass
 
 
-class PracticeScreen(Screen):
+class PracticeScreen(LandscapeAwareScreen):
     prompt = StringProperty("")
     status = StringProperty("")
     summary = StringProperty("")
-
-    is_landscape = BooleanProperty(False)
 
     menu_open = BooleanProperty(False)
     ended = BooleanProperty(False)
 
     session: Optional[PracticeSession] = None
-
-    def on_kv_post(self, base_widget) -> None:  # type: ignore[override]
-        super().on_kv_post(base_widget)
-
-        def update(*_args) -> None:
-            try:
-                self.is_landscape = bool(Window.width >= Window.height)
-            except Exception:
-                self.is_landscape = False
-
-        update()
-        try:
-            Window.bind(size=update)
-        except Exception:
-            pass
 
     def go_menu(self) -> None:
         # Keep session for resume (unless user ended with '#')
@@ -1173,7 +1174,12 @@ class VocabLearnerApp(App):
                 bool(getattr(self, "auto_continue", False))
                 and bool(getattr(screen.session, "done", False))
                 and (not bool(getattr(screen.session, "ended_by_user", False)))
-                and (not self.model.all_words_dead(gloss=screen.session.gloss, answer_lang=screen.session.answer_lang))
+                and (
+                    not self.model.all_words_dead(
+                        gloss=screen.session.gloss,
+                        answer_lang=screen.session.answer_lang,
+                    )
+                )
                 and rollovers < max_rollovers
             ):
                 rollovers += 1
