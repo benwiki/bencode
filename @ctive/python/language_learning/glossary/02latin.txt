@@ -1,54 +1,54 @@
-word:ich ; score:0 | word:ego ; score:1
-word:er, sie, es sagte (eingeschoben) ; score:0 | word:inquit ; score:1
-word:verbrennen ; score:0 | word:cremâre ; score:-1
-word:Ort, Platz, Stelle ; score:0 | word:locus ; score:5 ; genitive:î ; gender:m
-word:Gebiet, Gelände ; score:0 | word:loca ; score:2 ; genitive:ôrum ; gender:n pl.
-word:wohnen, bewohnen ; score:0 | word:habitâre ; score:-1
-word:geeignet ; score:0 | word:idôneus ; score:1 ; (f):idônea ; (n):idôneum
-word:(eifrig) suchen ; score:0 | word:quaeritâre ; score:-3
-word:Mann ; score:0 | word:vir ; score:5 ; genitive:î ; gender:m
-word:Krieg ; score:0 | word:bellum ; score:2 ; genitive:î ; gender:n
-word:erprobt ; score:0 | word:probâtus ; score:2 ; (f):probâta ; (n):probâtum
-word:geben ; score:0 | word:dare ; score:8 ; <type>:verb (inf) ; (present):dô ; (perfect):dedî ; (PPP):datum
-word:rechts ; score:0 | word:dexter ; score:3 ; (f):dextra ; (n):dextrum
-word:die rechte Hand ; score:0 | word:dextra ; score:5 ; genitive:ae ; gender:f
-word:Freundschaft ; score:0 | word:amîcitia ; score:6 ; genitive:ae ; gender:f
-word:befestigen ; score:0 | word:firmâre ; score:-2
-word:Tochter ; score:0 | word:filia ; score:5 ; genitive:ae ; gender:f
-word:Ehe ; score:0 | word:mâtrimônium ; score:-1 ; genitive:î ; gender:n
-word:neu ; score:0 | word:novus ; score:6 ; (f):nova ; (n):novum
-word:Sohn ; score:0 | word:fîlius ; score:2 ; genitive:î ; gender:m
-word:nennen ; score:0 | word:nominâre ; score:2
-word:welcher ; score:0 | word:quî ; score:1
-word:welche ; score:0 | word:quae ; score:1
-word:welches ; score:0 | word:quod ; score:2
-word:anreden, nennen ; score:0 | word:appellâre ; score:1
-word:Buch ; score:0 | word:liber ; score:4 ; genitive:librî ; gender:m
-word:Geschenk ; score:0 | word:dônum ; score:-3 ; genitive:î ; gender:n
-word:Buche ; score:0 | word:fâgus ; score:-1 ; genitive:î ; gender:f
-word:hoch, tief ; score:0 | word:altus ; score:1 ; (f):alta ; (n):altum
-word:Dichter ; score:0 | word:poêta ; score:6 ; genitive:ae ; gender:m
-word:gelehrt ; score:0 | word:doctus ; score:2 ; (f):docta ; (n):doctum
-word:heilig, geweiht, verflucht ; score:0 | word:sacer ; score:6 ; (f):sacra ; (n):sacrum
-word:krank, bekümmert, traurig ; score:0 | word:aeger ; score:1 ; (f):aegra ; (n):aegrum
-word:elend, unglücklich, ärmlich ; score:0 | word:miser ; score:6 ; (f):misera ; (n):miserum
-word:schauen, anschauen, betrachten ; score:0 | word:spectâre ; score:-1
-word:fest, stark, zuverlässig ; score:0 | word:firmus ; score:-2 ; (f):firma ; (n):firmum
-word:Schwiegervater ; score:0 | word:socer ; score:-3 ; genitive:î ; gender:m
-word:griechisch ; score:0 | word:Graecus ; score:6 ; (f):Graeca ; (n):Graecum
-word:Grieche ; score:0 | word:Graecus ; score:4 ; genitive:î ; gender:m
-word:durch ; score:0 | word:per ; score:-2 ; case(s):acc
-word:rauh, hart, grob ; score:0 | word:asper ; score:-3 ; (f):aspera ; (n):asperum
-word:Stern ; score:0 | word:astrum ; score:1 ; genitive:î ; gender:n
-word:Boden ; score:0 | word:solum ; score:1 ; genitive:î ; gender:n
-word:Himmel ; score:0 | word:caelum ; score:-3 ; genitive:î ; gender:n
-word:die Unterirdischen, Unterwelt ; score:0 | word:înferî ; score:-3 ; genitive:ôrum ; gender:m pl.
-word:Zweifel ; score:0 | word:dubium ; score:-3 ; genitive:î ; gender:n
-word:für ; score:0 | word:prô ; score:1 ; case(s):abl
-word:Angeklagter ; score:0 | word:reus ; score:-2 ; genitive:î ; gender:m
-word:Homer ; score:0 | word:Homêrus ; score:5 ; genitive:î ; gender:m
-word:groß ; score:0 | word:magnus ; score:5 ; (f):magna ; (n):magnum
-word:gegen ; score:0 | word:contra ; score:4 ; case(s):acc
-word:(be)singen ; score:0 | word:cantâre ; score:1
-word:zwischen ; score:0 | word:inter ; score:3 ; case(s):acc
-word:viel ; score:0 | word:multus ; score:6 ; (f):multa ; (n):multum
+word:ich ; score:0 | word:ego ; score:0
+word:er, sie, es sagte (eingeschoben) ; score:0 | word:inquit ; score:0
+word:verbrennen ; score:0 | word:cremâre ; score:0
+word:Ort, Platz, Stelle ; score:0 | word:locus ; score:0 ; genitive:î ; gender:m
+word:Gebiet, Gelände ; score:0 | word:loca ; score:0 ; genitive:ôrum ; gender:n pl.
+word:wohnen, bewohnen ; score:0 | word:habitâre ; score:0
+word:geeignet ; score:0 | word:idôneus ; score:0 ; (f):idônea ; (n):idôneum
+word:(eifrig) suchen ; score:0 | word:quaeritâre ; score:0
+word:Mann ; score:0 | word:vir ; score:0 ; genitive:î ; gender:m
+word:Krieg ; score:0 | word:bellum ; score:0 ; genitive:î ; gender:n
+word:erprobt ; score:0 | word:probâtus ; score:0 ; (f):probâta ; (n):probâtum
+word:geben ; score:0 | word:dare ; score:0 ; <type>:verb (inf) ; (present):dô ; (perfect):dedî ; (PPP):datum
+word:rechts ; score:0 | word:dexter ; score:0 ; (f):dextra ; (n):dextrum
+word:die rechte Hand ; score:0 | word:dextra ; score:0 ; genitive:ae ; gender:f
+word:Freundschaft ; score:0 | word:amîcitia ; score:0 ; genitive:ae ; gender:f
+word:befestigen ; score:0 | word:firmâre ; score:0
+word:Tochter ; score:0 | word:filia ; score:0 ; genitive:ae ; gender:f
+word:Ehe ; score:0 | word:mâtrimônium ; score:0 ; genitive:î ; gender:n
+word:neu ; score:0 | word:novus ; score:0 ; (f):nova ; (n):novum
+word:Sohn ; score:0 | word:fîlius ; score:0 ; genitive:î ; gender:m
+word:nennen ; score:0 | word:nominâre ; score:0
+word:welcher ; score:0 | word:quî ; score:0
+word:welche ; score:0 | word:quae ; score:0
+word:welches ; score:0 | word:quod ; score:0
+word:anreden, nennen ; score:0 | word:appellâre ; score:0
+word:Buch ; score:0 | word:liber ; score:0 ; genitive:librî ; gender:m
+word:Geschenk ; score:0 | word:dônum ; score:0 ; genitive:î ; gender:n
+word:Buche ; score:0 | word:fâgus ; score:0 ; genitive:î ; gender:f
+word:hoch, tief ; score:0 | word:altus ; score:0 ; (f):alta ; (n):altum
+word:Dichter ; score:0 | word:poêta ; score:0 ; genitive:ae ; gender:m
+word:gelehrt ; score:0 | word:doctus ; score:0 ; (f):docta ; (n):doctum
+word:heilig, geweiht, verflucht ; score:0 | word:sacer ; score:0 ; (f):sacra ; (n):sacrum
+word:krank, bekümmert, traurig ; score:0 | word:aeger ; score:0 ; (f):aegra ; (n):aegrum
+word:elend, unglücklich, ärmlich ; score:0 | word:miser ; score:0 ; (f):misera ; (n):miserum
+word:schauen, anschauen, betrachten ; score:0 | word:spectâre ; score:0
+word:fest, stark, zuverlässig ; score:0 | word:firmus ; score:0 ; (f):firma ; (n):firmum
+word:Schwiegervater ; score:0 | word:socer ; score:0 ; genitive:î ; gender:m
+word:griechisch ; score:0 | word:Graecus ; score:0 ; (f):Graeca ; (n):Graecum
+word:Grieche ; score:0 | word:Graecus ; score:0 ; genitive:î ; gender:m
+word:durch ; score:0 | word:per ; score:0 ; case(s):acc
+word:rauh, hart, grob ; score:0 | word:asper ; score:0 ; (f):aspera ; (n):asperum
+word:Stern ; score:0 | word:astrum ; score:0 ; genitive:î ; gender:n
+word:Boden ; score:0 | word:solum ; score:0 ; genitive:î ; gender:n
+word:Himmel ; score:0 | word:caelum ; score:0 ; genitive:î ; gender:n
+word:die Unterirdischen, Unterwelt ; score:0 | word:înferî ; score:0 ; genitive:ôrum ; gender:m pl.
+word:Zweifel ; score:0 | word:dubium ; score:0 ; genitive:î ; gender:n
+word:für ; score:0 | word:prô ; score:0 ; case(s):abl
+word:Angeklagter ; score:0 | word:reus ; score:0 ; genitive:î ; gender:m
+word:Homer ; score:0 | word:Homêrus ; score:0 ; genitive:î ; gender:m
+word:groß ; score:0 | word:magnus ; score:0 ; (f):magna ; (n):magnum
+word:gegen ; score:0 | word:contra ; score:0 ; case(s):acc
+word:(be)singen ; score:0 | word:cantâre ; score:0
+word:zwischen ; score:0 | word:inter ; score:0 ; case(s):acc
+word:viel ; score:0 | word:multus ; score:0 ; (f):multa ; (n):multum
