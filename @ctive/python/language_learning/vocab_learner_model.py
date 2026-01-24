@@ -57,7 +57,10 @@ class Kit(Enum):
                 return None
 
         base_path = os.path.join(base_dir, self.value) if base_dir else ""
-        fb_path = os.path.join(fallback_dir, self.value) if fallback_dir else ""
+        # Bundled resources live under app_dir/assets/...
+        fb_path = (
+            os.path.join(fallback_dir, "assets", self.value) if fallback_dir else ""
+        )
 
         cfg = _try_load(base_path)
         if cfg is not None:
@@ -252,7 +255,15 @@ class VocabLearnerModel:
         self.app_dir = app_dir or os.getcwd()
 
         os.makedirs(self.base_dir, exist_ok=True)
-        self.glossary_dir = os.path.join(self.base_dir, "glossary")
+
+        legacy_glossary_dir = os.path.join(self.base_dir, "glossary")
+        self.glossary_dir = os.path.join(self.base_dir, "glossaries")
+        if os.path.isdir(legacy_glossary_dir) and not os.path.isdir(self.glossary_dir):
+            try:
+                os.rename(legacy_glossary_dir, self.glossary_dir)
+            except Exception:
+                # Best-effort only.
+                pass
         os.makedirs(self.glossary_dir, exist_ok=True)
 
         self._bootstrap_user_data()
@@ -297,7 +308,7 @@ class VocabLearnerModel:
             except Exception:
                 has_user_gloss = False
 
-            bundled_gloss_dir = os.path.join(self.app_dir, "glossary")
+            bundled_gloss_dir = os.path.join(self.app_dir, "assets", "glossaries")
             if (
                 (not has_user_gloss)
                 and os.path.isdir(bundled_gloss_dir)
@@ -549,7 +560,9 @@ class VocabLearnerModel:
                     for k in w.get(answer_lang, {})
                     if k not in (WORD_PREFIX, SCORE_PREFIX, TYPE_PREFIX)
                 ]
-                effective = int(w[answer_lang].get(SCORE_PREFIX, 0)) // max(1, len(details))
+                effective = int(w[answer_lang].get(SCORE_PREFIX, 0)) // max(
+                    1, len(details)
+                )
                 if effective < self.dead_pt:
                     return False
             except Exception:
@@ -718,9 +731,15 @@ class PracticeSession:
 
             # compute effective score like CLI (score divided by detail count)
             len_detail = len(
-                [k for k in w[self.answer_lang] if k not in (WORD_PREFIX, SCORE_PREFIX, TYPE_PREFIX)]
+                [
+                    k
+                    for k in w[self.answer_lang]
+                    if k not in (WORD_PREFIX, SCORE_PREFIX, TYPE_PREFIX)
+                ]
             )
-            wordscore = int(w[self.answer_lang].get(SCORE_PREFIX, 0)) // max(1, len_detail)
+            wordscore = int(w[self.answer_lang].get(SCORE_PREFIX, 0)) // max(
+                1, len_detail
+            )
 
             if wordscore >= self.model.dead_pt:
                 continue
@@ -734,7 +753,9 @@ class PracticeSession:
             self.solutions = self.model.find(
                 w[self.question_lang][WORD_PREFIX], self.question_lang, self.gloss
             )
-            self.solution_words = [s[self.answer_lang][WORD_PREFIX] for s in self.solutions]
+            self.solution_words = [
+                s[self.answer_lang][WORD_PREFIX] for s in self.solutions
+            ]
             self.message = ""
             return
 
@@ -880,7 +901,9 @@ class PracticeSession:
 
             expected_str = str(detail_solution)
             if given_norm in _variants(expected_str):
-                self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) + 1
+                self.to_change[SCORE_PREFIX] = (
+                    int(self.to_change.get(SCORE_PREFIX, 0)) + 1
+                )
                 self.correct_pt += 1
                 self.model.save_glossary(self.gloss)
                 self.message = "Correct detail."
@@ -906,7 +929,9 @@ class PracticeSession:
                         self.message = self.text.close_but_wrong
                         self.last_was_close = True
                         return
-                self.to_change[SCORE_PREFIX] = int(self.to_change.get(SCORE_PREFIX, 0)) - 1
+                self.to_change[SCORE_PREFIX] = (
+                    int(self.to_change.get(SCORE_PREFIX, 0)) - 1
+                )
                 self.incorrect_pt += 1
                 self.model.save_glossary(self.gloss)
                 self.message = "Incorrect detail."
@@ -927,8 +952,10 @@ class PracticeSession:
 
                 # If this word comes from a <showtype>: true branch (stored as <type>),
                 # then failing the FIRST detail should immediately skip the rest.
-                if self.detail_i == 0 and self.cur_word and (
-                    TYPE_PREFIX in self.cur_word.get(self.answer_lang, {})
+                if (
+                    self.detail_i == 0
+                    and self.cur_word
+                    and (TYPE_PREFIX in self.cur_word.get(self.answer_lang, {}))
                 ):
                     self.detail_items = []
                     self.detail_i = 0
@@ -967,7 +994,9 @@ class PracticeSession:
 
         if match is not None:
             try:
-                self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+                self._stats["words_practiced"] = (
+                    int(self._stats.get("words_practiced", 0)) + 1
+                )
             except Exception:
                 pass
             self.to_change = match[self.answer_lang]
@@ -978,7 +1007,7 @@ class PracticeSession:
             self.last_word_given = text
             self.history_items = [
                 {
-                    "label": f'{self.cur_word[self.question_lang][WORD_PREFIX]} → {self.answer_lang}',
+                    "label": f"{self.cur_word[self.question_lang][WORD_PREFIX]} → {self.answer_lang}",
                     "given": text,
                     "expected": text,
                     "correct": True,
@@ -1026,7 +1055,9 @@ class PracticeSession:
 
         if type_mismatch:
             try:
-                self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+                self._stats["words_practiced"] = (
+                    int(self._stats.get("words_practiced", 0)) + 1
+                )
             except Exception:
                 pass
             # Treat as incorrect (type mismatch) and move on.
@@ -1058,7 +1089,9 @@ class PracticeSession:
 
         # wrong (or close-but-wrong) word
         try:
-            self._stats["words_practiced"] = int(self._stats.get("words_practiced", 0)) + 1
+            self._stats["words_practiced"] = (
+                int(self._stats.get("words_practiced", 0)) + 1
+            )
         except Exception:
             pass
         for sol in self.solutions:

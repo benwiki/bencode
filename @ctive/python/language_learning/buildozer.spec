@@ -34,11 +34,11 @@ android.minapi = 21
 android.permissions = 
 
 # (list) Include your data files
-# This ensures kits/, languages/, and your txt files are bundled.
+# This ensures assets/kits/, assets/languages/, and assets/glossaries/ are bundled.
 source.include_exts = py,kv,json,txt
 
 # (list) Files or directories to exclude
-source.exclude_dirs = __pycache__,.git,.venv
+source.exclude_dirs = __pycache__,.git,.venv,build,dist,bin,vocab_learner-ios,.mypy_cache,.cache
 
 # (str) Supported orientation (portrait, landscape)
 orientation = portrait, landscape

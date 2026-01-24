@@ -2,6 +2,7 @@ from random import shuffle, random
 from functools import reduce
 from enum import Enum
 import json
+import os
 import sys
 from langtext import Lang, LangText  # Import all language text classes
 from langgen import generate_language_setup
@@ -59,12 +60,15 @@ class Kit(Enum):
     """Defines the available language kit configurations."""
 
     # We now only need one entry pointing to the new multi-language kit
-    LATIN = "kits/kit_latin.json"
+    LATIN = "assets/kits/kit_latin.json"
 
     def load_config(self):
         """Loads the configuration dictionary from the associated JSON file."""
         try:
-            with open(self.value, "r", encoding="utf-8") as f:
+            path = self.value
+            if not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(__file__), path)
+            with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except FileNotFoundError:
             print(
@@ -206,7 +210,13 @@ class NyelvTanulas:
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def correct_input(
-        self, string, mytype=None, values=None, segment=True, numbered=False, default=None
+        self,
+        string,
+        mytype=None,
+        values=None,
+        segment=True,
+        numbered=False,
+        default=None,
     ):
 
         if numbered:
@@ -219,7 +229,10 @@ class NyelvTanulas:
             mytype = int
             segment = False
             if default is not None and answer == "":
-                assert isinstance(default, int) and -(len(values) - 1) <= default <= len(values) - 1
+                assert (
+                    isinstance(default, int)
+                    and -(len(values) - 1) <= default <= len(values) - 1
+                )
                 return values[default]
         else:
             answer = input(string)
@@ -735,8 +748,7 @@ class NyelvTanulas:
         elif kit["<mode>"] == "or":
             keys = [k for k in kit.keys() if not k.startswith("<")]
             which = self.correct_input(
-                self.text.choose_word_form, numbered=True, values=keys,
-                default=-1
+                self.text.choose_word_form, numbered=True, values=keys, default=-1
             )
             if kit[which] is None:
                 return {"<type>": which} if kit.get("<showtype>") else {}

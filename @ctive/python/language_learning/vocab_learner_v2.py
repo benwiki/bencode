@@ -2,11 +2,13 @@ from random import shuffle, random
 from functools import reduce
 from enum import Enum
 import json
+import os
 import sys
-from langtext import Lang, LangText # Import all language text classes
-#-------------------------------
+from langtext import Lang, LangText  # Import all language text classes
+
+# -------------------------------
 KIT_GERMAN = {
-    "<mode>": "apart", # mode: apart / both (should the points be counted for both languages or separately)
+    "<mode>": "apart",  # mode: apart / both (should the points be counted for both languages or separately)
     "magyar": {
         "<type>": "mothertongue",
     },
@@ -15,7 +17,7 @@ KIT_GERMAN = {
         "<mode>": "and",
         "szófaj": {
             "<mode>": "or",
-            "főnév" : {
+            "főnév": {
                 "<mode>": "and",
                 "névelő": None,
                 "tbsz": None,
@@ -38,26 +40,36 @@ KIT_GERMAN = {
                 "semleges nem": None,
             },
             "kifejezés": None,
-        }
-    }
+        },
+    },
 }
 
 
 class Kit(Enum):
     """Defines the available language kit configurations."""
+
     # We now only need one entry pointing to the new multi-language kit
-    LATIN = 'kits/kit_latin.json'
+    LATIN = "assets/kits/kit_latin.json"
 
     def load_config(self):
         """Loads the configuration dictionary from the associated JSON file."""
         try:
-            with open(self.value, 'r', encoding='utf-8') as f:
+            path = self.value
+            if not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(__file__), path)
+            with open(path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except FileNotFoundError:
-            print(f"ERROR: Kit file {self.value} not found. Using empty kit.", file=sys.stderr)
+            print(
+                f"ERROR: Kit file {self.value} not found. Using empty kit.",
+                file=sys.stderr,
+            )
             return {}
         except json.JSONDecodeError:
-            print(f"ERROR: Kit file {self.value} has invalid JSON. Using empty kit.", file=sys.stderr)
+            print(
+                f"ERROR: Kit file {self.value} has invalid JSON. Using empty kit.",
+                file=sys.stderr,
+            )
             return {}
 
 
@@ -67,7 +79,7 @@ class NyelvTanulas:
     dead_pt = 15
     boost_pt = -10
     auto_continue_practice = True
-    
+
     running = True
 
     def __init__(self, kit: Kit, lang: Lang = Lang.ENGLISH):
@@ -79,7 +91,15 @@ class NyelvTanulas:
             self.mlang,
             self.learnlang,
         ]
-        self.commands = [self.practice, self.add_new, self.add_glossary, self.state, self.settings, self.out, self.find_similar]
+        self.commands = [
+            self.practice,
+            self.add_new,
+            self.add_glossary,
+            self.state,
+            self.settings,
+            self.out,
+            self.find_similar,
+        ]
 
         try:
             with open("glossaries.txt", "r", encoding="utf-8") as glossfile:
@@ -88,30 +108,47 @@ class NyelvTanulas:
             self.words = {}
             for gloss in self.glossaries:
                 try:
-                    with open(gloss+".txt", "r", encoding="utf-8") as file:
-                        temp = [[[[int(c.strip()) if c.strip().isnumeric() or c[1:].strip().isnumeric() else c.strip()
-                                          for c in comp.split(":")]
-                                         for comp in lang.split(" ; ")]
-                                        for lang in line.split(" | ")]
-                                       for line in file]
-                                       
-                        self.words[gloss] = [{self.languages[i] : {key:val for key, val in word[i]}
-                                              for i in range(2)}
-                                             for word in temp]
+                    with open(gloss + ".txt", "r", encoding="utf-8") as file:
+                        temp = [
+                            [
+                                [
+                                    [
+                                        (
+                                            int(c.strip())
+                                            if c.strip().isnumeric()
+                                            or c[1:].strip().isnumeric()
+                                            else c.strip()
+                                        )
+                                        for c in comp.split(":")
+                                    ]
+                                    for comp in lang.split(" ; ")
+                                ]
+                                for lang in line.split(" | ")
+                            ]
+                            for line in file
+                        ]
+
+                        self.words[gloss] = [
+                            {
+                                self.languages[i]: {key: val for key, val in word[i]}
+                                for i in range(2)
+                            }
+                            for word in temp
+                        ]
                 except FileNotFoundError as e:
-                    file = open(gloss+".txt", "w")
+                    file = open(gloss + ".txt", "w")
                     file.close()
-                    self.words[gloss]=[]
+                    self.words[gloss] = []
                 except Exception as e:
                     # Using internationalized text for error handling
                     print(e, self.text.error_reading_glossary.format(gloss))
-                    self.words[gloss]=[]
-            
-            self.all_words = reduce(lambda a,b: a+b, self.words.values())
+                    self.words[gloss] = []
+
+            self.all_words = reduce(lambda a, b: a + b, self.words.values())
 
             self.check_for_doubles()
             self.check_for_glossary_length()
-                    
+
         except FileNotFoundError as e:
             file = open("glossaries.txt", "w")
             file.close()
@@ -121,7 +158,7 @@ class NyelvTanulas:
             print(e, self.text.error_opening_glossaries)
             self.words = {}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_lang(self, langtype: str):
         assert langtype in ["mothertongue", "learninglang"], "Wrong type!"
         for lang, props in self.kit.items():
@@ -129,28 +166,41 @@ class NyelvTanulas:
                 continue
             if props.get("<type>") == langtype:
                 return lang
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def start(self):
         while self.running:
-            whattodo = self.correct_input(self.text.menu, int, list(range(1, len(self.commands)+1)))
-            self.commands[whattodo-1]()
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            whattodo = self.correct_input(
+                self.text.menu, int, list(range(1, len(self.commands) + 1))
+            )
+            self.commands[whattodo - 1]()
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def out(self):
         # Using internationalized text
         confirm = input(self.text.goodbye)
         self.running = False
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def settings(self):
         pass
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def correct_input(self, string, mytype=None, values=None, segment=True, numbered=False):
-        
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def correct_input(
+        self, string, mytype=None, values=None, segment=True, numbered=False
+    ):
+
         if numbered:
-            answer = input(f"{string}\n"+'\n'.join(f"{i+1}. {val}" for i, val in enumerate(values))+"\n"+self.text.choose_number.format(1, len(values)))
+            answer = input(
+                f"{string}\n"
+                + "\n".join(f"{i+1}. {val}" for i, val in enumerate(values))
+                + "\n"
+                + self.text.choose_number.format(1, len(values))
+            )
             mytype = int
             segment = False
         else:
@@ -159,36 +209,54 @@ class NyelvTanulas:
             try:
                 answer = mytype(answer)
                 if numbered and 1 <= answer <= len(values):
-                    return values[answer-1]
+                    return values[answer - 1]
                 elif answer in values:
                     return answer
                 elif segment:
-                    starts = [val for val in values if isinstance(val, str) and val.startswith(answer)]
+                    starts = [
+                        val
+                        for val in values
+                        if isinstance(val, str) and val.startswith(answer)
+                    ]
                     if len(starts) > 1:
                         # Using internationalized text
-                        print(self.text.multiple_options_error.format(", ".join(starts)))
+                        print(
+                            self.text.multiple_options_error.format(", ".join(starts))
+                        )
                     elif len(starts) == 1:
                         return starts[0]
             except Exception as e:
                 # Using internationalized text
-                print(e, self.text.conversion_error.format("Konverziós", "correct_input"))
+                print(
+                    e, self.text.conversion_error.format("Konverziós", "correct_input")
+                )
             # Using internationalized text
             input(self.text.invalid_input_prompt)
             answer = input(string)
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def practice(self):
-        
+
         # Using internationalized text
-        gloss = self.correct_input(self.text.which_glossary.format("\n - ".join(self.glossaries)), str, self.glossaries)
-        
-        if len(self.words)==0 or len(self.words[gloss]) == 0:
+        gloss = self.correct_input(
+            self.text.which_glossary.format("\n - ".join(self.glossaries)),
+            str,
+            self.glossaries,
+        )
+
+        if len(self.words) == 0 or len(self.words[gloss]) == 0:
             # Using internationalized text
             print(self.text.nothing_to_practice)
             return
-        
+
         # Using internationalized text and f-string
-        lang = self.correct_input(self.text.practice_mode_select.format(self.mlang, self.learnlang, self.mlang, self.learnlang), str, [self.mlang, self.learnlang])
+        lang = self.correct_input(
+            self.text.practice_mode_select.format(
+                self.mlang, self.learnlang, self.mlang, self.learnlang
+            ),
+            str,
+            [self.mlang, self.learnlang],
+        )
         questionlang = self.mlang if lang == self.learnlang else self.learnlang
         correct_pt, incorrect_pt = 0, 0
 
@@ -200,7 +268,9 @@ class NyelvTanulas:
             for word in self.words[gloss]:
                 wordscore = word[lang]["pont"]
                 if wordscore < self.lower_boundary:
-                    for i in range(abs(wordscore-self.lower_boundary)): # minden mínuszpont egy további kérdezést jelent. Boost mode.
+                    for i in range(
+                        abs(wordscore - self.lower_boundary)
+                    ):  # minden mínuszpont egy további kérdezést jelent. Boost mode.
                         practice_words.append(word)
             shuffle(practice_words)
 
@@ -211,83 +281,116 @@ class NyelvTanulas:
                 if wordscore >= self.dead_pt:
                     dead += 1
                     continue
-                if wordscore > self.upper_boundary and random() < (wordscore-self.upper_boundary)/(self.dead_pt-self.upper_boundary):
+                if wordscore > self.upper_boundary and random() < (
+                    wordscore - self.upper_boundary
+                ) / (self.dead_pt - self.upper_boundary):
                     continue
-                
+
                 done = False
-                solutions = self.find(cur_word[questionlang]["szo"], questionlang, gloss)
+                solutions = self.find(
+                    cur_word[questionlang]["szo"], questionlang, gloss
+                )
                 solution_words = [word[lang]["szo"] for word in solutions]
-                
-                answer = input("\n"+cur_word[questionlang]["szo"]+": ")
-                if answer == "#": break
+
+                answer = input("\n" + cur_word[questionlang]["szo"] + ": ")
+                if answer == "#":
+                    break
                 elif answer == "@":
-                    for word in solutions: word[lang]["pont"] = self.dead_pt
+                    for word in solutions:
+                        word[lang]["pont"] = self.dead_pt
                     # Using internationalized text
-                    confirm = input(self.text.max_points_confirm.format(", ".join(solution_words)))
+                    confirm = input(
+                        self.text.max_points_confirm.format(", ".join(solution_words))
+                    )
                     continue
                 elif answer == "*":
-                    for word in solutions: word[lang]["pont"] = self.boost_pt
+                    for word in solutions:
+                        word[lang]["pont"] = self.boost_pt
                     # Using internationalized text
-                    confirm = input(self.text.boosted_confirm.format(", ".join(solution_words), str(self.boost_pt)))
+                    confirm = input(
+                        self.text.boosted_confirm.format(
+                            ", ".join(solution_words), str(self.boost_pt)
+                        )
+                    )
                     break
-                
-                while answer in solution_words and solutions[solution_words.index(answer)][lang]["pont"] >= self.dead_pt:
+
+                while (
+                    answer in solution_words
+                    and solutions[solution_words.index(answer)][lang]["pont"]
+                    >= self.dead_pt
+                ):
                     # Using internationalized text
                     confirm = input(self.text.already_learned)
-                    answer = input(cur_word[questionlang]["szo"]+": ")
-                    
-                while answer not in solution_words and any(self.similar(answer, m) for m in solution_words):
+                    answer = input(cur_word[questionlang]["szo"] + ": ")
+
+                while answer not in solution_words and any(
+                    self.similar(answer, m) for m in solution_words
+                ):
                     # Using internationalized text
                     confirm = input(self.text.close_but_wrong)
-                    answer = input(cur_word[questionlang]["szo"]+": ")
-                    
+                    answer = input(cur_word[questionlang]["szo"] + ": ")
+
                 if answer in solution_words:
                     to_change = solutions[solution_words.index(answer)][lang]
                     to_change["pont"] += 1
                     correct_pt += 1
                     self.save(gloss)
-                    
+
                     # Using internationalized text
                     details = ""
-                    if len(solutions)>1:
-                        details = " "+self.text.details_separator.format(", ".join(w for w in solution_words if w!=answer))
+                    if len(solutions) > 1:
+                        details = " " + self.text.details_separator.format(
+                            ", ".join(w for w in solution_words if w != answer)
+                        )
                     confirm = input(self.text.correct_answer + details)
 
                     if to_change["pont"] >= self.dead_pt:
                         # Using internationalized text
                         confirm = input(self.text.max_points_word_complete)
                         done = True
-                    
+
                     for detail, detail_solution in to_change.items():
-                        if detail not in ('pont', 'szo'):
+                        if detail not in ("pont", "szo"):
                             answer = input(f"{detail}: ")
                             if answer == "#":
                                 to_break = True
                                 break
                             elif answer == "@":
-                                for word in solutions: word[lang]["pont"] = self.dead_pt
+                                for word in solutions:
+                                    word[lang]["pont"] = self.dead_pt
                                 # Using internationalized text
-                                confirm = input(self.text.max_points_confirm.format(", ".join(solution_words)))
+                                confirm = input(
+                                    self.text.max_points_confirm.format(
+                                        ", ".join(solution_words)
+                                    )
+                                )
                                 break
                             elif answer == "*":
-                                for word in solutions: word[lang]["pont"] = self.boost_pt
+                                for word in solutions:
+                                    word[lang]["pont"] = self.boost_pt
                                 # Using internationalized text
-                                confirm = input(self.text.boosted_confirm.format(", ".join(solution_words), self.boost_pt))
+                                confirm = input(
+                                    self.text.boosted_confirm.format(
+                                        ", ".join(solution_words), self.boost_pt
+                                    )
+                                )
                                 to_break = True
                                 break
-    
-                            while answer != detail_solution and self.similar(answer, detail_solution):
+
+                            while answer != detail_solution and self.similar(
+                                answer, detail_solution
+                            ):
                                 # Using internationalized text
                                 confirm = input(self.text.close_but_wrong)
                                 answer = input(f"{detail}: ")
-    
+
                             if answer == detail_solution:
                                 to_change["pont"] += 1
                                 correct_pt += 1
                                 self.save(gloss)
                                 # Using internationalized text
                                 confirm = input(self.text.correct_detail)
-                                if not done and to_change["pont"]==self.dead_pt:
+                                if not done and to_change["pont"] == self.dead_pt:
                                     # Using internationalized text
                                     confirm = input(self.text.max_points_word_complete)
                             else:
@@ -295,82 +398,122 @@ class NyelvTanulas:
                                 incorrect_pt += 1
                                 self.save(gloss)
                                 # Using internationalized text
-                                confirm = input(self.text.incorrect_detail.format(detail_solution))
-                        if to_break: break
+                                confirm = input(
+                                    self.text.incorrect_detail.format(detail_solution)
+                                )
+                        if to_break:
+                            break
                 else:
-                    for word in solutions: word[lang]["pont"] -= 1
+                    for word in solutions:
+                        word[lang]["pont"] -= 1
                     incorrect_pt += 1
                     self.save(gloss)
                     # Using internationalized text
-                    confirm = input(self.text.incorrect_word.format(", ".join(solution_words)))
-                    
-                self.save(gloss)    
-                    
+                    confirm = input(
+                        self.text.incorrect_word.format(", ".join(solution_words))
+                    )
+
+                self.save(gloss)
+
             else:
                 if dead == len(practice_words):
                     # Using internationalized text
                     print(self.text.all_done)
                     break
                 continue
-            break # flag: ha kilépek, vagy ha mind "meghaltak" a szavaim, a while-ból is kilép
+            break  # flag: ha kilépek, vagy ha mind "meghaltak" a szavaim, a while-ból is kilép
 
-        if correct_pt+incorrect_pt>0: 
-            ratio = int(correct_pt/(correct_pt+incorrect_pt)*10000)/100
+        if correct_pt + incorrect_pt > 0:
+            ratio = int(correct_pt / (correct_pt + incorrect_pt) * 10000) / 100
             # Using internationalized text
             confirm = input(self.text.summary.format(correct_pt, incorrect_pt, ratio))
         self.save(gloss)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def find(self, word, lang, gloss=None, property = None):
-        return [w if property is None else w[lang][property]   for w in (self.words[gloss] if gloss is not None else self.all_words) if w[lang]["szo"] == word]
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def find(self, word, lang, gloss=None, property=None):
+        return [
+            w if property is None else w[lang][property]
+            for w in (self.words[gloss] if gloss is not None else self.all_words)
+            if w[lang]["szo"] == word
+        ]
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def similarity(self, given: str, correct: str) -> float:
-##        given, correct = given.lower(), correct.lower()
-##        return ( len(given)==len(correct) and sum(1 for L in given  if L in correct) >= len(correct)-strength ) or ( 0 < abs(len(given)-len(correct)) <= strength and all(L in correct for L in given) )
+        ##        given, correct = given.lower(), correct.lower()
+        ##        return ( len(given)==len(correct) and sum(1 for L in given  if L in correct) >= len(correct)-strength ) or ( 0 < abs(len(given)-len(correct)) <= strength and all(L in correct for L in given) )
         glen, clen = len(given), len(correct)
-        if glen==0 and clen>0: return 0
-        g=0; c=0; score=0
+        if glen == 0 and clen > 0:
+            return 0
+        g = 0
+        c = 0
+        score = 0
         while g < glen and c < clen:
-            if given[g]==correct[c]:
-                score+=1; g+=1; c+=1
+            if given[g] == correct[c]:
+                score += 1
+                g += 1
+                c += 1
             else:
-                will_g, will_c = -1, -1 # the indexes I want to search
-                chan_g, chan_c = g, c # the indexes I use for that, they CHANge
+                will_g, will_c = -1, -1  # the indexes I want to search
+                chan_g, chan_c = g, c  # the indexes I use for that, they CHANge
                 while chan_g < glen:
-                    try: will_c = correct.index(given[chan_g], c+1)
-                    except ValueError: chan_g+=1
-                    except Exception as e: print(e, self.text.conversion_error.format("Saját", "similar"))
-                    else: break
+                    try:
+                        will_c = correct.index(given[chan_g], c + 1)
+                    except ValueError:
+                        chan_g += 1
+                    except Exception as e:
+                        print(e, self.text.conversion_error.format("Saját", "similar"))
+                    else:
+                        break
                 while chan_c < clen:
-                    try: will_g = given.index(correct[chan_c], g+1)
-                    except ValueError: chan_c+=1
-                    except Exception as e: print(e, self.text.conversion_error.format("Saját", "similar"))
-                    else: break
-                if   will_c == -1 < will_g: g = will_g; c = chan_c
-                elif will_g == -1 < will_c: c = will_c; g = chan_g
-                elif will_g>-1 and will_c>-1:
-                    if will_g < will_c: g = will_g; c = chan_c
-                    else:               c = will_c; g = chan_g
-                else: break
-                    
+                    try:
+                        will_g = given.index(correct[chan_c], g + 1)
+                    except ValueError:
+                        chan_c += 1
+                    except Exception as e:
+                        print(e, self.text.conversion_error.format("Saját", "similar"))
+                    else:
+                        break
+                if will_c == -1 < will_g:
+                    g = will_g
+                    c = chan_c
+                elif will_g == -1 < will_c:
+                    c = will_c
+                    g = chan_g
+                elif will_g > -1 and will_c > -1:
+                    if will_g < will_c:
+                        g = will_g
+                        c = chan_c
+                    else:
+                        c = will_c
+                        g = chan_g
+                else:
+                    break
+
         return score
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def similar(self, given: str, correct: str, strength=1)->bool:
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def similar(self, given: str, correct: str, strength=1) -> bool:
         glen, clen = len(given), len(correct)
-        if glen==0 and clen>0 or clen==0 and glen>0:
+        if glen == 0 and clen > 0 or clen == 0 and glen > 0:
             return False
-        elif clen==0 and glen==0:
+        elif clen == 0 and glen == 0:
             return True
-        
+
         score = self.similarity(given, correct)
-        result = (score/clen+score/glen)/2
-        return result>0.8
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        result = (score / clen + score / glen) / 2
+        return result > 0.8
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def find_similar(self):
         # Using internationalized text
         word = input(self.text.enter_expression)
-        lang = self.correct_input(self.text.what_language.format(self.mlang, self.learnlang), str, [self.mlang, self.learnlang])
-        
+        lang = self.correct_input(
+            self.text.what_language.format(self.mlang, self.learnlang),
+            str,
+            [self.mlang, self.learnlang],
+        )
+
         # Using internationalized text
         print(self.text.similar_words_title)
         got = False
@@ -378,176 +521,285 @@ class NyelvTanulas:
         garage = []
         for glossname, gloss in self.words.items():
             for w in gloss:
-                langitems = [f"{key}:{val}" for key, val in w[lang].items() if key!="szo" and key!="pont"]
-                otherlangitems = [f"{key}:{val}" for key, val in w[otherlang].items() if key!="szo" and key!="pont"]
-                garage.append( [self.similarity(w[lang]["szo"], word),
-                      f" - {w[lang]['szo']} ({w[lang]['pont']} pt) {', '.join(langitems)}" \
-                      f" = {w[otherlang]['szo']} ({w[otherlang]['pont']} pt) {', '.join(otherlangitems)} [a {glossname} szótárban]"] )
-                
+                langitems = [
+                    f"{key}:{val}"
+                    for key, val in w[lang].items()
+                    if key != "szo" and key != "pont"
+                ]
+                otherlangitems = [
+                    f"{key}:{val}"
+                    for key, val in w[otherlang].items()
+                    if key != "szo" and key != "pont"
+                ]
+                garage.append(
+                    [
+                        self.similarity(w[lang]["szo"], word),
+                        f" - {w[lang]['szo']} ({w[lang]['pont']} pt) {', '.join(langitems)}"
+                        f" = {w[otherlang]['szo']} ({w[otherlang]['pont']} pt) {', '.join(otherlangitems)} [a {glossname} szótárban]",
+                    ]
+                )
+
         s = list(reversed(sorted(garage, key=lambda k: k[0])))
         for i in range(10):
             print(s[i][1])
         # Using internationalized text
         confirm = input(self.text.done_message)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_new(self):
         # Using internationalized text
         print(self.text.add_words_title)
-        gloss = self.correct_input(self.text.which_glossary.format("\n - ".join(self.glossaries)), str, self.glossaries)
+        gloss = self.correct_input(
+            self.text.which_glossary.format("\n - ".join(self.glossaries)),
+            str,
+            self.glossaries,
+        )
 
         while True:
             # Using internationalized text and f-string
             add_mlang = input(self.text.enter_mlang_word.format(self.mlang))
-            if add_mlang == "#": break
-            
-            if len(self.find(add_mlang, self.mlang, gloss))>0:
+            if add_mlang == "#":
+                break
+
+            if len(self.find(add_mlang, self.mlang, gloss)) > 0:
                 # Using internationalized text and checking against language-specific no_char
-                if input(self.text.word_in_current_glossary.format(self.text.yes_no_options) + ": ").lower() == self.text.no_char: continue
-            elif len(self.find(add_mlang, self.mlang))>0: # global search
+                if (
+                    input(
+                        self.text.word_in_current_glossary.format(
+                            self.text.yes_no_options
+                        )
+                        + ": "
+                    ).lower()
+                    == self.text.no_char
+                ):
+                    continue
+            elif len(self.find(add_mlang, self.mlang)) > 0:  # global search
                 # Using internationalized text and checking against language-specific no_char
-                if input(self.text.word_in_any_glossary.format(self.text.yes_no_options) + ": ").lower() == self.text.no_char: continue
-                
+                if (
+                    input(
+                        self.text.word_in_any_glossary.format(self.text.yes_no_options)
+                        + ": "
+                    ).lower()
+                    == self.text.no_char
+                ):
+                    continue
+
             # Using internationalized text and f-string
             add_learnlang = input(self.text.enter_learnlang_word.format(self.learnlang))
-            if add_learnlang == "#": break
-            
-            if len(self.find(add_learnlang, self.learnlang, gloss))>0:
+            if add_learnlang == "#":
+                break
+
+            if len(self.find(add_learnlang, self.learnlang, gloss)) > 0:
                 # Using internationalized text and checking against language-specific no_char
-                if input(self.text.word_in_current_glossary.format(self.text.yes_no_options) + ": ").lower() == self.text.no_char: continue
-            elif len(self.find(add_learnlang, self.learnlang))>0: # global search
+                if (
+                    input(
+                        self.text.word_in_current_glossary.format(
+                            self.text.yes_no_options
+                        )
+                        + ": "
+                    ).lower()
+                    == self.text.no_char
+                ):
+                    continue
+            elif len(self.find(add_learnlang, self.learnlang)) > 0:  # global search
                 # Using internationalized text and checking against language-specific no_char
-                if input(self.text.word_in_any_glossary.format(self.text.yes_no_options) + ": ").lower() == self.text.no_char: continue
-            
+                if (
+                    input(
+                        self.text.word_in_any_glossary.format(self.text.yes_no_options)
+                        + ": "
+                    ).lower()
+                    == self.text.no_char
+                ):
+                    continue
+
             mlang_kit, learnlang_kit = self.add_kit_properties(self.kit)
-            
-            self.words[gloss].append( {self.mlang:     {"szo": add_mlang,     "pont": 0, **mlang_kit},
-                                                             self.learnlang: {"szo": add_learnlang, "pont": 0, **learnlang_kit}} )
+
+            self.words[gloss].append(
+                {
+                    self.mlang: {"szo": add_mlang, "pont": 0, **mlang_kit},
+                    self.learnlang: {"szo": add_learnlang, "pont": 0, **learnlang_kit},
+                }
+            )
             self.save(gloss)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_glossary(self):
         # Using internationalized text
         print(self.text.add_glossaries_title)
-        
+
         while True:
             # Using internationalized text
             gloss = input(self.text.enter_glossary_name)
             while gloss in self.glossaries:
                 # Using internationalized text
                 gloss = input(self.text.glossary_exists)
-            if gloss == "#": break
-            with open("glossaries.txt", "a", encoding="utf-8") as glossfile: glossfile.write(gloss+"\n")
-            with open(gloss+".txt", "w", encoding="utf-8"): pass
+            if gloss == "#":
+                break
+            with open("glossaries.txt", "a", encoding="utf-8") as glossfile:
+                glossfile.write(gloss + "\n")
+            with open(gloss + ".txt", "w", encoding="utf-8"):
+                pass
             self.glossaries.append(gloss)
             self.words[gloss] = []
             # Using internationalized text
             confirm = input(self.text.successfully_added)
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def save(self, gloss):
-        file = open(gloss+".txt", "w", encoding="utf-8")
+        file = open(gloss + ".txt", "w", encoding="utf-8")
         for word in self.words[gloss]:
-            file.write(" | ".join( " ; ".join(f"{key}:{val}" for key, val in lang.items()) for lang in word.values() )+"\n")
+            file.write(
+                " | ".join(
+                    " ; ".join(f"{key}:{val}" for key, val in lang.items())
+                    for lang in word.values()
+                )
+                + "\n"
+            )
         file.close()
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def state(self):
         # Using internationalized text and options
-        sz_vagy_ossz = self.correct_input(self.text.check_state_type.format(self.text.state_options[0], self.text.state_options[1]), str, self.text.state_options)
-        
-        if sz_vagy_ossz == self.text.state_options[0]: # Specific dictionary
+        sz_vagy_ossz = self.correct_input(
+            self.text.check_state_type.format(
+                self.text.state_options[0], self.text.state_options[1]
+            ),
+            str,
+            self.text.state_options,
+        )
+
+        if sz_vagy_ossz == self.text.state_options[0]:  # Specific dictionary
             # Using internationalized text
-            gloss = self.correct_input(self.text.which_glossary.format("\n - ".join(self.glossaries)), str, self.glossaries)
+            gloss = self.correct_input(
+                self.text.which_glossary.format("\n - ".join(self.glossaries)),
+                str,
+                self.glossaries,
+            )
             words_to_check = self.words[gloss]
-        else: # All dictionaries
+        else:  # All dictionaries
             words_to_check = self.all_words
-        
+
         osszes = len(words_to_check)
         if osszes == 0:
-             print(self.text.nothing_to_practice)
-             return
-             
-        telj =sum(1 for sz in words_to_check if sz[self.mlang]["pont"]>=self.dead_pt or sz[self.learnlang]["pont"]>=self.dead_pt)
-        ratio = int(telj/osszes*10000)/100
-        
+            print(self.text.nothing_to_practice)
+            return
+
+        telj = sum(
+            1
+            for sz in words_to_check
+            if sz[self.mlang]["pont"] >= self.dead_pt
+            or sz[self.learnlang]["pont"] >= self.dead_pt
+        )
+        ratio = int(telj / osszes * 10000) / 100
+
         # Using internationalized text
         print(self.text.state_summary.format(osszes, telj, ratio))
-        
+
         # Using internationalized text and checking against language-specific no_char
-        details = self.correct_input(self.text.state_details_prompt.format(self.text.yes_no_options), str, self.text.yes_no_options)
-        if details == self.text.no_char: return
-        
+        details = self.correct_input(
+            self.text.state_details_prompt.format(self.text.yes_no_options),
+            str,
+            self.text.yes_no_options,
+        )
+        if details == self.text.no_char:
+            return
+
         # Using internationalized text
-        whichlang = self.correct_input(self.text.state_which_lang.format(self.mlang, self.learnlang), str, (self.mlang, self.learnlang))
+        whichlang = self.correct_input(
+            self.text.state_which_lang.format(self.mlang, self.learnlang),
+            str,
+            (self.mlang, self.learnlang),
+        )
         by_score = {}
         for sz in words_to_check:
             score = sz[whichlang]["pont"]
-            try: by_score[score].append(sz[whichlang]["szo"])
-            except:
-                by_score[score] = [ ]
+            try:
                 by_score[score].append(sz[whichlang]["szo"])
-        for score, words in reversed(sorted(by_score.items(), key = lambda k: k[0])):
+            except:
+                by_score[score] = []
+                by_score[score].append(sz[whichlang]["szo"])
+        for score, words in reversed(sorted(by_score.items(), key=lambda k: k[0])):
             print("\n", end="")
             # Using internationalized text
             print(self.text.state_score_group.format(score, len(words)))
-            for sz in words: print("-", sz)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for sz in words:
+                print("-", sz)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_kit_properties(self, kit=None, showtype=None):
-        if kit is None: return ({}, {})
-        if len(kit)==0 or "<mode>" not in kit: return {}
-        
-        if kit['<mode>'] == 'apart':
-            return ( self.add_kit_properties(kit[self.mlang]), self.add_kit_properties(kit[self.learnlang]) )
-        elif kit['<mode>'] == 'both':
+        if kit is None:
+            return ({}, {})
+        if len(kit) == 0 or "<mode>" not in kit:
+            return {}
+
+        if kit["<mode>"] == "apart":
+            return (
+                self.add_kit_properties(kit[self.mlang]),
+                self.add_kit_properties(kit[self.learnlang]),
+            )
+        elif kit["<mode>"] == "both":
             pass
-         
-        elif kit['<mode>'] == 'and':
+
+        elif kit["<mode>"] == "and":
             data = {"<type>": showtype} if kit.get("<showtype>") else {}
             for key, val in kit.items():
-                if key not in ('<mode>', "<showtype>"):
+                if key not in ("<mode>", "<showtype>"):
                     if val is None:
-                        data[key] = input("Add meg a "+key+"-t:")
+                        data[key] = input("Add meg a " + key + "-t:")
                     else:
-                        print(key+":")
+                        print(key + ":")
                         data.update(self.add_kit_properties(val))
-            return data                    
-        elif kit['<mode>'] == 'or':
-            keys = [k for k in kit.keys() if k not in ['<mode>', "<showtype>"]]
-            which = self.correct_input(self.text.choose_word_form, numbered=True, values=keys)
-            if kit[which] is None: return {"<type>": which} if kit.get("<showtype>") else {}
+            return data
+        elif kit["<mode>"] == "or":
+            keys = [k for k in kit.keys() if k not in ["<mode>", "<showtype>"]]
+            which = self.correct_input(
+                self.text.choose_word_form, numbered=True, values=keys
+            )
+            if kit[which] is None:
+                return {"<type>": which} if kit.get("<showtype>") else {}
             return self.add_kit_properties(kit[which], which)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def check_for_doubles(self): # ERŐS JAVÍTÁSRA SZORUL!!!!!!!!!!!!!!!! EZ ÍGY RATYI!!!!!!!!!!!!!
-        garage = {self.mlang:{}, self.learnlang:{}}
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def check_for_doubles(
+        self,
+    ):  # ERŐS JAVÍTÁSRA SZORUL!!!!!!!!!!!!!!!! EZ ÍGY RATYI!!!!!!!!!!!!!
+        garage = {self.mlang: {}, self.learnlang: {}}
         for glossname, gloss in self.words.items():
             for w in gloss:
                 mword = w[self.mlang]["szo"].lower()
-                try: garage[self.mlang][mword].append(glossname)
+                try:
+                    garage[self.mlang][mword].append(glossname)
                 except:
                     garage[self.mlang][mword] = []
                     garage[self.mlang][mword].append(glossname)
 
                 lword = w[self.learnlang]["szo"].lower()
-                try: garage[self.learnlang][lword].append(glossname)
+                try:
+                    garage[self.learnlang][lword].append(glossname)
                 except:
                     garage[self.learnlang][lword] = []
                     garage[self.learnlang][lword].append(glossname)
-        
+
         # Using internationalized text
         print(self.text.checking_doubles)
         for lang, ws in garage.items():
-            print("\n", lang.upper(), " nyelven:", sep='')
+            print("\n", lang.upper(), " nyelven:", sep="")
             for word, glossaries in ws.items():
-                if len(glossaries)>1: print(word, ":", glossaries)
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                if len(glossaries) > 1:
+                    print(word, ":", glossaries)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def check_for_glossary_length(self):
         figy = True
         for glossname, gloss in self.words.items():
-            if len(gloss)>50:
+            if len(gloss) > 50:
                 if figy:
                     # Using internationalized text
                     print(self.text.warning_title)
                     figy = False
                 # Using internationalized text
                 print(self.text.glossary_too_long.format(glossname))
+
 
 ########################################################
 tan = NyelvTanulas(Kit.LATIN)
