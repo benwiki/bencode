@@ -752,7 +752,7 @@ class PracticeSession:
             return
 
         self.done = True
-        self.message = "Practice finished"
+        self.message = self.text.practice_finished
 
     def current_prompt(self) -> Tuple[str, str]:
         """Returns (kind, text). kind is 'word' or 'detail' or 'done'."""
@@ -803,9 +803,13 @@ class PracticeSession:
     def summary(self) -> str:
         total = self.correct_pt + self.incorrect_pt
         if total == 0:
-            return "No answers yet."
+            return self.text.practice_summary_no_answers_yet
         ratio = int(self.correct_pt / total * 10000) / 100
-        return f"Correct: {self.correct_pt} | Incorrect: {self.incorrect_pt} | {ratio}%"
+        return self.text.practice_summary_fmt(
+            correct=self.correct_pt,
+            incorrect=self.incorrect_pt,
+            pct=ratio,
+        )
 
     def command_max_points(self) -> None:
         if not self.solutions:
@@ -813,7 +817,7 @@ class PracticeSession:
         for w in self.solutions:
             w[self.answer_lang][SCORE_PREFIX] = self.model.dead_pt
         self.model.save_glossary(self.gloss)
-        self.message = "Set max points."
+        self.message = self.text.practice_set_max_points
         self._advance_to_next_word()
 
     def command_boost(self) -> None:
@@ -822,13 +826,13 @@ class PracticeSession:
         for w in self.solutions:
             w[self.answer_lang][SCORE_PREFIX] = self.model.boost_pt
         self.model.save_glossary(self.gloss)
-        self.message = f"Boosted to {self.model.boost_pt}."
+        self.message = self.text.practice_boosted_fmt(points=self.model.boost_pt)
         self.done = True
 
     def stop(self) -> None:
         self.done = True
         self.ended_by_user = True
-        self.message = "Stopped."
+        self.message = self.text.practice_stopped
 
     def submit(self, text: str) -> None:
         if self.done or not self.cur_word:
@@ -898,7 +902,7 @@ class PracticeSession:
                 )
                 self.correct_pt += 1
                 self.model.save_glossary(self.gloss)
-                self.message = "Correct detail."
+                self.message = self.text.practice_correct_detail
                 self.history_items.append(
                     {
                         "label": detail_key,
@@ -926,7 +930,7 @@ class PracticeSession:
                 )
                 self.incorrect_pt += 1
                 self.model.save_glossary(self.gloss)
-                self.message = "Incorrect detail."
+                self.message = self.text.practice_incorrect_detail
                 self.history_items.append(
                     {
                         "label": detail_key,
@@ -999,7 +1003,7 @@ class PracticeSession:
             self.last_word_given = text
             self.history_items = [
                 {
-                    "label": f"{self.cur_word[self.question_lang][WORD_PREFIX]} → {self.answer_lang}",
+                    "label": f"{self.cur_word[self.question_lang][WORD_PREFIX]} – {self.answer_lang}",
                     "given": text,
                     "expected": text,
                     "correct": True,
@@ -1033,7 +1037,7 @@ class PracticeSession:
             if not self.detail_items:
                 self._advance_to_next_word()
             else:
-                self.message = "Correct. Enter details."
+                self.message = self.text.practice_correct_enter_details
             return
 
         # Close-but-wrong word: don't penalize, don't advance.
@@ -1059,15 +1063,21 @@ class PracticeSession:
                 )
             self.incorrect_pt += 1
             self.model.save_glossary(self.gloss)
-            self.message = "Incorrect word (type mismatch)."
+            self.message = str(
+                getattr(
+                    self.text,
+                    "practice_incorrect_type_mismatch",
+                    "Incorrect word (type mismatch).",
+                )
+            )
 
             ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
             ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")
             word_label = f"{ctx_t} {ctx_q}".strip()
             word_label = (
-                f"{word_label} → {self.answer_lang}"
+                f"{word_label} – {self.answer_lang}"
                 if word_label
-                else f"{ctx_q} → {self.answer_lang}"
+                else f"{ctx_q} – {self.answer_lang}"
             )
             self._append_total_history(
                 label=word_label,
@@ -1092,7 +1102,7 @@ class PracticeSession:
             )
         self.incorrect_pt += 1
         self.model.save_glossary(self.gloss)
-        self.message = "Incorrect word."
+        self.message = self.text.practice_incorrect_word
 
         ctx_q = self.cur_word[self.question_lang].get(WORD_PREFIX, "")
         ctx_t = str(self.cur_word[self.answer_lang].get(TYPE_PREFIX) or "")

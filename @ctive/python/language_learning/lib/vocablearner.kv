@@ -36,7 +36,7 @@
         spacing: dp(10)
 
         Label:
-            text: "Vocab Learner"
+            text: app.text.app_title
             size_hint_y: None
             height: dp(40)
             color: TEXT_DARK
@@ -50,38 +50,38 @@
             spacing: dp(10)
 
             PeachButton:
-                text: "[b]Practice[/b]"
+                text: "[b]{}[/b]".format(app.text.menu_practice)
                 markup: True
                 size_hint_y: None
                 height: dp(48)
                 on_release: root.go_practice()
 
             PeachButton:
-                text: "Add word"
+                text: app.text.menu_add_word
                 size_hint_y: None
                 height: dp(48)
                 on_release: setattr(app.root, "current", "add_word")
 
             PeachButton:
-                text: "Add glossary"
+                text: app.text.menu_add_glossary
                 size_hint_y: None
                 height: dp(48)
                 on_release: setattr(app.root, "current", "add_glossary")
 
             PeachButton:
-                text: "Settings"
+                text: app.text.menu_settings
                 size_hint_y: None
                 height: dp(48)
                 on_release: setattr(app.root, "current", "settings")
 
             PeachSecondaryButton:
-                text: "Quit"
+                text: app.text.menu_quit
                 size_hint_y: None
                 height: dp(48)
                 on_release: app.stop()
 
             Label:
-                text: "Languages: {} / {}".format(getattr(getattr(app, 'model', None), 'mlang', ''), getattr(getattr(app, 'model', None), 'learnlang', ''))
+                text: app.text.menu_languages_fmt(mlang=getattr(getattr(app, 'model', None), 'mlang', ''), learnlang=getattr(getattr(app, 'model', None), 'learnlang', ''))
                 size_hint_y: None
                 height: dp(26)
                 color: TEXT_DARK
@@ -99,20 +99,20 @@
                 size_hint_x: 0.5
 
                 PeachButton:
-                    text: "[b]Practice[/b]"
+                    text: "[b]{}[/b]".format(app.text.menu_practice)
                     markup: True
                     size_hint_y: None
                     height: dp(48)
                     on_release: root.go_practice()
 
                 PeachButton:
-                    text: "Add word"
+                    text: app.text.menu_add_word
                     size_hint_y: None
                     height: dp(48)
                     on_release: setattr(app.root, "current", "add_word")
 
                 PeachButton:
-                    text: "Add glossary"
+                    text: app.text.menu_add_glossary
                     size_hint_y: None
                     height: dp(48)
                     on_release: setattr(app.root, "current", "add_glossary")
@@ -126,13 +126,13 @@
                 size_hint_x: 0.5
 
                 PeachButton:
-                    text: "Settings"
+                    text: app.text.menu_settings
                     size_hint_y: None
                     height: dp(48)
                     on_release: setattr(app.root, "current", "settings")
 
                 PeachSecondaryButton:
-                    text: "Quit"
+                    text: app.text.menu_quit
                     size_hint_y: None
                     height: dp(48)
                     on_release: app.stop()
@@ -141,7 +141,7 @@
                     size_hint_y: 1
 
                 Label:
-                    text: "Languages: {} / {}".format(getattr(getattr(app, 'model', None), 'mlang', ''), getattr(getattr(app, 'model', None), 'learnlang', ''))
+                    text: app.text.menu_languages_fmt(mlang=getattr(getattr(app, 'model', None), 'mlang', ''), learnlang=getattr(getattr(app, 'model', None), 'learnlang', ''))
                     size_hint_y: None
                     height: dp(26)
                     color: TEXT_DARK
@@ -165,7 +165,7 @@
                 on_release: root.go_menu()
 
             PeachButton:
-                text: "Return to menu"
+                text: app.text.practice_return_to_menu
                 on_release: root.go_menu()
 
         BoxLayout:  # Main area: portrait stacks (history grows), landscape splits 50/50 (history left, everything else right).
@@ -225,7 +225,7 @@
                         on_release: root.go_menu()
 
                     PeachButton:
-                        text: "Return to menu"
+                        text: app.text.practice_return_to_menu
                         on_release: root.go_menu()
 
                 # Push the (ended/active) labels + input toward the bottom.
@@ -332,15 +332,15 @@
                         spacing: dp(6)
 
                         PeachButton:
-                            text: "learned"
+                            text: app.text.practice_menu_learned
                             on_release: root.do_learned()
 
                         PeachButton:
-                            text: "hard"
+                            text: app.text.practice_menu_hard
                             on_release: root.do_hard()
 
                         PeachButton:
-                            text: "stop"
+                            text: app.text.practice_menu_stop
                             on_release: root.do_stop()
 
                     BoxLayout:
@@ -356,7 +356,7 @@
                             on_release: root.toggle_menu()
 
                         PeachButton:
-                            text: "NEXT"
+                            text: app.text.practice_next
                             size_hint_y: None
                             height: BAR_H
                             on_release: root.next_action()
@@ -382,7 +382,7 @@
                 on_release: setattr(app.root, "current", "menu")
 
             Label:
-                text: "Settings"
+                text: app.text.settings_title
                 size_hint_y: None
                 height: dp(48)
                 halign: "center"
@@ -408,7 +408,7 @@
                 spacing: dp(10)
 
                 Label:
-                    text: "UI language"
+                    text: app.text.settings_ui_language
                     size_hint_y: None
                     height: dp(22)
                     halign: "left"
@@ -435,7 +435,7 @@
                     spacing: dp(10)
 
                     Label:
-                        text: "Auto continue"
+                        text: app.text.settings_auto_continue
                         halign: "left"
                         valign: "middle"
                         color: TEXT_DARK
@@ -446,7 +446,7 @@
                         on_active: root.set_auto_continue(self.active)
 
                 Label:
-                    text: "Data folder"
+                    text: app.text.settings_data_folder
                     size_hint_y: None
                     height: dp(22)
                     halign: "left"

@@ -205,7 +205,18 @@ class OptionList(BoxLayout):
 
         if selected is not None:
             self.selected = selected
-        if self.selected not in options:
+
+        # `options` may be a list of (value, label) pairs. Validate selection
+        # against the option values, not against the raw list items.
+        option_values = []
+        for opt in options:
+            if isinstance(opt, (tuple, list)) and len(opt) == 2:
+                value = opt[0]
+            else:
+                value = opt
+            option_values.append(str(value))
+
+        if self.selected is not None and str(self.selected) not in option_values:
             self.selected = None
 
         def choose(value: str):
@@ -219,14 +230,24 @@ class OptionList(BoxLayout):
                     pass
 
         for opt in options:
+            # Support both:
+            #   - simple options: ["English", "German"]
+            #   - value/label pairs: [("ENGLISH", "English"), ...]
+            if isinstance(opt, (tuple, list)) and len(opt) == 2:
+                value, label = opt
+            else:
+                value, label = opt, opt
+
+            value_s = str(value)
+            label_s = str(label)
             btn = OptionItemButton(
-                text=str(opt),
-                selected=(opt == self.selected),
+                text=label_s,
+                selected=(value_s == str(self.selected)),
                 size_hint_y=None,
                 height=dp(44),
-                on_release=(lambda _btn, v=str(opt): choose(v)),
+                on_release=(lambda _btn, v=value_s: choose(v)),
             )
-            self._buttons[str(opt)] = btn
+            self._buttons[value_s] = btn
             self._box.add_widget(btn)
 
 
@@ -501,7 +522,8 @@ class SettingsScreen(LandscapeAwareScreen):
     error = StringProperty("")
 
     data_dir = StringProperty("")
-    selected_lang = StringProperty("English")
+    # Store stable language key ("ENGLISH"/"GERMAN"/"HUNGARIAN"); labels are localized.
+    selected_lang = StringProperty("ENGLISH")
     auto_continue = BooleanProperty(False)
 
     _lang_opts: Optional[OptionList] = None
@@ -529,23 +551,29 @@ class SettingsScreen(LandscapeAwareScreen):
         try:
             lang = getattr(app, "lang", None)
             name = getattr(lang, "name", "") if lang is not None else ""
-            self.selected_lang = {
-                "ENGLISH": "English",
-                "GERMAN": "German",
-                "HUNGARIAN": "Hungarian",
-            }.get(str(name), "English")
+            self.selected_lang = str(name) if str(name) in ("ENGLISH", "GERMAN", "HUNGARIAN") else "ENGLISH"
         except Exception:
-            self.selected_lang = "English"
+            self.selected_lang = "ENGLISH"
 
         # Keep the OptionList selection in sync.
         try:
             if self._lang_opts is not None:
-                self._lang_opts.set_options(
-                    ["English", "German", "Hungarian"],
-                    selected=self.selected_lang,
-                )
+                self._lang_opts.set_options(self._language_options(), selected=self.selected_lang)
         except Exception:
             pass
+
+    def _language_options(self):
+        app = App.get_running_app()
+        txt = getattr(app, "text", None)
+        # Fallback to English literals if text isn't ready yet.
+        en = getattr(txt, "lang_english", "English") if txt is not None else "English"
+        de = getattr(txt, "lang_german", "German") if txt is not None else "German"
+        hu = getattr(txt, "lang_hungarian", "Hungarian") if txt is not None else "Hungarian"
+        return [
+            ("ENGLISH", str(en)),
+            ("GERMAN", str(de)),
+            ("HUNGARIAN", str(hu)),
+        ]
 
     def _ensure_lang_option_list(self) -> None:
         try:
@@ -557,7 +585,7 @@ class SettingsScreen(LandscapeAwareScreen):
 
         if self._lang_opts is None:
             self._lang_opts = OptionList(
-                ["English", "German", "Hungarian"],
+                self._language_options(),
                 selected=self.selected_lang,
                 on_select=lambda v: self.set_lang(v),
             )
@@ -573,18 +601,20 @@ class SettingsScreen(LandscapeAwareScreen):
                 pass
 
     def set_lang(self, display: str) -> None:
+        # Here `display` is actually the stable key ("ENGLISH"/"GERMAN"/"HUNGARIAN").
         self.selected_lang = str(display)
         try:
-            App.get_running_app().set_ui_language_by_display(str(display))
+            key = str(display)
+            if key in Lang.__members__:
+                App.get_running_app().set_ui_language(Lang[key])
+            else:
+                App.get_running_app().set_ui_language(Lang.ENGLISH)
         except Exception:
             pass
 
         try:
             if self._lang_opts is not None:
-                self._lang_opts.set_options(
-                    ["English", "German", "Hungarian"],
-                    selected=self.selected_lang,
-                )
+                self._lang_opts.set_options(self._language_options(), selected=self.selected_lang)
         except Exception:
             pass
 
@@ -675,16 +705,17 @@ class VocabLearnerRoot(ScreenManager):
 
 
 class VocabLearnerApp(App):
-    title = "Vocab Learner"
+    # Kivy properties so KV bindings refresh when language changes.
+    # `rebind=True` is important because KV uses chained expressions like
+    # `app.text.menu_settings`; `LangText` provides plain attributes (not Kivy
+    # Properties), so Kivy must re-evaluate the full expression when `text`
+    # changes.
+    text = ObjectProperty(None, rebind=True)
+    title = ""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Ensure the window title is set even when running via python.
-        self.title = "Vocab Learner"
-        try:
-            Window.set_title(self.title)
-        except Exception:
-            pass
+        # Title will be localized in build() after language is loaded.
 
     def build(self):
         # app_dir = os.path.dirname(os.path.abspath(__file__))
@@ -701,7 +732,14 @@ class VocabLearnerApp(App):
         settings = self._load_ui_settings()
         self.lang = settings["lang"]
         self.auto_continue = bool(settings.get("auto_continue", False))
-        self.text: LangText = self.lang.text()
+        self.text = self.lang.text()
+
+        # Localized app/window title.
+        try:
+            self.title = self.text.app_title
+            Window.set_title(self.title)
+        except Exception:
+            pass
         self.practice_session: Optional[PracticeSession] = None
 
         root = VocabLearnerRoot()
@@ -736,14 +774,6 @@ class VocabLearnerApp(App):
 
         return root
 
-    def set_ui_language_by_display(self, display: str) -> None:
-        display_to_lang: Dict[str, Lang] = {
-            "English": Lang.ENGLISH,
-            "German": Lang.GERMAN,
-            "Hungarian": Lang.HUNGARIAN,
-        }
-        self.set_ui_language(display_to_lang.get(str(display), Lang.ENGLISH))
-
     # ---------------- UI builders
 
     def _load_ui_settings(self) -> Dict[str, Any]:
@@ -776,6 +806,11 @@ class VocabLearnerApp(App):
     def set_ui_language(self, lang: Lang) -> None:
         self.lang = lang
         self.text = lang.text()
+        try:
+            self.title = self.text.app_title
+            Window.set_title(self.title)
+        except Exception:
+            pass
         if self.practice_session is not None:
             self.practice_session.text = self.text
         self._save_ui_settings()
@@ -792,7 +827,7 @@ class VocabLearnerApp(App):
         top = BoxLayout(orientation="vertical", size_hint_y=0.55, spacing=dp(8))
         top.add_widget(
             Label(
-                text="New glossary name",
+                text=self.text.add_glossary_new_name,
                 size_hint_y=None,
                 height=dp(24),
                 halign="left",
@@ -815,15 +850,16 @@ class VocabLearnerApp(App):
             name = (ti.text or "").strip()
             try:
                 self.model.add_glossary(name)
-                status.text = "Added."
+                status.text = self.text.add_glossary_added
                 ti.text = ""
             except Exception as e:
                 status.text = str(e)
 
-        btns.add_widget(PeachButton(text="Add", on_release=add))
+        btns.add_widget(PeachButton(text=self.text.common_add, on_release=add))
         btns.add_widget(
             PeachSecondaryButton(
-                text="Back", on_release=lambda *_: setattr(root, "current", "menu")
+                text=self.text.common_back,
+                on_release=lambda *_: setattr(root, "current", "menu"),
             )
         )
         outer.add_widget(btns)
@@ -854,7 +890,7 @@ class VocabLearnerApp(App):
         )
 
         gloss_label = Label(
-            text="Glossary",
+            text=self.text.common_glossary,
             size_hint_y=None,
             height=dp(22),
             halign="left",
@@ -866,13 +902,13 @@ class VocabLearnerApp(App):
         left.add_widget(gloss_options)
 
         mw = TextInput(
-            hint_text=f"{self.model.mlang} word",
+            hint_text=self.text.add_word_hint_word_fmt(lang=self.model.mlang),
             multiline=False,
             size_hint_y=None,
             height=dp(44),
         )
         lw = TextInput(
-            hint_text=f"{self.model.learnlang} word",
+            hint_text=self.text.add_word_hint_word_fmt(lang=self.model.learnlang),
             multiline=False,
             size_hint_y=None,
             height=dp(44),
@@ -881,7 +917,7 @@ class VocabLearnerApp(App):
         left.add_widget(lw)
 
         word_type_label = Label(
-            text="Word type",
+            text=self.text.add_word_word_type,
             size_hint_y=None,
             height=dp(22),
             halign="left",
@@ -969,19 +1005,19 @@ class VocabLearnerApp(App):
         def save(_):
             gloss = selected_glossary
             if gloss not in self.model.glossaries:
-                status.text = "Select a glossary."
+                status.text = self.text.add_word_select_glossary
                 return
             mword = (mw.text or "").strip()
             lword = (lw.text or "").strip()
             if not mword or not lword:
-                status.text = "Enter both words."
+                status.text = self.text.add_word_enter_both_words
                 return
 
             # only learning language has kit props in this kit
             lprops = kit_form.collect()
             try:
                 self.model.add_word(gloss, mword, lword, mprops={}, lprops=lprops)
-                status.text = "Saved."
+                status.text = self.text.add_word_saved
                 mw.text = ""
                 lw.text = ""
                 kit_form.set_nodes(self.model.learninglang_prompt_tree())
@@ -992,8 +1028,8 @@ class VocabLearnerApp(App):
             refresh_glossaries()
             root.current = "menu"
 
-        btns.add_widget(PeachButton(text="Save", on_release=save))
-        btns.add_widget(PeachSecondaryButton(text="Back", on_release=back))
+        btns.add_widget(PeachButton(text=self.text.common_save, on_release=save))
+        btns.add_widget(PeachSecondaryButton(text=self.text.common_back, on_release=back))
         outer.add_widget(btns)
 
         return outer
@@ -1017,7 +1053,7 @@ class VocabLearnerApp(App):
 
         appbar.add_widget(
             Label(
-                text="Practice setup",
+                text=self.text.practice_setup_title,
                 color=TEXT_DARK,
                 font_size="22sp",
                 halign="left",
@@ -1051,7 +1087,7 @@ class VocabLearnerApp(App):
         )
 
         gloss_label = Label(
-            text="Glossary",
+            text=self.text.common_glossary,
             size_hint_y=None,
             height=dp(22),
             halign="left",
@@ -1061,7 +1097,7 @@ class VocabLearnerApp(App):
         gloss_label.bind(size=lambda inst, _: setattr(inst, "text_size", inst.size))
 
         lang_label = Label(
-            text="Input language",
+            text=self.text.practice_setup_input_language,
             size_hint_y=None,
             height=dp(22),
             halign="left",
@@ -1151,14 +1187,14 @@ class VocabLearnerApp(App):
         def start(_):
             gloss = selected_glossary
             if gloss not in self.model.glossaries:
-                status.text = "Select a glossary."
+                status.text = self.text.practice_setup_select_glossary
                 return
             answer_lang = selected_lang
             if answer_lang not in (self.model.mlang, self.model.learnlang):
-                status.text = "Select a language."
+                status.text = self.text.practice_setup_select_language
                 return
             if not self.model.words.get(gloss):
-                status.text = "Nothing to practice."
+                status.text = self.text.practice_setup_nothing_to_practice
                 return
 
             pr_screen: PracticeScreen = root.get_screen("practice")  # type: ignore
@@ -1178,8 +1214,8 @@ class VocabLearnerApp(App):
             refresh_glossaries()
             root.current = "menu"
 
-        btns.add_widget(PeachButton(text="Start", on_release=start))
-        btns.add_widget(PeachSecondaryButton(text="Back", on_release=back))
+        btns.add_widget(PeachButton(text=self.text.common_start, on_release=start))
+        btns.add_widget(PeachSecondaryButton(text=self.text.common_back, on_release=back))
         outer.add_widget(btns)
 
         return outer
@@ -1215,10 +1251,11 @@ class VocabLearnerApp(App):
                 except Exception:
                     shared_hist = None
                     shared_stats = None
+
                 screen.session = PracticeSession(
                     self.model,
-                    gloss=screen.session.gloss,
-                    answer_lang=screen.session.answer_lang,
+                    gloss=prev.gloss,
+                    answer_lang=prev.answer_lang,
                     text=self.text,
                     shared_total_history_items=shared_hist,
                     shared_stats=shared_stats,
@@ -1227,11 +1264,10 @@ class VocabLearnerApp(App):
         except Exception:
             pass
 
-        kind, text = screen.session.current_prompt()
+        kind, prompt_text = screen.session.current_prompt()
 
         # Keep type + main word visible even during details
-        t = screen.session.current_type()
-        screen.ids.type_lbl.text = t  # type: ignore[attr-defined]
+        screen.ids.type_lbl.text = screen.session.current_type()  # type: ignore[attr-defined]
         screen.ids.word_lbl.text = (
             screen.session.cur_word[screen.session.question_lang][WORD_PREFIX]
             if screen.session.cur_word
@@ -1240,11 +1276,13 @@ class VocabLearnerApp(App):
 
         # Prompt label (what are we entering right now?)
         if kind == "word":
-            screen.ids.prompt_lbl.text = f"Enter {screen.session.answer_lang} translation"  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = self.text.practice_prompt_enter_translation_fmt(
+                lang=screen.session.answer_lang
+            )  # type: ignore[attr-defined]
         elif kind == "detail":
-            screen.ids.prompt_lbl.text = f"{text}"  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = str(prompt_text)  # type: ignore[attr-defined]
         else:
-            screen.ids.prompt_lbl.text = text  # type: ignore[attr-defined]
+            screen.ids.prompt_lbl.text = str(prompt_text)  # type: ignore[attr-defined]
 
         # Total history (session-wide) for the upper half
         hist = screen.session.total_history_markup()
@@ -1274,7 +1312,7 @@ class VocabLearnerApp(App):
             total = int(screen.session.correct_pt + screen.session.incorrect_pt)
             pct = 0.0 if total == 0 else (screen.session.correct_pt / total) * 100.0
 
-            heading = "Stopped." if stopped else "Practice finished."
+            heading = self.text.practice_heading_stopped if stopped else self.text.practice_heading_finished
             n_words = 0
             try:
                 n_words = int(getattr(screen.session, "words_practiced", 0))
@@ -1283,9 +1321,9 @@ class VocabLearnerApp(App):
 
             screen.ids.summary_lbl.text = (
                 f"{heading}\n"
-                f"#words: {n_words}\n"
-                f"Correct: {screen.session.correct_pt}\n"
-                f"Incorrect: {screen.session.incorrect_pt}\n"
+                f"{self.text.practice_summary_words_fmt(n_words=n_words)}\n"
+                f"{self.text.practice_summary_correct_fmt(correct=screen.session.correct_pt)}\n"
+                f"{self.text.practice_summary_incorrect_fmt(incorrect=screen.session.incorrect_pt)}\n"
                 f"{pct:.2f}%"
             )  # type: ignore[attr-defined]
             return
