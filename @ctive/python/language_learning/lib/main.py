@@ -813,6 +813,42 @@ class VocabLearnerApp(App):
             pass
         if self.practice_session is not None:
             self.practice_session.text = self.text
+
+        # KV-bound widgets will refresh automatically when `self.text` changes.
+        # The "Add Glossary", "Add Word" and "Practice Setup" screens are built
+        # in Python with static strings, so rebuild them to apply the new language.
+        try:
+            root = getattr(self, "root", None)
+            if root is not None:
+                try:
+                    st = root.get_screen("settings")
+                    if hasattr(st, "sync_from_app"):
+                        st.sync_from_app()
+                except Exception:
+                    pass
+
+                try:
+                    scr = root.get_screen("add_glossary")
+                    scr.clear_widgets()
+                    scr.add_widget(self._build_add_glossary(root, scr))
+                except Exception:
+                    pass
+
+                try:
+                    scr = root.get_screen("add_word")
+                    scr.clear_widgets()
+                    scr.add_widget(self._build_add_word(root, scr))
+                except Exception:
+                    pass
+
+                try:
+                    scr = root.get_screen("practice_setup")
+                    scr.clear_widgets()
+                    scr.add_widget(self._build_practice_setup(root, scr))
+                except Exception:
+                    pass
+        except Exception:
+            pass
         self._save_ui_settings()
 
     def set_auto_continue(self, enabled: bool) -> None:
