@@ -54,10 +54,10 @@ TEXT_MUTED = (0.55, 0.52, 0.50, 1)
 Window.clearcolor = PEACH_BG
 
 
-def _resolve_data_dir(*, app_dir: str) -> str:
+def _resolve_data_dir(*, app_dir: str, user_data_dir: Optional[str] = None) -> str:
     """Return the directory to store user-editable data.
 
-    Desktop: use app_dir (current behavior).
+    Desktop: use Kivy's App.user_data_dir (platform-appropriate user-writable location).
     Android: prefer external app-specific storage so users can see/edit files:
       /storage/emulated/0/Android/data/<package>/files/language_learning
 
@@ -85,12 +85,19 @@ def _resolve_data_dir(*, app_dir: str) -> str:
                 return app_dir
 
             external_files = str(ext_dir.getAbsolutePath())
-            data_dir = os.path.join(external_files, "language_learning")
+            data_dir = os.path.join(external_files)
             os.makedirs(data_dir, exist_ok=True)
             return data_dir
         except Exception:
             # Fall back to app_dir / internal user_data_dir behavior.
             return app_dir
+
+    if user_data_dir:
+        try:
+            os.makedirs(user_data_dir, exist_ok=True)
+        except Exception:
+            pass
+        return user_data_dir
 
     return app_dir
 
@@ -668,9 +675,25 @@ class VocabLearnerRoot(ScreenManager):
 
 
 class VocabLearnerApp(App):
+    title = "Vocab Learner"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Ensure the window title is set even when running via python.
+        self.title = "Vocab Learner"
+        try:
+            Window.set_title(self.title)
+        except Exception:
+            pass
+
     def build(self):
+        # app_dir = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join("assets", "images", "icon.png")
+        if os.path.exists(icon_path):
+            self.icon = icon_path
+
         app_dir = os.path.dirname(os.path.abspath(__file__))
-        data_dir = _resolve_data_dir(app_dir=app_dir)
+        data_dir = _resolve_data_dir(app_dir=app_dir, user_data_dir=self.user_data_dir)
         self.data_dir = data_dir
         self.model = VocabLearnerModel(Kit.LATIN, base_dir=data_dir, app_dir=app_dir)
 

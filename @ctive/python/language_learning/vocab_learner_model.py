@@ -30,17 +30,11 @@ class Kit(Enum):
         self,
         *,
         base_dir: Optional[str] = None,
-        fallback_dir: Optional[str] = None,
-        copy_to_base_dir: bool = True,
     ) -> dict:
-        """Load kit configuration.
+        """Load kit configuration from the user data directory.
 
-        Preference order:
-        1) base_dir/<kit path> (user-editable)
-        2) fallback_dir/<kit path> (bundled with the app)
-
-        If we end up using the bundled copy and copy_to_base_dir is True, we try
-        to copy it into base_dir so users can edit it.
+        The app bootstraps by copying bundled kits from assets into base_dir,
+        so normal runtime reads/writes only base_dir.
         """
 
         def _try_load(path: str) -> Optional[dict]:
@@ -57,29 +51,14 @@ class Kit(Enum):
                 return None
 
         base_path = os.path.join(base_dir, self.value) if base_dir else ""
-        # Bundled resources live under app_dir/assets/...
-        fb_path = (
-            os.path.join(fallback_dir, "assets", self.value) if fallback_dir else ""
-        )
 
         cfg = _try_load(base_path)
         if cfg is not None:
             return cfg
 
-        cfg = _try_load(fb_path)
-        if cfg is not None:
-            if copy_to_base_dir and base_dir and fb_path and os.path.exists(fb_path):
-                try:
-                    os.makedirs(os.path.dirname(base_path), exist_ok=True)
-                    if base_path and not os.path.exists(base_path):
-                        shutil.copy2(fb_path, base_path)
-                except Exception:
-                    # Best-effort only.
-                    pass
-            return cfg
-
         print(
-            f"ERROR: Kit file {self.value} not found. Using empty kit.",
+            "ERROR: Kit file not found. "
+            f"kit={self.value} base_path={base_path!r}. Using empty kit.",
             file=sys.stderr,
         )
         return {}
@@ -255,20 +234,17 @@ class VocabLearnerModel:
         self.app_dir = app_dir or os.getcwd()
 
         os.makedirs(self.base_dir, exist_ok=True)
-
-        legacy_glossary_dir = os.path.join(self.base_dir, "glossary")
         self.glossary_dir = os.path.join(self.base_dir, "glossaries")
-        if os.path.isdir(legacy_glossary_dir) and not os.path.isdir(self.glossary_dir):
-            try:
-                os.rename(legacy_glossary_dir, self.glossary_dir)
-            except Exception:
-                # Best-effort only.
-                pass
         os.makedirs(self.glossary_dir, exist_ok=True)
+
+        self.kits_dir = os.path.join(self.base_dir, "kits")
+        self.bundled_glossary_dir = os.path.join(self.app_dir, "assets", "glossaries")
+        self.bundled_kits_dir = os.path.join(self.app_dir, "assets", "kits")
 
         self._bootstrap_user_data()
 
-        self.kit = kit.load_config(base_dir=self.base_dir, fallback_dir=self.app_dir)
+        # After bootstrap, we only use the user data dir.
+        self.kit = kit.load_config(base_dir=self.base_dir)
         self.mlang = self.get_lang("mothertongue")
         self.learnlang = self.get_lang("learninglang")
         self.languages = [self.mlang, self.learnlang]
@@ -294,30 +270,27 @@ class VocabLearnerModel:
     def _glossary_path(self, gloss: str) -> str:
         return os.path.join(self.glossary_dir, gloss + ".txt")
 
+    def _glossary_path_for_read(self, gloss: str) -> str:
+        # Runtime reads only from the user data directory.
+        return self._glossary_path(gloss)
+
     def _bootstrap_user_data(self) -> None:
-        """Best-effort: populate user data dir from bundled resources."""
+        """Populate user data dir from bundled assets (copy-if-missing).
+
+        At startup, copy any bundled glossaries and kits that aren't present yet
+        in base_dir. After that, the app reads/writes only from base_dir.
+        """
 
         try:
-            # Copy glossary/*.txt if the user folder is empty.
-            try:
-                has_user_gloss = any(
-                    name.lower().endswith(".txt")
-                    and os.path.isfile(os.path.join(self.glossary_dir, name))
-                    for name in os.listdir(self.glossary_dir)
-                )
-            except Exception:
-                has_user_gloss = False
+            os.makedirs(self.glossary_dir, exist_ok=True)
+            os.makedirs(self.kits_dir, exist_ok=True)
 
-            bundled_gloss_dir = os.path.join(self.app_dir, "assets", "glossaries")
-            if (
-                (not has_user_gloss)
-                and os.path.isdir(bundled_gloss_dir)
-                and os.path.isdir(self.glossary_dir)
-            ):
-                for name in os.listdir(bundled_gloss_dir):
+            # Copy glossaries/*.txt
+            if os.path.isdir(self.bundled_glossary_dir):
+                for name in os.listdir(self.bundled_glossary_dir):
                     if not name.lower().endswith(".txt"):
                         continue
-                    src = os.path.join(bundled_gloss_dir, name)
+                    src = os.path.join(self.bundled_glossary_dir, name)
                     dst = os.path.join(self.glossary_dir, name)
                     if os.path.isfile(src) and not os.path.exists(dst):
                         try:
@@ -325,8 +298,18 @@ class VocabLearnerModel:
                         except Exception:
                             pass
 
-            # Ensure kits folder exists in user data (Kit.load_config will copy on demand).
-            os.makedirs(os.path.join(self.base_dir, "kits"), exist_ok=True)
+            # Copy kits/*.json
+            if os.path.isdir(self.bundled_kits_dir):
+                for name in os.listdir(self.bundled_kits_dir):
+                    if not name.lower().endswith(".json"):
+                        continue
+                    src = os.path.join(self.bundled_kits_dir, name)
+                    dst = os.path.join(self.kits_dir, name)
+                    if os.path.isfile(src) and not os.path.exists(dst):
+                        try:
+                            shutil.copy2(src, dst)
+                        except Exception:
+                            pass
         except Exception:
             # Best-effort only.
             pass
@@ -338,6 +321,7 @@ class VocabLearnerModel:
     def load_glossaries(self) -> None:
         os.makedirs(self.glossary_dir, exist_ok=True)
         names: List[str] = []
+        seen = set()
         try:
             for fname in os.listdir(self.glossary_dir):
                 if not fname.lower().endswith(".txt"):
@@ -347,8 +331,9 @@ class VocabLearnerModel:
                     continue
                 stem, _ = os.path.splitext(fname)
                 stem = stem.strip()
-                if stem:
+                if stem and stem.casefold() not in seen:
                     names.append(stem)
+                    seen.add(stem.casefold())
         except Exception:
             names = []
 
@@ -356,9 +341,16 @@ class VocabLearnerModel:
         self.glossaries = names
 
     def _parse_word_file(self, gloss: str) -> List[Dict[str, Dict[str, Any]]]:
-        file_path = self._glossary_path(gloss)
+        file_path = self._glossary_path_for_read(gloss)
+
         if not os.path.exists(file_path):
-            with open(file_path, "w", encoding="utf-8"):
+            # Only create missing files in the user-writable glossary directory.
+            user_path = self._glossary_path(gloss)
+            try:
+                os.makedirs(self.glossary_dir, exist_ok=True)
+                with open(user_path, "w", encoding="utf-8"):
+                    pass
+            except Exception:
                 pass
             return []
 

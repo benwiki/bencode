@@ -35,7 +35,7 @@ android.permissions =
 
 # (list) Include your data files
 # This ensures assets/kits/, assets/languages/, and assets/glossaries/ are bundled.
-source.include_exts = py,kv,json,txt
+source.include_exts = py,kv,json,txt,png
 
 # (list) Files or directories to exclude
 source.exclude_dirs = __pycache__,.git,.venv,build,dist,bin,vocab_learner-ios,.mypy_cache,.cache
@@ -47,7 +47,7 @@ orientation = portrait, landscape
 fullscreen = 0
 
 # (str) Icon (optional)
-# icon.filename = ./assets/images/icon.png
+icon.filename = assets/images/icon.png
 
 # (str) Presplash (optional)
 # presplash.filename = 
