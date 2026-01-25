@@ -1,5 +1,5 @@
 """
-Generates the langtext.py file based on JSON language files in assets/languages/.
+Generates the langtext.py file based on JSON language files in language_learning/lib/assets/languages/.
 Ensures all language files have the same keys and creates an enum for easy access.
 """
 
@@ -7,9 +7,11 @@ import json
 import os
 import sys
 
+file_path = os.path.dirname(os.path.abspath(__file__))
 # --- Configuration ---
-LANG_DIR = os.path.join("assets", "languages")
-OUTPUT_FILE = "langtext.py"
+LANG_DIR = os.path.join(file_path, "..", "lib", "assets", "languages")
+APP_LANG_DIR = os.path.join("assets", "languages")
+OUTPUT_FILE = "lib/langtext.py"
 
 
 def load_language_files():
@@ -111,7 +113,7 @@ def generate_langtext_py(lang_data: dict[str, dict[str, str]], keys: list[str]):
     for name in sorted(lang_data.keys()):
         # Enum members are generated from file names
         # (e.g., HUNGARIAN = 'assets/languages/hungarian.json')
-        filename = os.path.join(LANG_DIR, name.lower() + ".json").replace("\\", "/")
+        filename = os.path.join(APP_LANG_DIR, name.lower() + ".json").replace("\\", "/")
         content.append(f'    {name} = "{filename}"')
 
     class_gen = '''

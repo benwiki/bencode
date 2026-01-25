@@ -45,7 +45,9 @@ def get_files_in(directory: str) -> list[str]:
 
 if __name__ == "__main__":
     # List of files to reset points in
-    files_to_reset = get_files_in(os.path.join("assets", "glossaries"))
+    execution_path = os.path.dirname(os.path.abspath(__file__))
+    files_path = os.path.join(execution_path, "..", "lib", "assets", "glossaries")
+    files_to_reset = get_files_in(files_path)
 
     for path_to_file in files_to_reset:
         reset_points_in_file(path_to_file)
