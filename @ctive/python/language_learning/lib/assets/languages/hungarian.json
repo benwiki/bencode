@@ -41,6 +41,7 @@
     "settings_ui_language": "Felület nyelve",
     "settings_auto_continue": "Auto-folytatás",
     "settings_case_sensitive": "Kis/nagybetű érzékeny",
+    "settings_tone_sensitive": "Ékezet érzékeny",
     "settings_data_folder": "Adatmappa",
     "add_glossary_new_name": "Új szótár neve",
     "add_glossary_added": "Hozzáadva.",

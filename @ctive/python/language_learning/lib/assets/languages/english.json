@@ -41,6 +41,7 @@
     "settings_ui_language": "UI language",
     "settings_auto_continue": "Auto-continue",
     "settings_case_sensitive": "Case sensitive",
+    "settings_tone_sensitive": "Tone sensitive",
     "settings_data_folder": "Data folder",
     "add_glossary_new_name": "New glossary name",
     "add_glossary_added": "Added.",
