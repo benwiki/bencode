@@ -613,6 +613,7 @@ class PracticeSession:
         gloss: str,
         answer_lang: str,
         text: LangText,
+        case_sensitive: bool = True,
         shared_total_history_items: Optional[List[Dict[str, Any]]] = None,
         shared_stats: Optional[Dict[str, int]] = None,
     ):
@@ -621,6 +622,7 @@ class PracticeSession:
         self.answer_lang = answer_lang
         self.question_lang = model.get_questionlang(answer_lang)
         self.text: LangText = text
+        self.case_sensitive = bool(case_sensitive)
 
         self.practice_words = model.get_practice_words(answer_lang, gloss)
         self.index = 0
@@ -849,7 +851,8 @@ class PracticeSession:
             # Prevent false negatives from NFC/NFD differences (common on mobile keyboards)
             # and from spacing around separators like commas.
             s = unicodedata.normalize("NFC", s)
-            s = s.casefold()
+            if not self.case_sensitive:
+                s = s.casefold()
             s = re.sub(r"\s+", " ", s).strip()
             s = re.sub(r"\s*([,;/])\s*", r"\1", s)
             return s

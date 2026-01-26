@@ -525,6 +525,7 @@ class SettingsScreen(LandscapeAwareScreen):
     # Store stable language key ("ENGLISH"/"GERMAN"/"HUNGARIAN"); labels are localized.
     selected_lang = StringProperty("ENGLISH")
     auto_continue = BooleanProperty(False)
+    case_sensitive = BooleanProperty(True)
 
     _lang_opts: Optional[OptionList] = None
 
@@ -547,6 +548,11 @@ class SettingsScreen(LandscapeAwareScreen):
             self.auto_continue = bool(getattr(app, "auto_continue", False))
         except Exception:
             self.auto_continue = False
+
+        try:
+            self.case_sensitive = bool(getattr(app, "case_sensitive", False))
+        except Exception:
+            self.case_sensitive = False
 
         try:
             lang = getattr(app, "lang", None)
@@ -622,6 +628,13 @@ class SettingsScreen(LandscapeAwareScreen):
         self.auto_continue = bool(enabled)
         try:
             App.get_running_app().set_auto_continue(bool(enabled))
+        except Exception:
+            pass
+
+    def set_case_sensitive(self, enabled: bool) -> None:
+        self.case_sensitive = bool(enabled)
+        try:
+            App.get_running_app().set_case_sensitive(bool(enabled))
         except Exception:
             pass
 
@@ -732,6 +745,7 @@ class VocabLearnerApp(App):
         settings = self._load_ui_settings()
         self.lang = settings["lang"]
         self.auto_continue = bool(settings.get("auto_continue", False))
+        self.case_sensitive = bool(settings.get("case_sensitive", True))
         self.text = self.lang.text()
 
         # Localized app/window title.
@@ -793,12 +807,14 @@ class VocabLearnerApp(App):
         return {
             "lang": lang,
             "auto_continue": bool(data.get("auto_continue", False)),
+            "case_sensitive": bool(data.get("case_sensitive", True)),
         }
 
     def _save_ui_settings(self) -> None:
         data = {
             "lang": getattr(self, "lang", Lang.ENGLISH).name,
             "auto_continue": bool(getattr(self, "auto_continue", False)),
+            "case_sensitive": bool(getattr(self, "case_sensitive", False)),
         }
         with open(self._ui_settings_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
@@ -853,6 +869,15 @@ class VocabLearnerApp(App):
 
     def set_auto_continue(self, enabled: bool) -> None:
         self.auto_continue = bool(enabled)
+        self._save_ui_settings()
+
+    def set_case_sensitive(self, enabled: bool) -> None:
+        self.case_sensitive = bool(enabled)
+        try:
+            if self.practice_session is not None:
+                setattr(self.practice_session, "case_sensitive", bool(enabled))
+        except Exception:
+            pass
         self._save_ui_settings()
 
     def _build_add_glossary(
@@ -1239,6 +1264,7 @@ class VocabLearnerApp(App):
                 gloss=gloss,
                 answer_lang=answer_lang,
                 text=self.text,
+                case_sensitive=bool(getattr(self, "case_sensitive", False)),
                 shared_total_history_items=[],
                 shared_stats={"words_practiced": 0},
             )
@@ -1293,6 +1319,7 @@ class VocabLearnerApp(App):
                     gloss=prev.gloss,
                     answer_lang=prev.answer_lang,
                     text=self.text,
+                    case_sensitive=bool(getattr(self, "case_sensitive", False)),
                     shared_total_history_items=shared_hist,
                     shared_stats=shared_stats,
                 )

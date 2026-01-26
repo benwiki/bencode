@@ -445,6 +445,23 @@
                         active: root.auto_continue
                         on_active: root.set_auto_continue(self.active)
 
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(44)
+                    spacing: dp(10)
+
+                    Label:
+                        text: app.text.settings_case_sensitive
+                        halign: "left"
+                        valign: "middle"
+                        color: TEXT_DARK
+                        text_size: self.size
+
+                    Switch:
+                        active: root.case_sensitive
+                        on_active: root.set_case_sensitive(self.active)
+
                 Label:
                     text: app.text.settings_data_folder
                     size_hint_y: None
