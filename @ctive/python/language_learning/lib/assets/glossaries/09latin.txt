@@ -3,7 +3,7 @@ word:berauben ; score:0 | word:spoliâre ; score:0
 word:mit Inf.: beschließen ; score:0 | word:cônstituere ; score:0 ; <type>:verb (inf) ; (present):cônstituô ; (perfect):cônstituî ; (PPP):cônstitûtum
 word:bestimmt, festgesetzt, sicher, gewiß ; score:0 | word:certus ; score:0 ; (f):certa ; (n):certum
 word:Weg, Reise ; score:0 | word:iter ; score:0 ; genitive:itineris ; gender:n
-word:Königsburg; hier: Königspalast ; score:0 | word:rêgia ; score:0 ; genitive:ae ; gender:f
+word:Königsburg; Königspalast ; score:0 | word:rêgia ; score:0 ; genitive:ae ; gender:f
 word:eilen ; score:0 | word:festînâre ; score:0
 word:aber ; score:0 | word:autem ; score:0
 word:vortäuschen, heucheln ; score:0 | word:simulâre ; score:0

@@ -25,7 +25,7 @@ word:verlieren ; score:0 | word:âmittere ; score:0 ; <type>:verb (inf) ; (prese
 word:entbrannt; entzündet ; score:0 | word:înflammâtus ; score:0 ; (f):înflammâta ; (n):înflammâtum
 word:Hinterhalt, Falle ; score:0 | word:însidiae ; score:0 ; genitive:ârum ; gender:f pl.
 word:erwerben, bereiten, schaffen ; score:0 | word:parâre ; score:0
-word:entfliehen ; score:0 | word:effugere ; score:0 ; <type>:verb (inf) ; (present):effugiô ; (perfect):effûgî ; (PPP):effugitum
+word:entfliehen ; score:0 | word:effugere ; score:0 ; <type>:verb (inf) ; (present):effugiô ; (perfect):effûgî ; (PPP):-
 word:nehmen, fassen ; score:0 | word:capere ; score:0 ; <type>:verb (inf) ; (present):capiô ; (perfect):cêpi ; (PPP):captum
 word:übergeben; überliefern ; score:0 | word:trâdere ; score:0 ; <type>:verb (inf) ; (present):trâdô ; (perfect):trâdidî ; (PPP):trâditum
 word:singen ; score:0 | word:canere ; score:0 ; <type>:verb (inf) ; (present):canô ; (perfect):cecinî ; (PPP):cantâtum
@@ -46,7 +46,7 @@ word:Consul ; score:0 | word:cônsul ; score:0 ; genitive:is ; gender:m
 word:Praetor ; score:0 | word:praetor ; score:0 ; genitive:ôris ; gender:m
 word:Aedil ; score:0 | word:aedîlis ; score:0 ; genitive:is ; gender:m
 word:Quaestor ; score:0 | word:quaestor ; score:0 ; genitive:ôris ; gender:m
-word:hier: wählen ; score:0 | word:creâre ; score:0
+word:wählen ; score:0 | word:creâre ; score:0
 word:Küste, Gegend, Rand ; score:0 | word:ôra ; score:0 ; genitive:ae ; gender:f
 word:Woge, Welle ; score:0 | word:unda ; score:0 ; genitive:ae ; gender:f
 word:Küste ; score:0 | word:lîtus ; score:0 ; genitive:oris ; gender:n

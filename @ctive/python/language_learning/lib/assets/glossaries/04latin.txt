@@ -7,7 +7,7 @@ word:gewinnen ; score:0 | word:conciliâre ; score:0
 word:jeder (von zweien), beide ; score:0 | word:uterque ; score:0 ; (f):utraque ; (n):utrumque
 word:ganz ; score:0 | word:tôtus ; score:0 ; (f):tôta ; (n):tôtum
 word:anfüllen, erfüllen ; score:0 | word:implêre ; score:0 ; <type>:verb (inf) ; (present):impleô ; (perfect):implêvî ; (PPP):implêtum
-word:können ; score:0 | word:posse ; score:0 ; <type>:verb (inf) ; (present):possum ; (perfect):potuî ; (PPP):itum
+word:können ; score:0 | word:posse ; score:0 ; <type>:verb (inf) ; (present):possum ; (perfect):potuî ; (PPP):-
 word:Kampf ; score:0 | word:proelium ; score:0 ; genitive:î ; gender:n
 word:um die Entscheidung kämpfen ; score:0 | word:dêcertâre ; score:0
 word:folgend, günstig; zweiter ; score:0 | word:secundus ; score:0 ; (f):secunda ; (n):secundum

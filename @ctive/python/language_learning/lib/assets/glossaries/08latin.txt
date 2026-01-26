@@ -1,14 +1,14 @@
 word:bei ; score:0 | word:apud ; score:0 ; case(s):acc
 word:anklagen ; score:0 | word:accusâre ; score:0
-word:hier: dass ; score:0 | word:quod ; score:0 ; case(s):subj
+word:dass ; score:0 | word:quod ; score:0 ; case(s):subj
 word:verwüsten ; score:0 | word:vâstâre ; score:0
 word:Feind ; score:0 | word:hostis ; score:0 ; genitive:is ; gender:m
 word:feindlich ; score:0 | word:hostîlis ; score:0
 word:Art und Weise ; score:0 | word:modus ; score:0 ; genitive:î ; gender:m
-word:tun, handeln; hier: forttreiben ; score:0 | word:agere ; score:0 ; <type>:verb (inf) ; (present):agô ; (perfect):êgî ; (PPP):actum
+word:tun, handeln; forttreiben ; score:0 | word:agere ; score:0 ; <type>:verb (inf) ; (present):agô ; (perfect):êgî ; (PPP):actum
 word:daher, deshalb ; score:0 | word:itaque ; score:0
 word:Strafe, Bestrafung; occ. Hinrichtung ; score:0 | word:supplicium ; score:0 ; genitive:î ; gender:n
-word:haben; hier: halten ; score:0 | word:habêre ; score:0 ; <type>:verb (inf) ; (present):habeô ; (perfect):habuî ; (PPP):habitum
+word:haben; halten ; score:0 | word:habêre ; score:0 ; <type>:verb (inf) ; (present):habeô ; (perfect):habuî ; (PPP):habitum
 word:sklavisch, knechtisch ; score:0 | word:servîlis ; score:0
 word:Anlage, Begabung ; score:0 | word:indolês ; score:0 ; genitive:is ; gender:f
 word:bewundern ; score:0 | word:admîrâri ; score:0

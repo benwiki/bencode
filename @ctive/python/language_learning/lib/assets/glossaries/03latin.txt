@@ -12,7 +12,7 @@ word:überwinden, besiegen ; score:0 | word:superâre ; score:0
 word:töten, erschlagen ; score:0 | word:necâre ; score:0
 word:Hilfe, Beistand ; score:0 | word:auxilium ; score:0 ; genitive:î ; gender:n
 word:am wenigsten, keineswegs ; score:0 | word:minimê ; score:0
-word:fürchten ; score:0 | word:timêre ; score:0 ; <type>:verb (inf) ; (present):timeô ; (perfect):timuî ; (PPP):timitum
+word:fürchten ; score:0 | word:timêre ; score:0 ; <type>:verb (inf) ; (present):timeô ; (perfect):timuî ; (PPP):-
 word:dass nicht, damit nicht ; score:0 | word:nê ; score:0 ; case(s):konj
 word:Ansiedler, Anwohner ; score:0 | word:accola ; score:0 ; genitive:ae ; gender:m
 word:zu sehr ; score:0 | word:nimis ; score:0

@@ -11,10 +11,10 @@ word:großväterlich ; score:0 | word:avîtus ; score:0 ; (f):avîta ; (n):avît
 word:väterlich ; score:0 | word:paternus ; score:0 ; (f):paterna ; (n):paternum
 word:Schutz ; score:0 | word:tûtêla ; score:0 ; genitive:ae ; gender:f
 word:Mutter ; score:0 | word:mâter ; score:0 ; genitive:mâtris ; gender:f
-word:stehen, verbleiben ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
+word:stehen, verbleiben; kosten ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
 word:ein anderer, eine andere, ein anderes ; score:0 | word:alius ; score:0 ; (f):alia ; (n):aliud
-word:bewegen, hier: erheben ; score:0 | word:movêre ; score:0 ; <type>:verb (inf) ; (present):moveô ; (perfect):môvi ; (PPP):môtum
-word:wagen ; score:0 | word:audêre ; score:0 ; <type>:verb (inf) ; (present):audeô ; (perfect):ausus sum ; (PPP):ausum
+word:bewegen, erheben ; score:0 | word:movêre ; score:0 ; <type>:verb (inf) ; (present):moveô ; (perfect):môvi ; (PPP):môtum
+word:wagen ; score:0 | word:audêre ; score:0 ; <type>:verb (inf) ; (present):audeô ; (perfect):ausus sum ; (PPP):ausus
 word:später ; score:0 | word:post ; score:0
 word:Jahrhundert, Zeitalter ; score:0 | word:saeculum ; score:0 ; genitive:î ; gender:n
 word:Bruder ; score:0 | word:frâter ; score:0 ; genitive:frâtris ; gender:m
@@ -37,7 +37,6 @@ word:Blut ; score:0 | word:sanguis ; score:0 ; genitive:sanguinis ; gender:m
 word:Wunde ; score:0 | word:vulnus ; score:0 ; genitive:vulneris ; gender:n
 word:Sieg ; score:0 | word:victôria ; score:0 ; genitive:ae ; gender:f
 word:Punier ; score:0 | word:Poenus ; score:0 ; genitive:î ; gender:m
-word:stehen; hier: kosten ; score:0 | word:stâre ; score:0 ; <type>:verb (inf) ; (present):stô ; (perfect):stetî ; (PPP):statum
 word:stets, immer ; score:0 | word:semper ; score:0
 word:Stadt ; score:0 | word:urbs ; score:0 ; genitive:is ; gender:f
 word:erobern ; score:0 | word:expugnâre ; score:0

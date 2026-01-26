@@ -32,7 +32,7 @@ word:herbeilaufen ; score:0 | word:accurrere ; score:0 ; <type>:verb (inf) ; (pr
 word:begrüßen ; score:0 | word:salûtâre ; score:0
 word:beide ; score:0 | word:ambô ; score:0 ; (f):ambae ; (n):ambô
 word:wenn, falls ; score:0 | word:si ; score:0 ; case(s):subj
-word:es ist erlaubt ; score:0 | word:licet ; score:0 ; <type>:verb (inf) ; (present):licet ; (perfect):licuit ; (PPP):licitum
+word:es ist erlaubt ; score:0 | word:licet est ; score:0 ; <type>:verb (inf) ; (perfect):licuit est ; (PPP):licitum est
 word:Iuppiter ; score:0 | word:Iuppiter ; score:0 ; genitive:Iovis ; gender:m
 word:Rind; Stier (m.); Kuh (f.) ; score:0 | word:bôs ; score:0 ; genitive:bovis ; gender:m/f
 word:Kunst(fertigkeit) ; score:0 | word:ars ; score:0 ; genitive:tis ; gender:f
@@ -43,4 +43,4 @@ word:Rede ; score:0 | word:ôrâtiô ; score:0 ; genitive:ônis ; gender:f
 word:Zeichen ; score:0 | word:sîgnum ; score:0 ; genitive:î ; gender:n
 word:schweigen ; score:0 | word:tacêre ; score:0 ; <type>:verb (inf) ; (present):taceô ; (perfect):tacuî ; (PPP):tacitum
 word:Verschwörung ; score:0 | word:coniûrâtiô ; score:0 ; genitive:ônis ; gender:f
-word:hier: ans Licht bringen ; score:0 | word:patefacere ; score:0 ; <type>:verb (inf) ; (present):patefaciô ; (perfect):patefêcî ; (PPP):patefactum
+word:ans Licht bringen ; score:0 | word:patefacere ; score:0 ; <type>:verb (inf) ; (present):patefaciô ; (perfect):patefêcî ; (PPP):patefactum
