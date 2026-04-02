@@ -25,6 +25,7 @@ class Kit(Enum):
     """Defines the available language kit configurations."""
 
     LATIN = "kits/kit_latin.json"
+    GERMAN = "kits/kit_german.json"
 
     def load_config(
         self,

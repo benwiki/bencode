@@ -1,0 +1,36 @@
+{
+    "<mode>": "apart",
+    "hungarian": {
+        "<type>": "mothertongue"
+    },
+    "german": {
+        "<type>": "learninglang",
+        "<mode>": "and",
+        "szófaj": {
+            "<mode>": "or",
+            "főnév": {
+                "<mode>": "and",
+                "névelő": null,
+                "tbsz": null,
+                "gyenge": null
+            },
+            "ige": {
+                "<mode>": "and",
+                "präteritum": null,
+                "pp_időbeli_segédige": null,
+                "pp": null
+            },
+            "melléknév": {
+                "<mode>": "and",
+                "közép": null,
+                "felső": null
+            },
+            "névmás": {
+                "<mode>": "and",
+                "nőnem": null,
+                "semleges nem": null
+            },
+            "kifejezés": null
+        }
+    }
+}
