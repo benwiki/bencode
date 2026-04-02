@@ -5,7 +5,7 @@ import 'package:prostrationcounter/model/chant_model.dart';
 import 'package:prostrationcounter/core/context_extension.dart';
 import 'package:prostrationcounter/homepage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:prostrationcounter/l10n/app_localizations.dart';
 import 'package:prostrationcounter/model/gong_interval_model.dart';
 import 'package:prostrationcounter/model/prostrations_model.dart';
 import 'package:provider/provider.dart';

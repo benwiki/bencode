@@ -34,7 +34,7 @@ final appTheme = ThemeData(
   cupertinoOverrideTheme:
       const NoDefaultCupertinoThemeData(primaryColor: Colors.black),
   scaffoldBackgroundColor: AppColors.beecoBgMain,
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     splashFactory: NoSplash.splashFactory,
     indicatorColor: Colors.black,
     indicatorSize: TabBarIndicatorSize.tab,
