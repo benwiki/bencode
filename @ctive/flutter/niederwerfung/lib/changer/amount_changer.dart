@@ -93,22 +93,34 @@ class AmountChanger extends StatelessWidget {
     return SizedBox(
       width: 100,
       height: 45,
-      child: ElevatedButton(
-        onPressed: () => changeAmountBy(changeValue),
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          backgroundColor: buttonColor ?? context.appColors.butterMedium,
+      child: GestureDetector(
+        onTap: () => changeAmountBy(changeValue),
+        child: Container(
+        // style: ElevatedButton.styleFrom(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(15),
+        //   ),
+        //   backgroundColor: buttonColor ?? context.appColors.butterMedium,
+        // ),
+        decoration: BoxDecoration(
+          color: buttonColor ?? context.appColors.butterMedium,
+          borderRadius: BorderRadius.circular(15),
+          // border: Border.all(
+          //   color: context.appColors.blackStrong,
+          //   width: 2,
+          // ),
         ),
-        child: Text(
-          buttonText,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: buttonTextColor ?? context.appColors.blackStrong,
+        child: Center(
+          child: Text(
+            buttonText,
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: buttonTextColor ?? context.appColors.blackStrong,
+            ),
           ),
         ),
+      ),
       ),
     );
   }

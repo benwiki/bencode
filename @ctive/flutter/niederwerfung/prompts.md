@@ -1,0 +1,1 @@
+Please create functionality to store and manage prostration sessions. On the home page you should see a button to select a previous session, and a button to load the last one. You should see the number of sessions in the first button and on the second, the number of prostrations left and the total no. of prostrations.

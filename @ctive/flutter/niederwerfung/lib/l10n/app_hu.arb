@@ -1,0 +1,24 @@
+{
+  "appName": "Leborulások",
+  "@appName": {
+    "description": "The name of the app."
+  },
+  "homeScreenName": "Leborulások",
+  "gongInterval": "Gong intervallum",
+  "sec": "s",
+  "numberOfProstrations": "Leborulások száma",
+  "mantraIsOn": "Mantra bekapcsolva",
+  "mantraIsOff": "Mantra kikapcsolva",
+  "title": "Cím",
+  "start": "START",
+  "stop": "STOP",
+  "mantraPaceWarning": "A gong intervalluma túl rövid a mantrához. Legalább 8 másodperc szükséges.",
+  "gongIntervalWarning": "A gong intervalluma túl rövid a mantrához. Legalább 8 másodperc szükséges. A mantra kikapcsolva.",
+  "support": "Szeretném támogatni a fejlesztést",
+  "supportTitle": "Támogatás",
+  "supportText": "Ha visszajelzést szeretnél adni az alkalmazásról, vagy ötleteid lennének, kérlek írd meg őket erre az e-mail címre:\n[govindapp@proton.me;mailto:govindapp@proton.me]\n\nHa tetszik az alkalmazás, és szeretnéd támogatni a fejlesztését, küldhetsz adományt PayPal-on keresztül:\n[paypal.me/benkex;https://paypal.me/benkex]\nKöszönöm!\n\nAzzal is sokat segítesz, ha továbbajánlod az alkalmazást! :)",
+  "back": "Vissza",
+  "specialThanks": "Külön köszönet",
+  "specialThanksText": "Külön köszönet mindenkinek, akik itt szerepelnek!",
+  "singingBowl_1": "A hang a [SoundEffectStudio;https://www.youtube.com/@SoundEffectStudioNo.1] csatornától származik, a videó linkje: [Singing Bowl (Deep Sound) - Sound Effect;https://youtu.be/y96ARieC9HY]."
+}

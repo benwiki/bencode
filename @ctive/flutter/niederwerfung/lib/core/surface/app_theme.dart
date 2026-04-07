@@ -34,14 +34,12 @@ final appTheme = ThemeData(
   cupertinoOverrideTheme:
       const NoDefaultCupertinoThemeData(primaryColor: Colors.black),
   scaffoldBackgroundColor: AppColors.beecoBgMain,
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     splashFactory: NoSplash.splashFactory,
     indicatorColor: Colors.black,
     indicatorSize: TabBarIndicatorSize.tab,
     labelStyle: TextStyles.titleMedium.copyWith(color: Colors.black),
-    unselectedLabelStyle: TextStyles.titleMedium.copyWith(
-      color: AppColors.grey,
-    ),
+    unselectedLabelStyle: TextStyles.titleMedium.copyWith(color: AppColors.grey),
     overlayColor: WidgetStateProperty.resolveWith(
       (states) {
         return states.contains(WidgetState.pressed) ? Colors.black12 : null;

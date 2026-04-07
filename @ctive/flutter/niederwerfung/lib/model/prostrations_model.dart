@@ -8,6 +8,7 @@ class ProstrationsModel with ChangeNotifier {
 
   void changeNumberOfProstrationsBy(double amount) {
     _numberOfProstrations = constrain(_numberOfProstrations + amount, min: 0);
+    notifyListeners();
   }
 
   void subtractOne() {

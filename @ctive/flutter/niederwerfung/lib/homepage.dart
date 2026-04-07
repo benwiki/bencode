@@ -4,7 +4,6 @@ Rules:
   about the pace for the mantra being too fast.
 */
 
-
 import 'package:flutter/material.dart';
 import 'package:prostrationcounter/element/button/start_button.dart';
 import 'package:prostrationcounter/element/sidedrawer_element.dart';
@@ -20,7 +19,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.appColors.blueStrong,
-      drawerScrimColor: Colors.black.withOpacity(0.8),
+      drawerScrimColor: Colors.black.withAlpha((255 * 0.8).toInt()),
       appBar: _buildAppBar(context),
       body: _buildBody(context),
       floatingActionButton: const StartButton(),
@@ -43,20 +42,26 @@ class HomePage extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     return ListView(
-      children: const [
-        SizedBox(height: 20),
-        //
-        GongIntervalChanger(),
-        //
-        SizedBox(height: 35),
-        //
-        NumberOfProstrationsChanger(),
-        //
-        SizedBox(height: 35),
-        //
-        ChantController(),
-        //
-        SizedBox(height: 80),
+      children: [
+        const SizedBox(height: 20),
+        context.orientationIsPortrait
+            ? const Column(
+                children: [
+                  GongIntervalChanger(),
+                  SizedBox(height: 40),
+                  NumberOfProstrationsChanger(),
+                ],
+              )
+            : const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GongIntervalChanger(),
+                  NumberOfProstrationsChanger(),
+                ],
+              ),
+        // SizedBox(height: 35),
+        // ChantController(),
+        const SizedBox(height: 80),
       ],
     );
   }

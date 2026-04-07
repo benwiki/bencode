@@ -1,4 +1,5 @@
 import os
+
 from PIL import Image, ImageChops, ImageStat
 
 
@@ -44,10 +45,10 @@ def brightness(img: Image.Image):
 
 
 if __name__ == "__main__":
-    PATH_1 = r"C:\Users\b.hargitai\Downloads\pl_extern_how_to_2025-01-24"
+    PATH_1 = r"C:\Users\b.hargitai\Downloads\pdf24_renderPdf\pl_extern_how_to_2025-07-09"
     names1 = list(sorted(os.walk(PATH_1).__next__()[2], key=lambda x: f"{x.split('.')[0]:0>2}"))
     pics1 = [PATH_1 + "\\" + item for item in names1]
-    PATH_2 = r"C:\Users\b.hargitai\Downloads\pl_intern_how_to_2025-01-24"
+    PATH_2 = r"C:\Users\b.hargitai\Downloads\pdf24_renderPdf(1)\pl_extern_how_to_2025-05-20"
     names2 = list(sorted(os.walk(PATH_2).__next__()[2], key=lambda x: f"{x.split('.')[0]:0>2}"))
     pics2 = [PATH_2 + "\\" + item for item in names2]
 
