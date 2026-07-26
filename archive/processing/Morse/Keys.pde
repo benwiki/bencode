@@ -5,11 +5,11 @@ color colorb=255;
 void keyPressed(){
   transmitting=true;
   switch (keyCode) {
-    case KeyEvent.KEYCODE_VOLUME_UP:
+    case UP: //KeyEvent.KEYCODE_VOLUME_UP:
       up = millis();
       colorb=color(255,0,0);
       break;
-    case KeyEvent.KEYCODE_VOLUME_DOWN:
+    case DOWN: //KeyEvent.KEYCODE_VOLUME_DOWN:
       colorb=color(0,0,255);
       down = millis();
       break;
@@ -21,11 +21,11 @@ void keyPressed(){
 void keyReleased(){
   transmitting=false;
   switch (keyCode) {
-    case KeyEvent.KEYCODE_VOLUME_UP:
+    case UP://KeyEvent.KEYCODE_VOLUME_UP:
       word += dotdash(millis()-up);
       colorb=color(255,100,100);
       break;
-    case KeyEvent.KEYCODE_VOLUME_DOWN:
+    case DOWN: //KeyEvent.KEYCODE_VOLUME_DOWN:
       word += dotdash(millis()-down);
       colorb=color(100,100,255);
       break;

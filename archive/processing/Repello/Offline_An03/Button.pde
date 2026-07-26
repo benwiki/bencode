@@ -69,7 +69,7 @@ class Button{
       else if (fcolor == 2) disk = requestImage("silver_disk.png");
       else disk = requestImage("gray_disk.png");
       
-      if (disk != null && disk.width > 0 && disk.height > 0) disk.resize(board.cs, board.cs);
+      if (disk != null && disk.width > 0 && disk.height > 0) disk.resize((int)board.cs, (int)board.cs);
     }
     pmaster = emptyPlayer;
     dmaster = emptyDisk;
@@ -119,7 +119,7 @@ class Button{
     else if(shape=="disk"){
       tint(255, alpha);
       if (gamemode=="desktop" && disk != null && disk.width>0 && disk.height>0){
-        if (disk.width!=board.cs || disk.height!=board.cs) disk.resize(board.cs, board.cs);
+        if (disk.width!=board.cs || disk.height!=board.cs) disk.resize((int)board.cs, (int)board.cs);
         //fill(0);
         //ellipse(pos.x, pos.y, w, h);
         image(disk, pos.x-w/2, pos.y-w/2, w, h);

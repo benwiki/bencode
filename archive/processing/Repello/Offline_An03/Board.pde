@@ -17,24 +17,25 @@ class Board{
     {5,6,1,2,3,4,5,6,1,2,3,4,5}};
 
   int[][] basic_objects = {{1,1,1}, {1,6,2}, {1,11,1}, {6,1,2}, {6,6,3}, {6,11,2}, {11,1,1}, {11,6,2}, {11,11,1}};
-  int cs; //cell size
-  int r;
-  int x, y, w, h;
-  float border = 7;
-  int dot = 10;
+  float cs; //cell size
+  float r, b;
+  float x=1, y=1, w, h, d;
+  float border;
+  int dot;
   
-  Board(int x, int y, int w, int h){
-    cs = w/board.length;
-    r = cs/7;
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+  Board(int d){
+    border = d;
   }
   
   //------------------------------------------------------------
   
   void update(){
+    w = height-3;
+    h = height-3;
+    cs = this.w/board.length;
+    r = cs/10;
+    b = cs/5;
+    dot = (int)cs/7;
     //.........Green starting place's inside...........
     rectMode(CORNER);
     strokeWeight(0);
@@ -43,6 +44,8 @@ class Board{
     fill(0);
     rect(x+4*cs, y+4*cs, 5*cs, 5*cs);
     
+    //textSize(cs/5);
+    textFont(font, cs/5);
     //.............The grid..............
     for (int i=0; i<13; ++i){
       for (int j=0; j<13; ++j){
@@ -57,29 +60,29 @@ class Board{
           }
         if (!(i==6&&j==7) && !(i==7&&j==6))
           rect(x+i*cs, y+j*cs, cs, cs);
+        
+        color col=0;
+        switch (board[i][j]){
+          case 1: col=#FFFF00; break;
+          case 2: col=#FF00FF; break;
+          case 3: col=#0033FF; break;
+          case 4: col=#880088; break;
+          case 5: col=#00FF00; break;
+          case 6: col=#FF0000; break;
+        } 
+        fill(col, maxalpha/2);
+        
+        text(str(board[i][j]), x+(i+0.5)*cs, y+(j+0.5)*cs-1);
+        
         fill(255);
         noStroke();
-        if (i==0 && j==0) ellipse(x*2+j*cs, y*2+i*cs, dot, dot);
-        else if (i==0) ellipse(x+j*cs, y*2+i*cs, dot, dot);
-        else if (j==0) ellipse(x*2+j*cs, y+i*cs, dot, dot);
-        else ellipse(x+j*cs, y+i*cs, dot, dot);
+        if (i>0 && j>0) ellipse(x+j*cs, y+i*cs, dot, dot);
       }
-      if (i==0) ellipse(x+13*cs, y*2+i*cs, dot, dot);
-      else ellipse(x+13*cs, y+i*cs, dot, dot);
     }
-    ellipse(x*2, y+13*cs, dot, dot);
-    for (int i=1; i<14; ++i)
-      ellipse(x+i*cs, y+13*cs, dot, dot);
-    /*strokeWeight(1);
-    stroke(255);
-    for (int i=0; i<=13; ++i){
-      line(i*cs, x, x+i*cs, height-x);
-      line(y, y+i*cs, width-y, y+i*cs);
-    }*/
-    strokeWeight(border);
-    stroke(255);
+    //strokeWeight(border);
+    //stroke(255);
     noFill();
-    rect(x, y, w-border/2, h-border/2);
+    //rect(x-d, y-d, w-d/2-1, h-d/2-1);
     //..........Green starting place's outline.............
     strokeWeight(4);
     stroke(#00FF00);
@@ -101,7 +104,7 @@ class Board{
         } 
         stroke(col, maxalpha/2);
         for (int k=1; k<=board[i][j]; ++k)
-          ellipse(x+cs*(i+0.5), y+cs*(j+0.5), k*r, k*r);
+          ellipse(x+cs*(i+0.5), y+cs*(j+0.5), b+k*r, b+k*r);
       }
     }
     

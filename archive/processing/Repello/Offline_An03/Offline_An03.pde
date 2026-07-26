@@ -1,9 +1,10 @@
 
 String gamemode = "desktop";
-int bx, by, board_w, board_h;
 int sheight, swidth;
-final int startingDiskNum = 3;
+final int startingDiskNum = 15;
 int counter=0;
+
+PFont font;
 
 final int GRAY = 1, SILVER = 2, GOLD = 3;
 final String[] colors = {"gray", "silver", "gold"};
@@ -28,13 +29,13 @@ ArrayList<Button> removeFromExe, addToExe, addToBottomExe, buttonsToHide; // but
 /////////////////////////////////////////////////////////////////////////////
 
 void setup() {
-  fullScreen();
-  //size(1334, 934);
+  // for (Object o:  PFont.list()) println(o);
+  font = createFont("Yu Gothic UI Bold", 255);
+  //fullScreen();
+  size(1334, 934);
   surface.setResizable(true);
-  board_w = board_h = height-5;
-  bx = by = 5;
 
-  board       = new Board(bx, by, board_w, board_h);
+  board       = new Board(5);
 
   emptyPlayer = new Player();
   emptyDisk   = new Disk();
@@ -93,5 +94,5 @@ class Timer {
 
   void start() { starttime = millis(); }
   long state() { return millis()-starttime; }
-  void reset(float with) { starttime = millis()-(int)(state()%with); }
+  void reset(float withTime) { starttime = millis()-(int)(state()%withTime); }
 }

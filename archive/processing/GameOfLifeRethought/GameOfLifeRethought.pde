@@ -4,9 +4,12 @@ Map map;
 int[] clicked;
 
 int DEAD = 0, ALIVE = 1;
+PVector unset = new PVector(-1, -1);
 PVector prev, cur;
 
 boolean pressed = false;
+boolean pressChange = false;
+PVector pressedPos = new PVector();
 int turn_counter = 0;
 
 //.................................................
@@ -14,6 +17,9 @@ int turn_counter = 0;
 void setup(){
   //fullScreen();
   size(700, 700);
+  prev = new PVector();
+  prev.set(unset);
+  
   map = new Map(50);
   
   cur = new PVector();
@@ -39,12 +45,14 @@ void draw(){
 //-------------------------------------------
 
 void mousePressed(){
+  pressedPos.set(map.track());
   pressed = true;
 }
 //-----------------------------------
 
 void mouseReleased(){
-  //map.set_cell(map.track());
+  //if (pressedPos.equals(map.track()))
+  //  map.set_cell(map.track());
   pressed = false;
 }
 //-----------------------------------
@@ -59,13 +67,13 @@ void keyPressed(){
   else if(key == '-')
     --map.cs;
   if(keyCode == UP)
-    --map.y;
-  else if(keyCode == DOWN)
     ++map.y;
+  else if(keyCode == DOWN)
+    --map.y;
   if(keyCode == LEFT)
-    --map.x;
-  else if(keyCode == RIGHT)
     ++map.x;
+  else if(keyCode == RIGHT)
+    --map.x;
 }
 
 //////////////////////////////////////////////////////////////////

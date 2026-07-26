@@ -67,12 +67,12 @@ class Game{
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
-    if (mouseX > bx + 3*board.cs && mouseX < bx +10*board.cs && 
-        mouseY > by + 3*board.cs && mouseY < by +10*board.cs &&
-       (mouseX < bx + 4*board.cs || mouseX > bx + 9*board.cs ||
-        mouseY < by + 4*board.cs || mouseY > by + 9*board.cs)){
+    if (mouseX > board.x + 3*board.cs && mouseX < board.x +10*board.cs && 
+        mouseY > board.y + 3*board.cs && mouseY < board.y +10*board.cs &&
+       (mouseX < board.x + 4*board.cs || mouseX > board.x + 9*board.cs ||
+        mouseY < board.y + 4*board.cs || mouseY > board.y + 9*board.cs)){
           
-      aim_boardpos.set(floor((mouseX-bx)/board.cs), floor((mouseY-by)/board.cs));
+      aim_boardpos.set(floor((mouseX-board.x)/board.cs), floor((mouseY-board.y)/board.cs));
       if (!activePlayer.empty && (!activePlayer.placeaim_directed() || 
                                    activePlayer.placeaim_directed() && activePlayer.moved_placeaim(aim_boardpos)))
         { activePlayer.direct_placeaim(aim_boardpos); }

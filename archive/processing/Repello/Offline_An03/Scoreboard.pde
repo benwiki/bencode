@@ -35,7 +35,7 @@ class Scoreboard {
     playerstate.slide(height+(width-height) / (handler.players.size()+1) * 1.5, board.cs*2.5, 1000, "whole");
     //playerstate.slide(player_scores.get(0).player_icon.pbutton.pos.x, board.cs*2.5, 1000, "whole");
     playerstate.be_visible();
-    playerstate.add_sign("text", "N E X T", new PVector(0, -board.cs/17));
+    playerstate.add_sign("text", "N E X T", new PVector(0, 0));
     addToExe.add(playerstate);
 
     //................................REWAAAAAAAAAAAAAAAARDS.......................................
@@ -163,7 +163,7 @@ class Score {
     graycounter = new Button("counter", width+board.cs, height/8 * i + board.cs*3.8, board.cs*2/3, board.cs*2/3, board.cs/20, 
       color(255), color(0), color(255), color(0), maxalpha, "oval");
     //graycounter.be_visible();
-    graycounter.add_sign("text", "0", new PVector(0, -board.cs/20));
+    graycounter.add_sign("text", "0", new PVector(0, 0));
 
     graycounter.slide(height+(width-height) / (handler.players.size()+1) * (handler.players.indexOf(master) + 1.5), height/8 * i + board.cs*3.8, 1000 + 150*handler.players.indexOf(master), "whole");
     ++i;
@@ -171,7 +171,7 @@ class Score {
     silvercounter = new Button("counter", width+board.cs, height/8 * i + board.cs*3.8, board.cs*2/3, board.cs*2/3, board.cs/20, 
       color(255), color(0), color(255), color(0), maxalpha, "oval");
     //silvercounter.be_visible();
-    silvercounter.add_sign("text", "0", new PVector(0, -board.cs/20));
+    silvercounter.add_sign("text", "0", new PVector(0, 0));
 
     silvercounter.slide(height+(width-height) / (handler.players.size()+1) * (handler.players.indexOf(master) + 1.5), height/8 * i + board.cs*3.8, 1000 + 150*handler.players.indexOf(master), "whole");
     ++i;
@@ -179,7 +179,7 @@ class Score {
     goldencounter = new Button("counter", width+board.cs, height/8 * i + board.cs*3.8, board.cs*2/3, board.cs*2/3, board.cs/20, 
       color(255), color(0), color(255), color(0), maxalpha, "oval");
     //goldencounter.be_visible();
-    goldencounter.add_sign("text", "0", new PVector(0, -board.cs/20));
+    goldencounter.add_sign("text", "0", new PVector(0, 0));
 
     goldencounter.slide(height+(width-height) / (handler.players.size()+1) * (handler.players.indexOf(master) + 1.5), height/8 * i + board.cs*3.8, 1000 + 150*handler.players.indexOf(master), "whole");
     ++i;

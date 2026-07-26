@@ -36,7 +36,7 @@ class Madar {
       
       ajandekX = int(random(vizszintesSav+haromszogMagassag+width*0.05,width-(vizszintesSav+haromszogMagassag+width*0.05)));
       ajandekY = int(random(fuggolegesSavFent+haromszogMagassag+height*0.05,height-(fuggolegesSavLent+haromszogMagassag+height*0.05)));
-      ajandek_felvesz = true;
+      ajandek_felvesz = false;
       
       if (szamlalo%2==0) {
           jobb_oldal=true;   
