@@ -1,0 +1,1 @@
+cd "C:\Users\Admin\prog\bencode\@ctive\python\rubik" & py rubik.py

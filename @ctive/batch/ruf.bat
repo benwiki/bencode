@@ -1,0 +1,1 @@
+py C:\Users\Admin\prog\bencode\@ctive\python\rubik\rubik.py %1
